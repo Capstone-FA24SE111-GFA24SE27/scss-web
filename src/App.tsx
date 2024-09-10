@@ -1,15 +1,11 @@
-import React, { useState } from 'react'
-import { Button } from '@mui/material'
-function App() {
-  const [count, setCount] = useState(0)
+import { useRoutes } from 'react-router-dom';
+import studentRoutes from '@features/students/student-routes';
 
-  return (
-    <>
-      <div className='border border-black pl-8'>
-        <Button>Click me</Button>
-      </div>
-    </>
-  )
-}
+const App = () => {
+  const AppRoutes = useRoutes([
+    ...studentRoutes,
+  ]);
+  return AppRoutes;
+};
 
-export default App
+export default App;
