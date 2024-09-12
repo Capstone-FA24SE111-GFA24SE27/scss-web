@@ -4,14 +4,12 @@ import { demoFeatureRoutes } from './demo-feature/demo-feature-routes'
 
 const StudentLayout = lazy(() => import('./student-layout'))
 
-const studentRoutes: RouteObject[] = [
+export const studentRoutes: RouteObject[] = [
   {
-    path: '/students',
+    path: '/',
     element: <StudentLayout />,
     children: [
       ...demoFeatureRoutes,
     ],
   },
 ];
-
-export default studentRoutes;

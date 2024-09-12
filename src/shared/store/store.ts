@@ -1,6 +1,6 @@
 import { configureStore, Middleware, ThunkAction, Action } from '@reduxjs/toolkit'
-import { rootReducer } from './rootReducer'
-import apiService from './apiService';
+import { rootReducer } from './root-reducer'
+import apiService from './api-service';
 
 const middlewares: Middleware[] = [apiService.middleware];
 
