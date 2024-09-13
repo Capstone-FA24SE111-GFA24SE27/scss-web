@@ -72,7 +72,7 @@ const inputGlobalStyles = (
 	/>
 );
 
-function ThemeProvider(props: ThemeProviderProps) {
+export function ThemeProvider(props: ThemeProviderProps) {
 	const { children, root = false } = props;
 
 
@@ -108,4 +108,3 @@ function ThemeProvider(props: ThemeProviderProps) {
 	);
 }
 
-export default memo(ThemeProvider);

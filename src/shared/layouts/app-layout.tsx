@@ -43,13 +43,10 @@ export function AppLayout(props: AppLayoutProps) {
   }
 	return (
 		<div className="flex w-full">
-			{/* {config.leftSidePanel.display && <LeftSideAppLayout />} */}
-
 			<div className="flex min-w-0 flex-auto">
-				{/* {config?.navbar.display && config.navbar.position === 'left' && <NavbarWrapperAppLayout />} */}
+				{config?.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout1 />}
 
 				<main
-					id="fuse-main"
 					className="relative z-10 flex min-h-full min-w-0 flex-auto flex-col"
 				>
 					{/* {config.toolbar.display && (
@@ -78,7 +75,6 @@ export function AppLayout(props: AppLayoutProps) {
 			</div>
 
 			{/* {config.rightSidePanel.display && <RightSideAppLayout />} */}
-			{/* <FuseMessage /> */}
 		</div>
 	);
 }

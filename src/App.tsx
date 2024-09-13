@@ -4,10 +4,10 @@ import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
 import { AppLayout } from '@shared/layouts'
 import { StyledEngineProvider } from '@mui/material';
-import ThemeProvider from './shared/providers/theme/ThemeProvider';
+import { ThemeProvider } from './shared/providers';
 const App = () => {
-  // const role = roles.STUDENT
-  const role = ''
+  // const role = ''
+  const role = roles.STUDENT
   let roleBasedRoutes;
   switch (role) {
     case roles.STUDENT:
