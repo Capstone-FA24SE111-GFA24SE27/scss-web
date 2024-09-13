@@ -8,16 +8,16 @@ import RightSideLayout1 from './components/RightSideLayout1';
 
 
 
-type Layout1Props = {
+type AppLayoutProps = {
 	children?: ReactNode;
 };
 
 /**
  * The layout 1.
  */
-export function Layout1(props: Layout1Props) {
+export function AppLayout(props: AppLayoutProps) {
 	const { children } = props;
-	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as Layout1ConfigDefaultsType;
+	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as AppLayoutConfigDefaultsType;
 	// const appContext = useContext(AppContext);
   let config = {
     navbar: {
@@ -43,17 +43,17 @@ export function Layout1(props: Layout1Props) {
   }
 	return (
 		<div className="flex w-full">
-			{/* {config.leftSidePanel.display && <LeftSideLayout1 />} */}
+			{/* {config.leftSidePanel.display && <LeftSideAppLayout />} */}
 
 			<div className="flex min-w-0 flex-auto">
-				{/* {config?.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout1 />} */}
+				{/* {config?.navbar.display && config.navbar.position === 'left' && <NavbarWrapperAppLayout />} */}
 
 				<main
 					id="fuse-main"
 					className="relative z-10 flex min-h-full min-w-0 flex-auto flex-col"
 				>
 					{/* {config.toolbar.display && (
-						<ToolbarLayout1 className={config.toolbar.style === 'fixed' ? 'sticky top-0' : ''} />
+						<ToolbarAppLayout className={config.toolbar.style === 'fixed' ? 'sticky top-0' : ''} />
 					)} */}
 
 					{/* <div className="sticky top-0 z-99">
@@ -70,14 +70,14 @@ export function Layout1(props: Layout1Props) {
 					</div>
 
 					{/* {config.footer.display && (
-						<FooterLayout1 className={config.footer.style === 'fixed' ? 'sticky bottom-0' : ''} />
+						<FooterAppLayout className={config.footer.style === 'fixed' ? 'sticky bottom-0' : ''} />
 					)} */}
 				</main>
 
-				{/* {config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperLayout1 />} */}
+				{/* {config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperAppLayout />} */}
 			</div>
 
-			{/* {config.rightSidePanel.display && <RightSideLayout1 />} */}
+			{/* {config.rightSidePanel.display && <RightSideAppLayout />} */}
 			{/* <FuseMessage /> */}
 		</div>
 	);

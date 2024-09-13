@@ -2,8 +2,9 @@ import { useRoutes } from 'react-router-dom';
 import { studentRoutes } from '@features/students/student-routes';
 import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
-import { Layout1 } from '@shared/layouts'
+import { AppLayout } from '@shared/layouts'
 import { StyledEngineProvider } from '@mui/material';
+import ThemeProvider from './shared/providers/theme/ThemeProvider';
 const App = () => {
   // const role = roles.STUDENT
   const role = ''
@@ -16,14 +17,17 @@ const App = () => {
       roleBasedRoutes = authRoutes;
   }
 
+
   const AppRoutes = useRoutes([...roleBasedRoutes])
 
   return (
-    <div className='bg-black'>
-      <StyledEngineProvider injectFirst>
-        {AppRoutes}
-      </StyledEngineProvider>
-    </div>
+    <StyledEngineProvider injectFirst>
+      <AppLayout>
+        <ThemeProvider root>
+          {AppRoutes}
+        </ThemeProvider>
+      </AppLayout>
+    </StyledEngineProvider>
   )
 };
 
