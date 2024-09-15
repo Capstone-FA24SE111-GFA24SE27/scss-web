@@ -2,7 +2,9 @@ import Hidden from '@mui/material/Hidden';
 import { Theme } from '@mui/system/createTheme';
 import { styled } from '@mui/material/styles';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import NavbarStyle1Content from './NavbarStyle1Content';
+import NavbarStyleContent from './NavbarStyleContent';
+import { selectNavbar } from './navbar-slice';
+import { useAppSelector } from '@/shared/store';
 
 const navbarWidth = 280;
 
@@ -47,13 +49,10 @@ const StyledNavBarMobile = styled(SwipeableDrawer)(() => ({
 /**
  * The navbar style 1.
  */
-function NavbarStyle1() {
+function NavbarStyle() {
 	// const dispatch = useAppDispatch();
 	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as Layout1ConfigDefaultsType;
-	// const navbar = useAppSelector(selectFuseNavbar);
-	const navbar = {
-		open: true
-	}
+	const navbar = useAppSelector(selectNavbar);
 	const config = {
 		navbar: {
 			position: 'left'
@@ -68,7 +67,7 @@ function NavbarStyle1() {
 					open={navbar.open}
 					position={config.navbar.position}
 				>
-					<NavbarStyle1Content />
+					<NavbarStyleContent />
 				</StyledNavBar>
 			</Hidden>
 
@@ -94,4 +93,4 @@ function NavbarStyle1() {
 	);
 }
 
-export default NavbarStyle1;
+export default NavbarStyle;

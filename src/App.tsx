@@ -3,7 +3,7 @@ import { studentRoutes } from '@features/students/student-routes';
 import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
 import { AppLayout } from '@shared/layouts'
-import { StyledEngineProvider } from '@mui/material';
+import { createTheme, StyledEngineProvider } from '@mui/material';
 import { ThemeProvider } from './shared/providers';
 const App = () => {
   // const role = ''
@@ -17,17 +17,19 @@ const App = () => {
       roleBasedRoutes = authRoutes;
   }
 
+  const defaultTheme = createTheme();
+  console.log("Default MUI theme: ", defaultTheme)
 
   const AppRoutes = useRoutes([...roleBasedRoutes])
 
   return (
-    <StyledEngineProvider injectFirst>
-      <AppLayout>
-        <ThemeProvider root>
+    <ThemeProvider root>
+      <StyledEngineProvider injectFirst>
+        <AppLayout>
           {AppRoutes}
-        </ThemeProvider>
-      </AppLayout>
-    </StyledEngineProvider>
+        </AppLayout>
+      </StyledEngineProvider>
+    </ThemeProvider>
   )
 };
 

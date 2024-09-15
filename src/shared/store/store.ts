@@ -1,8 +1,9 @@
 import { configureStore, Middleware, ThunkAction, Action } from '@reduxjs/toolkit'
 import { rootReducer } from './root-reducer'
 import apiService from './api-service';
+import { dynamicMiddleware } from './middleware';
 
-const middlewares: Middleware[] = [apiService.middleware];
+const middlewares: Middleware[] = [apiService.middleware, dynamicMiddleware];
 
 export const store = configureStore({
   reducer: rootReducer,

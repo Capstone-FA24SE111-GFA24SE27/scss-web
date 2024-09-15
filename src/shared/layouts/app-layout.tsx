@@ -1,10 +1,10 @@
 // import FuseMessage from '@fuse/core/FuseMessage';
 // import Configurator from 'app/theme-layouts/shared-components/configurator/Configurator';
 import { memo, ReactNode } from 'react';
-import FooterLayout1 from './components/FooterLayout1';
-import NavbarWrapperLayout1 from './components/NavbarWrapperLayout1';
-import RightSideLayout1 from './components/RightSideLayout1';
-// import ToolbarLayout1 from './components/ToolbarLayout1';
+import FooterLayout1 from './layout-components/footer/FooterLayout';
+import NavbarWrapperLayout from './layout-components/navbar/NavbarWrapperLayout';
+// import RightSideLayout1 from './components/RightSideLayout1';
+import ToolbarLayout from './layout-components/toolbar/ToolbarLayout';
 
 
 
@@ -44,14 +44,14 @@ export function AppLayout(props: AppLayoutProps) {
 	return (
 		<div className="flex w-full">
 			<div className="flex min-w-0 flex-auto">
-				{config?.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout1 />}
+				{config?.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout />}
 
 				<main
 					className="relative z-10 flex min-h-full min-w-0 flex-auto flex-col"
 				>
-					{/* {config.toolbar.display && (
-						<ToolbarAppLayout className={config.toolbar.style === 'fixed' ? 'sticky top-0' : ''} />
-					)} */}
+					{config.toolbar.display && (
+						<ToolbarLayout className={config.toolbar.style === 'fixed' ? 'sticky top-0' : ''} />
+					)}
 
 					{/* <div className="sticky top-0 z-99">
 						<Configurator />

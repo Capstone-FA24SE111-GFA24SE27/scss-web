@@ -68,7 +68,7 @@ export const defaultThemeOptions = {
 		},
 		MuiButtonGroup: {
 			defaultProps: {
-				color: 'secondary'
+				color: 'primary'
 			},
 			styleOverrides: {
 				contained: {
@@ -174,7 +174,26 @@ export const defaultThemeOptions = {
 					}
 				}
 			]
-		}
+		},
+		MuiListItemButton: {
+			styleOverrides: {
+				root: {
+					borderRadius: 4,
+					'&:hover': {
+						backgroundColor: '#f0f0f0', // Light grey background on hover
+					},
+				},
+			},
+		},
+		MuiList: {
+			styleOverrides: {
+				root: {
+					display: 'flex',
+					flexDirection: 'column',
+					gap: 4,
+				},
+			},
+		},
 	}
 };
 

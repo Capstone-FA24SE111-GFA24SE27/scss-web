@@ -5,12 +5,12 @@ import { memo } from 'react';
 import clsx from 'clsx';
 // import { useAppSelector } from 'app/store/hooks';
 
-type FooterLayout1Props = { className?: string };
+type FooterLayoutProps = { className?: string };
 
 /**
  * The footer layout 1.
  */
-function FooterLayout1(props: FooterLayout1Props) {
+function FooterLayout(props: FooterLayoutProps) {
 	const { className } = props;
 
 	// const footerTheme = useAppSelector(selectFooterTheme);
@@ -61,4 +61,4 @@ function FooterLayout1(props: FooterLayout1Props) {
 	);
 }
 
-export default memo(FooterLayout1);
+export default memo(FooterLayout);

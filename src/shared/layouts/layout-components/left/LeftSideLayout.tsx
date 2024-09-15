@@ -3,8 +3,8 @@ import { memo } from 'react';
 /**
  * The left side layout 1.
  */
-function LeftSideLayout1() {
+function LeftSideLayout() {
 	return <div />;
 }
 
-export default memo(LeftSideLayout1);
+export default memo(LeftSideLayout);
