@@ -178,7 +178,7 @@ export const defaultThemeOptions = {
 		MuiListItemButton: {
 			styleOverrides: {
 				root: {
-					borderRadius: 4,
+					borderRadius: 8,
 					'&:hover': {
 						backgroundColor: '#f0f0f0', // Light grey background on hover
 					},

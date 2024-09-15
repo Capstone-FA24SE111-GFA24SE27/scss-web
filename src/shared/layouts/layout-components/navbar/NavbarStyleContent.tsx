@@ -10,6 +10,7 @@ const Root = styled('div')(({ theme }) => ({
 	'& ::-webkit-scrollbar-thumb': {
 		boxShadow: `inset 0 0 0 20px ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.24)' : 'rgba(255, 255, 255, 0.24)'
 			}`
+		
 	},
 	'& ::-webkit-scrollbar-thumb:active': {
 		boxShadow: `inset 0 0 0 20px ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.37)' : 'rgba(255, 255, 255, 0.37)'
@@ -24,7 +25,8 @@ const StyledContent = styled('div')(() => ({
 	WebkitOverflowScrolling: 'touch',
 	backgroundRepeat: 'no-repeat',
 	backgroundSize: '100% 40px, 100% 10px',
-	backgroundAttachment: 'local, scroll'
+	backgroundAttachment: 'local, scroll',
+	scrollbarWidth: 'thin',
 }));
 
 type NavbarStyleContentProps = {
@@ -49,7 +51,7 @@ function NavbarStyleContent(props: NavbarStyleContentProps) {
 
 			<StyledContent
 				className="flex min-h-0 flex-1 flex-col"
-				// option={{ suppressScrollX: true, wheelPropagation: false }}
+			// option={{ suppressScrollX: true, wheelPropagation: false }}
 
 			>
 				<UserNavbarHeader />

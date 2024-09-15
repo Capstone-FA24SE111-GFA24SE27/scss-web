@@ -8,6 +8,7 @@ import { selectNavbar } from '../navbar/navbar-slice';
 import { useAppSelector } from '@shared/store';
 import NavbarToggleButton from '../navbar/NavbarToggleButton';
 import NavigationShortcuts from '../navigation/NavigationShorcuts';
+import UtilityShortcuts from './UtilityShortcuts';
 // import { selectFuseCurrentLayoutConfig, selectToolbarTheme } from '@fuse/core/FuseSettings/fuseSettingsSlice';
 // import { LayoutConfigDefaultsType } from 'app/theme-layouts/layout/LayoutConfig';
 // import NotificationPanelToggleButton from 'src/app/main/apps/notifications/NotificationPanelToggleButton';
@@ -80,12 +81,7 @@ function ToolbarLayout(props: ToolbarLayoutProps) {
 				</div>
 
 				<div className="flex h-full items-center overflow-x-auto px-8">
-					{/* <LanguageSwitcher />
-						<AdjustFontSize />
-						<FullScreenToggle />
-						<NavigationSearch />
-						<QuickPanelToggleButton />
-						<NotificationPanelToggleButton /> */}
+					<UtilityShortcuts />
 					<UserMenu />
 				</div>
 
