@@ -1,69 +1,67 @@
-import FuseScrollbars from '@fuse/core/FuseScrollbars';
 import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import { memo } from 'react';
-import Navigation from 'app/theme-layouts/shared-components/navigation/Navigation';
-import NavbarToggleButton from 'app/theme-layouts/shared-components/navbar/NavbarToggleButton';
-import Logo from '../../../../shared-components/Logo';
-import UserNavbarHeader from '../../../../shared-components/UserNavbarHeader';
-
+import NavbarToggleButton from './NavbarToggleButton';
+import UserNavbarHeader from './UserNavbarHeader';
+import Navigation from '../navigation/NavigationList';
 const Root = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.background.default,
 	color: theme.palette.text.primary,
 	'& ::-webkit-scrollbar-thumb': {
-		boxShadow: `inset 0 0 0 20px ${
-			theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.24)' : 'rgba(255, 255, 255, 0.24)'
-		}`
+		boxShadow: `inset 0 0 0 20px ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.24)' : 'rgba(255, 255, 255, 0.24)'
+			}`
+		
 	},
 	'& ::-webkit-scrollbar-thumb:active': {
-		boxShadow: `inset 0 0 0 20px ${
-			theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.37)' : 'rgba(255, 255, 255, 0.37)'
-		}`
+		boxShadow: `inset 0 0 0 20px ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.37)' : 'rgba(255, 255, 255, 0.37)'
+			}`
 	}
 }));
 
-const StyledContent = styled(FuseScrollbars)(() => ({
+const StyledContent = styled('div')(() => ({
 	overscrollBehavior: 'contain',
 	overflowX: 'hidden',
 	overflowY: 'auto',
 	WebkitOverflowScrolling: 'touch',
 	backgroundRepeat: 'no-repeat',
 	backgroundSize: '100% 40px, 100% 10px',
-	backgroundAttachment: 'local, scroll'
+	backgroundAttachment: 'local, scroll',
+	scrollbarWidth: 'thin',
 }));
 
-type NavbarStyle1ContentProps = {
+type NavbarStyleContentProps = {
 	className?: string;
 };
 
-/**
- * The navbar style 1 content.
- */
-function NavbarStyle1Content(props: NavbarStyle1ContentProps) {
+
+function NavbarStyleContent(props: NavbarStyleContentProps) {
 	const { className = '' } = props;
 
 	return (
 		<Root className={clsx('flex h-full flex-auto flex-col overflow-hidden', className)}>
 			<div className="flex h-48 shrink-0 flex-row items-center px-20 md:h-72">
 				<div className="mx-4 flex flex-1">
-					<Logo />
+					{/* <Logo /> */}
+					Logo here
 				</div>
 
-				<NavbarToggleButton className="h-40 w-40 p-0" />
+				<NavbarToggleButton />
+
 			</div>
 
 			<StyledContent
 				className="flex min-h-0 flex-1 flex-col"
-				option={{ suppressScrollX: true, wheelPropagation: false }}
+			// option={{ suppressScrollX: true, wheelPropagation: false }}
+
 			>
 				<UserNavbarHeader />
 
-				<Navigation layout="vertical" />
+				<Navigation />
 
 				<div className="flex-0 flex items-center justify-center py-48 opacity-10">
 					<img
 						className="w-full max-w-64"
-						src="assets/images/logo/logo.svg"
+						src="assets/images/logo/FPT-education.png"
 						alt="footer logo"
 					/>
 				</div>
@@ -72,4 +70,4 @@ function NavbarStyle1Content(props: NavbarStyle1ContentProps) {
 	);
 }
 
-export default memo(NavbarStyle1Content);
+export default memo(NavbarStyleContent);

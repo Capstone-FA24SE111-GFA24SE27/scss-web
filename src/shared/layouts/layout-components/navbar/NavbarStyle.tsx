@@ -2,11 +2,9 @@ import Hidden from '@mui/material/Hidden';
 import { Theme } from '@mui/system/createTheme';
 import { styled } from '@mui/material/styles';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { selectFuseCurrentLayoutConfig } from '@fuse/core/FuseSettings/fuseSettingsSlice';
-import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { Layout1ConfigDefaultsType } from 'app/theme-layouts/layout1/Layout1Config';
-import { navbarCloseMobile, selectFuseNavbar } from 'app/theme-layouts/shared-components/navbar/navbarSlice';
-import NavbarStyle1Content from './NavbarStyle1Content';
+import NavbarStyleContent from './NavbarStyleContent';
+import { selectNavbar } from './navbar-slice';
+import { useAppSelector } from '@/shared/store';
 
 const navbarWidth = 280;
 
@@ -51,10 +49,15 @@ const StyledNavBarMobile = styled(SwipeableDrawer)(() => ({
 /**
  * The navbar style 1.
  */
-function NavbarStyle1() {
-	const dispatch = useAppDispatch();
-	const config = useAppSelector(selectFuseCurrentLayoutConfig) as Layout1ConfigDefaultsType;
-	const navbar = useAppSelector(selectFuseNavbar);
+function NavbarStyle() {
+	// const dispatch = useAppDispatch();
+	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as Layout1ConfigDefaultsType;
+	const navbar = useAppSelector(selectNavbar);
+	const config = {
+		navbar: {
+			position: 'left'
+		}
+	}
 
 	return (
 		<>
@@ -64,11 +67,11 @@ function NavbarStyle1() {
 					open={navbar.open}
 					position={config.navbar.position}
 				>
-					<NavbarStyle1Content />
+					<NavbarStyleContent />
 				</StyledNavBar>
 			</Hidden>
 
-			<Hidden lgUp>
+			{/* <Hidden lgUp>
 				<StyledNavBarMobile
 					classes={{
 						paper: 'flex-col flex-auto h-full'
@@ -77,7 +80,7 @@ function NavbarStyle1() {
 					variant="temporary"
 					open={navbar.mobileOpen}
 					onClose={() => dispatch(navbarCloseMobile())}
-					onOpen={() => {}}
+					onOpen={() => { }}
 					disableSwipeToOpen
 					ModalProps={{
 						keepMounted: true // Better open performance on mobile.
@@ -85,9 +88,9 @@ function NavbarStyle1() {
 				>
 					<NavbarStyle1Content />
 				</StyledNavBarMobile>
-			</Hidden>
+			</Hidden> */}
 		</>
 	);
 }
 
-export default NavbarStyle1;
+export default NavbarStyle;

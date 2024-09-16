@@ -2,11 +2,12 @@ import { useRoutes } from 'react-router-dom';
 import { studentRoutes } from '@features/students/student-routes';
 import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
-import { Layout1 } from '@shared/layouts'
-import { StyledEngineProvider } from '@mui/material';
+import { AppLayout } from '@shared/layouts'
+import { createTheme, StyledEngineProvider } from '@mui/material';
+import { ThemeProvider } from '@shared/providers';
 const App = () => {
-  // const role = roles.STUDENT
   const role = ''
+  // const role = roles.STUDENT
   let roleBasedRoutes;
   switch (role) {
     case roles.STUDENT:
@@ -16,14 +17,19 @@ const App = () => {
       roleBasedRoutes = authRoutes;
   }
 
+  const defaultTheme = createTheme();
+  console.log("Default MUI theme: ", defaultTheme)
+
   const AppRoutes = useRoutes([...roleBasedRoutes])
 
   return (
-    <div className='bg-black'>
+    <ThemeProvider root>
       <StyledEngineProvider injectFirst>
-        {AppRoutes}
+        {/* <AppLayout> */}
+          {AppRoutes}
+        {/* </AppLayout> */}
       </StyledEngineProvider>
-    </div>
+    </ThemeProvider>
   )
 };
 
