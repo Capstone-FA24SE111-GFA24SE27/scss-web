@@ -1,9 +1,8 @@
-import * as React from 'react';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { roles } from '@/shared/constants';
 import { IconButton, Tooltip } from '@mui/material';
 import { navigationOptions } from './navigation-options';
-import { roles } from '@/shared/constants';
-export default function NavigationShortcuts() {
+import { memo } from 'react';
+function NavigationShortcuts() {
     const items = navigationOptions[roles.STUDENT].shortcuts
 
     return (
@@ -20,3 +19,5 @@ export default function NavigationShortcuts() {
         </div >
     );
 }
+
+export default memo(NavigationShortcuts)

@@ -6,7 +6,7 @@ import NavbarStyle from './NavbarStyle';
 /**
  * The navbar wrapper layout 1.
  */
-function NavbarWrapperLayout() {
+function NavbarLayout() {
 	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as LayoutConfigDefaultsType;
 	// const navbar = useAppSelector(selectFuseNavbar);
 	// const location = useLocation();
@@ -32,4 +32,4 @@ function NavbarWrapperLayout() {
 	);
 }
 
-export default NavbarWrapperLayout;
+export default NavbarLayout;

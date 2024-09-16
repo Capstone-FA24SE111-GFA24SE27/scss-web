@@ -1,11 +1,10 @@
 // import FuseMessage from '@fuse/core/FuseMessage';
 // import Configurator from 'app/theme-layouts/shared-components/configurator/Configurator';
 import { memo, ReactNode } from 'react';
-import FooterLayout1 from './layout-components/footer/FooterLayout';
-import NavbarWrapperLayout from './layout-components/navbar/NavbarWrapperLayout';
+import { NavbarLayout } from './layout-components/navbar';
 // import RightSideLayout1 from './components/RightSideLayout1';
-import ToolbarLayout from './layout-components/toolbar/ToolbarLayout';
-import FooterLayout from './layout-components/footer/FooterLayout';
+import { ToolbarLayout } from './layout-components/toolbar';
+import { FooterLayout } from './layout-components/footer';
 
 
 
@@ -79,7 +78,7 @@ export function AppLayout(props: AppLayoutProps) {
 	return (
 		<div className="flex w-full">
 			<div className="flex min-w-0 flex-auto">
-				{config?.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout />}
+				{config?.navbar.display && config.navbar.position === 'left' && <NavbarLayout />}
 
 				<main
 					className="relative z-10 flex min-h-full min-w-0 flex-auto flex-col"
@@ -106,7 +105,7 @@ export function AppLayout(props: AppLayoutProps) {
 					)}
 				</main>
 
-				{config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperLayout />}
+				{config.navbar.display && config.navbar.position === 'right' && <NavbarLayout />}
 			</div>
 
 			{/* {config.rightSidePanel.display && <RightSideAppLayout />} */}
