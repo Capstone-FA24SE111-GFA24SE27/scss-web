@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import NavbarToggleButton from './NavbarToggleButton';
 import UserNavbarHeader from './UserNavbarHeader';
-import Navigation from '../navigation/NavigationList';
+import {NavigationList} from '../navigation';
 const Root = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.background.default,
 	color: theme.palette.text.primary,
@@ -52,11 +52,10 @@ function NavbarStyleContent(props: NavbarStyleContentProps) {
 			<StyledContent
 				className="flex min-h-0 flex-1 flex-col"
 			// option={{ suppressScrollX: true, wheelPropagation: false }}
-
 			>
 				<UserNavbarHeader />
 
-				<Navigation />
+				<NavigationList />
 
 				<div className="flex-0 flex items-center justify-center py-48 opacity-10">
 					<img
