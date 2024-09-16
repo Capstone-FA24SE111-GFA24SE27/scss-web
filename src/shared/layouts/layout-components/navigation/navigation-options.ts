@@ -1,17 +1,17 @@
-import { roles } from "@/shared/constants"
-import { CalendarMonth, Drafts, Inbox, Mail, StarBorder, SupportAgent, BackupTable, Article, NotStarted, EventSeat, Home} from '@mui/icons-material';
+import { roles } from "@/shared/constants";
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, SvgIconComponent } from '@mui/icons-material';
 
-export const navigationOptions = {
+export const navigationOptions: RoleBasedNavigation = {
     [roles.STUDENT]: {
         list: [
             {
                 icon: Home,
                 name: 'Home',
-            },  
+            },
             {
                 icon: SupportAgent,
                 name: 'Counselors',
-            },  
+            },
             {
                 icon: BackupTable,
                 name: 'Resources',
@@ -39,6 +39,32 @@ export const navigationOptions = {
     }
 }
 
-type NavigationOption = {
 
+interface NestedItem {
+    icon: SvgIconComponent;
+    name: string;
+}
+
+// Define a type for the menu items
+interface MenuItem {
+    icon: SvgIconComponent;
+    name: string;
+    nestedItems?: NestedItem[]; // Optional nested items
+}
+
+// Define a type for the shortcuts
+interface Shortcut {
+    icon: SvgIconComponent;
+    name: string;
+}
+
+// Define a type for the role-specific navigation options
+interface NavigationOptions {
+    list: MenuItem[];
+    shortcuts: Shortcut[];
+}
+
+// Define a type for the roles object
+interface RoleBasedNavigation {
+    [key: string]: NavigationOptions; // This allows any string to be used as a role key
 }

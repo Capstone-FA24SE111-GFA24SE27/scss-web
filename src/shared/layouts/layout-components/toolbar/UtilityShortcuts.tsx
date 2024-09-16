@@ -1,10 +1,10 @@
-import * as React from 'react';
+import { memo } from 'react';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { IconButton, Tooltip } from '@mui/material';
 import { roles } from '@/shared/constants';
 import { NotificationsNone, Search } from '@mui/icons-material';
-export default function UtilityShortcuts() {
-    const items =  [
+function UtilityShortcuts() {
+    const items = [
         {
             icon: Search,
             name: 'Calendar',
@@ -19,12 +19,14 @@ export default function UtilityShortcuts() {
             {
                 items.map(item =>
                     // < Tooltip title={item.name} key={item.name}>
-                        <IconButton>
-                            <item.icon />
-                        </IconButton>
+                    <IconButton>
+                        <item.icon />
+                    </IconButton>
                     // </Tooltip>
                 )
             }
         </div >
     );
 }
+
+export default memo(UtilityShortcuts)
