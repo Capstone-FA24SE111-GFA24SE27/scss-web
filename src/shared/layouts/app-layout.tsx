@@ -5,42 +5,77 @@ import FooterLayout1 from './layout-components/footer/FooterLayout';
 import NavbarWrapperLayout from './layout-components/navbar/NavbarWrapperLayout';
 // import RightSideLayout1 from './components/RightSideLayout1';
 import ToolbarLayout from './layout-components/toolbar/ToolbarLayout';
+import FooterLayout from './layout-components/footer/FooterLayout';
 
 
 
 type AppLayoutProps = {
 	children?: ReactNode;
+	config?: Config
 };
 
+
+type NavbarConfig = {
+	display: boolean;
+	position: 'left' | 'right';
+};
+
+// Define the type for Toolbar configuration
+type ToolbarConfig = {
+	display: boolean;
+	style: 'fixed' | 'absolute' | 'static';
+};
+
+// Define the type for Footer configuration
+type FooterConfig = {
+	display: boolean;
+	style: 'fixed' | 'absolute' | 'static';
+};
+
+type SidePanelConfig = {
+	display: boolean;
+	position: 'left' | 'right';
+};
+
+// Define the main configuration type
+export type Config = {
+	navbar: NavbarConfig;
+	toolbar: ToolbarConfig;
+	footer: FooterConfig;
+	leftSidePanel: SidePanelConfig;
+	rightSidePanel: SidePanelConfig;
+};
+
+const defaultConfig: Config = {
+	navbar: {
+		display: true,
+		position: 'left',
+	},
+	toolbar: {
+		display: true,
+		style: 'fixed',
+	},
+	footer: {
+		display: true,
+		style: 'fixed',
+	},
+	leftSidePanel: {
+		display: true,
+		position: 'right',
+	},
+	rightSidePanel: {
+		display: true,
+		position: 'left',
+	},
+}
 /**
  * The layout 1.
  */
 export function AppLayout(props: AppLayoutProps) {
-	const { children } = props;
+	const { children, config = defaultConfig } = props;
 	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as AppLayoutConfigDefaultsType;
 	// const appContext = useContext(AppContext);
-  let config = {
-    navbar: {
-      display: true,
-      position: 'left',
-    },
-    toolbar: {
-      display: true,
-      style: 'fixed',
-    },
-    footer: {
-      display: true,
-      style: 'fixed',
-    },
-    leftSidePanel: {
-      display: true,
-      position: 'right',
-    },
-    rightSidePanel: {
-      display: true,
-      position: 'left',
-    },
-  }
+
 	return (
 		<div className="flex w-full">
 			<div className="flex min-w-0 flex-auto">
@@ -66,12 +101,12 @@ export function AppLayout(props: AppLayoutProps) {
 						{children}
 					</div>
 
-					{/* {config.footer.display && (
-						<FooterAppLayout className={config.footer.style === 'fixed' ? 'sticky bottom-0' : ''} />
-					)} */}
+					{config.footer.display && (
+						<FooterLayout className={config.footer.style === 'fixed' ? 'sticky bottom-0' : ''} />
+					)}
 				</main>
 
-				{/* {config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperAppLayout />} */}
+				{config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperLayout />}
 			</div>
 
 			{/* {config.rightSidePanel.display && <RightSideAppLayout />} */}

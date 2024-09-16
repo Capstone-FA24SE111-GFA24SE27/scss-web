@@ -1,11 +1,11 @@
 import React from 'react'
-import { Outlet} from 'react-router-dom';
+import { Outlet } from 'react-router-dom'
+import { AppLayout } from '@/shared/layouts'
 const StudentLayout = () => {
   return (
-    <div className='p-4'>
-      <h1>This is for layout for student feature</h1>
+    <AppLayout>
       <Outlet />
-    </div>
+    </AppLayout>
   )
 }
 

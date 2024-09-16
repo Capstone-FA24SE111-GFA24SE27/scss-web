@@ -4,10 +4,10 @@ import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
 import { AppLayout } from '@shared/layouts'
 import { createTheme, StyledEngineProvider } from '@mui/material';
-import { ThemeProvider } from './shared/providers';
+import { ThemeProvider } from '@shared/providers';
 const App = () => {
-  // const role = ''
-  const role = roles.STUDENT
+  const role = ''
+  // const role = roles.STUDENT
   let roleBasedRoutes;
   switch (role) {
     case roles.STUDENT:
@@ -25,9 +25,9 @@ const App = () => {
   return (
     <ThemeProvider root>
       <StyledEngineProvider injectFirst>
-        <AppLayout>
+        {/* <AppLayout> */}
           {AppRoutes}
-        </AppLayout>
+        {/* </AppLayout> */}
       </StyledEngineProvider>
     </ThemeProvider>
   )

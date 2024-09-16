@@ -32,28 +32,8 @@ function FooterLayout(props: FooterLayoutProps) {
 			<Toolbar className="min-h-48 md:min-h-64 px-8 sm:px-12 py-0 flex items-center overflow-x-auto">
 				<div>
 					<span className="text-gray-500 text-sm font-medium">
-						© 2023 Fuse. All rights reserved.
+						© 2024 Capstone. All rights reserved.
 					</span>
-					<a
-						href="https://www.fusejs.com/en"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="ml-4 text-gray-500 text-sm font-medium"
-					>
-						About Fuse
-					</a>
-					<a
-						href="https://www.fusejs.com/en/legal"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="ml-4 text-gray-500 text-sm font-medium"
-					>
-						Legal
-					</a>
-					<a
-						href="https://www.fusejs.com/en/contact"
-						target="_blank"
-					>Contact</a>
 				</div>
 			</Toolbar>
 		</AppBar>
