@@ -179,8 +179,14 @@ export const defaultThemeOptions = {
 			styleOverrides: {
 				root: {
 					borderRadius: 8,
+					'&.Mui-selected': {
+						backgroundColor: '#e0e0e0', // Customize background color for selected state
+						'&:hover': {
+							backgroundColor: '#d5d5d5', // Customize background color on hover when selected
+						},
+					},
 					'&:hover': {
-						backgroundColor: '#f0f0f0', // Light grey background on hover
+						backgroundColor: '#f5f5f5', // Customize background color on hover when not selected
 					},
 				},
 			},

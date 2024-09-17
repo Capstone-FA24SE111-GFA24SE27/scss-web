@@ -91,7 +91,7 @@ export function AppLayout(props: AppLayoutProps) {
 						<Configurator />
 					</div> */}
 
-					<div className="relative z-10 flex min-h-0 flex-auto flex-col">
+					<div className="relative z-10 flex min-h-0 flex-auto flex-col p-8">
 						{/* <FuseSuspense>{useRoutes(routes)}</FuseSuspense> */}
 
 						{/* <Suspense>

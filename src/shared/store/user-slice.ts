@@ -2,8 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   accessToken: "",
-  userInfo: "",
-  authorizedNavigation: "",
+  userInfo: {
+    name: "Phat Doan Tien",
+    role: "STUDENT"
+  },
 }
 export const userSlice = createSlice({
   name: 'user',
@@ -12,9 +14,13 @@ export const userSlice = createSlice({
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
     },
+    setUserInfo: (state, action) => {
+      state.userInfo = action.payload
+    }
   },
   selectors: {
     selectAccessToken: (state) => state.accessToken,
+    selectUserInfo: (state) => state.userInfo,
   },
 });
 
