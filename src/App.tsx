@@ -4,9 +4,10 @@ import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
 import { createTheme, StyledEngineProvider } from '@mui/material';
 import { ThemeProvider } from '@shared/providers';
+import { selectUserInfo, useAppSelector } from '@shared/store';
+import { Suspense } from 'react';
 const App = () => {
-// const role = ''
-  const role = roles.STUDENT
+const role = useAppSelector(selectUserInfo)?.role
   let roleBasedRoutes;
   switch (role) {
     case roles.STUDENT:
@@ -24,7 +25,9 @@ const App = () => {
   return (
     <ThemeProvider root>
       <StyledEngineProvider injectFirst>
+        <Suspense fallback={<div>Routes are being rendereed!</div>}>
           {AppRoutes}
+        </Suspense>
       </StyledEngineProvider>
     </ThemeProvider>
   )

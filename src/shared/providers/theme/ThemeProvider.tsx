@@ -4,7 +4,7 @@ import { Theme, ThemeOptions } from '@mui/material/styles/createTheme';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { createTheme, getContrastRatio } from '@mui/material/styles';
 import { useAppSelector } from '@shared/store/hooks';
-import { defaultThemeOptions, mustHaveThemeOptions } from './themeOptions';
+import { defaultThemeOptions } from './theme-options';
 import _ from 'lodash'
 
 // const useEnhancedEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
@@ -79,9 +79,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
 	// const theme = createTheme(defaultThemeOptions as ThemeOptions)
 
 	const theme = createTheme(_.merge(
-		{},
-		defaultThemeOptions,
-		mustHaveThemeOptions
+		{}, defaultThemeOptions,
 	) as ThemeOptions)
 	const { mode } = theme.palette;
 

@@ -3,7 +3,15 @@ export const defaultThemeOptions = {
 		fontFamily: ['Inter var', 'Roboto', '"Helvetica"', 'Arial', 'sans-serif'].join(','),
 		fontWeightLight: 300,
 		fontWeightRegular: 400,
-		fontWeightMedium: 500
+		fontWeightMedium: 500,
+		htmlFontSize: 10,
+		fontSize: 14,
+		body1: {
+			fontSize: '1.4rem'
+		},
+		body2: {
+			fontSize: '1.4rem'
+		}
 	},
 	components: {
 		MuiAppBar: {
@@ -37,14 +45,11 @@ export const defaultThemeOptions = {
 		},
 		MuiButton: {
 			defaultProps: {
-				variant: 'text',
 				color: 'inherit'
 			},
 			styleOverrides: {
 				root: {
-					textTransform: 'none'
-
-					// lineHeight: 1,
+					textTransform: 'none',
 				},
 				sizeMedium: {
 					borderRadius: 20,
@@ -68,7 +73,7 @@ export const defaultThemeOptions = {
 		},
 		MuiButtonGroup: {
 			defaultProps: {
-				color: 'primary'
+				color: 'secondary'
 			},
 			styleOverrides: {
 				contained: {
@@ -200,19 +205,41 @@ export const defaultThemeOptions = {
 				},
 			},
 		},
-	}
-};
-
-
-export const mustHaveThemeOptions = {
-	typography: {
-		htmlFontSize: 10,
-		fontSize: 12,
-		body1: {
-			fontSize: '1.4rem'
-		},
-		body2: {
-			fontSize: '1.4rem'
-		}
+	},
+	palette: {
+		// mode: "light",
+		// text: {
+		// 	primary: "rgb(17, 24, 39)",
+		// 	secondary: "rgb(107, 114, 128)",
+		// 	disabled: "rgb(149, 156, 169)"
+		// },
+		// common: {
+		// 	black: "rgb(17, 24, 39)",
+		// 	white: " rgb(255, 255, 255)"
+		// },
+		// primary: {
+		// 	light: "#64748b",
+		// 	main: "#1e293b",
+		// 	dark: "#0f172a",
+		// 	contrastDefaultColor: "light",
+		// 	contrastText: "rgb(255, 255, 255)"
+		// },
+		// secondary: {
+		// 	light: "#818cf8",
+		// 	main: "#4f46e5",
+		// 	dark: "#3730a3",
+		// 	contrastText: "rgb(255, 255, 255)"
+		// },
+		// background: {
+		// 	paper: "#FFFFFF",
+		// 	default: "#f1f5f9"
+		// },
+		// error: {
+		// 	light: "#ffcdd2",
+		// 	main: "#f44336",
+		// 	dark: "#b71c1c",
+		// 	contrastText: "rgb(255, 255, 255)"
+		// },
+		// divider: "#e2e8f0"
 	}
 };

@@ -34,7 +34,7 @@ function NavigationList() {
     return (
         <div className='px-8'>
             <List
-                sx={{ width: '100%', bgcolor: 'background.paper' }}
+                sx={{ width: '100%'}}
                 component="nav"
                 aria-labelledby="nested-list-subheader"
             >
@@ -50,7 +50,7 @@ function NavigationList() {
                                     onClick={item.children
                                         ? handleOpen :
                                         () => handleNavigation(`${sublist.route}/${item.route}`)}
-                                    selected={pathname.includes(item.name)}
+                                    selected={pathname.includes(item.route)}
                                 >
                                     <ListItemIcon>
                                         {<item.icon />}
@@ -66,7 +66,7 @@ function NavigationList() {
                                                     key={nestedItem.name}
                                                     onClick={() => handleNavigation(`${sublist.route}/${item.route}/${nestedItem.route}`)}
                                                     sx={{ pl: 4 }}
-                                                    selected={pathname.includes(item.name)} >
+                                                    selected={pathname.includes(item.route)} >
                                                     <ListItemIcon>
                                                         {<nestedItem.icon />}
                                                     </ListItemIcon>

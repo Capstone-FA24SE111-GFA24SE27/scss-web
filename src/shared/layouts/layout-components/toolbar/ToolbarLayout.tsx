@@ -25,14 +25,12 @@ function ToolbarLayout(props: ToolbarLayoutProps) {
 	const config = {
 		navbar: {
 			position: 'left',
-			style: 'style-1',
 			display: true,
 		}
 	}
 
 	return (
 		<AppBar
-			id="fuse-toolbar"
 			className={clsx('relative z-20 flex shadow', className)}
 			color="default"
 			position="static"
