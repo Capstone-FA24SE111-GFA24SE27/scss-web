@@ -23,8 +23,8 @@ function CalendarAppEventContent(props: CalendarAppEventContentProps) {
 			// }}
 			className={clsx('flex items-center w-full rounded-4 px-8 py-2 h-22 text-white')}
 		>
-			<Typography className="font-semibold text-12">{eventInfo.timeText}</Typography>
-			<Typography className="px-4 truncate text-12">{eventInfo.event.title}</Typography>
+			<Typography className="font-semibold text-12">event timetext</Typography>
+			<Typography className="px-4 truncate text-12">event text</Typography>
 		</Box>
 	);
 }

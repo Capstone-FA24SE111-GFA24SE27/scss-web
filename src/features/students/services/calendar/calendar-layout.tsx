@@ -94,7 +94,11 @@ const CalendarLayout = () => {
 					weekends
 					datesSet={handleDates}
 					select={handleDateSelect}
-					events={events}
+					events={[{ // this object will be "parsed" into an Event Object
+						title: 'The Title', // a property!
+						start: '2024-09-01', // a property!
+						end: '2024-09-02' // a property! ** see important note below about 'end' **
+					  }]}
 					eventContent={(eventInfo: EventContentArg & { event: Event }) => (
 						<CalendarAppEventContent eventInfo={eventInfo} />
 					)}
@@ -103,10 +107,8 @@ const CalendarLayout = () => {
 							eventChange={handleEventChange}
 							eventRemove={handleEventRemove}
 							eventDrop={handleEventDrop}
-							initialDate={new Date(2022, 3, 1)}
+							initialDate={new Date()}
 							ref={calendarRef}
-						/>
-				
 				/>
 			</div>
 		</div>
