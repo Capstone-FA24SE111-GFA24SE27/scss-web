@@ -5,7 +5,7 @@ import { roles } from '@shared/constants';
 import { createTheme, StyledEngineProvider } from '@mui/material';
 import { ThemeProvider } from '@shared/providers';
 const App = () => {
-// const role = ''
+  // const role = ''
   const role = roles.STUDENT
   let roleBasedRoutes;
   switch (role) {
