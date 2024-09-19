@@ -5,6 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import { DatesSetArg } from '@fullcalendar/core';
 import { MouseEvent, useState } from 'react';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 type ViewType = 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay';
 
@@ -25,7 +26,7 @@ const viewNamesObj = {
 
 type CalendarViewMenuProps = {
 	className?: string;
-	// onChange: (view: string) => void;
+	onChange: (view: string) => void;
 	currentDate: DatesSetArg;
 };
 
@@ -33,7 +34,7 @@ type CalendarViewMenuProps = {
  * The calendar view menu.
  */
 function CalendarViewMenu(props: CalendarViewMenuProps) {
-	const { className, currentDate} = props;
+	const { className, currentDate, onChange} = props;
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 
@@ -49,14 +50,14 @@ function CalendarViewMenu(props: CalendarViewMenuProps) {
 		<div className={className}>
 			<Button
 				sx={{ minWidth: 120 }}
-				className="justify-between rounded-6"
+				className="justify-between text-base font-semibold rounded-6"
 				id="view-select-button"
 				aria-controls="view-select-menu"
 				aria-haspopup="true"
 				aria-expanded={open ? 'true' : undefined}
 				onClick={handleClick}
 				variant="outlined"
-				endIcon={<div>icon</div>}
+				endIcon={open ? <ExpandLess /> : <ExpandMore />}
 			>
 				{currentDate &&
 					currentDate.view &&
@@ -76,7 +77,7 @@ function CalendarViewMenu(props: CalendarViewMenuProps) {
 					<MenuItem
 						key={name}
 						onClick={() => {
-							// onChange(name);
+							onChange(name);
 							handleClose();
 						}}
 					>
