@@ -79,6 +79,7 @@ const CalendarLayout = () => {
 					selectable
 					dayMaxEvents
 					weekends
+					slotMinTime={'7:00:00'}
 					datesSet={handleDates}
 					select={handleDateSelect}
 					events={eventList}
