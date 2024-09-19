@@ -10,6 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import { selectUserInfo, setUserInfo, useAppDispatch, useAppSelector } from '@shared/store';
 
 /**
  * Form Validation Schema
@@ -36,8 +37,7 @@ const defaultValues = {
 
 function SignInForm() {
 	// const { signIn } = useJwtAuth();
-
-
+	const dispatch = useAppDispatch()
 	const { control, formState, handleSubmit, setValue, setError } = useForm<FormType>({
 		mode: 'onChange',
 		defaultValues,
@@ -52,6 +52,9 @@ function SignInForm() {
 	}, [setValue]);
 
 	function onSubmit(formData: FormType) {
+		dispatch(setUserInfo({
+			role: 'STUDENT'
+		}))
 		// const { email, password } = formData;
 
 		// ({
@@ -151,8 +154,8 @@ function SignInForm() {
 
 			<Button
 				variant="contained"
-				color="secondary"
-				className=" mt-16 w-full"
+				className=" mt-16 w-full "
+				color='secondary'
 				aria-label="Sign in"
 				disabled={_.isEmpty(dirtyFields) || !isValid}
 				type="submit"

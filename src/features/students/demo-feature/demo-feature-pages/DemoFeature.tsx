@@ -1,4 +1,3 @@
-import React from 'react'
 import { DemoComponent } from '../demo-feature-components'
 
 const DemoFeature = () => {

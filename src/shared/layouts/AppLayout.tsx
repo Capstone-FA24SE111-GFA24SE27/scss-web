@@ -1,10 +1,11 @@
 // import FuseMessage from '@fuse/core/FuseMessage';
 // import Configurator from 'app/theme-layouts/shared-components/configurator/Configurator';
-import { memo, ReactNode } from 'react';
+import { memo, ReactNode, Suspense } from 'react';
 import { NavbarLayout } from './layout-components/navbar';
 // import RightSideLayout1 from './components/RightSideLayout1';
 import { ToolbarLayout } from './layout-components/toolbar';
 import { FooterLayout } from './layout-components/footer';
+import { AppLoading } from '@shared/components';
 
 
 
@@ -70,7 +71,7 @@ const defaultConfig: Config = {
 /**
  * The layout 1.
  */
-export function AppLayout(props: AppLayoutProps) {
+export default function AppLayout(props: AppLayoutProps) {
 	const { children, config = defaultConfig } = props;
 	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as AppLayoutConfigDefaultsType;
 	// const appContext = useContext(AppContext);
@@ -78,8 +79,7 @@ export function AppLayout(props: AppLayoutProps) {
 	return (
 		<div className="flex w-full">
 			<div className="flex min-w-0 flex-auto">
-				{config?.navbar.display && config.navbar.position === 'left' && <NavbarLayout />}
-
+				{config.navbar.display && config.navbar.position === 'left' && <NavbarLayout />}
 				<main
 					className="relative z-10 flex min-h-full min-w-0 flex-auto flex-col"
 				>
@@ -91,13 +91,15 @@ export function AppLayout(props: AppLayoutProps) {
 						<Configurator />
 					</div> */}
 
-					<div className="relative z-10 flex min-h-0 flex-auto flex-col p-8">
+					<div className="relative z-10 flex min-h-0 flex-auto flex-col">
 						{/* <FuseSuspense>{useRoutes(routes)}</FuseSuspense> */}
 
 						{/* <Suspense>
 							<FuseDialog />
 						</Suspense> */}
-						{children}
+						<Suspense fallback={<AppLoading />}>
+							{children}
+						</Suspense>
 					</div>
 
 					{config.footer.display && (

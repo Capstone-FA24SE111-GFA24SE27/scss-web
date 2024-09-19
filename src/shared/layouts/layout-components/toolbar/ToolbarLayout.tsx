@@ -19,22 +19,24 @@ type ToolbarLayoutProps = {
  */
 function ToolbarLayout(props: ToolbarLayoutProps) {
 	const { className } = props;
-	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as LayoutConfigDefaultsType;
 	const navbar = useAppSelector(selectNavbar);
-	// const toolbarTheme = useAppSelector(selectToolbarTheme);
 	const config = {
 		navbar: {
 			position: 'left',
-			style: 'style-1',
 			display: true,
 		}
 	}
 
 	return (
 		<AppBar
-			id="fuse-toolbar"
 			className={clsx('relative z-20 flex shadow', className)}
 			color="default"
+			sx={{
+				backgroundColor: (theme) =>
+					theme.palette.mode === 'light'
+						? theme.palette.background.paper
+						: theme.palette.background.default
+			}}
 			position="static"
 			elevation={0}
 		>

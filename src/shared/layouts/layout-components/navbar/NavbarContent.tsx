@@ -3,14 +3,14 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import NavbarToggleButton from './NavbarToggleButton';
 import UserNavbarHeader from './UserNavbarHeader';
-import {NavigationList} from '../navigation';
+import { NavigationList } from '../navigation';
 const Root = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.background.default,
 	color: theme.palette.text.primary,
 	'& ::-webkit-scrollbar-thumb': {
 		boxShadow: `inset 0 0 0 20px ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.24)' : 'rgba(255, 255, 255, 0.24)'
 			}`
-		
+
 	},
 	'& ::-webkit-scrollbar-thumb:active': {
 		boxShadow: `inset 0 0 0 20px ${theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.37)' : 'rgba(255, 255, 255, 0.37)'
@@ -29,12 +29,12 @@ const StyledContent = styled('div')(() => ({
 	scrollbarWidth: 'thin',
 }));
 
-type NavbarStyleContentProps = {
+type NavbarContentProps = {
 	className?: string;
 };
 
 
-function NavbarStyleContent(props: NavbarStyleContentProps) {
+function NavbarContent(props: NavbarContentProps) {
 	const { className = '' } = props;
 
 	return (
@@ -51,7 +51,7 @@ function NavbarStyleContent(props: NavbarStyleContentProps) {
 
 			<StyledContent
 				className="flex min-h-0 flex-1 flex-col"
-			// option={{ suppressScrollX: true, wheelPropagation: false }}
+				// option={{ suppressScrollX: true, wheelPropagation: false }}
 			>
 				<UserNavbarHeader />
 
@@ -69,4 +69,4 @@ function NavbarStyleContent(props: NavbarStyleContentProps) {
 	);
 }
 
-export default memo(NavbarStyleContent);
+export default memo(NavbarContent);

@@ -4,7 +4,9 @@ import { AppLayout } from '@/shared/layouts'
 const StudentLayout = () => {
   return (
     <AppLayout>
-      <Outlet />
+      <div className='p-8'>
+        <Outlet />
+      </div>
     </AppLayout>
   )
 }

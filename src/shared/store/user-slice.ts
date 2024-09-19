@@ -4,7 +4,7 @@ const initialState = {
   accessToken: "",
   userInfo: {
     name: "Phat Doan Tien",
-    role: "STUDENT"
+    role: ""
   },
 }
 export const userSlice = createSlice({
@@ -25,7 +25,8 @@ export const userSlice = createSlice({
 });
 
 
-export const { setAccessToken } = userSlice.actions
+export const { setAccessToken, setUserInfo} = userSlice.actions
+export const { selectAccessToken, selectUserInfo} = userSlice.selectors
 
 
 export default userSlice.reducer
