@@ -1,3 +1,5 @@
+import { ThemeOptions } from "@mui/material";
+
 export const defaultThemeOptions = {
 	typography: {
 		fontFamily: ['Inter var', 'Roboto', '"Helvetica"', 'Arial', 'sans-serif'].join(','),
@@ -184,14 +186,15 @@ export const defaultThemeOptions = {
 			styleOverrides: {
 				root: {
 					borderRadius: 8,
+					marginTop: 4,
 					'&.Mui-selected': {
-						backgroundColor: '#e0e0e0', // Customize background color for selected state
+						backgroundColor: 'primary.light', // Customize background color for selected state
 						'&:hover': {
-							backgroundColor: '#d5d5d5', // Customize background color on hover when selected
+							backgroundColor: 'primary.light', // Customize background color on hover when selected
 						},
 					},
 					'&:hover': {
-						backgroundColor: '#f5f5f5', // Customize background color on hover when not selected
+						backgroundColor: 'primary.light', // Customize background color on hover when not selected
 					},
 				},
 			},
@@ -201,45 +204,52 @@ export const defaultThemeOptions = {
 				root: {
 					display: 'flex',
 					flexDirection: 'column',
-					gap: 4,
+					gap: 8,
 				},
 			},
 		},
 	},
 	palette: {
-		// mode: "light",
-		// text: {
-		// 	primary: "rgb(17, 24, 39)",
-		// 	secondary: "rgb(107, 114, 128)",
-		// 	disabled: "rgb(149, 156, 169)"
-		// },
-		// common: {
-		// 	black: "rgb(17, 24, 39)",
-		// 	white: " rgb(255, 255, 255)"
-		// },
-		// primary: {
-		// 	light: "#64748b",
-		// 	main: "#1e293b",
-		// 	dark: "#0f172a",
-		// 	contrastDefaultColor: "light",
-		// 	contrastText: "rgb(255, 255, 255)"
-		// },
+		mode: "light",
+		text: {
+			primary: "rgb(17, 24, 39)",
+			secondary: "rgb(107, 114, 128)",
+			disabled: "rgb(149, 156, 169)"
+		},
+		common: {
+			black: "rgb(17, 24, 39)",
+			white: " rgb(255, 255, 255)"
+		},
+		primary: {
+			light: "#64748b",
+			main: "#1e293b",
+			dark: "#0f172a",
+			contrastDefaultColor: "light",
+			contrastText: "rgb(255, 255, 255)"
+		},
 		// secondary: {
 		// 	light: "#818cf8",
 		// 	main: "#4f46e5",
 		// 	dark: "#3730a3",
 		// 	contrastText: "rgb(255, 255, 255)"
 		// },
-		// background: {
-		// 	paper: "#FFFFFF",
-		// 	default: "#f1f5f9"
-		// },
-		// error: {
-		// 	light: "#ffcdd2",
-		// 	main: "#f44336",
-		// 	dark: "#b71c1c",
-		// 	contrastText: "rgb(255, 255, 255)"
-		// },
-		// divider: "#e2e8f0"
+		secondary: {
+			light: "#fca311",
+			main: "#e67e22",
+			dark: "#c65d14",
+			contrastText: "rgb(255, 255, 255)"
+		},
+		background: {
+			paper: "#FFFFFF",
+			default: "#f1f5f9"
+			// default: "#f2f2f2"
+		},
+		error: {
+			light: "#ffcdd2",
+			main: "#f44336",
+			dark: "#b71c1c",
+			contrastText: "rgb(255, 255, 255)"
+		},
+		divider: "#e2e8f0"
 	}
-};
+} as ThemeOptions;

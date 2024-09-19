@@ -21,12 +21,12 @@ function FooterLayout(props: FooterLayoutProps) {
 			id="fuse-footer"
 			className={clsx('relative z-20 shadow', className)}
 			color="default"
-			// sx={{
-			// 	backgroundColor: (theme) =>
-			// 		theme.palette.mode === 'light'
-			// 			? footerTheme.palette.background.paper
-			// 			: footerTheme.palette.background.default
-			// }}
+			sx={{
+				backgroundColor: (theme) =>
+					theme.palette.mode === 'light'
+						? theme.palette.background.paper
+						: theme.palette.background.default
+			}}
 			elevation={0}
 		>
 			<Toolbar className="min-h-48 md:min-h-64 px-8 sm:px-12 py-0 flex items-center overflow-x-auto">

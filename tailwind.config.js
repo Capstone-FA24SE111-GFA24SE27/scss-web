@@ -1,10 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
+	content: [
+		"./index.html",
+		"./src/**/*.{js,ts,jsx,tsx}",
+	],
+	theme: {
 		accentColor: ({ theme }) => ({
 			...theme('colors'),
 			auto: 'auto'
@@ -1545,7 +1545,21 @@ export default {
 						fontSize: '1.6rem'
 					}
 				}
-			})
+			}),
+			colors: {
+				primary: {
+					light: "#64748b",
+					main: "#1e293b",
+					dark: "#0f172a",
+					contrastText: "rgb(255, 255, 255)"
+				},
+				secondary: {
+					light: '#fca311',
+					main: '#e67e22',
+					dark: '#c65d14',
+					contrastText: 'rgb(255, 255, 255)',
+				},
+			},
 		}
 	},
 	variantOrder: [
@@ -1566,6 +1580,6 @@ export default {
 		'active',
 		'disabled'
 	],
-  plugins: [],
+	plugins: [],
 }
 

@@ -12,6 +12,7 @@ import _ from 'lodash'
 type ThemeProviderProps = {
 	children: ReactNode;
 	root?: boolean;
+	theme?: ThemeOptions
 };
 
 const inputGlobalStyles = (
@@ -73,15 +74,16 @@ const inputGlobalStyles = (
 );
 
 export function ThemeProvider(props: ThemeProviderProps) {
-	const { children, root = false } = props;
+	const { children, root = false, theme = defaultThemeOptions} = props;
 
 
-	// const theme = createTheme(defaultThemeOptions as ThemeOptions)
+	const createdTheme = createTheme(theme)
 
-	const theme = createTheme(_.merge(
-		{}, defaultThemeOptions,
-	) as ThemeOptions)
-	const { mode } = theme.palette;
+	// const customTheme = createTheme(_.merge(
+	// 	{}, createdTheme,
+	// ) as ThemeOptions)
+	const { mode } = createdTheme.palette;
+	console.log(mode)
 
 	// const langDirection = useAppSelector(selectCurrentLanguageDirection);
 
@@ -99,7 +101,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
 	}, [mode, root]);
 
 	return (
-		<MuiThemeProvider theme={theme}>
+		<MuiThemeProvider theme={createdTheme}>
 			{children}
 			{root && inputGlobalStyles}
 		</MuiThemeProvider>

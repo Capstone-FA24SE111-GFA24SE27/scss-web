@@ -5,6 +5,7 @@ import { NavbarLayout } from './layout-components/navbar';
 // import RightSideLayout1 from './components/RightSideLayout1';
 import { ToolbarLayout } from './layout-components/toolbar';
 import { FooterLayout } from './layout-components/footer';
+import { AppLoading } from '@shared/components';
 
 
 
@@ -70,7 +71,7 @@ const defaultConfig: Config = {
 /**
  * The layout 1.
  */
-export function AppLayout(props: AppLayoutProps) {
+export default function AppLayout(props: AppLayoutProps) {
 	const { children, config = defaultConfig } = props;
 	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as AppLayoutConfigDefaultsType;
 	// const appContext = useContext(AppContext);
@@ -96,7 +97,7 @@ export function AppLayout(props: AppLayoutProps) {
 						{/* <Suspense>
 							<FuseDialog />
 						</Suspense> */}
-						<Suspense fallback={<div>Dad is buying milk...</div>}>
+						<Suspense fallback={<AppLoading />}>
 							{children}
 						</Suspense>
 					</div>

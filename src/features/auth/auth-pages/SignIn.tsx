@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { SignInForm } from '../auth-components';
+import { CalendarMonth, SentimentSatisfied, Summarize, SupportAgent } from '@mui/icons-material';
 
 function SignInPage() {
 
@@ -14,7 +15,7 @@ function SignInPage() {
 			<Paper className="h-full w-full px-16 py-8 ltr:border-r-1 rtl:border-l-1 sm:h-auto sm:w-auto sm:rounded-2xl sm:p-48 sm:shadow md:flex md:h-full md:w-1/2 md:items-center md:justify-end md:rounded-none md:p-64 md:shadow-none">
 				<CardContent className="mx-auto w-full max-w-320 sm:mx-0 sm:w-320">
 					<img
-						className="w-[12rem]"
+						className="w-[10rem]"
 						src="assets/images/logo/FPT-education.png"
 						alt="logo"
 					/>
@@ -26,8 +27,8 @@ function SignInPage() {
 						<div className="mt-32 flex flex-col items-center gap-8">
 							<Button
 								variant="outlined"
-								color='secondary'
-								className="w-full flex items-center text-base gap-16"
+								color='primary'
+								className="w-full flex items-center text-base font-semibold gap-16"
 							>
 								<img
 									className="w-24"
@@ -38,8 +39,8 @@ function SignInPage() {
 							</Button>
 							<Button
 								variant="outlined"
-								color='secondary'
-								className="w-full flex items-center text-base gap-8"
+								color='primary'
+								className="w-full flex items-center text-base font-semibold gap-8"
 							>
 								<img
 									className="w-72"
@@ -67,7 +68,7 @@ function SignInPage() {
 			</Paper>
 
 			<Box
-				className="relative hidden h-full flex-1 items-center justify-center overflow-hidden p-64 md:flex lg:px-112"
+				className="relative hidden h-full flex-1 items-center justify-center overflow-hidden p-64 md:flex lg:px-96"
 				// sx={{backgroundImage: "url(/assets/images/fptu-cover.png)", backgroundSize: 'cover', opacity: 0.7}}
 				sx={{ backgroundColor: 'primary.main' }}
 			>
@@ -102,7 +103,7 @@ function SignInPage() {
 				<Box
 					component="svg"
 					className="absolute -right-64 -top-64 opacity-20"
-					sx={{ color: 'secondary.light' }}
+					sx={{ color: 'secondary.dark' }}
 					viewBox="0 0 220 192"
 					width="220px"
 					height="192px"
@@ -139,6 +140,12 @@ function SignInPage() {
 					</div>
 					<div className="mt-24 text-lg leading-6 tracking-tight text-gray-300">
 						The Student Counseling and Support System (SCSS) is designed to offer comprehensive support services to students at FPT University HCM Campus, including academic counseling service and easy to access event.
+					</div>
+					<div className='flex justify-between mt-32'>
+						<SupportAgent className='size-96 rounded-full p-8 text-primary-light'/>
+						<CalendarMonth className='size-96 rounded-full p-8 text-primary-light'/>
+						<Summarize className='size-96 rounded-full p-8 text-primary-light'/>
+						<SentimentSatisfied className='size-96 rounded-full p-8 text-primary-light'/>
 					</div>
 				</div>
 			</Box>
