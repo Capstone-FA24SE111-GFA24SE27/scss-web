@@ -1559,6 +1559,11 @@ export default {
 					dark: '#c65d14',
 					contrastText: 'rgb(255, 255, 255)',
 				},
+				background: {
+					paper: "#FFFFFF",
+					DEFAULT: "#f1f5f9"
+					// default: "#f2f2f2"
+				},
 			},
 		}
 	},

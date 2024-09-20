@@ -43,8 +43,8 @@ const studentNavigation: NavigationOptions = {
                 },
                 {
                     icon: SupportAgent,
-                    name: 'Counselors',
-                    route: 'counselors'
+                    name: 'Counseling',
+                    route: 'counseling'
                 },
                 {
                     icon: CalendarMonth,

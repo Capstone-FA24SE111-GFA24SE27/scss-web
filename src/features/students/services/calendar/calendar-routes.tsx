@@ -1,8 +1,9 @@
 import { RouteObject } from 'react-router-dom'
-import CalendarLayout from './calendar-layout';
+import { lazy } from "react";
+const Calendar = lazy(() => import("./calendar-layout"));
 export const studentCalendarRoutes: RouteObject[] = [
   {
     path: 'calendar',
-    element: <CalendarLayout />,
+    element: <Calendar />,
   },
 ];

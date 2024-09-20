@@ -83,7 +83,6 @@ export function ThemeProvider(props: ThemeProviderProps) {
 	// 	{}, createdTheme,
 	// ) as ThemeOptions)
 	const { mode } = createdTheme.palette;
-	console.log(mode)
 
 	// const langDirection = useAppSelector(selectCurrentLanguageDirection);
 
