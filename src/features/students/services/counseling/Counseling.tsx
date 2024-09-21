@@ -5,10 +5,10 @@ import { PageSimple } from '@shared/components';
 import CounselorList from './CounselorList';
 import CounselorSidebarContent from './CounselingSidebarContent';
 import CounselingHeader from './CounselingHeader';
-;
+
 
 const Root = styled(PageSimple)(({ theme }) => ({
-	'& .FusePageSimple-header': {
+	'& .PageSimple-header': {
 		backgroundColor: theme.palette.background.paper
 	},
 }));

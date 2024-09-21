@@ -1,7 +1,7 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { z } from 'zod';
 import _ from 'lodash';
 import TextField from '@mui/material/TextField';
@@ -10,8 +10,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import { selectUserInfo, setUserInfo, useAppDispatch, useAppSelector } from '@shared/store';
-
+import { setAccessToken, setAccount, useAppDispatch, useAppSelector } from '@shared/store';
+import { useLoginDefaultMutation } from '../auth-api'
 /**
  * Form Validation Schema
  */
@@ -44,41 +44,26 @@ function SignInForm() {
 		resolver: zodResolver(schema)
 	});
 
+	const [loginDefault, { isLoading }] = useLoginDefaultMutation()
+
+
 	const { isValid, dirtyFields, errors } = formState;
 
 	useEffect(() => {
-		setValue('email', 'admin@fusetheme.com', { shouldDirty: true, shouldValidate: true });
-		setValue('password', 'admin', { shouldDirty: true, shouldValidate: true });
+		setValue('email', 'student@example.com', { shouldDirty: true, shouldValidate: true });
+		setValue('password', 'student112233', { shouldDirty: true, shouldValidate: true });
 	}, [setValue]);
 
 	function onSubmit(formData: FormType) {
-		dispatch(setUserInfo({
-			role: 'STUDENT'
-		}))
-		// const { email, password } = formData;
+		const { email, password } = formData
 
-		// ({
-		// 	email,
-		// 	password
-		// }).catch(
-		// 	(
-		// 		error: AxiosError<
-		// 			{
-		// 				type: 'email' | 'password' | 'remember' | `root.${string}` | 'root';
-		// 				message: string;
-		// 			}[]
-		// 		>
-		// 	) => {
-		// 		const errorData = error.response.data;
-
-		// 		errorData.forEach((err) => {
-		// 			setEsignInrror(err.type, {
-		// 				type: 'manual',
-		// 				message: err.message
-		// 			});
-		// 		});
-		// 	}
-		// );
+		loginDefault({ email, password })
+			.unwrap()
+			.then(response => {
+				const { account, accessToken } = response.content
+				dispatch(setAccount(account))
+				dispatch(setAccessToken(accessToken))
+			})
 	}
 
 	return (
@@ -157,9 +142,10 @@ function SignInForm() {
 				className=" mt-16 w-full "
 				color='secondary'
 				aria-label="Sign in"
-				disabled={_.isEmpty(dirtyFields) || !isValid}
+				disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}
 				type="submit"
 				size="large"
+
 			>
 				Sign in
 			</Button>

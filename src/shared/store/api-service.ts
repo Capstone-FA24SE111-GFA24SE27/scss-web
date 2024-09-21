@@ -1,62 +1,64 @@
-import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react';
-import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import { RootState } from '@shared/store';
-import { setAccessToken } from './user-slice'
+import type {
+	BaseQueryFn,
+	FetchArgs,
+	FetchBaseQueryError,
+} from '@reduxjs/toolkit/query'
+import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
+import { RootState } from '../store'
+import { logout, setAccessToken } from './user-slice'
 
 
-const axiosInstance = Axios.create({
-	baseURL: '/api',
-});
+const BASE_URL = 'http://localhost:8080'
 
-// Define a base query function with Axios
-const baseQuery: BaseQueryFn<AxiosRequestConfig, unknown, AxiosError> = async (args, api, extraOptions) => {
-	// Get the access token from the Redux store
-
-	const accessToken = (api.getState() as RootState)?.user.accessToken;
-	try {
-		// Set the authorization header if the access token exists
-		if (accessToken) {
-			axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+const baseQuery = fetchBaseQuery({
+	baseUrl: BASE_URL,
+	prepareHeaders: (headers, { getState }) => {
+		const token = (getState() as RootState).user.accessToken
+		if (token) {
+			headers.set('Authorization', `Bearer ${token}`)
 		}
+		return headers;
+	},
+})
 
-		const result = await axiosInstance(args);
-		return { data: result.data };
-	} catch (axiosError) {
-		const error = axiosError as AxiosError;
+const baseQueryWithReauth: BaseQueryFn<
+	string | FetchArgs,
+	unknown,
+	FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+	let result = await baseQuery(args, api, extraOptions)
 
-		// Handle 401 errors (Unauthorized) to refresh the token
-		if (error.response?.status === 401) {
-			try {
-				// Attempt to refresh the token
-				const refreshResponse = await axiosInstance.post('/auth/refresh');
-				const newAccessToken = refreshResponse.data.accessToken;
-
-				// Update access token in the Redux store
-				api.dispatch(setAccessToken(newAccessToken));
-
-				// Retry the original request with the new access token
-				if (newAccessToken) {
-					axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-					const retryResult = await axiosInstance(args);
-					return { data: retryResult.data };
-				}
-			} catch (refreshError) {
-				// Handle errors from the refresh request
-				api.dispatch(setAccessToken(null));
-				return { error: refreshError as AxiosError };
-			}
+	if (result?.error?.status === 401) {
+		const refreshResponse = await baseQuery('/api/auth/refresh-token', api, extraOptions);
+		const refreshData = refreshResponse.data as ApiResponse<RefreshResponse>;
+		if (refreshData?.content?.accessToken) {
+			const { accessToken } = refreshData.content;
+			api.dispatch(setAccessToken(accessToken));
+			result = await baseQuery(args, api, extraOptions);
+		} else {
+			api.dispatch(logout());
 		}
-
-		return { error };
 	}
-};
+	return result
+}
+
+// const baseQueryWithRetry = retry(baseQueryWithReauth, { maxRetries: 1 })
 
 export const apiService = createApi({
-	baseQuery,
+	baseQuery: baseQueryWithReauth,
 	endpoints: () => ({}),
 	reducerPath: 'apiService',
 });
 
+interface RefreshResponse {
+	accessToken: string;
+	type: string;
+	account: any | null;
+}
 
+export interface ApiResponse<T> {
+	content: T;
+	status: number;
+}
 
-export default apiService;
+export default apiService

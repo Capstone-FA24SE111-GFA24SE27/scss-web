@@ -68,7 +68,7 @@ function SignInPage() {
 			</Paper>
 
 			<Box
-				className="relative hidden h-full flex-1 items-center justify-center overflow-hidden p-64 md:flex lg:px-96"
+				className="relative hidden h-full flex-auto items-center justify-center overflow-hidden p-64 md:flex lg:px-96"
 				// sx={{backgroundImage: "url(/assets/images/fptu-cover.png)", backgroundSize: 'cover', opacity: 0.7}}
 				sx={{ backgroundColor: 'primary.main' }}
 			>

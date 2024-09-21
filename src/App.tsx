@@ -4,7 +4,7 @@ import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
 import { createTheme, StyledEngineProvider } from '@mui/material';
 import { ThemeProvider } from '@shared/providers';
-import { selectUserInfo, useAppSelector } from '@shared/store';
+import { selectAccount, useAppSelector } from '@shared/store';
 import { Suspense } from 'react';
 import { AppLoading } from '@shared/components';
 import { specialRoutes } from '@shared/configs';
@@ -15,7 +15,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux'
 
 const App = () => {
-  const role = useAppSelector(selectUserInfo)?.role
+  const account = useAppSelector(selectAccount)
+  const role = account?.role;
+  console.log(account)
+  console.log(role)
   let roleBasedRoutes;
   switch (role) {
     case roles.STUDENT:
@@ -25,8 +28,8 @@ const App = () => {
       roleBasedRoutes = authRoutes;
   }
 
-  const defaultTheme = createTheme();
-  console.log("Default MUI theme: ", defaultTheme)
+  // const defaultTheme = createTheme();
+  // console.log("Default MUI theme: ", defaultTheme)
 
   const AppRoutes = useRoutes([
     ...roleBasedRoutes,
