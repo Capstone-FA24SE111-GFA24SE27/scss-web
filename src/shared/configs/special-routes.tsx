@@ -1,6 +1,6 @@
 import { Navigate, RouteObject } from "react-router-dom"
-import { Error404Page } from "./shared/pages"
-export const appRoutes: RouteObject[] = [
+import { Error404Page } from "@shared/pages"
+export const specialRoutes: RouteObject[] = [
     {
         path: '404',
         element: <Error404Page />

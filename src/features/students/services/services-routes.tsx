@@ -1,8 +1,12 @@
 import { RouteObject } from 'react-router-dom'
-import CalendarLayout from './calendar/calendar-layout';
+import { studentCalendarRoutes } from './calendar';
+import { counselingRoutes } from './counseling';
 export const studentServicesRoutes: RouteObject[] = [
   {
-    path: 'services/calendar',
-    element: <CalendarLayout />,
+    path: 'services',
+    children: [
+      ...studentCalendarRoutes,
+      ...counselingRoutes,
+    ],
   },
 ];
