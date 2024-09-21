@@ -1,5 +1,5 @@
 import { useRoutes } from 'react-router-dom';
-import { studentRoutes } from '@features/students';
+import { studentRoutes } from '@/features/students';
 import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
 import { createTheme, StyledEngineProvider } from '@mui/material';

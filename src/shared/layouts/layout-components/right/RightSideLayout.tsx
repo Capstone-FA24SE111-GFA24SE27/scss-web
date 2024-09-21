@@ -1,5 +1,14 @@
-export default function () {
+import { lazy, memo, Suspense } from "react";
+
+
+const NotificationPanel = lazy(() => import("@/shared/components/notifications/NotificationPanel"));
+
+function RightSideLayout () {
     return (
-        <div>RightSideLayout</div>
+        <Suspense>
+            <NotificationPanel />
+        </Suspense>
     )
 }
+
+export default memo(RightSideLayout)
