@@ -1,10 +1,12 @@
 import { RouteObject } from 'react-router-dom'
-import { lazy } from "react";
-const CalendarLayout = lazy(() => import("./calendar/calendar-layout"));
-
+import { studentCalendarRoutes } from './calendar';
+import { counselingRoutes } from './counseling';
 export const studentServicesRoutes: RouteObject[] = [
   {
-    path: 'services/calendar',
-    element: <CalendarLayout />,
+    path: 'services',
+    children: [
+      ...studentCalendarRoutes,
+      ...counselingRoutes,
+    ],
   },
 ];

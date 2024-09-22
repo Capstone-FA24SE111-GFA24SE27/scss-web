@@ -29,12 +29,14 @@ body {
   font-feature-settings: "salt";
 }
 
-html, body {
+html,
+body {
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: auto;
 }
 
-html, body {
+html,
+body {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -51,32 +53,38 @@ html, body {
   height: 100%;
 }
 
-h1, .h1 {
+h1,
+.h1 {
   font-size: 24px;
 }
 
-h2, .h2 {
+h2,
+.h2 {
   font-size: 20px;
 }
 
-h3, .h3 {
+h3,
+.h3 {
   font-size: 16px;
 }
 
-h4, .h4 {
+h4,
+.h4 {
   font-size: 15px;
 }
 
-h5, .h5 {
+h5,
+.h5 {
   font-size: 13px;
 }
 
-h6, .h6 {
+h6,
+.h6 {
   font-size: 12px;
 }
 
-.ps > .ps__rail-y,
-.ps > .ps__rail-x {
+.ps>.ps__rail-y,
+.ps>.ps__rail-x {
   z-index: 99;
 }
 
@@ -98,9 +106,11 @@ a[role=button] {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }

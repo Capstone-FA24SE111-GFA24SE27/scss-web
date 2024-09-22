@@ -47,7 +47,7 @@ export const defaultThemeOptions = {
 		},
 		MuiButton: {
 			defaultProps: {
-				color: 'inherit'
+				color: 'inherit',
 			},
 			styleOverrides: {
 				root: {
@@ -164,7 +164,8 @@ export const defaultThemeOptions = {
 		},
 		MuiRadio: {
 			defaultProps: {
-				color: 'secondary'
+				color: 'primary'
+				// color: 'secondary'
 			}
 		},
 		MuiSwitch: {
@@ -204,7 +205,18 @@ export const defaultThemeOptions = {
 				root: {
 					display: 'flex',
 					flexDirection: 'column',
-					gap: 8,
+				},
+			},
+		},
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					'&.Mui-selected': {
+						backgroundColor: 'secondary.main', // Change this to your desired color
+					},
+					'&:hover, &:focus': {
+						backgroundColor: 'secondary.light',
+					}
 				},
 			},
 		},
