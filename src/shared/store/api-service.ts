@@ -5,7 +5,7 @@ import type {
 } from '@reduxjs/toolkit/query'
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 import { RootState } from '../store'
-import { logout, setAccessToken } from './user-slice'
+import { logout, setAccessToken, setAccount } from './user-slice'
 
 
 const BASE_URL = 'http://localhost:8080'
@@ -34,6 +34,10 @@ const baseQueryWithReauth: BaseQueryFn<
 		if (refreshData?.content?.accessToken) {
 			const { accessToken } = refreshData.content;
 			api.dispatch(setAccessToken(accessToken));
+
+			const { account } = refreshData.content;
+			api.dispatch(setAccount(account));
+
 			result = await baseQuery(args, api, extraOptions);
 		} else {
 			api.dispatch(logout());
@@ -50,13 +54,13 @@ export const apiService = createApi({
 	reducerPath: 'apiService',
 });
 
-interface RefreshResponse {
+type RefreshResponse = {
 	accessToken: string;
 	type: string;
 	account: any | null;
 }
 
-export interface ApiResponse<T> {
+export type ApiResponse<T> = {
 	content: T;
 	status: number;
 }

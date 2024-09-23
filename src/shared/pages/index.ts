@@ -1,4 +1,6 @@
-import Error404Page from "./Error404Page";
+import Error404 from "./Error404";
+import Error500 from "./Error500";
 export {
-    Error404Page
+    Error404,
+    Error500
 }

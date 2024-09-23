@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, SvgIconComponent } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -88,6 +88,67 @@ const studentNavigation: NavigationOptions = {
     ]
 }
 
+const counselorNavigation: NavigationOptions = {
+    list: [
+        {
+            name: "Counseling",
+            description: "Counseling service",
+            route: 'counseling',
+            items: [
+                {
+                    icon: Archive,
+                    name: 'Requests',
+                    route: 'requests'
+                },
+                {
+                    icon: TagFaces,
+                    name: 'Appointments',
+                    route: 'appointments'
+                },
+                {
+                    icon: CalendarMonth,
+                    name: 'Calendar',
+                    route: 'calendar',
+                },
+            ]
+        },
+        {
+            name: 'Resources',
+            description: 'Resources for students & couselors',
+            route: 'resources',
+            items: [
+                {
+                    icon: Article,
+                    name: 'Articles',
+                    route: 'article'
+                },
+                {
+                    icon: NotStarted,
+                    name: 'Videos',
+                    route: 'videos'
+                },
+                {
+                    icon: EventSeat,
+                    name: 'Workshops',
+                    route: 'workshops'
+                },
+            ]
+        }
+    ],
+    shortcuts: [
+        {
+            icon: CalendarMonth,
+            name: 'Calendar',
+        },
+        {
+            icon: Mail,
+            name: 'Mail',
+        },
+    ]
+}
+
+
 export const roleBasedNavigation: RoleBasedNavigation = {
-    [roles.STUDENT]: studentNavigation
+    [roles.STUDENT]: studentNavigation,
+    [roles.COUNSELOR]: counselorNavigation,
 }

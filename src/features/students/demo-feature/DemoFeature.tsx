@@ -1,4 +1,4 @@
-import { DemoComponent } from '../demo-feature-components'
+import { DemoComponent } from './demo-feature-components'
 
 const DemoFeature = () => {
   return (

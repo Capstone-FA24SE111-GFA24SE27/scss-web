@@ -11,11 +11,19 @@ import { Fragment, memo, useState } from 'react';
 import { roleBasedNavigation } from './role-based-navigation';
 import { Typography } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { selectAccount, useAppSelector } from '@shared/store';
 
-const navigationList = roleBasedNavigation[roles.STUDENT].list
 function NavigationList() {
     const [open, setOpen] = useState(true);
     const [selectedItem, setSelectedItem] = useState('home')
+
+    const account = useAppSelector(selectAccount)
+
+    if(!account) {
+        return
+    }
+
+    const navigationList = roleBasedNavigation[account.role].list
 
 
     const location = useLocation();
@@ -34,7 +42,7 @@ function NavigationList() {
     return (
         <div className='px-8'>
             <List
-                sx={{ width: '100%'}}
+                sx={{ width: '100%' }}
                 component="nav"
                 aria-labelledby="nested-list-subheader"
             >

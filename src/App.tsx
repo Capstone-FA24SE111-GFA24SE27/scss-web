@@ -1,5 +1,5 @@
 import { useRoutes } from 'react-router-dom';
-import { studentRoutes } from '@features/students';
+import { studentsRoutes } from '@features/students';
 import { authRoutes } from '@/features/auth';
 import { roles } from '@shared/constants';
 import { createTheme, StyledEngineProvider } from '@mui/material';
@@ -13,16 +13,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { store } from '@shared/store';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux'
-
+import { useEffect } from 'react'
+import { counselorsRoutes } from './features/counselors';
+import Dialog from '@shared/components/dialog';
 const App = () => {
   const account = useAppSelector(selectAccount)
-  const role = account?.role;
-  console.log(account)
-  console.log(role)
-  let roleBasedRoutes;
-  switch (role) {
+  let roleBasedRoutes = [];
+  switch (account?.role) {
     case roles.STUDENT:
-      roleBasedRoutes = studentRoutes;
+      roleBasedRoutes = studentsRoutes;
+      break;
+    case roles.COUNSELOR:
+      roleBasedRoutes = counselorsRoutes;
       break;
     default:
       roleBasedRoutes = authRoutes;
@@ -39,11 +41,12 @@ const App = () => {
   return (
     <ThemeProvider root>
       <StyledEngineProvider injectFirst>
-        <Suspense fallback={<AppLoading />}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Suspense fallback={<AppLoading />}>
+            <Dialog />
             {AppRoutes}
-          </LocalizationProvider>
-        </Suspense>
+          </Suspense>
+        </LocalizationProvider>
       </StyledEngineProvider>
     </ThemeProvider>
   )

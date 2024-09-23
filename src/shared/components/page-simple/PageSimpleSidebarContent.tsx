@@ -1,4 +1,3 @@
-// import FuseScrollbars from '@fuse/core/FuseScrollbars';
 import { ReactNode } from 'react';
 
 /**
@@ -21,7 +20,9 @@ function FusePageSimpleSidebarContent(props: PageSimple) {
 
 	return (
 		// <FuseScrollbars enable={innerScroll}>
+		<div className='overflow-auto	'>
 			<div className="FusePageSimple-sidebarContent">{children}</div>
+		</div>
 		// </FuseScrollbars>
 	);
 }
