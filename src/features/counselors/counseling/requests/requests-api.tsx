@@ -19,17 +19,37 @@ export const requestsApi = api
         }),
         providesTags: ['appointments']
       }),
-      // denyAppointmentRequest: build.query<unknown, string>({
-      //   mutation: (requestId) => ({
-      //     url: `/api/booking-counseling/deny/${requestId}`,
-      //   }),
-      //   providesTags: ['appointments']
-      // }),
+      approveAppointmentRequestOnline: build.mutation<unknown, ApproveCounselingAppointmentRequestOnlineArg>({
+        query: (arg) => ({
+          method: 'PUT',
+          url: `/api/booking-counseling/approve/online/${arg.requestId}`,
+          body: arg.meetingDetails
+        }),
+        invalidatesTags: ['appointments']
+      }),
+      approveAppointmentRequestOffline: build.mutation<unknown, ApproveCounselingAppointmentRequestOfflineArg>({
+        query: (arg) => ({
+          method: 'PUT',
+          url: `/api/booking-counseling/deny/approve/offline/${arg.requestId}`,
+          body: arg.meetingDetails
+        }),
+        invalidatesTags: ['appointments']
+      }),
+      denyAppointmentRequest: build.mutation<unknown, string>({
+        query: (requestId) => ({
+          method: 'PUT',
+          url: `/api/booking-counseling/deny/${requestId}`,
+        }),
+        invalidatesTags: ['appointments']
+      }),
     })
   })
 
 export const {
   useGetCounselingAppointmentRequestsQuery,
+  useDenyAppointmentRequestMutation,
+  useApproveAppointmentRequestOnlineMutation,
+  useApproveAppointmentRequestOfflineMutation,
 } = requestsApi
 
 
@@ -62,4 +82,16 @@ export type AppointmentDetails = {
   meetUrl: string
 }
 
+export type ApproveCounselingAppointmentRequestOnlineArg = {
+  requestId: string,
+  meetingDetails : {
+    meetUrl: string,
+  }
+}
 
+export type ApproveCounselingAppointmentRequestOfflineArg = {
+  requestId: string,
+  meetingDetails : {
+    address: string,
+  }
+}
