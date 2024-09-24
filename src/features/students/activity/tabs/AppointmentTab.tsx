@@ -12,7 +12,7 @@ const AppointmentTab = () => {
     return <AppLoading />
   }
   if (!appointmentRequests) {
-    return <Typography color='text.secondary' variant='h5'>No appoitment requests</Typography>
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No appoitment requests</Typography>
   }
 
   console.log(appointmentRequests)

@@ -27,7 +27,6 @@ function RequestsHeader() {
     // if (isLoading) {
     //     return null;
     // }
-    const [showFilter, setShowFilter] = useState(false)
     return (
         <>
             <div className="p-24 sm:p-32 w-full border-b-1 bg-background-paper">
@@ -54,10 +53,10 @@ function RequestsHeader() {
                 </div>
                 <div className="flex flex-1 items-center mt-16 -mx-8">
                     <Box
-                        component={motion.div}
-                        initial={{ y: -20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
-                        className="flex flex-1 w-full sm:w-auto items-center px-16 mx-8 border-1 rounded-full"
+                        // component={motion.div}
+                        // initial={{ y: -20, opacity: 0 }}
+                        // animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
+                        className="flex flex-1 w-full sm:w-auto items-center px-16 mx-8 border-2 rounded-full"
                     >
                         <Search />
                         <Input
@@ -73,7 +72,9 @@ function RequestsHeader() {
                         />
                     </Box>
                     <Tooltip title={'Filter'}>
-                        <IconButton onClick={() => setShowFilter(prevState => !prevState)}>
+                        <IconButton
+                            // onClick={() => setShowFilter(prevState => !prevState)}
+                            >
                             <FilterAltOutlined className='size-32' />
                         </IconButton>
                     </Tooltip>

@@ -3,12 +3,12 @@ import Hidden from '@mui/material/Hidden';
 import Toolbar from '@mui/material/Toolbar';
 import clsx from 'clsx';
 import { memo } from 'react';
-import { UserMenu } from '@/shared/components';
 import { selectNavbar } from '../navbar/navbar-slice';
 import { useAppSelector } from '@shared/store';
 import NavbarToggleButton from '../navbar/NavbarToggleButton';
 import NavigationShortcuts from '../navigation/NavigationShorcuts';
 import UtilityShortcuts from './UtilityShortcuts';
+import UserMenu from './UserMenu';
 
 type ToolbarLayoutProps = {
 	className?: string;

@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@shared/store/hooks';
 import { logout, selectAccount, setAccount } from '@shared/store/user-slice';
-import { NavLinkAdapter } from '.';
+import { NavLinkAdapter } from '@shared/components';
 
 
 /**

@@ -20,9 +20,14 @@ interface Shortcut {
     name: string;
 }
 
+interface UserMenu {
+    name: string;
+    route: string;
+}
 interface NavigationOptions {
     list: SubList[];
     shortcuts: Shortcut[];
+    userMenu: UserMenu[];
 }
 
 interface RoleBasedNavigation {
@@ -85,6 +90,24 @@ const studentNavigation: NavigationOptions = {
             icon: Mail,
             name: 'Mail',
         },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Activity',
+            route: 'activity'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+        {
+            name: 'Logout',
+            route: 'logout'
+        },
     ]
 }
 
@@ -143,6 +166,20 @@ const counselorNavigation: NavigationOptions = {
         {
             icon: Mail,
             name: 'Mail',
+        },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+        {
+            name: 'Logout',
+            route: 'logout'
         },
     ]
 }

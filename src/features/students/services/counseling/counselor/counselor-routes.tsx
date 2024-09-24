@@ -1,14 +1,19 @@
-import { lazy } from 'react';
+import { ContentLoading } from '@/shared/components';
+import { lazy, Suspense } from 'react';
 import { RouteObject } from 'react-router-dom';
 const CounselorView = lazy(() => import('./CounselorView'))
 const CounselorBooking = lazy(() => import('./CounselorBooking'))
 export const counselorRoutes: RouteObject[] = [
   {
     path: ':id',
-    element: <CounselorView />
+    element: <Suspense fallback={<ContentLoading />}>
+      <CounselorView />
+    </Suspense>
   },
   {
     path: ':id/booking',
-    element: <CounselorBooking />
+    element: <Suspense fallback={<ContentLoading />}>
+      <CounselorBooking />
+    </Suspense>
   }
 ];

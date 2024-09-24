@@ -1,36 +1,38 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, TextField, Tooltip, Typography } from '@mui/material'
-import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery } from './requests-api'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemButton, TextField, Tooltip, Typography } from '@mui/material'
+import { Appointment, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery, useUpdateAppointmentDetailsMutation } from './requests-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, Circle } from '@mui/icons-material';
+import { AccessTime, CalendarMonth, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
+import Dialog from '@shared/components/dialog';
 const RequestsContent = () => {
   const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({})
-  const [approveAppointmentRequestOffline] = useApproveAppointmentRequestOfflineMutation();
-  const [approveAppointmentRequestOnline] = useApproveAppointmentRequestOnlineMutation();
+
   const [denyAppointmentRequest] = useDenyAppointmentRequestMutation();
   const appointmentRequests = data?.content.data
-  const [counselingMeetUrl, setCounselingMeetUrl] = useState('')
-  const [counselingAddress, setCounselingAddress] = useState('')
   const dispatch = useAppDispatch()
 
   if (isLoading) {
     return <AppLoading />
   }
   if (!appointmentRequests) {
-    return <Typography color='text.secondary' variant='h5'>No appoitment requests</Typography>
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
   }
 
   const statusColor = {
-    'REJECTED': 'error',
+    'DENIED': 'error',
     'WAITING': 'warning',
     'APPROVED': 'success'
   }
 
 
-  const handleApproveRequestOnline = () => {
-    approveAppointmentRequestOnline
+
+
+  const handleDenyRequest = (appointment: Appointment) => {
+    console.log(appointment)
+    denyAppointmentRequest(appointment.id)
+    dispatch(() => closeDialog())
   }
 
   return (
@@ -57,31 +59,44 @@ const RequestsContent = () => {
                   </div>
                 </div>
 
-                {
-                  appointment.meetingType == 'ONLINE' ?
-                    <div className='flex gap-24'>
-                      <Chip
-                        label='Online'
-                        icon={<Circle color='success' />}
-                        className='font-semibold  items-center'
-                      />
-                      {appointment.appointmentDetails?.meetUrl && (
-                        <Link to={appointment.appointmentDetails?.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
-                          Meet URL
-                        </Link>
-                      )
-                      }
-                    </div>
-                    : appointment.appointmentDetails?.meetUrl && (
-                      <div className='flex gap-8 items-center '>
-                        <Typography className='w-52'>Address:</Typography>
-                        <Typography className='font-semibold'>{appointment.appointmentDetails?.address || ''}</Typography>
+                <div className='flex gap-4'>
+                  {
+                    appointment.meetingType === 'ONLINE' ?
+                      <div className='flex gap-24 items-center'>
+                        <Chip
+                          label='Online'
+                          icon={<Circle color='success' />}
+                          className='font-semibold  items-center'
+                        />
+                        {appointment.appointmentDetails?.meetUrl && (
+                          <div>
+                            <Link to={appointment.appointmentDetails?.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
+                              Meet URL
+                            </Link>
+                          </div>
+                        )}
                       </div>
-                    )
-
-                }
+                      : appointment.appointmentDetails?.address && (<div className='flex gap-8 items-center '>
+                        <Typography className='w-60'>Address:</Typography>
+                        <Typography className='font-semibold'>{appointment.appointmentDetails?.address || ''}</Typography>
+                      </div>)
+                  }
+                  {appointment.status === 'APPROVED' && (<Tooltip title={appointment.meetingType === 'ONLINE' ? 'Update meet URL' : 'Update address'}>
+                    <IconButton
+                      color='secondary'
+                      onClick={() => dispatch(openDialog({
+                        children: <UpdateDetailsAppointmentDialog appointment={appointment} />
+                      }
+                      ))}
+                    >
+                      <EditNote fontSize='medium' />
+                    </IconButton>
+                  </Tooltip>
+                  )
+                  }
+                </div>
                 <div className='flex gap-8'>
-                  <Typography className='w-52'>Status:</Typography>
+                  <Typography className='w-60'>Status:</Typography>
                   <Typography
                     className='font-semibold'
                     color={statusColor[appointment.status]}
@@ -90,8 +105,9 @@ const RequestsContent = () => {
                   </Typography>
                 </div>
                 <div className='flex gap-8'>
-                  <Typography className='w-52'>Reason: </Typography>
+                  <Typography className='w-60'>Reason: </Typography>
                   <Typography
+                    color='text.secondary'
                   >
                     {appointment.reason}
                   </Typography>
@@ -129,7 +145,7 @@ const RequestsContent = () => {
                                     <Button onClick={() => dispatch(closeDialog())} color="primary">
                                       Cancel
                                     </Button>
-                                    <Button onClick={() => dispatch(closeDialog())} color="secondary" variant='contained' autoFocus>
+                                    <Button onClick={() => handleDenyRequest(appointment)} color="secondary" variant='contained' autoFocus>
                                       Confirm
                                     </Button>
                                   </DialogActions>
@@ -143,58 +159,7 @@ const RequestsContent = () => {
                           <Button color='success' variant='outlined' className='w-96'
                             onClick={() => dispatch(openDialog({
                               children: (
-                                <div>
-                                  <DialogTitle id="alert-dialog-title">Approve this appointment request?</DialogTitle>
-                                  <DialogContent>
-                                    <DialogContentText id="alert-dialog-description">
-                                      <div>
-                                        {
-                                          appointment.meetingType === 'ONLINE' ?
-                                            'The couseling appointment will be conducted online. Please enter your meet URL.'
-                                            : 'The couseling appointment will be conducted online. Please enter your address.'
-                                        }
-                                      </div>
-                                      <div>
-                                        {
-                                          appointment.meetingType === 'ONLINE'
-                                            ? <TextField
-                                              autoFocus
-                                              margin="dense"
-                                              name={'meetUrl'}
-                                              label={'Meet Url'}
-                                              fullWidth
-                                              value={counselingMeetUrl}
-                                              variant="standard"
-                                              className='mt-16'
-                                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                                setCounselingMeetUrl(event.target.value);
-                                              }} />
-                                            : <TextField
-                                              autoFocus
-                                              margin="dense"
-                                              name={'address'}
-                                              label={'Address'}
-                                              fullWidth
-                                              value={counselingAddress}
-                                              variant="standard"
-                                              className='mt-16'
-                                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                                setCounselingAddress(event.target.value);
-                                              }} />
-                                        }
-                                      </div>
-
-                                    </DialogContentText>
-                                  </DialogContent>
-                                  <DialogActions>
-                                    <Button onClick={() => dispatch(closeDialog())} color="primary">
-                                      Cancel
-                                    </Button>
-                                    <Button onClick={() => dispatch(closeDialog())} color="secondary" variant='contained'>
-                                      Confirm
-                                    </Button>
-                                  </DialogActions>
-                                </div>
+                                <ApproveAppointmentDialog appointment={appointment} />
                               )
                             }))}
                           >
@@ -209,10 +174,223 @@ const RequestsContent = () => {
               </div>
 
 
-            </ListItem>
+            </ListItem >
           )}
       </List >
     </>
+  )
+}
+
+const ApproveAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+  console.log(appointment.meetingType)
+  const [approveAppointmentRequestOnline] = useApproveAppointmentRequestOnlineMutation();
+  const [approveAppointmentRequestOffline] = useApproveAppointmentRequestOfflineMutation();
+  const [meetUrl, setMeetUrl] = useState('')
+  const [address, setAddress] = useState('')
+  const dispatch = useAppDispatch()
+
+  const handleApproveRequest = () => {
+    const meetingDetails = {}
+    if (appointment.meetingType === 'ONLINE') {
+      meetingDetails['meetUrl'] = meetUrl
+      approveAppointmentRequestOnline({
+        requestId: appointment.id,
+        meetingDetails
+      })
+    } else {
+      meetingDetails['address'] = address
+      approveAppointmentRequestOffline({
+        requestId: appointment.id,
+        meetingDetails
+      })
+    }
+    dispatch(closeDialog())
+  }
+
+  return (
+    <div>
+      <DialogTitle id="alert-dialog-title">Approve this appointment request?</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          <div>
+            {
+              appointment.meetingType === 'ONLINE' ?
+                <div>
+                  <Typography>The couseling appointment will be conducted ONLINE.</Typography>
+                  <Typography>
+                    Please enter your meet URL.
+                  </Typography>
+                </div>
+                :
+                <div>
+                  <Typography>The couseling appointment will be conducted OFFLINE.</Typography>
+                  <Typography>
+                    Please enter your address.
+                  </Typography>
+                </div>
+            }
+          </div>
+          <div>
+            {
+              appointment.meetingType === 'ONLINE'
+                ? <TextField
+                  autoFocus
+                  margin="dense"
+                  name={'meetUrl'}
+                  label={'Meet Url'}
+                  fullWidth
+                  value={meetUrl}
+                  variant="standard"
+                  className='mt-16'
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setMeetUrl(event.target.value);
+                  }} />
+                : <TextField
+                  autoFocus
+                  margin="dense"
+                  name={'address'}
+                  label={'Address'}
+                  fullWidth
+                  value={address}
+                  variant="standard"
+                  className='mt-16'
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setAddress(event.target.value);
+                  }} />
+              // <TextField
+              //   autoFocus
+              //   margin="dense"
+              //   name={'meetingDetails'}
+              //   label={appointment.meetingType === 'ONLINE' ? 'Meet Url' : 'Address'}
+              //   fullWidth
+              //   value={appointment.meetingType === 'ONLINE' ? meetUrl : address}
+              //   variant="standard"
+              //   className='mt-16'
+              //   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              //     appointment.meetingType === 'ONLINE'
+              //       ? setMeetUrl(event.target.value)
+              //       : setAddress(event.target.value)
+              //   }} />
+              // <TextField
+              //   autoFocus
+              //   margin="dense"
+              //   name={'meetingDetails'}
+              //   label={'Meet Url'}
+              //   fullWidth
+              //   value={meetUrl}
+              //   variant="standard"
+              //   className='mt-16'
+              //   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              //     setMeetUrl(event.target.value)
+              //   }}
+              // />
+            }
+          </div>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => dispatch(closeDialog())}
+          color="primary">
+          Cancel
+        </Button>
+        <Button
+          onClick={() => handleApproveRequest()}
+          color="secondary" variant='contained'
+          disabled={!meetUrl && !address}
+          >
+          Confirm
+        </Button>
+      </DialogActions>
+    </div>
+  )
+}
+
+const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+  const [updateAppointmentDetails] = useUpdateAppointmentDetailsMutation()
+  const [meetUrl, setMeetUrl] = useState(appointment.appointmentDetails.meetUrl)
+  const [address, setAddress] = useState(appointment.appointmentDetails.address)
+  const dispatch = useAppDispatch()
+
+  const handleEditDetails = () => {
+    const meetingDetails = {}
+    if (appointment.meetingType === 'ONLINE') {
+      meetingDetails['meetUrl'] = meetUrl
+      updateAppointmentDetails({
+        requestId: appointment.id,
+        meetingDetails
+      })
+    } else {
+      meetingDetails['address'] = address
+      updateAppointmentDetails({
+        requestId: appointment.id,
+        meetingDetails
+      })
+    }
+    dispatch(closeDialog())
+  }
+
+  return (
+    <div className='w-[40rem]'>
+      <DialogTitle id="alert-dialog-title">Edit details?</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          <div>
+            {
+              appointment.meetingType === 'ONLINE' ?
+                <div>
+                  <Typography>Edit the current meeting URL</Typography>
+                </div>
+                :
+                <div>
+                  <Typography>Edit the current address</Typography>
+                </div>
+            }
+          </div>
+          <div>
+            {
+              appointment.meetingType === 'ONLINE'
+                ? <TextField
+                  autoFocus
+                  margin="dense"
+                  name={'meetUrl'}
+                  label={'Meet Url'}
+                  fullWidth
+                  value={meetUrl}
+                  variant="standard"
+                  className='mt-16'
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setMeetUrl(event.target.value);
+                  }} />
+                : <TextField
+                  autoFocus
+                  margin="dense"
+                  name={'address'}
+                  label={'Address'}
+                  fullWidth
+                  value={address}
+                  variant="standard"
+                  className='mt-16'
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setAddress(event.target.value);
+                  }} />
+            }
+          </div>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => dispatch(closeDialog())}
+          color="primary">
+          Cancel
+        </Button>
+        <Button
+          onClick={() => handleEditDetails()}
+          color="secondary" variant='contained'
+          disabled={!meetUrl && !address}
+        >
+          Confirm
+        </Button>
+      </DialogActions>
+    </div>
   )
 }
 
