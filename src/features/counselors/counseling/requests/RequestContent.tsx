@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItem, ListItemButton, TextField, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
 import { Appointment, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery, useUpdateAppointmentDetailsMutation } from './requests-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, Circle, Edit, EditNote } from '@mui/icons-material';
@@ -113,13 +113,13 @@ const RequestsContent = () => {
                   </Typography>
                 </div>
                 <ListItem
-                  className='bg-primary-main/10 w-full rounded'
+                  className='bg-primary-main/10 w-full rounded flex gap-16'
                 >
                   <Avatar
                     alt={appointment.student.profile.fullName}
                     src={appointment.student.profile.avatarLink}
                   />
-                  <div className='ml-16'>
+                  <div >
                     <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
                     <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
                   </div>
@@ -171,9 +171,22 @@ const RequestsContent = () => {
                     </>
                   )
                 }
+                {
+                  appointment.status === 'APPROVED' && (
+                    <div className=''>
+                      <Typography className='font-semibold' color='secondary'>Do the student attend the session ?</Typography>
+                      <Button className='mt-8' variant='outlined' color='secondary'
+                        onClick={() => dispatch(openDialog({
+                          children: <CheckAttendanceDialog appointment={appointment} />
+                        }
+                        ))}
+                      >
+                        Update attendance
+                      </Button>
+                    </div>
+                  )
+                }
               </div>
-
-
             </ListItem >
           )}
       </List >
@@ -297,7 +310,7 @@ const ApproveAppointmentDialog = ({ appointment }: { appointment: Appointment })
           onClick={() => handleApproveRequest()}
           color="secondary" variant='contained'
           disabled={!meetUrl && !address}
-          >
+        >
           Confirm
         </Button>
       </DialogActions>
@@ -386,6 +399,60 @@ const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointm
           onClick={() => handleEditDetails()}
           color="secondary" variant='contained'
           disabled={!meetUrl && !address}
+        >
+          Confirm
+        </Button>
+      </DialogActions>
+    </div>
+  )
+}
+
+const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) => {
+  const dispatch = useAppDispatch()
+
+  const handleApproveRequest = () => {
+    dispatch(closeDialog())
+  }
+
+  return (
+    <div>
+      <DialogTitle id="alert-dialog-title">Update attendance for this student</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description" className='flex flex-col gap-16'>
+          <div
+            className='rounded flex justify-start gap-16'
+          >
+            <Avatar
+              alt={appointment.student.profile.fullName}
+              src={appointment.student.profile.avatarLink}
+            />
+            <div >
+              <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
+              <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
+            </div>
+          </div>
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="female"
+              name="radio-buttons-group"
+            >
+              <div className='flex gap-16'>
+                <FormControlLabel value="female" control={<Radio color='success' />} label="Attended" className='text-black'/>
+                <FormControlLabel value="male" control={<Radio color='error'/>} label="Absent" className='text-black'/>
+              </div>
+            </RadioGroup>
+          </FormControl>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => dispatch(closeDialog())}
+          color="primary">
+          Cancel
+        </Button>
+        <Button
+          onClick={() => handleApproveRequest()}
+          color="secondary" variant='contained'
         >
           Confirm
         </Button>

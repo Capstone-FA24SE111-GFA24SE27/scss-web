@@ -36,17 +36,22 @@ function CounselorBooking() {
     const routeParams = useParams();
     const { id: counselorId } = routeParams as { id: string };
     const today = dayjs().format('YYYY-MM-DD');
-    const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
+    // const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
+    // const [currentMonth, setCurrentMonth] = useState(dayjs());
+    const [startOfMonth, setStartOfMonth] = useState(today);
+    const [endOfMonth, setEndOfMonth] = useState(dayjs().endOf('month').format('YYYY-MM-DD'));
+
+
     const navigate = useNavigate()
     const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId);
-    const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: today, to: endOfMonth });
+    const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
     const counselor = counselorData?.content
     const counselorDailySlots = counserDailySlotsData?.content
 
     const defaultValues = {
         slotCode: "",
-        date: today,
+        date: startOfMonth,
         isOnline: true,
         reason: "",
     }
@@ -83,14 +88,25 @@ function CounselorBooking() {
             counselorId: counselorId,
             appointmentRequest: formData
         })
-        .unwrap()
-        .then(() => navigate('../'))
+            .unwrap()
+            .then(() => navigate('../'))
     }
 
-    const handleDateChange = (value) => {
-        setValue("date", dayjs(value).format('YYYY-MM-DD'))
+    const handleDateChange = (newDate) => {
+        setValue("date", dayjs(newDate).format('YYYY-MM-DD'))
         setValue("slotCode", '')
     }
+
+    const handleMonthChange = (newMonth) => {
+        // setCurrentMonth(newMonth);
+        setValue("date", dayjs(newMonth).format('YYYY-MM-DD'))
+        setStartOfMonth(newMonth.startOf('month').format('YYYY-MM-DD'));
+        setEndOfMonth(newMonth.endOf('month').format('YYYY-MM-DD'));
+    };
+
+    // const handleMonthChange = (newMonth) => {
+
+    // }
     return (
         <>
             <div className="relative flex flex-col flex-auto items-center p-24 pt-0 sm:p-48 sm:pt-0">
@@ -155,6 +171,7 @@ function CounselorBooking() {
                             }}
                             value={dayjs(formData.date)}
                             onChange={handleDateChange}
+                            onMonthChange={handleMonthChange}
                         />
                     </div>
 

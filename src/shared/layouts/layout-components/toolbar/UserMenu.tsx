@@ -10,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@shared/store/hooks';
 import { logout, selectAccount, setAccount } from '@shared/store/user-slice';
 import { NavLinkAdapter } from '@shared/components';
+import { roleBasedNavigation } from '../navigation';
 
 
 /**
@@ -27,6 +28,8 @@ function UserMenu() {
 		setUserMenu(null);
 	};
 
+	const navigationUserMenu = roleBasedNavigation[account.role].userMenu
+
 	const navigate = useNavigate()
 
 	if (!user) {
@@ -36,7 +39,7 @@ function UserMenu() {
 	return (
 		<>
 			<Button
-				className="min-h-40 min-w-40 p-0 md:px-16 md:py-6"
+				className="min-h-40 min-w-160 p-0 md:px-16 md:py-6 "
 				onClick={userMenuClick}
 				color="inherit"
 			>
@@ -92,32 +95,32 @@ function UserMenu() {
 					horizontal: 'center'
 				}}
 				classes={{
-					paper: 'py-8'
+					paper: 'py-8 w-96'
 				}}
 			>
 
-				<MenuItem
-					onClick={userMenuClose}
-					role="button"
-				>
-					<ListItemIcon className="min-w-40">
-						{/* <FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon> */}
-					</ListItemIcon>
-					<ListItemText primary="Profile" />
-				</MenuItem>
+				{navigationUserMenu.map(menuItem =>
+					<MenuItem
+						onClick={userMenuClose}
+						component={NavLinkAdapter}
+						to={menuItem.route}
+						role="button"
+					>
+						<ListItemText primary={menuItem.name} />
+					</MenuItem>
 
-				<MenuItem
-					component={NavLinkAdapter}
-					to="/activity"
-					onClick={userMenuClose}
-					role="button"
-				>
-					<ListItemIcon className="min-w-40">
-						{/* <FuseSvgIcon>heroicons-outline:mail-open</FuseSvgIcon> */}
-					</ListItemIcon>
-					<ListItemText primary="My Activity" />
-				</MenuItem>
-
+					// <MenuItem
+					// 	component={NavLinkAdapter}
+					// 	to="/activity"
+					// 	onClick={userMenuClose}
+					// 	role="button"
+					// >
+					// 	<ListItemIcon className="min-w-40">
+					// 		{/* <FuseSvgIcon>heroicons-outline:mail-open</FuseSvgIcon> */}
+					// 	</ListItemIcon>
+					// 	<ListItemText primary="My Activity" />
+					// </MenuItem>
+				)}
 				<MenuItem
 					onClick={() => {
 						userMenuClose();
@@ -125,8 +128,6 @@ function UserMenu() {
 						dispatch(logout())
 					}}
 				>
-					<ListItemIcon className="min-w-40">
-					</ListItemIcon>
 					<ListItemText primary="Sign out" />
 				</MenuItem>
 

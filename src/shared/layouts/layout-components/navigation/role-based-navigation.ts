@@ -104,10 +104,6 @@ const studentNavigation: NavigationOptions = {
             name: 'Settings',
             route: 'settings'
         },
-        {
-            name: 'Logout',
-            route: 'logout'
-        },
     ]
 }
 
@@ -176,10 +172,6 @@ const counselorNavigation: NavigationOptions = {
         {
             name: 'Settings',
             route: 'settings'
-        },
-        {
-            name: 'Logout',
-            route: 'logout'
         },
     ]
 }
