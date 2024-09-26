@@ -5,7 +5,7 @@ import { roles } from '@shared/constants';
 import { createTheme, StyledEngineProvider } from '@mui/material';
 import { ThemeProvider } from '@shared/providers';
 import { selectAccount, useAppSelector } from '@shared/store';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { AppLoading } from '@shared/components';
 import { specialRoutes } from '@shared/configs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -14,6 +14,8 @@ import { store } from '@shared/store';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
+import { io, Socket } from 'socket.io-client';
+import { SocketProvider } from './shared/context/socket-context';
 
 const App = () => {
 	const account = useAppSelector(selectAccount);
@@ -28,6 +30,7 @@ const App = () => {
 		default:
 			roleBasedRoutes = authRoutes;
 	}
+	const [socket, setSocket] = useState<Socket>(null);
 
 	// const defaultTheme = createTheme();
 	// console.log("Default MUI theme: ", defaultTheme)
@@ -46,11 +49,11 @@ const App = () => {
 						}}
 						classes={{
 							containerRoot:
-								'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99',
+								'bottom-0 right-0 mb-52 md:mb-68 mr-4 lg:mr-40 z-99',
 						}}
 					>
 						<LocalizationProvider dateAdapter={AdapterDayjs}>
-							{AppRoutes}
+							<SocketProvider>{AppRoutes}</SocketProvider>
 						</LocalizationProvider>
 					</SnackbarProvider>
 				</Suspense>

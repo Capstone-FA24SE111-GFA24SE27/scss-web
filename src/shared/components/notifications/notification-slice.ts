@@ -1,36 +1,61 @@
-import { createSlice, WithSlice } from "@reduxjs/toolkit";
-import { rootReducer } from "@shared/store";
+import { createSlice, WithSlice } from '@reduxjs/toolkit';
+import { rootReducer } from '@shared/store';
+import { NotificationType } from '../type/notification';
 
+type initialStateType = {
+	open: boolean;
+	notifications: NotificationType[];
+};
 
-type initialStateType = boolean
-
-const initialState : initialStateType = false;
+const initialState: initialStateType = {
+	open: false,
+	notifications: [],
+};
 
 export const notificationPanelSlice = createSlice({
-    name: 'notificationPanelSlice',
-    initialState,
-    reducers: {
-        toggleNotificationPanel: (state) => !state,
-        openNotificationPanel: () => true,
-        closeNotificationPanel: () => false,
+	name: 'notificationPanelSlice',
+	initialState,
+	reducers: {
+		toggleNotificationPanel: (state) => {
+            const prev = state.open
+			state.open = !prev
+		},
+		openNotificationPanel: (state) => {
+			state.open = true;
+		},
+		closeNotificationPanel: (state) => {
+			state.open = false;
+		},
+        setNotifications: (state, action) => {
+            state.notifications = action.payload
+        },
+        addNotification: (state, action) => {
+            const prev = state.notifications
+            state.notifications = [action.payload, ...prev]
+        }
+	},
+	selectors: {
+		selectNotificationPanelState: (state) => state.open,
+        selectNotifications: (state) => state.notifications
+	},
+});
 
-    },
-    selectors: {
-        selectNotificationPanelState: (state) => state
-    }
-})
-
-
-rootReducer.inject(notificationPanelSlice)
+rootReducer.inject(notificationPanelSlice);
 const injectedSlice = notificationPanelSlice.injectInto(rootReducer);
 declare module '@shared/store' {
-	export interface LazyLoadedSlices extends WithSlice<typeof notificationPanelSlice> {}
-
+	export interface LazyLoadedSlices
+		extends WithSlice<typeof notificationPanelSlice> {}
 }
 
-export const { toggleNotificationPanel, openNotificationPanel, closeNotificationPanel } =
-	notificationPanelSlice.actions;
+export const {
+	toggleNotificationPanel,
+	openNotificationPanel,
+	closeNotificationPanel,
+    setNotifications,
+    addNotification,
 
-export const { selectNotificationPanelState } = injectedSlice.selectors;
+} = notificationPanelSlice.actions;
+
+export const { selectNotificationPanelState, selectNotifications } = injectedSlice.selectors;
 
 export default notificationPanelSlice.reducer;

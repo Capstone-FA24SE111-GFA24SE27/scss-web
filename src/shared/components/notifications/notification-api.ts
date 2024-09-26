@@ -1,8 +1,9 @@
 import { apiService } from '@shared/store';
+import { NotificationType } from '../type/notification';
 
-export const addTagTypes = ['notifications', 'notification'] as const;
+export const addTagTypes = ['notifications'] as const;
 
-const NotifiactionApi = apiService
+const NotificationApi = apiService
 	.enhanceEndpoints({
 		addTagTypes,
 	})
@@ -12,63 +13,59 @@ const NotifiactionApi = apiService
 				GetAllNotificationsApiResponse,
 				GetAllNotificationsApiArg
 			>({
-				query: () => ({ url: `/api/notification?SortDirection=ASC&sortBy=id&page=1` }),
+				query: () => ({
+					url: `/api/notification?SortDirection=ASC&sortBy=readStatus&page=1`,
+				}),
 				providesTags: ['notifications'],
 			}),
-			// getNotification: build.query<GetNotificationApiResponse, GetNotificationApiArg>({
-			//     query: (notificationId) => ({
-			//         url: `/mock-api/notifications/${notificationId}`
-			//     }),
-			//     providesTags: ['notification']
-			// }),
-			markNotificationAsRead: build.mutation<
-				MarkNotificationAsReadResponse,
-				MarkNotificationAsReadArg
+			readNotification: build.mutation<
+				ReadNotificationResponse,
+				ReadNotificationArg
 			>({
 				query: (notificationId) => ({
-					url: `/notification/read/${notificationId}`,
+					url: `/api/notification/read/${notificationId}`,
 					method: 'PUT',
 				}),
+				invalidatesTags: ['notifications'],
 			}),
-			// createNotification: build.mutation<CreateNotificationApiResponse, CreateNotificationApiArg>({
-			//     query: (notification) => ({
-			//         url: `/mock-api/notifications`,
-			//         method: 'POST',
-			//         data: notification
-			//     }),
-			//     invalidatesTags: ['notifications']
-			// }),
-			// deleteAllNotifications: build.mutation<DeleteAllNotificationsApiResponse, DeleteAllNotificationsApiArg>({
-			//     query: () => ({ url: `/mock-api/notifications`, method: 'DELETE' }),
-			//     invalidatesTags: ['notifications']
-			// }),
-
-			// deleteNotification: build.mutation<DeleteNotificationApiResponse, DeleteNotificationApiArg>({
-			//     query: (notificationId) => ({
-			//         url: `/mock-api/notifications/${notificationId}`,
-			//         method: 'DELETE'
-			//     }),
-			//     invalidatesTags: ['notifications']
-			// })
+			readAllNotification: build.mutation<
+				ReadAllNotificationResponse,
+				ReadAllNotificationArg
+			>({
+				query: () => ({
+					url: `/api/notification/mark-all-read`,
+					method: 'PUT',
+				}),
+				invalidatesTags: ['notifications'],
+			}),
 		}),
 		overrideExisting: false,
 	});
 
-export default NotifiactionApi;
+export const {
+	useGetAllNotificationsQuery,
+	useReadAllNotificationMutation,
+	useReadNotificationMutation,
+} = NotificationApi;
 
-export type GetAllNotificationsApiResponse =
-	/** status 200 OK */ Notification[];
+export type GetAllNotificationsApiResponse = {
+	content: {
+		data: NotificationType[];
+		totalElements: number;
+		totalPages: number;
+	};
+	status: number;
+};
 export type GetAllNotificationsApiArg = void;
 
-// export type GetNotificationApiResponse = /** status 200 OK */ Notification;
-// export type GetNotificationApiArg = string; /** notification id */
+export type ReadNotificationResponse = {
+	message: string;
+	status: number;
+};
+export type ReadNotificationArg = number; /** notification id */
 
-export type MarkNotificationAsReadResponse = boolean;
-export type MarkNotificationAsReadArg = string; /** notification id */
-
-// export type CreateNotificationApiResponse = unknown;
-// export type CreateNotificationApiArg = Notification;
-// export type DeleteNotificationApiResponse = unknown;
-// export type DeleteNotificationApiArg = string; /** notification id */
-// export type DeleteAllNotificationsApiResponse = unknown;
-// export type DeleteAllNotificationsApiArg = void;
+export type ReadAllNotificationResponse = {
+	message: string;
+	status: number;
+};
+export type ReadAllNotificationArg = void;
