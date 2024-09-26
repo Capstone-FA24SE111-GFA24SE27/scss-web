@@ -1,5 +1,43 @@
 import { ThemeOptions } from "@mui/material";
 
+
+const defaultPalette = {
+	mode: "light",
+	text: {
+		primary: "#111827",  // rgb(17, 24, 39)
+		secondary: "#6b7280", // rgb(107, 114, 128)
+		disabled: "#959ca9"   // rgb(149, 156, 169)
+	},
+	common: {
+		black: "#111827",     // rgb(17, 24, 39)
+		white: "#ffffff"      // rgb(255, 255, 255)
+	},
+	primary: {
+		light: "#64748b",
+		main: "#1e293b",
+		dark: "#0f172a",
+		contrastDefaultColor: "light",
+		contrastText: "#ffffff" // rgb(255, 255, 255)
+	},
+	secondary: {
+		light: "#fca311",
+		main: "#e67e22",
+		dark: "#c65d14",
+		contrastText: "#ffffff" // rgb(255, 255, 255)
+	},
+	background: {
+		paper: "#FFFFFF",
+		default: "#f1f5f9"
+	},
+	error: {
+		light: "#ffcdd2",
+		main: "#f44336",
+		dark: "#b71c1c",
+		contrastText: "#ffffff" // rgb(255, 255, 255)
+	},
+	divider: "#e2e8f0"
+}
+
 export const defaultThemeOptions = {
 	typography: {
 		fontFamily: ['Inter var', 'Roboto', '"Helvetica"', 'Arial', 'sans-serif'].join(','),
@@ -67,6 +105,7 @@ export const defaultThemeOptions = {
 				},
 				contained: {
 					boxShadow: 'none',
+					color: `${defaultPalette.primary.contrastText} !important`,
 					'&:hover, &:focus': {
 						boxShadow: 'none'
 					}
@@ -79,7 +118,7 @@ export const defaultThemeOptions = {
 			},
 			styleOverrides: {
 				contained: {
-					borderRadius: 18
+					borderRadius: 18,
 				}
 			}
 		},
@@ -186,8 +225,7 @@ export const defaultThemeOptions = {
 		MuiListItemButton: {
 			styleOverrides: {
 				root: {
-					borderRadius: 8,
-					marginTop: 4,
+					// borderRadius: 8,
 					'&.Mui-selected': {
 						backgroundColor: 'primary.light', // Customize background color for selected state
 						'&:hover': {
@@ -208,6 +246,14 @@ export const defaultThemeOptions = {
 				},
 			},
 		},
+		MuiListItem: {
+			styleOverrides: {
+				root: {
+					borderRadius: 4,
+					marginBottom: 16,
+				},
+			},
+		},
 		MuiPickersDay: {
 			styleOverrides: {
 				root: {
@@ -221,47 +267,7 @@ export const defaultThemeOptions = {
 			},
 		},
 	},
-	palette: {
-		mode: "light",
-		text: {
-			primary: "rgb(17, 24, 39)",
-			secondary: "rgb(107, 114, 128)",
-			disabled: "rgb(149, 156, 169)"
-		},
-		common: {
-			black: "rgb(17, 24, 39)",
-			white: " rgb(255, 255, 255)"
-		},
-		primary: {
-			light: "#64748b",
-			main: "#1e293b",
-			dark: "#0f172a",
-			contrastDefaultColor: "light",
-			contrastText: "rgb(255, 255, 255)"
-		},
-		// secondary: {
-		// 	light: "#818cf8",
-		// 	main: "#4f46e5",
-		// 	dark: "#3730a3",
-		// 	contrastText: "rgb(255, 255, 255)"
-		// },
-		secondary: {
-			light: "#fca311",
-			main: "#e67e22",
-			dark: "#c65d14",
-			contrastText: "rgb(255, 255, 255)"
-		},
-		background: {
-			paper: "#FFFFFF",
-			default: "#f1f5f9"
-			// default: "#f2f2f2"
-		},
-		error: {
-			light: "#ffcdd2",
-			main: "#f44336",
-			dark: "#b71c1c",
-			contrastText: "rgb(255, 255, 255)"
-		},
-		divider: "#e2e8f0"
-	}
+	palette: defaultPalette
 } as ThemeOptions;
+
+

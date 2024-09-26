@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 /**
  * The Error404Page component renders a custom 404 error page.
  */
-function Error404Page() {
+function Error404() {
 	return (
 		<div className="flex flex-col items-center justify-center flex-1 p-16">
 			<div className="w-full max-w-3xl text-center">
@@ -257,4 +257,4 @@ function Error404Page() {
 	);
 }
 
-export default Error404Page;
+export default Error404;

@@ -90,6 +90,7 @@ h6,
 
 a[role=button] {
   text-decoration: none;
+  color: inherit
 }
 
 [role="tooltip"] {

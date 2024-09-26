@@ -8,6 +8,7 @@ import { Theme } from '@mui/system';
 import PageSimpleHeader from './PageSimpleHeader';
 import PageSimpleSidebar from './PageSimpleSidebar';
 import { Scrollbar } from '../scrollbar';
+import Dialog from '../dialog';
 
 const headerHeight = 120;
 const toolbarHeight = 64;
@@ -292,7 +293,7 @@ const PageSimple = forwardRef<
 								// 	enable={false}
 								// 	className={clsx('PageSimple-content container')}
 								// >
-								<div>
+								<div className='overflow-auto	'>
 									{content}
 								</div>
 								// </FuseScrollbars>

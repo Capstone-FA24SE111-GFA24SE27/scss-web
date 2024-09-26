@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { User } from '@shared/types';
+
+const accountString = localStorage.getItem('account');
 
 const initialState: User = {
   accessToken: "",
-  account: null
+  account: accountString ? JSON.parse(accountString) : null,
 }
 export const userSlice = createSlice({
   name: 'user',
@@ -13,9 +16,12 @@ export const userSlice = createSlice({
     },
     setAccount: (state, action) => {
       state.account = action.payload
+      localStorage.setItem('account', JSON.stringify(action.payload))
     },
     logout: (state) => {
-      state = initialState
+      state.account = null
+      state.accessToken = ''
+      localStorage.removeItem('account')
     }
   },
   selectors: {
@@ -37,27 +43,6 @@ export const {
   selectAccount,
 } = userSlice.selectors
 
-
-export type User = {
-  accessToken: string;
-  account: Account | null
-}
-
-export type Account = {
-  id: number,
-  email: string,
-  role: string,
-  status: string,
-  profile: Profile
-}
-
-export type Profile = {
-  id: number,
-  fullName: string,
-  phoneNumber: string,
-  dateOfBirth: number,
-  avatarLink: string
-}
 
 
 export default userSlice.reducer

@@ -1,4 +1,5 @@
-import { ApiResponse, User, apiService as api } from '@shared/store'
+import { User } from '@shared/types';
+import { ApiResponse, apiService as api } from '@shared/store'
 
 
 export const addTagTypes = [
@@ -22,13 +23,13 @@ export const usersApi = api
     })
   })
 
+export const {
+  useLoginDefaultMutation,
+} = usersApi
+
 export type LoginDefaultApiResponse = ApiResponse<User>
 
 export type LoginDefaultApiArg = {
   email: string,
   password: string
 }
-
-export const {
-  useLoginDefaultMutation,
-} = usersApi

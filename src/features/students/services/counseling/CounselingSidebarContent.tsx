@@ -10,12 +10,11 @@ function CounselorSidebarContent() {
         <div className="flex flex-col flex-auto max-w-full w-md">
             <IconButton
                 className="absolute top-0 right-0 my-16 mx-32 z-10"
-                sx={{ color: 'primary' }}
                 component={NavLinkAdapter}
                 to="/services/counseling"
                 size="large"
             >
-                <Close />
+                <Close/>
             </IconButton>
 
             <Outlet />
