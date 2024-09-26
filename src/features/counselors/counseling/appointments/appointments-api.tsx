@@ -7,15 +7,15 @@ export const addTagTypes = [
 ] as const;
 
 
-export const requestsApi = api
+export const appointmentsApi = api
   .enhanceEndpoints({
     addTagTypes
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getCounselingAppointmentRequests: build.query<GetCounselingAppointmentApiResponse, GetCounselingAppointmentApiArg>({
+      getCounselingAppointment: build.query<GetCounselingAppointmentApiResponse, GetCounselingAppointmentApiArg>({
         query: ({ }) => ({
-          url: `/api/booking-counseling/appointment-request?sortBy=requireDate&sortDirection=ASC&page=1`,
+          url: `/api/booking-counseling/appointment?fromDate=2024-09-01&toDate=2024-10-30`,
         }),
         providesTags: ['appointments']
       }),
@@ -61,16 +61,16 @@ export const requestsApi = api
   })
 
 export const {
-  useGetCounselingAppointmentRequestsQuery,
+  useGetCounselingAppointmentQuery,
   useDenyAppointmentRequestMutation,
   useApproveAppointmentRequestOnlineMutation,
   useApproveAppointmentRequestOfflineMutation,
   useUpdateAppointmentDetailsMutation,
   useTakeAppointmentAttendanceMutation
-} = requestsApi
+} = appointmentsApi
 
 
-export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>
+export type GetCounselingAppointmentApiResponse = ApiResponse<Appointment[]>
 export type GetCounselingAppointmentApiArg = {
 
 }
@@ -80,18 +80,20 @@ export type GetCounselorApiResponse = ApiResponse<Appointment>
 export type Appointment = {
   id: number,
   requireDate: string,
-  startTime: string,
-  endTime: string,
-  status: 'APPROVED' | 'DENIED' | 'WAITING',
+  startDateTime: string,
+  endDateTime: string,
+  status: string,
   meetingType: 'ONLINE' | 'OFFLINE',
   reason: string,
-  appointmentDetails: AppointmentDetails | null,
-  counselor: {
+  meetUrl?: string,
+  address?: string,
+  counselorInfo: null | {
     rating: string
   } & Account,
-  student: {
+  studentInfo: null | {
     studentCode: string
   } & Account,
+  appointmentFeedback: AppointmentFeedback
 }
 
 export type AppointmentDetails = {
@@ -124,3 +126,11 @@ export type TakeAppointmentAttendance = {
 }
 
 export type AppointmentAttendanceStatus = 'CANCELED' | 'ATTEND' | 'ABSENT' | 'EXPIRED' | 'WAITING'
+
+export type AppointmentFeedback = {
+  id: number,
+  rating: number,
+  comment: string,
+  appointmentId: number,
+  createdAt: number,
+}

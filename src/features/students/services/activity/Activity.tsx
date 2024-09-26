@@ -6,9 +6,10 @@ import { styled } from '@mui/material/styles';
 import { useEffect, useRef } from 'react';
 import ActivityHeader from './ActivityHeader';
 import { PageSimple } from '@/shared/components';
-import { AppointmentTab } from './tabs';
+import { AppointmentsTab, RequestsTab } from './tabs';
 import { useParams } from 'react-router-dom';
 import ActivitySidebarContent from './ActivitySidebarContent';
+import { useAppDispatch } from '@shared/store';
 const Root = styled(PageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
 		backgroundColor: theme.palette.background.paper,
@@ -65,7 +66,12 @@ function Activity() {
 						<Tab
 							className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
 							disableRipple
-							label="Appointment"
+							label="Requests"
+						/>
+						<Tab
+							className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+							disableRipple
+							label="Appointments"
 						/>
 						<Tab
 							className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
@@ -79,7 +85,8 @@ function Activity() {
 						/>
 					</Tabs>
 					<div className='my-16'>
-						{tabValue === 0 && <AppointmentTab />}
+						{tabValue === 0 && <RequestsTab />}
+						{tabValue === 1 && <AppointmentsTab />}
 						{/* {tabValue === 1 && <BudgetTab />}
 					{tabValue === 2 && <TeamTab />} */}
 					</div>
@@ -88,5 +95,6 @@ function Activity() {
 		/>
 	);
 }
+
 
 export default Activity;

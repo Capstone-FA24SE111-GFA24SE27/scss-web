@@ -1,17 +1,15 @@
-import { roles } from '@/shared/constants';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Typography } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
-import { Fragment, memo, useState } from 'react';
-import { roleBasedNavigation } from './role-based-navigation';
-import { Typography } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { selectAccount, useAppSelector } from '@shared/store';
+import { Fragment, memo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { roleBasedNavigation } from './role-based-navigation';
 
 function NavigationList() {
     const [open, setOpen] = useState(true);
@@ -55,6 +53,7 @@ function NavigationList() {
                         {sublist.items.map(item => (
                             <Fragment key={item.name}>
                                 <ListItemButton
+                                    className='rounded-md mt-4'
                                     onClick={item.children
                                         ? handleOpen :
                                         () => handleNavigation(`${sublist.route}/${item.route}`)}

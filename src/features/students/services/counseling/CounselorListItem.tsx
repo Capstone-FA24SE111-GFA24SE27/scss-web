@@ -57,7 +57,7 @@ function ContactListItem(props: ContactListItemPropsType) {
 					/>
 				</Box>
 			</ListItemButton>
-			{/* <Divider /> */}
+			<Divider />
 		</>
 	);
 }

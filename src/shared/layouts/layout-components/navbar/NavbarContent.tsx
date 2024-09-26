@@ -53,7 +53,7 @@ function NavbarContent(props: NavbarContentProps) {
 				className="flex min-h-0 flex-1 flex-col"
 				// option={{ suppressScrollX: true, wheelPropagation: false }}
 			>
-				<UserNavbarHeader />
+				{/* <UserNavbarHeader /> */}
 
 				<NavigationList />
 

@@ -225,8 +225,7 @@ export const defaultThemeOptions = {
 		MuiListItemButton: {
 			styleOverrides: {
 				root: {
-					borderRadius: 8,
-					marginTop: 4,
+					// borderRadius: 8,
 					'&.Mui-selected': {
 						backgroundColor: 'primary.light', // Customize background color for selected state
 						'&:hover': {
@@ -244,6 +243,14 @@ export const defaultThemeOptions = {
 				root: {
 					display: 'flex',
 					flexDirection: 'column',
+				},
+			},
+		},
+		MuiListItem: {
+			styleOverrides: {
+				root: {
+					borderRadius: 4,
+					marginBottom: 16,
 				},
 			},
 		},

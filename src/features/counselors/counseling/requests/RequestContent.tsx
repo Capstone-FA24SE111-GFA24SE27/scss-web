@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
-import { Appointment, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery, useUpdateAppointmentDetailsMutation } from './requests-api'
+import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './requests-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
@@ -42,7 +42,7 @@ const RequestsContent = () => {
           appointmentRequests.map(appointment =>
             <ListItem
               key={appointment.id}
-              className="p-16 flex gap-16 mt-8 rounded-lg"
+              className="p-16 flex gap-16 rounded-lg"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
@@ -113,7 +113,7 @@ const RequestsContent = () => {
                   </Typography>
                 </div>
                 <ListItem
-                  className='bg-primary-main/10 w-full rounded flex gap-16'
+                  className='bg-primary-main/5 w-full rounded flex gap-16'
                 >
                   <Avatar
                     alt={appointment.student.profile.fullName}
@@ -145,7 +145,7 @@ const RequestsContent = () => {
                                     <Button onClick={() => dispatch(closeDialog())} color="primary">
                                       Cancel
                                     </Button>
-                                    <Button onClick={() => handleDenyRequest(appointment)} color="secondary" variant='contained' autoFocus>
+                                    <Button onClick={() => {handleDenyRequest(appointment); dispatch(closeDialog())}} color="secondary" variant='contained' autoFocus>
                                       Confirm
                                     </Button>
                                   </DialogActions>
@@ -171,7 +171,7 @@ const RequestsContent = () => {
                     </>
                   )
                 }
-                {
+                {/* {
                   appointment.status === 'APPROVED' && (
                     <div className=''>
                       <Typography className='font-semibold' color='secondary'>Do the student attend the session ?</Typography>
@@ -181,11 +181,11 @@ const RequestsContent = () => {
                         }
                         ))}
                       >
-                        Update attendance
+                        Take attendance
                       </Button>
                     </div>
                   )
-                }
+                } */}
               </div>
             </ListItem >
           )}
@@ -270,33 +270,6 @@ const ApproveAppointmentDialog = ({ appointment }: { appointment: Appointment })
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                     setAddress(event.target.value);
                   }} />
-              // <TextField
-              //   autoFocus
-              //   margin="dense"
-              //   name={'meetingDetails'}
-              //   label={appointment.meetingType === 'ONLINE' ? 'Meet Url' : 'Address'}
-              //   fullWidth
-              //   value={appointment.meetingType === 'ONLINE' ? meetUrl : address}
-              //   variant="standard"
-              //   className='mt-16'
-              //   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              //     appointment.meetingType === 'ONLINE'
-              //       ? setMeetUrl(event.target.value)
-              //       : setAddress(event.target.value)
-              //   }} />
-              // <TextField
-              //   autoFocus
-              //   margin="dense"
-              //   name={'meetingDetails'}
-              //   label={'Meet Url'}
-              //   fullWidth
-              //   value={meetUrl}
-              //   variant="standard"
-              //   className='mt-16'
-              //   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              //     setMeetUrl(event.target.value)
-              //   }}
-              // />
             }
           </div>
         </DialogContentText>
@@ -407,58 +380,70 @@ const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointm
   )
 }
 
-const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) => {
-  const dispatch = useAppDispatch()
+// const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) => {
+//   const dispatch = useAppDispatch()
+//   const [attendanceStatus, setAttendanceStatus] = useState<AppointmentAttendanceStatus>('ATTEND')
+//   const [takeAttendance] = useTakeAppointmentAttendanceMutation()
 
-  const handleApproveRequest = () => {
-    dispatch(closeDialog())
-  }
+//   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setAttendanceStatus((event.target as HTMLInputElement).value as AppointmentAttendanceStatus);
+//   }
 
-  return (
-    <div>
-      <DialogTitle id="alert-dialog-title">Update attendance for this student</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description" className='flex flex-col gap-16'>
-          <div
-            className='rounded flex justify-start gap-16'
-          >
-            <Avatar
-              alt={appointment.student.profile.fullName}
-              src={appointment.student.profile.avatarLink}
-            />
-            <div >
-              <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
-              <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
-            </div>
-          </div>
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="female"
-              name="radio-buttons-group"
-            >
-              <div className='flex gap-16'>
-                <FormControlLabel value="female" control={<Radio color='success' />} label="Attended" className='text-black'/>
-                <FormControlLabel value="male" control={<Radio color='error'/>} label="Absent" className='text-black'/>
-              </div>
-            </RadioGroup>
-          </FormControl>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => dispatch(closeDialog())}
-          color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => handleApproveRequest()}
-          color="secondary" variant='contained'
-        >
-          Confirm
-        </Button>
-      </DialogActions>
-    </div>
-  )
-}
+//   const handleTakeAttendance = () => {
+//     takeAttendance({
+//       appointmentId: appointment.id,
+//       counselingAppointmentStatus: attendanceStatus as AppointmentAttendanceStatus
+//     })
+//     dispatch(closeDialog())
+//   }
+
+//   return (
+//     <div>
+//       <DialogTitle id="alert-dialog-title">Update attendance for this student</DialogTitle>
+//       <DialogContent>
+//         <DialogContentText id="alert-dialog-description" className='flex flex-col gap-16'>
+//           <div
+//             className='rounded flex justify-start gap-16'
+//           >
+//             <Avatar
+//               alt={appointment.student.profile.fullName}
+//               src={appointment.student.profile.avatarLink}
+//             />
+//             <div >
+//               <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
+//               <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
+//             </div>
+//           </div>
+//           <FormControl>
+//             <RadioGroup
+//               aria-labelledby="demo-radio-buttons-group-label"
+//               defaultValue="female"
+//               name="radio-buttons-group"
+//               value={attendanceStatus}
+//               onChange={handleRadioChange}
+//             >
+//               <div className='flex gap-16'>
+//                 <FormControlLabel value="ATTEND" control={<Radio color='success' />} label="Attended" className='text-black' />
+//                 <FormControlLabel value="ABSENT" control={<Radio color='error' />} label="Absent" className='text-black' />
+//               </div>
+//             </RadioGroup>
+//           </FormControl>
+//         </DialogContentText>
+//       </DialogContent>
+//       <DialogActions>
+//         <Button onClick={() => dispatch(closeDialog())}
+//           color="primary">
+//           Cancel
+//         </Button>
+//         <Button
+//           onClick={handleTakeAttendance}
+//           color="secondary" variant='contained'
+//         >
+//           Confirm
+//         </Button>
+//       </DialogActions>
+//     </div>
+//   )
+// }
 
 export default RequestsContent

@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -52,6 +52,11 @@ const studentNavigation: NavigationOptions = {
                     route: 'counseling'
                 },
                 {
+                    icon: Article,
+                    name: 'Activity',
+                    route: 'activity'
+                },
+                {
                     icon: CalendarMonth,
                     name: 'Calendar',
                     route: 'calendar',
@@ -60,9 +65,14 @@ const studentNavigation: NavigationOptions = {
         },
         {
             name: 'Resources',
-            description: 'Resources for students & couselors',
+            description: 'Resources for students',
             route: 'resources',
             items: [
+                {
+                    icon: Campaign,
+                    name: 'Events',
+                    route: 'events'
+                },
                 {
                     icon: Article,
                     name: 'Articles',
@@ -73,11 +83,7 @@ const studentNavigation: NavigationOptions = {
                     name: 'Videos',
                     route: 'videos'
                 },
-                {
-                    icon: EventSeat,
-                    name: 'Workshops',
-                    route: 'workshops'
-                },
+
             ]
         }
     ],
@@ -137,6 +143,11 @@ const counselorNavigation: NavigationOptions = {
             route: 'resources',
             items: [
                 {
+                    icon: EventSeat,
+                    name: 'Workshops',
+                    route: 'workshops'
+                },
+                {
                     icon: Article,
                     name: 'Articles',
                     route: 'article'
@@ -145,11 +156,6 @@ const counselorNavigation: NavigationOptions = {
                     icon: NotStarted,
                     name: 'Videos',
                     route: 'videos'
-                },
-                {
-                    icon: EventSeat,
-                    name: 'Workshops',
-                    route: 'workshops'
                 },
             ]
         }
