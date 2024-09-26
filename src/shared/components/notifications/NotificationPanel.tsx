@@ -58,9 +58,8 @@ function NotificationPanel() {
 			title: 'New Fuse React version is released! ',
 			description:
 				' Checkout the release notes for more information. 🚀 ',
-			link: '/documentation/changelog',
 			icon: <Fireplace />,
-			variant: 'secondary',
+			variant: 'primary',
 		});
 
 		setTimeout(() => {
@@ -102,8 +101,7 @@ function NotificationPanel() {
 
 		enqueueSnackbar(item.title, {
 			key: item.id,
-
-			// autoHideDuration: 3000,
+			autoHideDuration: 3000,
 			content: (
 				<NotificationTemplate
 					item={item}
@@ -136,6 +134,7 @@ function NotificationPanel() {
 			</IconButton>
 
 			<div className='flex flex-col h-full p-16'>
+				{/*  check if have notification here */}{' '}
 				{true ? (
 					<div className='flex flex-col flex-auto'>
 						<div className='flex items-end justify-between mb-36 pt-136'>
@@ -157,8 +156,8 @@ function NotificationPanel() {
 								description:
 									' Checkout the release notes for more information. 🚀 ',
 								link: '/documentation/changelog',
-								icon: <Fireplace/>,
-								variant: 'secondary',
+								icon: <Fireplace />,
+								variant: 'primary',
 							}}
 							onClose={handleDismiss}
 						/>

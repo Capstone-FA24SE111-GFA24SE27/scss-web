@@ -12,7 +12,7 @@ const NotifiactionApi = apiService
 				GetAllNotificationsApiResponse,
 				GetAllNotificationsApiArg
 			>({
-				query: () => ({ url: `/notification` }),
+				query: () => ({ url: `/api/notification?SortDirection=ASC&sortBy=id&page=1` }),
 				providesTags: ['notifications'],
 			}),
 			// getNotification: build.query<GetNotificationApiResponse, GetNotificationApiArg>({

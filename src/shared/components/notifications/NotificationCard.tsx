@@ -45,13 +45,13 @@ function NotificationCard(props: NotificationCardProps) {
 		? (variantBgColors[item.variant] as string)
 		: defaultBgColor;
 
-	if (item.variant === 'primary') {
-		bgColor = theme.palette.primary.main;
-	}
+	// if (item.variant === 'primary') {
+	// 	bgColor = theme.palette.primary.main;
+	// }
 
-	if (item.variant === 'secondary') {
-		bgColor = theme.palette.secondary.main;
-	}
+	// if (item.variant === 'secondary') {
+	// 	bgColor = theme.palette.secondary.main;
+	// }
 
 	const handleClose = (ev: MouseEvent<HTMLButtonElement>) => {
 		ev.preventDefault();

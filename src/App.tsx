@@ -9,44 +9,54 @@ import { Suspense } from 'react';
 import { AppLoading } from '@shared/components';
 import { specialRoutes } from '@shared/configs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { store } from '@shared/store';
 import { BrowserRouter } from 'react-router-dom';
-import { Provider as ReduxProvider } from 'react-redux'
+import { Provider as ReduxProvider } from 'react-redux';
+import { SnackbarProvider } from 'notistack';
 
 const App = () => {
-  const account = useAppSelector(selectAccount)
-  const role = account?.role;
-  console.log(account)
-  console.log(role)
-  let roleBasedRoutes;
-  switch (role) {
-    case roles.STUDENT:
-      roleBasedRoutes = studentRoutes;
-      break;
-    default:
-      roleBasedRoutes = authRoutes;
-  }
+	const account = useAppSelector(selectAccount);
+	const role = account?.role;
+	console.log(account);
+	console.log(role);
+	let roleBasedRoutes;
+	switch (role) {
+		case roles.STUDENT:
+			roleBasedRoutes = studentRoutes;
+			break;
+		default:
+			roleBasedRoutes = authRoutes;
+	}
 
-  // const defaultTheme = createTheme();
-  // console.log("Default MUI theme: ", defaultTheme)
+	// const defaultTheme = createTheme();
+	// console.log("Default MUI theme: ", defaultTheme)
 
-  const AppRoutes = useRoutes([
-    ...roleBasedRoutes,
-    ...specialRoutes
-  ])
+	const AppRoutes = useRoutes([...roleBasedRoutes, ...specialRoutes]);
 
-  return (
-    <ThemeProvider root>
-      <StyledEngineProvider injectFirst>
-        <Suspense fallback={<AppLoading />}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {AppRoutes}
-          </LocalizationProvider>
-        </Suspense>
-      </StyledEngineProvider>
-    </ThemeProvider>
-  )
+	return (
+		<ThemeProvider root>
+			<StyledEngineProvider injectFirst>
+				<Suspense fallback={<AppLoading />}>
+					<SnackbarProvider
+						maxSnack={3}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'right',
+						}}
+						classes={{
+							containerRoot:
+								'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99',
+						}}
+					>
+						<LocalizationProvider dateAdapter={AdapterDayjs}>
+							{AppRoutes}
+						</LocalizationProvider>
+					</SnackbarProvider>
+				</Suspense>
+			</StyledEngineProvider>
+		</ThemeProvider>
+	);
 };
 
 export default App;
