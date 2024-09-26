@@ -7,8 +7,8 @@ export type NotificationType = {
 	notificationId?: number;
 	title?: string;
 	message?: string;
-    receiverId: number;
-	// time?: string;
+    receiverId?: number;
+	createdDate?: number;
 	readStatus?: boolean;
 	// variant?:
 	// 	| 'success'

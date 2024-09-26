@@ -4,10 +4,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Button from '@mui/material/Button';
 import _ from 'lodash';
-import { useSnackbar } from 'notistack';
-
 import { useAppDispatch } from '@shared/store';
 import { useAppSelector } from '@shared/store';
 import {
@@ -16,10 +13,9 @@ import {
 	selectNotifications,
 	toggleNotificationPanel,
 } from './notification-slice';
-import NotificationModel from './models/notification-models';
-import NotificationTemplate from './NotificationTemplate';
+
 import NotificationCard from './NotificationCard';
-import { Close, Fireplace } from '@mui/icons-material';
+import { Close} from '@mui/icons-material';
 import {
 	useReadAllNotificationMutation,
 	useReadNotificationMutation,

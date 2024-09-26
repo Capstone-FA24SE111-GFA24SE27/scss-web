@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { NotificationType } from '../../type/notification';
+import { NotificationType } from '../../../types/notification';
 
 
 

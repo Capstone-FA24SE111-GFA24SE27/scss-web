@@ -1,6 +1,7 @@
 import { createSlice, WithSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
-import { NotificationType } from '../type/notification';
+import { NotificationType } from '@/shared/types';
+
 
 type initialStateType = {
 	open: boolean;

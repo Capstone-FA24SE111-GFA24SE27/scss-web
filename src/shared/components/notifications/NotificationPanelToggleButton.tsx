@@ -16,7 +16,7 @@ import { selectAccount } from '@shared/store';
 import { useGetAllNotificationsQuery } from './notification-api';
 import { closeSnackbar, enqueueSnackbar } from 'notistack';
 import NotificationTemplate from './NotificationTemplate';
-import { NotificationType } from '../type/notification';
+import { NotificationType } from '@/shared/types';
 
 type NotificationPanelToggleButtonProps = {
 	children?: ReactNode;
@@ -64,7 +64,9 @@ function NotificationPanelToggleButton(
 		}
 
 		return () => {
-			socket.off(`/user/${account.id}/private/notification`, cb);
+			if (socket && account) {
+				socket.off(`/user/${account.id}/private/notification`, cb);
+			}
 		};
 	}, [socket]);
 

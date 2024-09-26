@@ -1,7 +1,7 @@
 import { ForwardedRef, forwardRef } from 'react';
 import { SnackbarContent } from 'notistack';
 import NotificationCard from './NotificationCard';
-import { NotificationType } from '../type/notification';
+import { NotificationType } from '@/shared/types';
 
 type NotificationTemplateProps = {
 	item: NotificationType;

@@ -14,7 +14,8 @@ import yellow from '@mui/material/colors/yellow';
 import NavLinkAdapter from '../link/NavLinkAdapter';
 import { Icon } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import { NotificationType } from '../type/notification';
+import { NotificationType } from '@/shared/types';
+
 
 type NotificationCardProps = {
 	item: NotificationType;
@@ -98,16 +99,16 @@ function NotificationCard(props: NotificationCardProps) {
 					/>
 				)}
 
-				{/* {item.time && (
+				{item.createdDate && (
 					<Typography
 						className='mt-8 text-sm leading-none '
 						color='text.secondary'
 					>
-						{formatDistanceToNow(new Date(item.time), {
+						{formatDistanceToNow(new Date(item.createdDate), {
 							addSuffix: true,
 						})}
 					</Typography>
-				)} */}
+				)}
 			</div>
 
 			<IconButton

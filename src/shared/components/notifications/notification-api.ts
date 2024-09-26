@@ -1,5 +1,5 @@
+import { NotificationType } from '@/shared/types';
 import { apiService } from '@shared/store';
-import { NotificationType } from '../type/notification';
 
 export const addTagTypes = ['notifications'] as const;
 
@@ -14,7 +14,7 @@ const NotificationApi = apiService
 				GetAllNotificationsApiArg
 			>({
 				query: () => ({
-					url: `/api/notification?SortDirection=ASC&sortBy=readStatus&page=1`,
+					url: `/api/notification?SortDirection=DESC&sortBy=createdDate&page=1`,
 				}),
 				providesTags: ['notifications'],
 			}),
