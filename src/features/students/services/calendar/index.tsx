@@ -1,1 +1,0 @@
-export {studentCalendarRoutes}  from './calendar-routes'

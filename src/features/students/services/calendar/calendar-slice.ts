@@ -3,7 +3,7 @@ import { WithSlice, createSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
 import { DeepPartial } from 'react-hook-form';
 import { formatISO } from 'date-fns/formatISO';
-import { Event } from './calendarApi';
+import { Event } from './calendar-api';
 
 export const dateFormdat = 'YYYY-MM-DDTHH:mm:ss.sssZ';
 

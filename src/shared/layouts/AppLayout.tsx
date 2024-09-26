@@ -6,6 +6,7 @@ import { NavbarLayout } from './layout-components/navbar';
 import { ToolbarLayout } from './layout-components/toolbar';
 import { FooterLayout } from './layout-components/footer';
 import { AppLoading } from '@shared/components';
+import { RightSideLayout } from './layout-components/right';
 
 
 
@@ -78,10 +79,10 @@ export default function AppLayout(props: AppLayoutProps) {
 
 	return (
 		<div className="flex w-full">
-			<div className="flex min-w-0 flex-auto">
+			<div className="flex flex-auto min-w-0">
 				{config.navbar.display && config.navbar.position === 'left' && <NavbarLayout />}
 				<main
-					className="relative z-10 flex min-h-full min-w-0 flex-auto flex-col"
+					className="relative z-10 flex flex-col flex-auto min-w-0 min-h-full"
 				>
 					{config.toolbar.display && (
 						<ToolbarLayout className={config.toolbar.style === 'fixed' ? 'sticky top-0' : ''} />
@@ -91,7 +92,7 @@ export default function AppLayout(props: AppLayoutProps) {
 						<Configurator />
 					</div> */}
 
-					<div className="relative z-10 flex min-h-0 flex-auto flex-col">
+					<div className="relative z-10 flex flex-col flex-auto min-h-0">
 						{/* <FuseSuspense>{useRoutes(routes)}</FuseSuspense> */}
 
 						{/* <Suspense>
@@ -110,7 +111,7 @@ export default function AppLayout(props: AppLayoutProps) {
 				{config.navbar.display && config.navbar.position === 'right' && <NavbarLayout />}
 			</div>
 
-			{/* {config.rightSidePanel.display && <RightSideAppLayout />} */}
+			{config.rightSidePanel.display && <RightSideLayout />}
 		</div>
 	);
 }

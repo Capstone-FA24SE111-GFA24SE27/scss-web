@@ -27,13 +27,10 @@ const App = () => {
       roleBasedRoutes = authRoutes;
   }
 
-  // const defaultTheme = createTheme();
-  // console.log("Default MUI theme: ", defaultTheme)
+	// const defaultTheme = createTheme();
+	// console.log("Default MUI theme: ", defaultTheme)
 
-  const AppRoutes = useRoutes([
-    ...roleBasedRoutes,
-    ...specialRoutes
-  ])
+	const AppRoutes = useRoutes([...roleBasedRoutes, ...specialRoutes]);
 
   return (
     <ThemeProvider root>

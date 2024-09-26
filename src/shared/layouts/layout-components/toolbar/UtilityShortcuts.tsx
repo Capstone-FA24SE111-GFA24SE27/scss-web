@@ -1,16 +1,19 @@
+import { NotificationPanelToggleButton } from '@/shared/components/notifications';
 import { NotificationsNone, Search } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { memo } from 'react';
 function UtilityShortcuts() {
+
     const items = [
         {
             icon: Search,
-            name: 'Calendar',
+            name: 'Search',
         },
-        {
-            icon: NotificationsNone,
-            name: 'Mail',
-        },
+        // {
+        //     icon: NotificationsNone,
+        //     name: 'Notification',
+        //     onClick: () => dispatch(openNotificationPanel())
+        // },
     ]
     return (
         <div className='flex items-center gap-4'>
@@ -23,6 +26,7 @@ function UtilityShortcuts() {
                     // </Tooltip>
                 )
             }
+            <NotificationPanelToggleButton />
         </div >
     );
 }
