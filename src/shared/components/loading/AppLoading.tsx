@@ -30,10 +30,10 @@ function FuseLoading(props: FuseLoadingProps) {
             )}
         >
             <img
-                src="/assets/images/logo/FPT-education.png" alt="" 
-                width={100} height={100} 
+                src="/assets/images/logo/FPT-education.png" alt=""
+                width={100} height={100}
                 className='w-[28rem]'
-                />
+            />
             {/* <Typography
                 className="-mb-16 text-13 font-medium sm:text-20"
                 color="text.secondary"

@@ -1,4 +1,1 @@
-import CounselorView from "./CounselorView";
-export {
-    CounselorView
-}
+export { counselorRoutes } from './counselor-routes'

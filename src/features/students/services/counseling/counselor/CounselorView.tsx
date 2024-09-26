@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import { NavLinkAdapter } from '@shared/components';
+import { ContentLoading, NavLinkAdapter } from '@shared/components';
 import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
@@ -10,52 +10,30 @@ import { format } from 'date-fns/format';
 import _ from 'lodash';
 import { CakeOutlined, EmailOutlined, LocalPhoneOutlined, NotesOutlined } from '@mui/icons-material';
 import { Rating } from '@mui/material';
+import { useGetCounselorQuery } from '../counseling-api';
+import dayjs from 'dayjs';
 /**
  * The contact view.
  */
 function CounselorView() {
-    // const { data: countries } = useGetContactsCountriesQuery();
-    // const { data: tags } = useGetContactsTagsQuery();
-    // const routeParams = useParams();
-    // const { id: contactId } = routeParams as { id: string };
-    // const {
-    //     data: contact,
-    //     isLoading,
-    //     isError
-    // } = useGetContactsItemQuery(contactId, {
-    //     skip: !contactId
-    // });
-    // const dispatch = useAppDispatch();
-    // const navigate = useNavigate();
+    const routeParams = useParams();
+    const { id: counselorId } = routeParams as { id: string };
+    const { data, isLoading } = useGetCounselorQuery(counselorId);
+    const counselor = data?.content
 
-    // function getCountryByIso(iso: string) {
-    //     return countries?.find((country) => country.iso === iso);
-    // }
+    if (isLoading) {
+        return <ContentLoading className='m-32'/>
+    }
 
-    // if (isLoading) {
-    //     return <FuseLoading className="min-h-screen" />;
-    // }
-
-    // if (isError) {
-    //     setTimeout(() => {
-    //         navigate('/apps/contacts');
-    //         dispatch(showMessage({ message: 'NOT FOUND' }));
-    //     }, 0);
-
-    //     return null;
-    // }
-
-    // if (!contact) {
-    //     return null;
-    // }
-    const counselor = {
-        "id": 4,
-        "email": "counselor@example.com",
-        "avatarLink": "https://arknights.wiki.gg/images/0/02/Ho%27olheyak_icon.png",
-        "rating": 4.6,
-        "fullName": "Counselor",
-        "phoneNumber": "1234567890",
-        "dateOfBirth": 315532800000
+    if (!data) {
+        return <div className='relative p-48'>
+            <Typography
+                color="text.secondary"
+                variant="h5"
+            >
+                Invalid counselor!
+            </Typography>
+        </div>
     }
 
     return (
@@ -89,10 +67,11 @@ function CounselorView() {
                         >
                             {counselor?.fullName?.charAt(0)}
                         </Avatar>
-                        <div className="flex items-center ml-auto mb-4 text-white">
+                        <div className="flex items-center ml-auto mb-4">
                             <Button
                                 variant="contained"
                                 color="secondary"
+                                sx={{ color: 'white' }}
                                 component={NavLinkAdapter}
                                 to="booking"
                             >
@@ -155,7 +134,7 @@ function CounselorView() {
                         {counselor.dateOfBirth && (
                             <div className="flex items-center">
                                 <CakeOutlined />
-                                <div className="ml-24 leading-6">{counselor.dateOfBirth}</div>
+                                <div className="ml-24 leading-6">{dayjs(315532800000).format('DD-MM-YYYY')}</div>
                             </div>
                         )}
 

@@ -31,7 +31,6 @@ function CounselingHeader() {
     const [showFilter, setShowFilter] = useState(false)
     return (
         <>
-        <Button>Test token</Button>
             <div className="p-24 sm:p-32 w-full border-b-1 bg-background-paper">
                 <div className="flex flex-col">
                     <motion.span

@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, SvgIconComponent } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -20,9 +20,14 @@ interface Shortcut {
     name: string;
 }
 
+interface UserMenu {
+    name: string;
+    route: string;
+}
 interface NavigationOptions {
     list: SubList[];
     shortcuts: Shortcut[];
+    userMenu: UserMenu[];
 }
 
 interface RoleBasedNavigation {
@@ -47,6 +52,85 @@ const studentNavigation: NavigationOptions = {
                     route: 'counseling'
                 },
                 {
+                    icon: Article,
+                    name: 'Activity',
+                    route: 'activity'
+                },
+                {
+                    icon: CalendarMonth,
+                    name: 'Calendar',
+                    route: 'calendar',
+                },
+            ]
+        },
+        {
+            name: 'Resources',
+            description: 'Resources for students',
+            route: 'resources',
+            items: [
+                {
+                    icon: Campaign,
+                    name: 'Events',
+                    route: 'events'
+                },
+                {
+                    icon: Article,
+                    name: 'Articles',
+                    route: 'article'
+                },
+                {
+                    icon: NotStarted,
+                    name: 'Videos',
+                    route: 'videos'
+                },
+
+            ]
+        }
+    ],
+    shortcuts: [
+        {
+            icon: CalendarMonth,
+            name: 'Calendar',
+        },
+        {
+            icon: Mail,
+            name: 'Mail',
+        },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Activity',
+            route: 'activity'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+    ]
+}
+
+const counselorNavigation: NavigationOptions = {
+    list: [
+        {
+            name: "Counseling",
+            description: "Counseling service",
+            route: 'counseling',
+            items: [
+                {
+                    icon: Archive,
+                    name: 'Requests',
+                    route: 'requests'
+                },
+                {
+                    icon: TagFaces,
+                    name: 'Appointments',
+                    route: 'appointments'
+                },
+                {
                     icon: CalendarMonth,
                     name: 'Calendar',
                     route: 'calendar',
@@ -59,6 +143,11 @@ const studentNavigation: NavigationOptions = {
             route: 'resources',
             items: [
                 {
+                    icon: EventSeat,
+                    name: 'Workshops',
+                    route: 'workshops'
+                },
+                {
                     icon: Article,
                     name: 'Articles',
                     route: 'article'
@@ -67,11 +156,6 @@ const studentNavigation: NavigationOptions = {
                     icon: NotStarted,
                     name: 'Videos',
                     route: 'videos'
-                },
-                {
-                    icon: EventSeat,
-                    name: 'Workshops',
-                    route: 'workshops'
                 },
             ]
         }
@@ -85,9 +169,21 @@ const studentNavigation: NavigationOptions = {
             icon: Mail,
             name: 'Mail',
         },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
     ]
 }
 
+
 export const roleBasedNavigation: RoleBasedNavigation = {
-    [roles.STUDENT]: studentNavigation
+    [roles.STUDENT]: studentNavigation,
+    [roles.COUNSELOR]: counselorNavigation,
 }

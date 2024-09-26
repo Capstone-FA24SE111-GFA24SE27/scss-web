@@ -31,7 +31,6 @@ const NavLinkAdapter = forwardRef<HTMLAnchorElement, NavLinkAdapterPropsType>((p
 			style={({ isActive }) => ({
 				..._props.style,
 				color: 'inherit',
-				textDecoration: 'none',
 				...(isActive ? activeStyle : null)
 			})}
 		>

@@ -16,7 +16,7 @@ const Root = styled(PageSimple)(({ theme }) => ({
 /**
  * The ContactsApp page.
  */
-function ContactsApp() {
+function Counseling() {
 	const pageLayout = useRef(null);
 	const routeParams = useParams();
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
@@ -44,4 +44,4 @@ function ContactsApp() {
 	);
 }
 
-export default ContactsApp;
+export default Counseling;
