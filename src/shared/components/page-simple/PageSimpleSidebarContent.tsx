@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Scrollbar } from '@shared/components';
 
 /**
  * Props for the FusePageSimpleSidebarContent component.
@@ -19,11 +20,9 @@ function FusePageSimpleSidebarContent(props: PageSimple) {
 	}
 
 	return (
-		// <FuseScrollbars enable={innerScroll}>
-		<div className='overflow-auto	'>
+		<Scrollbar>
 			<div className="FusePageSimple-sidebarContent">{children}</div>
-		</div>
-		// </FuseScrollbars>
+		</Scrollbar>
 	);
 }
 
