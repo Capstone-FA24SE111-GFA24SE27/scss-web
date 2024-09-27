@@ -6,23 +6,25 @@ import Divider from '@mui/material/Divider';
 // import NavLinkAdapter from '@fuse/core/NavLinkAdapter';
 import ListItemButton from '@mui/material/ListItemButton';
 import { NavLinkAdapter } from '@/shared/components';
-import { Box, Rating } from '@mui/material';
+import { Box, Chip, Rating } from '@mui/material';
+import { Counselor } from './counseling-api';
+import { Mail, Phone } from '@mui/icons-material';
 
-type ContactListItemPropsType = {
-	counselor: any;
+type CounselorListItemPropsType = {
+	counselor: Counselor;
 };
 
 /**
  * The contact list item.
  */
-function ContactListItem(props: ContactListItemPropsType) {
+function CounselorListItem(props: CounselorListItemPropsType) {
 	const { counselor } = props;
 
 	return (
 		<>
 			<ListItemButton
-				className="p-16 flex gap-16"
-				sx={{ bgcolor: 'background.paper' }}
+				className="p-8 flex gap-24 items-center"
+				sx={{ bgcolor: 'background.paper'}}
 				component={NavLinkAdapter}
 				to={`${counselor.id}`}
 			>
@@ -30,31 +32,39 @@ function ContactListItem(props: ContactListItemPropsType) {
 					<Avatar
 						alt={counselor.fullName}
 						src={counselor.avatarLink}
-						className='size-64'
+						className='size-80'
 					/>
 				</ListItemAvatar>
-				<Box className='flex flex-col gap-2'>
+				<Box className='flex flex-col gap-12 mt-16 justify-between'>
 					<ListItemText
-						classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate' }}
+						classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate text-lg' }}
 						primary={counselor.fullName}
-						secondary={
-							<Typography
-								className="inline"
-								component="span"
-								variant="caption"
-								color="text.secondary"
-							>
-								{counselor.email}
-							</Typography>
-						}
+						secondary={counselor.email}
 					/>
-					<Rating
-						name="simple-controlled"
-						size='small'
-						value={4.6}
-						readOnly
-						precision={0.5}
-					/>
+					{/* <div className='flex gap-8'>
+						<Rating
+							name="simple-controlled"
+							size='small'
+							value={counselor.rating}
+							readOnly
+							precision={0.5}
+						/>
+						<Typography color='text.secondary'>(160)</Typography>
+					</div> */}
+
+					<div className="flex flex-wrap items-center">
+						<Chip
+							label={'Technology'}
+							className="mr-12 mb-12"
+							size="small"
+							color='default'
+						/>
+						<Chip
+							label={'Academic'}
+							className="mr-12 mb-12"
+							size="small"
+						/>
+					</div>
 				</Box>
 			</ListItemButton>
 			<Divider />
@@ -62,4 +72,4 @@ function ContactListItem(props: ContactListItemPropsType) {
 	);
 }
 
-export default ContactListItem;
+export default CounselorListItem;

@@ -41,8 +41,7 @@ function NavbarContent(props: NavbarContentProps) {
 		<Root className={clsx('flex h-full flex-auto flex-col overflow-hidden', className)}>
 			<div className="flex flex-row items-center h-48 px-20 shrink-0 md:h-64">
 				<div className="flex flex-1 mx-4">
-					{/* <Logo /> */}
-					Logo here
+					<img alt='logo' src='/assets/images/logo/FPT-education.png'/>
 				</div>
 
 				<NavbarToggleButton />

@@ -6,7 +6,6 @@ import Requests from './requests/Requests';
 export const counselingRoutes: RouteObject[] = [
     {
         path: 'counseling',
-        // element: <Requests />,
         children: [
             ...requestsRoutes,
             ...appointmentsRoutes

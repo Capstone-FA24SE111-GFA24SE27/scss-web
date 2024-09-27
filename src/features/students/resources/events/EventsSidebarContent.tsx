@@ -16,7 +16,6 @@ function EventsSidebarContent() {
             >
                 <Close/>
             </IconButton>
-
             <Outlet />
         </div>
     );
