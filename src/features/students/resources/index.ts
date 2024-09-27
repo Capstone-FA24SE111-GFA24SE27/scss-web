@@ -5,7 +5,7 @@ import { RouteObject } from 'react-router-dom';
 
 export const resourcesRoutes: RouteObject[] = [
   {
-    path: 'events',
+    path: 'resources',
     children: [
       ...eventsRoutes,
     ]

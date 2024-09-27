@@ -227,7 +227,8 @@ export const defaultThemeOptions = {
 				root: {
 					// borderRadius: 8,
 					'&.Mui-selected': {
-						backgroundColor: 'primary.light', // Customize background color for selected state
+						backgroundColor: 'primary.light', 
+						fontWeight: 'bold',
 						'&:hover': {
 							backgroundColor: 'primary.light', // Customize background color on hover when selected
 						},

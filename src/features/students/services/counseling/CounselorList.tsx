@@ -35,7 +35,7 @@ function CounselorList() {
             className="flex flex-col flex-auto w-full max-h-full px-4"
         >
             <List className="w-full m-0 p-0">
-                {[...counselors, ...counselors, ...counselors].map(item =>
+                {[...counselors].map(item =>
                     <CounselorListItem
                         key={item.id}
                         counselor={item} />

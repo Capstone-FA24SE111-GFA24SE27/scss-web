@@ -1,56 +1,25 @@
-.custom-scrollbars__container {
-    background-color: white;
-    border: 1px solid #333;
-    border-radius: 12px;
-    display: grid;
-    height: 100%;
-    grid-template: auto / 1fr 50px;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .custom-scrollbars__content {
-    height: 90vh;
-    -ms-overflow-style: none;
-    overflow: auto;
-    padding: 0 1rem;
-    scrollbar-width: none;
-  }
-  
-  .custom-scrollbars__content::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .custom-scrollbars__scrollbar {
-    display: grid;
-    gap: 1rem;
-    grid-auto-flow: row;
-    grid-template: auto 1fr auto / 1fr;
-    padding: 1rem;
-    place-items: center;
-  }
-  
-  .custom-scrollbars__track-and-thumb {
-    display: block;
-    height: 100%;
-    position: relative;
-    width: 16px;
-  }
-  
-  .custom-scrollbars__track {
-    background-color: #ccc;
-    border-radius: 12px;
-    bottom: 0;
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    width: 16px;
-  }
-  
-  .custom-scrollbars__thumb {
-    border-radius: 12px;
-    background-color: #333;
-    position: absolute;
-    width: 16px;
-  }
-  
+.custom-scrollbar {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar Styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the scrollbar track */
+  border-radius: 8px; /* Optional: round the edges */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar color */
+  border-radius: 8px; /* Round the scrollbar thumb */
+  border: 1px solid transparent; /* Space between scrollbar and edge */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker scrollbar on hover */
+}

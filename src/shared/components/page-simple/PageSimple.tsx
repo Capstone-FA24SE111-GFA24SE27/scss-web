@@ -7,7 +7,7 @@ import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
 import { Theme } from '@mui/system';
 import PageSimpleHeader from './PageSimpleHeader';
 import PageSimpleSidebar from './PageSimpleSidebar';
-import { Scrollbar } from '../scrollbar';
+import { Scrollbar } from '@shared/components';
 import Dialog from '../dialog';
 
 const headerHeight = 120;
@@ -293,9 +293,10 @@ const PageSimple = forwardRef<
 								// 	enable={false}
 								// 	className={clsx('PageSimple-content container')}
 								// >
-								<div className='overflow-auto	'>
+								<Scrollbar>
 									{content}
-								</div>
+								</Scrollbar>
+
 								// </FuseScrollbars>
 							)}
 						</div>

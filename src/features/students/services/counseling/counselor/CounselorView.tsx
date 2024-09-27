@@ -15,14 +15,18 @@ import dayjs from 'dayjs';
 /**
  * The contact view.
  */
-function CounselorView() {
+
+interface CounselorViewProps {
+    shouldShowBooking?: boolean
+}
+function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
     const routeParams = useParams();
     const { id: counselorId } = routeParams as { id: string };
     const { data, isLoading } = useGetCounselorQuery(counselorId);
     const counselor = data?.content
 
     if (isLoading) {
-        return <ContentLoading className='m-32'/>
+        return <ContentLoading className='m-32' />
     }
 
     if (!data) {
@@ -67,17 +71,22 @@ function CounselorView() {
                         >
                             {counselor?.fullName?.charAt(0)}
                         </Avatar>
-                        <div className="flex items-center ml-auto mb-4">
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                sx={{ color: 'white' }}
-                                component={NavLinkAdapter}
-                                to="booking"
-                            >
-                                <span className="mx-8">Book Appointment</span>
-                            </Button>
-                        </div>
+                        {
+                            shouldShowBooking && (
+                                <div className="flex items-center ml-auto mb-4">
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        sx={{ color: 'white' }}
+                                        component={NavLinkAdapter}
+                                        to="booking"
+                                    >
+                                        <span className="mx-8">Book Appointment</span>
+                                    </Button>
+                                </div>
+                            )
+
+                        }
                     </div>
 
                     <Typography className="mt-12 text-4xl font-bold truncate">{counselor.fullName}</Typography>
