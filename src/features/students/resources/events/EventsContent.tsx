@@ -1,13 +1,13 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
+import { AccessTime, CalendarMonth, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
 import Dialog from '@shared/components/dialog';
 import dayjs from 'dayjs';
-const AppointmentsContent = () => {
+const EventsContent = () => {
   const { data, isLoading } = useGetCounselingAppointmentQuery({})
 
   const [denyAppointmentRequest] = useDenyAppointmentRequestMutation();
@@ -37,7 +37,7 @@ const AppointmentsContent = () => {
           appointments.map(appointment =>
             <ListItem
               key={appointment.id}
-              className="p-16 flex gap-8 rounded-lg"
+              className="p-16 flex gap-16 rounded-lg"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
@@ -79,13 +79,10 @@ const AppointmentsContent = () => {
                   {(<Tooltip title={appointment.meetingType === 'ONLINE' ? 'Update meet URL' : 'Update address'}>
                     <IconButton
                       color='secondary'
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        event.preventDefault()
-                        dispatch(openDialog({
-                          children: <UpdateDetailsAppointmentDialog appointment={appointment} />
-                        }))
-                      }}
+                      onClick={() => dispatch(openDialog({
+                        children: <UpdateDetailsAppointmentDialog appointment={appointment} />
+                      }
+                      ))}
                     >
                       <EditNote fontSize='medium' />
                     </IconButton>
@@ -101,7 +98,7 @@ const AppointmentsContent = () => {
                     {appointment.reason}
                   </Typography>
                 </div> */}
-                {/* <ListItem
+                <ListItem
                   className='w-full rounded flex-col bg-primary-main/5 gap-16'
                 >
                   <div className='flex gap-16 items-start w-full'>
@@ -158,92 +155,22 @@ const AppointmentsContent = () => {
                       </div>
                     )
                   }
-                </ListItem> */}
-                <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
-                  <ListItemButton
-                    component={NavLinkAdapter}
-                    to={`student/${appointment.studentInfo.profile.id}`}
-                    className='bg-primary-main/10 w-full rounded'
-                  >
-                    <div className='flex gap-16 items-start w-full'>
-
-                      <Avatar
-                        alt={appointment.studentInfo.profile.fullName}
-                        src={appointment.studentInfo.profile.avatarLink}
-                      />
-                      <div >
-                        <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.studentInfo.email || 'emailisnull.edu.vn'}</Typography>
-                      </div>
+                </ListItem>
+                {
+                  appointment.status === 'WAITING' && (
+                    <div className=''>
+                      <Typography className='font-semibold' color='secondary'>Do the student attend the session ?</Typography>
+                      <Button className='mt-8' variant='outlined' color='secondary'
+                        onClick={() => dispatch(openDialog({
+                          children: <CheckAttendanceDialog appointment={appointment} />
+                        }
+                        ))}
+                      >
+                        Take attendance
+                      </Button>
                     </div>
-                    <ChevronRight />
-                  </ListItemButton>
-                </Tooltip>
-                <div className='pl-16'>
-                  {
-                    ['ATTEND', 'ABSENT'].includes(appointment.status) && (
-                      <div className='flex gap-4'>
-                        <div className='flex items-center'>
-                          <Typography className={'w-[13rem]'}>Attendance Status:</Typography>
-                          <Typography
-                            className='font-semibold pl-4'
-                            color={statusColor[appointment.status]}
-                          >
-                            {appointment.status}
-                          </Typography>
-                        </div>
-                        <Tooltip title={'Update attendance'}>
-                          <IconButton
-                            color='secondary'
-                            onClick={() => dispatch(openDialog({
-                              children: <CheckAttendanceDialog appointment={appointment} />
-                            }
-                            ))}
-                          >
-                            <EditNote fontSize='medium' />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    )
-                  }
-                  {
-                    appointment.appointmentFeedback && (
-                      <div className='w-full'>
-                        <div className='flex'>
-                          <Typography className='w-[13rem]'>Student feedback:</Typography>
-                          <div className='flex flex-col'>
-                            <div className='flex items-center gap-8'>
-                              <Rating
-                                size='medium'
-                                value={appointment.appointmentFeedback.rating}
-                                readOnly
-                              />
-                              <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-                            </div>
-                            <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
-                          </div>
-                        </div>
-                      </div>
-
-                    )
-                  }
-                  {
-                    appointment.status === 'WAITING' && (
-                      <div className=''>
-                        <Typography className='font-semibold' color='secondary'>Do the student attend the session ?</Typography>
-                        <Button className='' variant='outlined' color='secondary'
-                          onClick={() => dispatch(openDialog({
-                            children: <CheckAttendanceDialog appointment={appointment} />
-                          }
-                          ))}
-                        >
-                          Take attendance
-                        </Button>
-                      </div>
-                    )
-                  }
-                </div>
-
+                  )
+                }
               </div>
             </ListItem >
           )}
@@ -407,4 +334,4 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
   )
 }
 
-export default AppointmentsContent
+export default EventsContent

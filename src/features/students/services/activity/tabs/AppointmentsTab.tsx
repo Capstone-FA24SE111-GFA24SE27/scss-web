@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment } from '../activity-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, Circle } from '@mui/icons-material';
+import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useAppDispatch } from '@shared/store';
@@ -70,7 +70,7 @@ const AppointmentsTab = () => {
                           </div>
                         )}
                       </div>
-                      : appointment.address && (<div className='flex gap-8 items-center '>
+                      : appointment.address && (<div className='flex gap-16 items-center'>
                         <Typography className='w-68'>Address:</Typography>
                         <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                       </div>)
@@ -95,17 +95,20 @@ const AppointmentsTab = () => {
                 <Tooltip title={`View ${appointment.counselorInfo.profile.fullName}'s profile`}>
                   <ListItemButton
                     component={NavLinkAdapter}
-                    to={`/services/counseling/${appointment.counselorInfo.profile.id}`}
+                    to={`counselor/${appointment.counselorInfo.profile.id}`}
                     className='bg-primary-main/10 w-full rounded'
                   >
-                    <Avatar
-                      alt={appointment.counselorInfo.profile.fullName}
-                      src={appointment.counselorInfo.profile.avatarLink}
-                    />
-                    <div className='ml-16'>
-                      <Typography className='font-semibold text-primary-main'>{appointment.counselorInfo.profile.fullName}</Typography>
-                      <Typography color='text.secondary'>{appointment.counselorInfo.email || 'counselor@fpt.edu.vn'}</Typography>
+                    <div className='w-full flex'>
+                      <Avatar
+                        alt={appointment.counselorInfo.profile.fullName}
+                        src={appointment.counselorInfo.profile.avatarLink}
+                      />
+                      <div className='ml-16'>
+                        <Typography className='font-semibold text-primary-main'>{appointment.counselorInfo.profile.fullName}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselorInfo.email || 'counselor@fpt.edu.vn'}</Typography>
+                      </div>
                     </div>
+                    <ChevronRight />
                   </ListItemButton>
                 </Tooltip>
                 {appointment.appointmentFeedback ?
@@ -125,7 +128,7 @@ const AppointmentsTab = () => {
                               <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                             </div>
                           </div>
-                          <Typography className=' mt-8'>{appointment.appointmentFeedback.comment}</Typography>
+                          <Typography className='pl-8 mt-8' sx={{color: 'text.secondary'}}>{appointment.appointmentFeedback.comment}</Typography>
                         </div>
                       </div>
                     </div>

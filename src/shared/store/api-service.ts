@@ -12,6 +12,7 @@ const BASE_URL = 'http://localhost:8080'
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: BASE_URL,
+	credentials: 'include',
 	prepareHeaders: (headers, { getState }) => {
 		const token = (getState() as RootState).user.accessToken
 		if (token) {
@@ -41,6 +42,7 @@ const baseQueryWithReauth: BaseQueryFn<
 			result = await baseQuery(args, api, extraOptions);
 		} else {
 			api.dispatch(logout());
+			window.location.href = '/';
 		}
 	}
 	return result

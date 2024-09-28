@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
 import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './requests-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, Circle, Edit, EditNote } from '@mui/icons-material';
+import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
@@ -112,7 +112,7 @@ const RequestsContent = () => {
                     {appointment.reason}
                   </Typography>
                 </div>
-                <ListItem
+                {/* <ListItem
                   className='bg-primary-main/5 w-full rounded flex gap-16'
                 >
                   <Avatar
@@ -123,12 +123,31 @@ const RequestsContent = () => {
                     <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
                     <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
                   </div>
-                </ListItem>
+                </ListItem> */}
+                <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
+                  <ListItemButton
+                    component={NavLinkAdapter}
+                    to={`student/${appointment.student.profile.id}`}
+                    className='bg-primary-main/10 w-full rounded'
+                  >
+                    <div className='w-full flex'>
+                      <Avatar
+                        alt={appointment.student.profile.fullName}
+                        src={appointment.student.profile.avatarLink}
+                      />
+                      <div className='ml-16'>
+                        <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
+                        <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
+                      </div>
+                    </div>
+                    <ChevronRight />
+                  </ListItemButton>
+                </Tooltip>
                 {
                   appointment.status === 'WAITING' && (
                     <>
                       <Divider />
-                      <div className='flex flex-col w-full justify-end gap-8 text-secondary-main '>
+                      <div className='flex flex-col w-full gap-8 text-secondary-main '>
                         <Typography className='font-semibold'>Do you want to approve this appoitment request?</Typography>
                         <div className='flex gap-16'>
                           <Button color='error' variant='outlined' className='w-96'
@@ -145,7 +164,7 @@ const RequestsContent = () => {
                                     <Button onClick={() => dispatch(closeDialog())} color="primary">
                                       Cancel
                                     </Button>
-                                    <Button onClick={() => {handleDenyRequest(appointment); dispatch(closeDialog())}} color="secondary" variant='contained' autoFocus>
+                                    <Button onClick={() => { handleDenyRequest(appointment); dispatch(closeDialog()) }} color="secondary" variant='contained' autoFocus>
                                       Confirm
                                     </Button>
                                   </DialogActions>

@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { AppointmentRequest, useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation } from '../activity-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, Circle } from '@mui/icons-material';
+import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useAppDispatch } from '@shared/store';
@@ -91,20 +91,23 @@ const RequestsTab = () => {
                   </Typography>
                 </div>
                 <Tooltip title={`View ${appointment.counselor.profile.fullName}'s profile`}>
-                  <ListItem
+                  <ListItemButton
                     component={NavLinkAdapter}
-                    to={`/services/counseling/${appointment.counselor.profile.id}`}
-                    className='bg-primary-main/10 w-full'
+                    to={`counselor/${appointment.counselor.profile.id}`}
+                    className='bg-primary-main/10 w-full rounded'
                   >
-                    <Avatar
-                      alt={appointment.counselor.profile.fullName}
-                      src={appointment.counselor.profile.avatarLink}
-                    />
-                    <div className='ml-16'>
-                      <Typography className='font-semibold text-primary-main'>{appointment.counselor.profile.fullName}</Typography>
-                      <Typography color='text.secondary'>{appointment.counselor.email || 'counselor@fpt.edu.vn'}</Typography>
+                    <div className='w-full flex'>
+                      <Avatar
+                        alt={appointment.counselor.profile.fullName}
+                        src={appointment.counselor.profile.avatarLink}
+                      />
+                      <div className='ml-16'>
+                        <Typography className='font-semibold text-primary-main'>{appointment.counselor.profile.fullName}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselor.email || 'counselor@fpt.edu.vn'}</Typography>
+                      </div>
                     </div>
-                  </ListItem>
+                    <ChevronRight />
+                  </ListItemButton>
                 </Tooltip>
               </div>
             </ListItem>
