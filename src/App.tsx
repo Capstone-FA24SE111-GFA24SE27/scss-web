@@ -13,9 +13,10 @@ import { useRoutes } from 'react-router-dom';
 import { counselorsRoutes } from '@features/counselors';
 import Dialog from '@shared/components/dialog';
 import { SnackbarProvider } from 'notistack';
+import { SocketProvider } from './shared/context/socket-context';
 
 const App = () => {
-	const account = useAppSelector(selectAccount)
+	const account = useAppSelector(selectAccount);
 	let roleBasedRoutes = [];
 	switch (account?.role) {
 		case roles.STUDENT:
@@ -42,19 +43,20 @@ const App = () => {
 						}}
 						classes={{
 							containerRoot:
-								'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99',
+								'bottom-0 right-0 mb-52 md:mb-68 mr-4 lg:mr-40 z-99',
 						}}
 					>
-
 						<Suspense fallback={<AppLoading />}>
-							<Dialog />
-							{AppRoutes}
+							<SocketProvider>
+								<Dialog />
+								{AppRoutes}
+							</SocketProvider>
 						</Suspense>
 					</SnackbarProvider>
 				</LocalizationProvider>
 			</StyledEngineProvider>
 		</ThemeProvider>
-	)
+	);
 };
 
 export default App;

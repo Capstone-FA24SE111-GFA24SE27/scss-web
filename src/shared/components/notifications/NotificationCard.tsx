@@ -11,15 +11,16 @@ import blue from '@mui/material/colors/blue';
 import red from '@mui/material/colors/red';
 import orange from '@mui/material/colors/orange';
 import yellow from '@mui/material/colors/yellow';
-import { NotificationModelType } from './models/notification-models';
 import NavLinkAdapter from '../link/NavLinkAdapter';
 import { Icon } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import { NotificationType } from '@/shared/types';
+
 
 type NotificationCardProps = {
-	item: NotificationModelType;
+	item: NotificationType;
 	className?: string;
-	onClose: (T: string) => void;
+	onClose: (T: number) => void;
 };
 
 const variantBgColors = {
@@ -41,10 +42,10 @@ function NotificationCard(props: NotificationCardProps) {
 
 	const defaultBgColor = theme.palette.background.paper;
 
-	let bgColor: string = item.variant
-		? (variantBgColors[item.variant] as string)
-		: defaultBgColor;
-
+	let bgColor: string =  defaultBgColor;
+	// item.variant
+	// ? (variantBgColors[item.variant] as string)
+	// :
 	// if (item.variant === 'primary') {
 	// 	bgColor = theme.palette.primary.main;
 	// }
@@ -57,69 +58,53 @@ function NotificationCard(props: NotificationCardProps) {
 		ev.preventDefault();
 		ev.stopPropagation();
 
-		if (onClose && item && item.id) {
-			onClose(item.id);
+		if (onClose && item && item.notificationId) {
+			onClose(item.notificationId);
 		}
 	};
 
 	return (
 		<Card
 			className={clsx(
-				'relative flex min-h-64 w-full items-center space-x-8 rounded-16 p-20 shadow',
-				className
+				'relative flex min-h-64 w-full items-center space-x-8 rounded-16 py-12 px-20 shadow',
+				className,
+				item.readStatus && 'opacity-60'
 			)}
 			sx={{
 				backgroundColor: bgColor,
 				color: '#000',
-				...(item.link
-					? { '&:hover': { backgroundColor: darken(bgColor, 0.05) } }
-					: {}),
+				// ...(item.link
+				// 	? { '&:hover': { backgroundColor: darken(bgColor, 0.05) } }
+				// 	: {}),
 			}}
 			elevation={0}
-			component={item.link ? NavLinkAdapter : 'div'}
-			to={item.link || ''}
-			role={item.link && 'button'}
+			// component={item.link ? NavLinkAdapter : 'div'}
+			// to={item.link || ''}
+			// role={item.link && 'button'}
 		>
-			{item.icon && !item.image && (
-				<Box
-					sx={{ backgroundColor: darken(bgColor, 0.1) }}
-					className='flex items-center justify-center w-32 h-32 mr-12 rounded-full shrink-0'
-				>
-					<Icon className='opacity-75' color='inherit'>
-						{item.icon}
-					</Icon>
-				</Box>
-			)}
 
-			{item.image && (
-				<img
-					className='object-cover object-center w-32 h-32 mr-12 overflow-hidden rounded-full shrink-0'
-					src={item.image}
-					alt='Notification'
-				/>
-			)}
-
-			<div className='flex flex-col flex-auto'>
+			<div className='flex flex-col flex-auto pr-24'>
 				{item.title && (
 					<Typography className='font-semibold line-clamp-1'>
 						{item.title}
+						{item.notificationId}
 					</Typography>
 				)}
 
-				{item.description && (
+				{item.message && (
 					<div
 						className='line-clamp-2'
 						// eslint-disable-next-line react/no-danger
-						dangerouslySetInnerHTML={{ __html: item.description }}
+						dangerouslySetInnerHTML={{ __html: item.message }}
 					/>
 				)}
 
-				{item.time && (
+				{item.createdDate && (
 					<Typography
 						className='mt-8 text-sm leading-none '
 						color='text.secondary'
 					>
-						{formatDistanceToNow(new Date(item.time), {
+						{formatDistanceToNow(new Date(item.createdDate), {
 							addSuffix: true,
 						})}
 					</Typography>
@@ -128,14 +113,14 @@ function NotificationCard(props: NotificationCardProps) {
 
 			<IconButton
 				disableRipple
-				className='absolute top-0 right-0 p-8'
+				className='absolute top-0 p-8 right-2'
 				color='inherit'
 				size='small'
 				onClick={handleClose}
 			>
 				<Close />
 			</IconButton>
-			{item.children}
+			
 		</Card>
 	);
 }

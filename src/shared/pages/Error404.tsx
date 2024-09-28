@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
  */
 function Error404() {
 	return (
-		<div className="flex flex-1 flex-col items-center justify-center p-16">
+		<div className="flex flex-col items-center justify-center flex-1 p-16">
 			<div className="w-full max-w-3xl text-center">
 				<motion.div
 					initial={{ opacity: 0, scale: 0.6 }}
@@ -231,7 +231,7 @@ function Error404() {
 				>
 					<Typography
 						variant="h1"
-						className="mt-48 text-center text-4xl font-extrabold leading-tight tracking-tight sm:mt-96 md:text-7xl md:leading-none"
+						className="mt-48 text-4xl font-extrabold leading-tight tracking-tight text-center sm:mt-96 md:text-7xl md:leading-none"
 					/>
 				</motion.div>
 				<motion.div
@@ -241,15 +241,17 @@ function Error404() {
 					<Typography
 						variant="h5"
 						color="text.secondary"
-						className="mt-8 text-center text-lg font-medium tracking-tight md:text-xl"
+						className="mt-8 text-lg font-medium tracking-tight text-center md:text-xl"
 					>
 						The page you requested could not be found.
 					</Typography>
 				</motion.div>
 				<Link
-					className="mt-48 block font-normal"
+					className="block mt-48 font-normal"
 					to="/"
-				/>
+				>
+					Go back
+				</Link>
 			</div>
 		</div>
 	);
