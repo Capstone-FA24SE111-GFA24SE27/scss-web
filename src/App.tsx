@@ -13,6 +13,7 @@ import { useRoutes } from 'react-router-dom';
 import { counselorsRoutes } from '@features/counselors';
 import Dialog from '@shared/components/dialog';
 import { SnackbarProvider } from 'notistack';
+import { SocketProvider } from '@shared/context';
 
 const App = () => {
 	const account = useAppSelector(selectAccount)

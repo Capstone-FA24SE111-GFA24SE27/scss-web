@@ -15,7 +15,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { isEmpty } from 'lodash';
-
+import { useSocket } from '@/shared/context';
+import { useEffect } from 'react'
+import { apiService, useAppDispatch } from '@shared/store'
 
 /**
  * The contact view.
@@ -28,12 +30,23 @@ const schema = z.object({
     reason: z.string().min(2, "Please enter a valid reason"),
 });
 
+
+
+type SlotsMessage = {
+    counselorId: string,
+    dateChange: string,
+    newStatus: string,
+    slotId: number,
+    studentId: number
+}
+
 type FormType = AppointmentRequest
 
 
 
 function CounselorBooking() {
     const routeParams = useParams();
+    const dispatch = useAppDispatch()
     const { id: counselorId } = routeParams as { id: string };
     const today = dayjs().format('YYYY-MM-DD');
     // const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
@@ -41,23 +54,13 @@ function CounselorBooking() {
     const [startOfMonth, setStartOfMonth] = useState(today);
     const [endOfMonth, setEndOfMonth] = useState(dayjs().endOf('month').format('YYYY-MM-DD'));
 
-
-    const navigate = useNavigate()
-    const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId);
-    const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
-
-    const counselor = counselorData?.content
-    const counselorDailySlots = counserDailySlotsData?.content
-
+    const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useBookCounselorMutation()
     const defaultValues = {
         slotCode: "",
         date: startOfMonth,
         isOnline: true,
         reason: "",
     }
-
-    const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useBookCounselorMutation()
-
 
     const { control, formState, watch, handleSubmit, setValue } = useForm<FormType>({
         defaultValues,
@@ -66,6 +69,36 @@ function CounselorBooking() {
 
     const formData = watch();
     const { isValid, dirtyFields, errors } = formState;
+
+    const socket = useSocket()
+
+
+    useEffect(() => {
+        console.log(socket)
+
+
+
+        if (!socket) return;
+        console.log(`/user/${formData.date}/${counselorId}/slot`)
+
+        socket.on(`/user/${formData.date}/${counselorId}/slot`, (data) => {
+            console.log("Socket counselor booking", data)
+        })
+        return () => {
+            socket.off(`/user/${formData.date}/${counselorId}/slot`);
+        };
+    }, [socket]);
+
+
+
+
+
+    const navigate = useNavigate()
+    const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId);
+    const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
+
+    const counselor = counselorData?.content
+    const counselorDailySlots = counserDailySlotsData?.content
 
 
 
@@ -93,20 +126,57 @@ function CounselorBooking() {
     }
 
     const handleDateChange = (newDate) => {
-        setValue("date", dayjs(newDate).format('YYYY-MM-DD'))
+        dispatch(
+            apiService.util.updateQueryData('getCounselorDailySlots', undefined, (draftPosts) => {
+                console.log(draftPosts)
+            }),
+        )
+        const previousDate = formData.date
+        const currentDate = dayjs(newDate).format('YYYY-MM-DD')
+
+        socket?.off(`/user/${previousDate}/${counselorId}/slot`);
+
+        socket?.on(`/user/${currentDate}/${counselorId}/slot`, (data: SlotsMessage) => {
+            console.log("Socket data:", data)
+
+        })
+
+
+
+        setValue("date", currentDate)
         setValue("slotCode", '')
     }
 
     const handleMonthChange = (newMonth) => {
-        // setCurrentMonth(newMonth);
+        handleDateChange(newMonth)
         setValue("date", dayjs(newMonth).format('YYYY-MM-DD'))
         setStartOfMonth(newMonth.startOf('month').format('YYYY-MM-DD'));
         setEndOfMonth(newMonth.endOf('month').format('YYYY-MM-DD'));
     };
 
-    // const handleMonthChange = (newMonth) => {
 
-    // }
+    // useEffect(() => {
+    //     setSelectedDate((prev) => {
+    //         socket.off(`/user/${prev}/${4}/slot`);
+
+    //         socket.on(`/user/${selectedDate}/${selectedCounselor}/slot`, (data) => {
+    //             try {
+    //                 console.log(data);
+    //                 setSlots({
+    //                     ...slots, data.dateChange: slot[data.dateChange].map((item) => {
+    //                         if (item.id === data.slotId) {
+    //                             return { ...item, status: data.newStatus }
+    //                         }
+    //                         return item;
+    //                     })
+    //                 });
+    //             } catch (error) {
+    //                 console.error("Error parsing notification:", error);
+    //             }
+    //         });
+    //         return selectedDate || prev;
+    //     });
+    // }, [selectedDate])
     return (
         <>
             <div className="relative flex flex-col flex-auto items-center p-24 pt-0 sm:p-48 sm:pt-0">
