@@ -5,7 +5,7 @@ export function isDateRangeOverlapping(
 	endDate2: Date
 ): boolean {
 	// Ensure start dates are before end dates
-	console.log('date : ', startDate1);
+	// console.log('date : ', startDate1);
 	if (startDate1 > endDate1 || startDate2 > endDate2) {
 		throw new Error('Start date must be before end date.');
 	}

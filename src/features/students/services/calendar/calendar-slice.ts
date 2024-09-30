@@ -3,7 +3,7 @@ import { WithSlice, createSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
 import { DeepPartial } from 'react-hook-form';
 import { formatISO } from 'date-fns/formatISO';
-import { Event } from './calendar-api';
+import { AppointmentScheduleType, GetAppointmentApiArg } from './calendar-api';
 
 export const dateFormdat = 'YYYY-MM-DDTHH:mm:ss.sssZ';
 
@@ -13,7 +13,7 @@ export type EventDialogType = {
 		open: boolean;
 		anchorPosition?: { top: number; left: number };
 	};
-	data?: DeepPartial<Event>[] | null;
+	data?: AppointmentScheduleType[] | null;
 };
 
 const initialState: { eventDialog: EventDialogType } = {
@@ -35,7 +35,7 @@ export const calendarAppSlice = createSlice({
 	initialState,
 	reducers: {
 		openEventDetailDialog: {
-			prepare: (clickInfo: EventClickArg) => {
+			prepare: (clickInfo: EventClickArg, appointment: AppointmentScheduleType) => {
 				const {  jsEvent, event } = clickInfo;
 				const { id, title, allDay, start, end, extendedProps } = event;
 
@@ -48,16 +48,9 @@ export const calendarAppSlice = createSlice({
 							left: jsEvent!.pageX,
 						},
 					},
-					data: [{
-                        id,
-						title,
-						allDay,
-						extendedProps,
-						start: formatISO(start!),
-						end: formatISO(end!),
-					}],
+					data: [appointment],
 				};
-                console.log('event detail', JSON.stringify(payload))
+                // console.log('event detail', JSON.stringify(payload))
 
 				return { payload, meta: undefined, error: null };
 			},
@@ -66,7 +59,7 @@ export const calendarAppSlice = createSlice({
 			},
 		},
 		openDayDetailDialog: {
-			prepare: (selectInfo: Partial<DateSelectArg>, events: DeepPartial<Event>[]) => {
+			prepare: (selectInfo: Partial<DateSelectArg>, events: AppointmentScheduleType[]) => {
 				const { jsEvent } = selectInfo;
 
 				const payload: EventDialogType = {

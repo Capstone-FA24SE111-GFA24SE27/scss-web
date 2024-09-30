@@ -1,12 +1,15 @@
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 
 /**
  * The Error404Page component renders a custom 404 error page.
  */
 function Error404() {
+
+	const navigate = useNavigate()
+
 	return (
 		<div className="flex flex-col items-center justify-center flex-1 p-16">
 			<div className="w-full max-w-3xl text-center">
@@ -246,12 +249,12 @@ function Error404() {
 						The page you requested could not be found.
 					</Typography>
 				</motion.div>
-				<Link
-					className="block mt-48 font-normal"
-					to="/"
-				>
+				<a
+					className="block mt-48 font-normal cursor-pointer"
+					onClick={()=> navigate(-2)}
+				>	
 					Go back
-				</Link>
+				</a>
 			</div>
 		</div>
 	);
