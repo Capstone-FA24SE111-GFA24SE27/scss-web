@@ -85,6 +85,16 @@ export type DailySlot = {
   [date: string]: Slot[]
 }
 
+export type Slot = {
+  slotId: number,
+  slotCode: string,
+  startTime: string,
+  endTime: string,
+  status: AppointmentStatus,
+  myAppointment: boolean
+}
+
+export type AppointmentStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'
 
 export type BookCounselorArg = {
   counselorId: string,
@@ -98,13 +108,9 @@ export type AppointmentRequest = {
   reason: string;
 }
 
-export type Slot = {
-  slotCode: string,
-  startTime: string,
-  endTime: string,
-  status: 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE',
-  myAppointment: boolean
-}
+
+
+
 
 
 

@@ -1,41 +1,34 @@
-import { selectAccount } from '@shared/store';
-import { useAppSelector } from '@shared/store';
-import React, {
-	createContext,
-	ReactNode,
-	useContext,
-	useEffect,
-	useState,
-} from 'react';
-import { io, Socket } from 'socket.io-client';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
+import io, { Socket } from 'socket.io-client';
+import { useAppSelector } from '../store/hooks';
+import { selectAccount } from '../store/user-slice';
 
-const SocketContext = createContext<Socket | null>(null);
+const SocketContext = createContext<Socket | null>(null)
 
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
-	const account = useAppSelector(selectAccount);
+	const socketRef = useRef(null);
+	const account = useAppSelector(selectAccount)
 
-	const [socket, setSocket] = useState<Socket | null>(null);
+	console.log(socketRef?.current)
 
 	useEffect(() => {
 		if (account) {
-			if (!socket) setSocket(io('http://localhost:4000'));
+			socketRef.current = io('http://localhost:4000');
 		} else {
-			if (socket) {
-				socket.disconnect();
-			}
-			setSocket(null);
+			socketRef.current?.disconnect();
+			socketRef.current = null;
 		}
+
 		return () => {
-			if (socket) {
-				socket.disconnect();
-			}
-			setSocket(null);
+			socketRef.current?.disconnect();
+			socketRef.current = null;
 		};
 	}, [account]);
+
 	return (
-		<SocketContext.Provider value={socket}>
+		<SocketContext.Provider value={socketRef.current}>
 			{children}
 		</SocketContext.Provider>
 	);

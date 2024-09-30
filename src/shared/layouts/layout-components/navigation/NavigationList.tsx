@@ -15,23 +15,27 @@ function NavigationList() {
     const [open, setOpen] = useState(true);
     const [selectedItem, setSelectedItem] = useState('home')
 
+    const navigate = useNavigate();
+
     const account = useAppSelector(selectAccount)
 
-    if(!account) {
+    const location = useLocation();
+
+
+    const { pathname } = location;
+
+    if (!account) {
         return
     }
 
     const navigationList = roleBasedNavigation[account.role].list
 
 
-    const location = useLocation();
-    const { pathname } = location;
 
     const handleOpen = () => {
         setOpen(!open);
     };
 
-    const navigate = useNavigate();
 
     const handleNavigation = (path: string) => {
         navigate(path)
@@ -53,14 +57,14 @@ function NavigationList() {
                         {sublist.items.map(item => (
                             <Fragment key={item.name}>
                                 <ListItemButton
-                                    className='rounded-md mt-4'
+                                    className={`rounded-md mt-4 `}
                                     onClick={item.children
                                         ? handleOpen :
                                         () => handleNavigation(`${sublist.route}/${item.route}`)}
-                                    selected={pathname.includes(item.route)}
+                                    selected={pathname.includes(`${sublist.route}/${item.route}`)}
                                 >
                                     <ListItemIcon>
-                                        {<item.icon />}
+                                        {<item.icon color={pathname.includes(`${sublist.route}/${item.route}`) ? 'primary': 'inherit'} />}
                                     </ListItemIcon>
                                     <ListItemText primary={item.name} />
                                     {item.children && (open ? <ExpandLess /> : <ExpandMore />)}

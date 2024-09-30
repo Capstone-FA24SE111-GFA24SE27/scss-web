@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import { ContentLoading, NavLinkAdapter } from '@shared/components';
+import { Breadcrumbs, ContentLoading, NavLinkAdapter } from '@shared/components';
 import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
@@ -10,7 +10,7 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Rating, Te
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import { Slot, useGetCounselorQuery, useGetCounselorDailySlotsQuery, AppointmentRequest, useBookCounselorMutation } from '../counseling-api';
+import { Slot, useGetCounselorQuery, useGetCounselorDailySlotsQuery, AppointmentRequest, useBookCounselorMutation, GetCounselorsDailySlotsResponse, GetCounselorsDailySlotsArg, DailySlot, AppointmentStatus } from '../counseling-api';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -35,7 +35,7 @@ const schema = z.object({
 type SlotsMessage = {
     counselorId: string,
     dateChange: string,
-    newStatus: string,
+    newStatus: AppointmentStatus,
     slotId: number,
     studentId: number
 }
@@ -46,13 +46,14 @@ type FormType = AppointmentRequest
 
 function CounselorBooking() {
     const routeParams = useParams();
-    const dispatch = useAppDispatch()
+    const socket = useSocket()
     const { id: counselorId } = routeParams as { id: string };
     const today = dayjs().format('YYYY-MM-DD');
     // const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
     // const [currentMonth, setCurrentMonth] = useState(dayjs());
     const [startOfMonth, setStartOfMonth] = useState(today);
     const [endOfMonth, setEndOfMonth] = useState(dayjs().endOf('month').format('YYYY-MM-DD'));
+    const [counselorDailySlots, setCounselorDailySlots] = useState<DailySlot>()
 
     const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useBookCounselorMutation()
     const defaultValues = {
@@ -70,25 +71,6 @@ function CounselorBooking() {
     const formData = watch();
     const { isValid, dirtyFields, errors } = formState;
 
-    const socket = useSocket()
-
-
-    useEffect(() => {
-        console.log(socket)
-
-
-
-        if (!socket) return;
-        console.log(`/user/${formData.date}/${counselorId}/slot`)
-
-        socket.on(`/user/${formData.date}/${counselorId}/slot`, (data) => {
-            console.log("Socket counselor booking", data)
-        })
-        return () => {
-            socket.off(`/user/${formData.date}/${counselorId}/slot`);
-        };
-    }, [socket]);
-
 
 
 
@@ -98,8 +80,73 @@ function CounselorBooking() {
     const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
     const counselor = counselorData?.content
-    const counselorDailySlots = counserDailySlotsData?.content
 
+
+
+
+    const onSubmit = () => {
+        bookCounselor({
+            counselorId: counselorId,
+            appointmentRequest: formData
+        })
+            .unwrap()
+            .then(() => navigate('../'))
+    }
+
+    const handleDateChange = (selectedDate) => {
+        const previousDate = formData.date
+        const currentDate = dayjs(selectedDate).format('YYYY-MM-DD')
+
+        console.log(`/user/${currentDate}/${counselorId}/slot`)
+
+        socket?.off(`/user/${previousDate}/${counselorId}/slot`);
+
+        socket?.on(`/user/${currentDate}/${counselorId}/slot`, (slotsMessage: SlotsMessage) => {
+            console.log("Slots Message", slotsMessage)
+            if (!slotsMessage) {
+                return
+            }
+            setCounselorDailySlots(previousSlots => ({
+                ...previousSlots,
+                [slotsMessage.dateChange]: (previousSlots[slotsMessage.dateChange]).map((slot) =>
+                    slot.slotId === slotsMessage.slotId
+                        ? { ...slot, status: slotsMessage.newStatus }
+                        : slot
+                )
+            }));
+        })
+
+        setValue("date", currentDate)
+        setValue("slotCode", '')
+    }
+
+    const handleMonthChange = (newMonth) => {
+        handleDateChange(newMonth)
+        setValue("date", dayjs(newMonth).format('YYYY-MM-DD'))
+        setStartOfMonth(newMonth.startOf('month').format('YYYY-MM-DD'));
+        setEndOfMonth(newMonth.endOf('month').format('YYYY-MM-DD'));
+    };
+
+
+    useEffect(() => {
+
+        if (socket) {
+            socket.on(`/user/${today}/${counselorId}/slot`, (data) => {
+                console.log("Socket counselor booking", data)
+            })
+        }
+
+        return () => {
+            socket.off(`/user/${formData.date}/${counselorId}/slot`);
+        };
+    }, [socket]);
+
+
+    useEffect(() => {
+        if (counserDailySlotsData) {
+            setCounselorDailySlots(counserDailySlotsData.content);
+        }
+    }, [counserDailySlotsData]);
 
 
     if (isLoading) {
@@ -116,71 +163,20 @@ function CounselorBooking() {
             </Typography>
         </div>
     }
-    const onSubmit = () => {
-        bookCounselor({
-            counselorId: counselorId,
-            appointmentRequest: formData
-        })
-            .unwrap()
-            .then(() => navigate('../'))
-    }
 
-    const handleDateChange = (newDate) => {
-        dispatch(
-            apiService.util.updateQueryData('getCounselorDailySlots', undefined, (draftPosts) => {
-                console.log(draftPosts)
-            }),
-        )
-        const previousDate = formData.date
-        const currentDate = dayjs(newDate).format('YYYY-MM-DD')
-
-        socket?.off(`/user/${previousDate}/${counselorId}/slot`);
-
-        socket?.on(`/user/${currentDate}/${counselorId}/slot`, (data: SlotsMessage) => {
-            console.log("Socket data:", data)
-
-        })
-
-
-
-        setValue("date", currentDate)
-        setValue("slotCode", '')
-    }
-
-    const handleMonthChange = (newMonth) => {
-        handleDateChange(newMonth)
-        setValue("date", dayjs(newMonth).format('YYYY-MM-DD'))
-        setStartOfMonth(newMonth.startOf('month').format('YYYY-MM-DD'));
-        setEndOfMonth(newMonth.endOf('month').format('YYYY-MM-DD'));
-    };
-
-
-    // useEffect(() => {
-    //     setSelectedDate((prev) => {
-    //         socket.off(`/user/${prev}/${4}/slot`);
-
-    //         socket.on(`/user/${selectedDate}/${selectedCounselor}/slot`, (data) => {
-    //             try {
-    //                 console.log(data);
-    //                 setSlots({
-    //                     ...slots, data.dateChange: slot[data.dateChange].map((item) => {
-    //                         if (item.id === data.slotId) {
-    //                             return { ...item, status: data.newStatus }
-    //                         }
-    //                         return item;
-    //                     })
-    //                 });
-    //             } catch (error) {
-    //                 console.error("Error parsing notification:", error);
-    //             }
-    //         });
-    //         return selectedDate || prev;
-    //     });
-    // }, [selectedDate])
     return (
         <>
-            <div className="relative flex flex-col flex-auto items-center p-24 pt-0 sm:p-48 sm:pt-0">
-                <div className="w-full max-w-3xl">
+            <div className="relative flex flex-col flex-auto items-center p-24 sm:p-48">
+            <div className="w-full max-w-3xl">
+                    <Breadcrumbs
+                        parents={[
+                            {
+                                label: counselor.fullName || "",
+                                url: `/services/counseling/${counselor.id}`
+                            }
+                        ]}
+                        currentPage={"Booking"}
+                    />
                     <div className="flex flex-auto items-end gap-32">
                         <Avatar
                             sx={{
@@ -254,7 +250,7 @@ function CounselorBooking() {
                             {
                                 isFetchingCounselorDailySlots
                                     ? <ContentLoading />
-                                    : !counselorDailySlots[formData.date]?.length
+                                    : !counselorDailySlots || !counselorDailySlots[formData.date]?.length
                                         ? <Typography color='text.secondary'>No available slots</Typography>
                                         : counselorDailySlots[formData.date]
                                             .map(slot => (

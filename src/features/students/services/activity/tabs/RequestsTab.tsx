@@ -42,16 +42,25 @@ const RequestsTab = () => {
             >
               <div className='flex flex-col gap-16 w-full'>
                 <div className='flex gap-24'>
-                  <div className='flex gap-8 items-center'>
-                    <AccessTime />
-                    <Typography className=''>{dayjs(appointment.startTime, "HH:mm:ss").format('HH:mm')} - {dayjs(appointment.endTime, "HH:mm:ss").format('HH:mm')}</Typography>
-                  </div>
                   <div className='flex gap-8 items-center '>
                     <CalendarMonth />
                     <Typography className='' >{appointment.requireDate}</Typography>
                   </div>
+                  <div className='flex gap-8 items-center'>
+                    <AccessTime />
+                    <Typography className=''>{dayjs(appointment.startTime, "HH:mm:ss").format('HH:mm')} - {dayjs(appointment.endTime, "HH:mm:ss").format('HH:mm')}</Typography>
+                  </div>
                 </div>
-                <div className='flex gap-4'>
+                <div className='flex gap-8'>
+                  <Typography className='w-52' color='textSecondary'>Type:</Typography>
+                  <Typography
+                    className='font-semibold'
+                  >
+                    {appointment.meetingType}
+                  </Typography>
+                </div>
+
+                {/* <div className='flex gap-4'>
                   {
                     appointment.meetingType === 'ONLINE' ?
                       <div className='flex gap-24 items-center'>
@@ -73,9 +82,9 @@ const RequestsTab = () => {
                         <Typography className='font-semibold'>{appointment.appointmentDetails?.address || ''}</Typography>
                       </div>)
                   }
-                </div>
+                </div> */}
                 <div className='flex gap-8'>
-                  <Typography className='w-52'>Status:</Typography>
+                  <Typography className='w-52' color='textSecondary'>Status:</Typography>
                   <Typography
                     className='font-semibold'
                     color={statusColor[appointment.status]}
@@ -84,7 +93,7 @@ const RequestsTab = () => {
                   </Typography>
                 </div>
                 <div className='flex gap-8'>
-                  <Typography className='w-52'>Reason: </Typography>
+                  <Typography className='w-52' color='textSecondary'>Reason: </Typography>
                   <Typography
                   >
                     {appointment.reason}

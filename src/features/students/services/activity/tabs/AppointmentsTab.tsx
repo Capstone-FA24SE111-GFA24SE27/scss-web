@@ -37,20 +37,20 @@ const AppointmentsTab = () => {
           appointmentRequests.map(appointment =>
             <ListItem
               key={appointment.id}
-              className="p-16 flex gap-16 mt-8"
+              className="p-16 flex gap-16"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
             >
               <div className='flex flex-col gap-16 w-full'>
                 <div className='flex gap-24'>
-                  <div className='flex gap-8 items-center'>
-                    <AccessTime />
-                    <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-                  </div>
                   <div className='flex gap-8 items-center '>
                     <CalendarMonth />
                     <Typography className='' >{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
+                  </div>
+                  <div className='flex gap-8 items-center'>
+                    <AccessTime />
+                    <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
                   </div>
                 </div>
                 <div className='flex gap-4'>
@@ -71,13 +71,13 @@ const AppointmentsTab = () => {
                         )}
                       </div>
                       : appointment.address && (<div className='flex gap-16 items-center'>
-                        <Typography className='w-68'>Address:</Typography>
+                        <Typography className='w-68' color='textSecondary'>Address:</Typography>
                         <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                       </div>)
                   }
                 </div>
                 <div className='flex gap-16'>
-                  <Typography className='w-68'>Attendance:</Typography>
+                  <Typography className='w-68' color='textSecondary'>Attendance:</Typography>
                   <Typography
                     className='font-semibold'
                     color={statusColor[appointment.status]}
@@ -128,7 +128,7 @@ const AppointmentsTab = () => {
                               <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                             </div>
                           </div>
-                          <Typography className='pl-8 mt-8' sx={{color: 'text.secondary'}}>{appointment.appointmentFeedback.comment}</Typography>
+                          <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
                         </div>
                       </div>
                     </div>
