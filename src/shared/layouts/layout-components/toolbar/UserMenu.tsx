@@ -12,14 +12,13 @@ import { logout, selectAccount, setAccount } from '@shared/store/user-slice';
 import { NavLinkAdapter } from '@shared/components';
 import { roleBasedNavigation } from '../navigation';
 
-
 /**
  * The user menu.
  */
 function UserMenu() {
-	const account = useAppSelector(selectAccount)
-	const user = account?.profile
-	const dispatch = useAppDispatch()
+	const account = useAppSelector(selectAccount);
+	const user = account?.profile;
+	const dispatch = useAppDispatch();
 	const [userMenu, setUserMenu] = useState(null);
 	const userMenuClick = (event: any) => {
 		setUserMenu(event.currentTarget);
@@ -28,9 +27,9 @@ function UserMenu() {
 		setUserMenu(null);
 	};
 
-	const navigationUserMenu = roleBasedNavigation[account.role].userMenu
+	const navigationUserMenu = roleBasedNavigation[account.role].userMenu;
 
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	if (!user) {
 		return null;
@@ -39,43 +38,44 @@ function UserMenu() {
 	return (
 		<>
 			<Button
-				className="min-h-40 min-w-160 p-0 md:px-16 md:py-6 "
+				className='min-h-40 min-w-160 p-0 md:px-16 md:py-6 '
 				onClick={userMenuClick}
-				color="inherit"
+				color='inherit'
 			>
-				<div className="mx-4 hidden flex-col items-end md:flex">
-					<Typography
-						component="span"
-						className="flex font-semibold"
-					>
+				<div className='mx-4 hidden flex-col items-end md:flex'>
+					<Typography component='span' className='flex font-semibold'>
 						{user.fullName}
 					</Typography>
 					<Typography
-						className="text-11 font-medium capitalize"
-						color="text.secondary"
+						className='text-11 font-medium capitalize'
+						color='text.secondary'
 					>
 						{account.role.toString()}
-						{(!account.role || (Array.isArray(account.role) && account.role.length === 0)) && 'Guest'}
+						{(!account.role ||
+							(Array.isArray(account.role) &&
+								account.role.length === 0)) &&
+							'Guest'}
 					</Typography>
 				</div>
 
 				{user.avatarLink ? (
 					<Avatar
 						sx={{
-							background: (theme) => theme.palette.background.default,
-							color: (theme) => theme.palette.text.secondary
+							background: (theme) =>
+								theme.palette.background.default,
+							color: (theme) => theme.palette.text.secondary,
 						}}
-						className="md:mx-4"
-						alt="user photo"
+						className='md:mx-4'
+						alt='user photo'
 						src={user.avatarLink}
 					/>
 				) : (
 					<Avatar
 						sx={{
 							// background: (theme) => darken(theme.palette.background.default, 0.05),
-							color: (theme) => theme.palette.text.secondary
+							color: (theme) => theme.palette.text.secondary,
 						}}
-						className="md:mx-4"
+						className='md:mx-4'
 					>
 						{user?.fullName[0]}
 					</Avatar>
@@ -88,26 +88,28 @@ function UserMenu() {
 				onClose={userMenuClose}
 				anchorOrigin={{
 					vertical: 'bottom',
-					horizontal: 'center'
+					horizontal: 'center',
 				}}
 				transformOrigin={{
 					vertical: 'top',
-					horizontal: 'center'
+					horizontal: 'center',
 				}}
 				classes={{
-					paper: 'py-8 w-96'
+					paper: 'py-8 w-96',
 				}}
 			>
-
-				{navigationUserMenu.map(menuItem =>
-					<MenuItem
-						onClick={userMenuClose}
-						component={NavLinkAdapter}
-						to={menuItem.route}
-						role="button"
-					>
-						<ListItemText primary={menuItem.name} />
-					</MenuItem>
+				{navigationUserMenu.map(
+					(menuItem) => (
+						<MenuItem
+							key={menuItem.route}
+							onClick={userMenuClose}
+							component={NavLinkAdapter}
+							to={menuItem.route}
+							role='button'
+						>
+							<ListItemText primary={menuItem.name} />
+						</MenuItem>
+					)
 
 					// <MenuItem
 					// 	component={NavLinkAdapter}
@@ -124,14 +126,13 @@ function UserMenu() {
 				<MenuItem
 					onClick={() => {
 						userMenuClose();
-						navigate('/')
-						dispatch(logout())
+						navigate('/');
+						dispatch(logout());
 					}}
 				>
-					<ListItemText primary="Sign out" />
+					<ListItemText primary='Sign out' />
 				</MenuItem>
-
-			</Popover >
+			</Popover>
 		</>
 	);
 }
