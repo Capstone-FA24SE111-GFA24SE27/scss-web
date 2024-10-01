@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentT
 import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear, Edit, EditNote, MoreVert } from '@mui/icons-material';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
 import Dialog from '@shared/components/dialog';
@@ -13,13 +13,6 @@ const AppointmentsContent = () => {
   const [denyAppointmentRequest] = useDenyAppointmentRequestMutation();
   const appointments = data?.content
   const dispatch = useAppDispatch()
-
-  if (isLoading) {
-    return <AppLoading />
-  }
-  if (!appointments) {
-    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>
-  }
 
   const statusColor = {
     'DENIED': 'error',
@@ -41,6 +34,16 @@ const AppointmentsContent = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+
+  const navigate = useNavigate()
+
+
+  if (isLoading) {
+    return <AppLoading />
+  }
+  if (!appointments) {
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>
+  }
 
   return (
     <>
@@ -66,7 +69,8 @@ const AppointmentsContent = () => {
                       <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
                     </div>
                   </div>
-                  <div >
+                  <div className='relative' >
+                    <div className='size-10 right-10 rounded-full bg-secondary-main absolute'></div>
                     <IconButton color='primary' onClick={handleClick}>
                       <MoreVert />
                     </IconButton>
@@ -80,8 +84,12 @@ const AppointmentsContent = () => {
                         horizontal: 'left',
                       }}
                     >
-                        
-                      <MenuItem>Generate report</MenuItem>
+
+                      <MenuItem
+                        onClick={() => { navigate(`${appointment.id}/report`); handleClose() }}
+                        role="button"
+                      >Create report
+                      </MenuItem>
                     </Popover>
                   </div>
 

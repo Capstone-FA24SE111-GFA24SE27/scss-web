@@ -20,11 +20,18 @@ export const usersApi = api
           body: data
         }),
       }),
+      logout: build.mutation<void, void>({
+        query: () => ({
+          url: `/api/auth/logout`,
+          method: 'POST',
+        }),
+      }),
     })
   })
 
 export const {
   useLoginDefaultMutation,
+  useLogoutMutation
 } = usersApi
 
 export type LoginDefaultApiResponse = ApiResponse<User>

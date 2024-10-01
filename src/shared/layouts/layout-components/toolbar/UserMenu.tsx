@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@shared/store/hooks';
 import { logout, selectAccount, setAccount } from '@shared/store/user-slice';
 import { NavLinkAdapter } from '@shared/components';
 import { roleBasedNavigation } from '../navigation';
+import { useLogoutMutation } from '@/features/auth/auth-api';
 
 
 /**
@@ -19,6 +20,7 @@ import { roleBasedNavigation } from '../navigation';
 function UserMenu() {
 	const account = useAppSelector(selectAccount)
 	const user = account?.profile
+	const [handleLogout] = useLogoutMutation()
 	const dispatch = useAppDispatch()
 	const [userMenu, setUserMenu] = useState(null);
 	const userMenuClick = (event: any) => {
@@ -126,6 +128,7 @@ function UserMenu() {
 						userMenuClose();
 						navigate('/')
 						dispatch(logout())
+						handleLogout()
 					}}
 				>
 					<ListItemText primary="Sign out" />

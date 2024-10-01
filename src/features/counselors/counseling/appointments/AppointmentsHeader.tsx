@@ -29,7 +29,7 @@ function AppointmentsHeader() {
     // }
     return (
         <>
-            <div className="p-24 sm:p-32 w-full border-b-1 bg-background-paper">
+            <div className="p-16 sm:p-24 w-full border-b-1 bg-background-paper">
                 <div className="flex flex-col">
                     <motion.span
                         initial={{ x: -20 }}
@@ -51,7 +51,7 @@ function AppointmentsHeader() {
                         </Typography>
                     </motion.span>
                 </div>
-                <div className="flex flex-1 items-center mt-16 -mx-8">
+                <div className="flex flex-1 items-center -mx-8">
                     <Box
                         // component={motion.div}
                         // initial={{ y: -20, opacity: 0 }}
