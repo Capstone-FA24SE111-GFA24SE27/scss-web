@@ -11,7 +11,7 @@ function ActivitySidebarContent() {
             <IconButton
                 className="absolute top-0 right-0 my-16 mx-32 z-10"
                 component={NavLinkAdapter}
-                to="/services/counseling"
+                to="."
                 size="large"
             >
                 <Close/>

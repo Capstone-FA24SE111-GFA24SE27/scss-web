@@ -37,6 +37,7 @@ const AppointmentsContent = () => {
 
   const navigate = useNavigate()
 
+  console.log(appointments)
 
   if (isLoading) {
     return <AppLoading />
