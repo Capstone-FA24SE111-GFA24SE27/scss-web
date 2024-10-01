@@ -15,7 +15,7 @@ function CalendarAppEventContent(props: CalendarAppEventContentProps) {
 	const { eventInfo } = props;
 	// const { data: labels } = useGetCalendarLabelsQuery();
 
-	console.log('asdawd: ', eventInfo.view)
+	// console.log('asdawd: ', eventInfo.view)
 
 	return (
 		<Box
@@ -23,7 +23,7 @@ function CalendarAppEventContent(props: CalendarAppEventContentProps) {
 				backgroundColor: '#1c6bab',
 				color: '#eee'
 			}}
-			className={clsx('flex items-center w-full rounded-4 px-8 py-2 h-22 text-white h-full', eventInfo.view.type === 'dayGridMonth' ? 'flex-row' : 'flex-col')}
+			className={clsx('flex items-center w-full rounded-4 px-8 py-2 h-22 text-white h-full cursor-pointer select-none', eventInfo.view.type === 'dayGridMonth' ? 'flex-row' : 'flex-col')}
 		>
 			<Typography className="font-semibold text-12">{eventInfo.timeText}</Typography>
 			<Typography className="px-4 truncate text-12">{eventInfo.event.title}</Typography>

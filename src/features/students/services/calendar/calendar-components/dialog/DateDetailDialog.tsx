@@ -39,7 +39,7 @@ const DateDetailDialog = () => {
 
                 {eventDialog.props.open ? eventDialog.data && eventDialog.data.length > 0 ? 
                 <div>
-                    {eventDialog.data[0].title}
+                    Counselling session
                 </div>
                 : 
                 'There is no scheduled event or appointment in the selected time frame'

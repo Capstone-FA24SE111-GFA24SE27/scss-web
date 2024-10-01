@@ -16,91 +16,97 @@ type Props = {
 const CalendarHeader = (props: Props) => {
 	const { calendarRef, currentDate } = props;
 
-	const calendarApi = calendarRef.current?.getApi();
 
 	// const dispatch = useAppDispatch();
 
 	const handleViewChange = (viewType: string) => {
-		if (calendarApi) calendarApi.changeView(viewType);
+		if (calendarRef.current) calendarRef.current.getApi().changeView(viewType);
 	};
 
 	return (
-		<div className='container z-10 flex flex-col justify-between w-full py-8 md:flex-row'>
-			<div className='flex items-center justify-between'>
-				
-
-				<div className='flex items-center'>
-					<Tooltip title='Previous'>
-						<IconButton
-							aria-label='Previous'
-							onClick={() => {
-								if (calendarApi) {
-									calendarApi.prev();
-								}
-							}}
-						>
-							{/* // icon here */}
-							<ChevronLeftIcon />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title='Next'>
-						<IconButton
-							aria-label='Next'
-							onClick={() => {
-								if (calendarApi) {
-									calendarApi.next();
-								}
-							}}
-						>
-							{/* // icon here */}
-							<ChevronRightIcon />
-						</IconButton>
-					</Tooltip>
-
-					<Tooltip title='Today'>
-						<div>
-							<motion.div
-								initial={{ scale: 0 }}
-								animate={{
-									scale: 1,
-									transition: { delay: 0.3 },
+		<div className='w-full p-24 sm:p-32 border-b-1 bg-background-paper'>
+			<motion.span
+				initial={{ x: -20 }}
+				animate={{ x: 0, transition: { delay: 0.2 } }}
+			>
+				<Typography className='font-extrabold leading-none tracking-tight text-20 md:text-24'>
+					Your Calendar
+				</Typography>
+			</motion.span>
+			<div className='flex flex-col justify-between w-full mt-16 md:flex-row'>
+				<div className='flex items-center justify-between'>
+					<div className='flex items-center'>
+						<Tooltip title='Previous'>
+							<IconButton
+								aria-label='Previous'
+								onClick={() => {
+									if (calendarRef.current.getApi()) {
+										calendarRef.current.getApi().prev();
+									}
 								}}
 							>
-								<IconButton
-									aria-label='today'
-									onClick={() => {
-										if (calendarApi) {
-											calendarApi.today();
-										}
+								{/* // icon here */}
+								<ChevronLeftIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title='Next'>
+							<IconButton
+								aria-label='Next'
+								onClick={() => {
+									if (calendarRef.current.getApi()) {
+										calendarRef.current.getApi().next();
+									}
+								}}
+							>
+								{/* // icon here */}
+								<ChevronRightIcon />
+							</IconButton>
+						</Tooltip>
+
+						<Tooltip title='Today'>
+							<div>
+								<motion.div
+									initial={{ scale: 0 }}
+									animate={{
+										scale: 1,
+										transition: { delay: 0.3 },
 									}}
-									size='large'
 								>
-									{/* // icon here */}
-									<TodayIcon />
-								</IconButton>
-							</motion.div>
-						</div>
-					</Tooltip>
+									<IconButton
+										aria-label='today'
+										onClick={() => {
+											if (calendarRef.current.getApi()) {
+												calendarRef.current.getApi().today();
+											}
+										}}
+										size='large'
+									>
+										{/* // icon here */}
+										<TodayIcon />
+									</IconButton>
+								</motion.div>
+							</div>
+						</Tooltip>
+					</div>
 
+					<div className='flex items-center'>
+						<Typography className='hidden mx-16 text-2xl font-semibold tracking-tight sm:flex whitespace-nowrap'>
+							{currentDate?.view.title}
+						</Typography>
+					</div>
 				</div>
 
-				<div className='flex items-center'>
-					<Typography className='hidden mx-16 text-2xl font-semibold tracking-tight sm:flex whitespace-nowrap'>
-						{currentDate?.view.title}
-					</Typography>
-				</div>
+				<motion.div
+					className='flex items-center justify-end md:justify-center'
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1, transition: { delay: 0.3 } }}
+				>
+					<CalendarViewMenu
+						currentDate={currentDate}
+						onChange={handleViewChange}
+					/>
+				</motion.div>
 			</div>
-
-			<motion.div
-				className='flex items-center justify-end md:justify-center'
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1, transition: { delay: 0.3 } }}
-			>
-				<CalendarViewMenu
-					currentDate={currentDate}
-					onChange={handleViewChange}
-				/>
-			</motion.div>
 		</div>
 	);
 };
