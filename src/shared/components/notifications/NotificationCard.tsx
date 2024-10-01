@@ -11,7 +11,6 @@ import blue from '@mui/material/colors/blue';
 import red from '@mui/material/colors/red';
 import orange from '@mui/material/colors/orange';
 import yellow from '@mui/material/colors/yellow';
-import NavLinkAdapter from '../link/NavLinkAdapter';
 import { Icon } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { NotificationType } from '@/shared/types';

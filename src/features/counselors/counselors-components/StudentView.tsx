@@ -24,11 +24,11 @@ function StudentView({}: StudentViewProps) {
   const counselor = data?.content
 
   if (isLoading) {
-    return <ContentLoading className='m-32' />
+    return <ContentLoading className='m-32 w-md' />
   }
 
   if (!data) {
-    return <div className='relative p-48'>
+    return <div className='relative p-48 w-md'>
       <Typography
         color="text.secondary"
         variant="h5"
@@ -39,7 +39,7 @@ function StudentView({}: StudentViewProps) {
   }
 
   return (
-    <>
+    <div className='w-md'>
       <Box
         className="relative w-full h-160 sm:h-192 px-32 sm:px-48"
         sx={{
@@ -154,7 +154,7 @@ function StudentView({}: StudentViewProps) {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

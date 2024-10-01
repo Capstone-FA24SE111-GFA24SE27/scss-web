@@ -38,7 +38,6 @@ function Appointments() {
 			rightSidebarContent={<AppointmentsSidebarContent />}
 			rightSidebarOpen={rightSidebarOpen}
 			rightSidebarOnClose={() => setRightSidebarOpen(false)}
-			rightSidebarWidth={640}
 			rightSidebarVariant="temporary"
 			scroll={isMobile ? 'normal' : 'content'}
 		/>

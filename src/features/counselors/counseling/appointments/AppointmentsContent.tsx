@@ -1,8 +1,8 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Popover, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
-import { Link } from 'react-router-dom'
+import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear, Edit, EditNote, MoreVert } from '@mui/icons-material';
+import { Link, useNavigate } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
 import Dialog from '@shared/components/dialog';
@@ -14,13 +14,6 @@ const AppointmentsContent = () => {
   const appointments = data?.content
   const dispatch = useAppDispatch()
 
-  if (isLoading) {
-    return <AppLoading />
-  }
-  if (!appointments) {
-    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>
-  }
-
   const statusColor = {
     'DENIED': 'error',
     'WAITING': 'warning',
@@ -29,6 +22,29 @@ const AppointmentsContent = () => {
     'ABSENT': 'error',
   }
 
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const navigate = useNavigate()
+
+  console.log(appointments)
+
+  if (isLoading) {
+    return <AppLoading />
+  }
+  if (!appointments) {
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>
+  }
 
   return (
     <>
@@ -37,23 +53,48 @@ const AppointmentsContent = () => {
           appointments.map(appointment =>
             <ListItem
               key={appointment.id}
-              className="p-16 flex gap-8 rounded-lg"
+              className="p-16 flex gap-8 rounded-lg shadow"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
             >
               <div className='flex flex-col gap-16 w-full'>
-                <div className='flex gap-24'>
-                  <div className='flex gap-8 items-center'>
-                    <AccessTime />
-                    <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+                <div className='flex justify-between'>
+                  <div className='flex gap-24'>
+                    <div className='flex gap-8 items-center '>
+                      <CalendarMonth />
+                      <Typography className='' >{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
+                    </div>
+                    <div className='flex gap-8 items-center'>
+                      <AccessTime />
+                      <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+                    </div>
                   </div>
-                  <div className='flex gap-8 items-center '>
-                    <CalendarMonth />
-                    <Typography className='' >{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
-                  </div>
-                </div>
+                  <div className='relative' >
+                    <div className='size-10 right-10 rounded-full bg-secondary-main absolute'></div>
+                    <IconButton color='primary' onClick={handleClick}>
+                      <MoreVert />
+                    </IconButton>
+                    <Popover
+                      id={id}
+                      open={open}
+                      anchorEl={anchorEl}
+                      onClose={handleClose}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                    >
 
+                      <MenuItem
+                        onClick={() => { navigate(`${appointment.id}/report`); handleClose() }}
+                        role="button"
+                      >Create report
+                      </MenuItem>
+                    </Popover>
+                  </div>
+
+                </div>
                 <div className='flex gap-4'>
                   {
                     appointment.meetingType === 'ONLINE' ?
@@ -72,7 +113,7 @@ const AppointmentsContent = () => {
                         )}
                       </div>
                       : appointment.address && (<div className='flex gap-8 items-center '>
-                        <Typography className='w-60'>Address:</Typography>
+                        <Typography className='w-60' color='textSecondary'>Address:</Typography>
                         <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                       </div>)
                   }
@@ -92,35 +133,35 @@ const AppointmentsContent = () => {
                   </Tooltip>
                   )}
                 </div>
+                <div className='pl-16 border-l-2'>
+                  <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
+                    <ListItemButton
+                      component={NavLinkAdapter}
+                      to={`student/${appointment.studentInfo.profile.id}`}
+                      className='bg-primary-main/10 w-full rounded'
+                    >
+                      <div className='flex gap-16 items-start w-full'>
 
-                {/* <div className='flex gap-8'>
-                  <Typography className='w-60'>Reason: </Typography>
-                  <Typography
-                    color='text.secondary'
-                  >
-                    {appointment.reason}
-                  </Typography>
-                </div> */}
-                {/* <ListItem
-                  className='w-full rounded flex-col bg-primary-main/5 gap-16'
-                >
-                  <div className='flex gap-16 items-start w-full'>
-
-                    <Avatar
-                      alt={appointment.studentInfo.profile.fullName}
-                      src={appointment.studentInfo.profile.avatarLink}
-                    />
-                    <div >
-                      <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
-                      <Typography color='text.secondary'>{appointment.studentInfo.email || 'emailisnull.edu.vn'}</Typography>
-                    </div>
+                        <Avatar
+                          alt={appointment.studentInfo.profile.fullName}
+                          src={appointment.studentInfo.profile.avatarLink}
+                        />
+                        <div >
+                          <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
+                          <Typography color='text.secondary'>{appointment.studentInfo.email || 'emailisnull.edu.vn'}</Typography>
+                        </div>
+                      </div>
+                      <ChevronRight />
+                    </ListItemButton>
+                  </Tooltip>
+                  <div className='pl-4 mt-8'>
                     {
                       ['ATTEND', 'ABSENT'].includes(appointment.status) && (
-                        <div className='flex'>
-                          <div className='flex flex-col ml-36'>
-                            <Typography className='w-60'>Status:</Typography>
+                        <div className='flex gap-4'>
+                          <div className='flex items-center'>
+                            <Typography className={'w-[13rem]'}>Attendance Status:</Typography>
                             <Typography
-                              className='font-semibold'
+                              className='font-semibold pl-4'
                               color={statusColor[appointment.status]}
                             >
                               {appointment.status}
@@ -138,110 +179,45 @@ const AppointmentsContent = () => {
                             </IconButton>
                           </Tooltip>
                         </div>
-                      )}
-                  </div>
-                  {
-                    appointment.appointmentFeedback && (
-                      <div className='w-full'>
-                        <Divider className='border border-black' />
-                        <div className=' mt-8'>
-                          <div className='flex items-center gap-8'>
-                            <Rating
-                              size='medium'
-                              value={appointment.appointmentFeedback.rating}
-                              readOnly
-                            />
-                            <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+                      )
+                    }
+                    {
+                      appointment.appointmentFeedback && (
+                        <div className='w-full'>
+                          <div className='flex'>
+                            <Typography className='w-[13rem]'>Student feedback:</Typography>
+                            <div className='flex flex-col'>
+                              <div className='flex items-center gap-8'>
+                                <Rating
+                                  size='medium'
+                                  value={appointment.appointmentFeedback.rating}
+                                  readOnly
+                                />
+                                <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+                              </div>
+                              <Typography className='pl-8 mt-8'>{appointment.appointmentFeedback.comment}</Typography>
+                            </div>
                           </div>
                         </div>
-                        <Typography className=' mt-8'>{appointment.appointmentFeedback.comment}</Typography>
-                      </div>
-                    )
-                  }
-                </ListItem> */}
-                <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
-                  <ListItemButton
-                    component={NavLinkAdapter}
-                    to={`student/${appointment.studentInfo.profile.id}`}
-                    className='bg-primary-main/10 w-full rounded'
-                  >
-                    <div className='flex gap-16 items-start w-full'>
 
-                      <Avatar
-                        alt={appointment.studentInfo.profile.fullName}
-                        src={appointment.studentInfo.profile.avatarLink}
-                      />
-                      <div >
-                        <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.studentInfo.email || 'emailisnull.edu.vn'}</Typography>
-                      </div>
-                    </div>
-                    <ChevronRight />
-                  </ListItemButton>
-                </Tooltip>
-                <div className='pl-16'>
-                  {
-                    ['ATTEND', 'ABSENT'].includes(appointment.status) && (
-                      <div className='flex gap-4'>
-                        <div className='flex items-center'>
-                          <Typography className={'w-[13rem]'}>Attendance Status:</Typography>
-                          <Typography
-                            className='font-semibold pl-4'
-                            color={statusColor[appointment.status]}
-                          >
-                            {appointment.status}
-                          </Typography>
-                        </div>
-                        <Tooltip title={'Update attendance'}>
-                          <IconButton
-                            color='secondary'
+                      )
+                    }
+                    {
+                      appointment.status === 'WAITING' && (
+                        <div className='mt-16'>
+                          <Typography className='font-semibold' color='secondary'>Do the student attend the session ?</Typography>
+                          <Button className='mt-4' variant='contained' color='secondary'
                             onClick={() => dispatch(openDialog({
                               children: <CheckAttendanceDialog appointment={appointment} />
                             }
                             ))}
                           >
-                            <EditNote fontSize='medium' />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    )
-                  }
-                  {
-                    appointment.appointmentFeedback && (
-                      <div className='w-full'>
-                        <div className='flex'>
-                          <Typography className='w-[13rem]'>Student feedback:</Typography>
-                          <div className='flex flex-col'>
-                            <div className='flex items-center gap-8'>
-                              <Rating
-                                size='medium'
-                                value={appointment.appointmentFeedback.rating}
-                                readOnly
-                              />
-                              <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-                            </div>
-                            <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
-                          </div>
+                            Take attendance
+                          </Button>
                         </div>
-                      </div>
-
-                    )
-                  }
-                  {
-                    appointment.status === 'WAITING' && (
-                      <div className=''>
-                        <Typography className='font-semibold' color='secondary'>Do the student attend the session ?</Typography>
-                        <Button className='' variant='outlined' color='secondary'
-                          onClick={() => dispatch(openDialog({
-                            children: <CheckAttendanceDialog appointment={appointment} />
-                          }
-                          ))}
-                        >
-                          Take attendance
-                        </Button>
-                      </div>
-                    )
-                  }
+                      )
+                    }
+                  </div>
                 </div>
 
               </div>
@@ -343,9 +319,10 @@ const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointm
 
 const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) => {
   const dispatch = useAppDispatch()
-  const [attendanceStatus, setAttendanceStatus] = useState<AppointmentAttendanceStatus>('ATTEND')
+  const [attendanceStatus, setAttendanceStatus] = useState<AppointmentAttendanceStatus>((appointment.status as AppointmentAttendanceStatus) || 'WAITING')
   const [takeAttendance] = useTakeAppointmentAttendanceMutation()
 
+  console.log(attendanceStatus)
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAttendanceStatus((event.target as HTMLInputElement).value as AppointmentAttendanceStatus);
   }
@@ -386,9 +363,18 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
               <div className='flex gap-16'>
                 <FormControlLabel value="ATTEND" control={<Radio color='success' />} label="Attended" className='text-black' />
                 <FormControlLabel value="ABSENT" control={<Radio color='error' />} label="Absent" className='text-black' />
+                <Tooltip title='Clear selection'>
+                  <IconButton
+                    onClick={() => setAttendanceStatus('WAITING')}
+                  >
+                    <Clear />
+                  </IconButton>
+                </Tooltip>
               </div>
             </RadioGroup>
           </FormControl>
+          <div>
+          </div>
         </DialogContentText>
       </DialogContent>
       <DialogActions>

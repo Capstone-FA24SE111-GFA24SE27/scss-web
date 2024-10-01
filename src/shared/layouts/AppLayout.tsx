@@ -58,7 +58,7 @@ const defaultConfig: Config = {
 	},
 	footer: {
 		display: true,
-		style: 'fixed',
+		style: 'static',
 	},
 	leftSidePanel: {
 		display: true,

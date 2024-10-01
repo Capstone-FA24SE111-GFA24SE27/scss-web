@@ -12,6 +12,7 @@ import { CakeOutlined, EmailOutlined, LocalPhoneOutlined, NotesOutlined } from '
 import { Rating } from '@mui/material';
 import { useGetCounselorQuery } from '../counseling-api';
 import dayjs from 'dayjs';
+import { Breadcrumbs } from '@shared/components';
 /**
  * The contact view.
  */

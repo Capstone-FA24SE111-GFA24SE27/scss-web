@@ -70,7 +70,6 @@ function CounselingHeader() {
                             inputProps={{
                                 'aria-label': 'Search'
                             }}
-                        // onChange={(ev: ChangeEvent<HTMLInputElement>) => dispatch(setSearchText(ev))}
                         />
                     </Box>
                     <Tooltip title={'Filter'}>
@@ -80,9 +79,6 @@ function CounselingHeader() {
                     </Tooltip>
                 </div>
             </div>
-            {showFilter && (
-                <CounselorsFilter />
-            )}
         </>
     );
 }
