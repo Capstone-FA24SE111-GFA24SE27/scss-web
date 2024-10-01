@@ -1,9 +1,9 @@
 import { ContentLoading } from '@/shared/components';
 import { Suspense, lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
+import { reportRoutes } from './report';
 const StudentView = lazy(() => import('@features/counselors/counselors-components/StudentView'))
 const Appointments = lazy(() => import('./Appointments'))
-const ReportView = lazy(() => import('./report'))
 export const appointmentsRoutes: RouteObject[] = [
   {
     path: 'appointments',
@@ -16,13 +16,7 @@ export const appointmentsRoutes: RouteObject[] = [
             <StudentView />
           </Suspense>
       },
-      {
-        path: ':id/report',
-        element:
-          <Suspense fallback={<ContentLoading />}>
-            <ReportView />
-          </Suspense>
-      },
+      ...reportRoutes
     ]
   },
 ];

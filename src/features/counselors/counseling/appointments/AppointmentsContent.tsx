@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Popover, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear, Edit, EditNote, MoreVert } from '@mui/icons-material';
+import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, Edit, EditNote, MoreVert, Summarize } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
@@ -71,7 +71,11 @@ const AppointmentsContent = () => {
                     </div>
                   </div>
                   <div className='relative' >
-                    <div className='size-10 right-10 rounded-full bg-secondary-main absolute'></div>
+                    {
+                      appointment.havingReport && ['ATTEND'].includes(appointment.status) && (
+                        <div className='size-10 right-10 rounded-full bg-secondary-main absolute'></div>
+                      )
+                    }
                     <IconButton color='primary' onClick={handleClick}>
                       <MoreVert />
                     </IconButton>
@@ -85,12 +89,24 @@ const AppointmentsContent = () => {
                         horizontal: 'left',
                       }}
                     >
+                      {
+                        !appointment.havingReport
+                          ? <MenuItem
+                            className='w-[14rem] gap-8'
+                            onClick={() => { navigate(`${appointment.id}/report`); handleClose() }}
+                          >
+                            <Summarize />
+                            View report
+                          </MenuItem>
+                          : <MenuItem
+                            className='w-[14rem] gap-8'
+                            onClick={() => { navigate(`${appointment.id}/report/create`); handleClose() }}
+                          >
+                            <Add />
+                            Create report
+                          </MenuItem>
+                      }
 
-                      <MenuItem
-                        onClick={() => { navigate(`${appointment.id}/report`); handleClose() }}
-                        role="button"
-                      >Create report
-                      </MenuItem>
                     </Popover>
                   </div>
 

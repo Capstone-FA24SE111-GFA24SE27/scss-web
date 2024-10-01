@@ -94,6 +94,7 @@ export type Appointment = {
     studentCode: string
   } & Account,
   appointmentFeedback: AppointmentFeedback
+  havingReport: boolean;
 }
 
 export type AppointmentDetails = {

@@ -1,1 +1,1 @@
-export { default } from './ReportView'
+export { reportRoutes } from './report-routes'

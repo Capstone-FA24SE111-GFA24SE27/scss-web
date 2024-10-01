@@ -19,6 +19,7 @@ export const reportApi = api
           url: `/api/appointments/report/${arg.appointmentId}`,
           body: arg.report
         }),
+        invalidatesTags: ['appointments']
       }),
 
     })
