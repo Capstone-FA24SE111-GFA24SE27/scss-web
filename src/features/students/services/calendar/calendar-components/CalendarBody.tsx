@@ -10,15 +10,16 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import './index.css';
-import { useAppDispatch } from '@shared/store';
-import { openDayDetailDialog, openEventDetailDialog } from '../calendar-slice';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
+import { addScheduleData, openDayDetailDialog, openEventDetailDialog, selectScheduleData } from '../calendar-slice';
 import { isDateRangeOverlapping } from '@/shared/utils';
 import CalendarAppEventContent from './CalendarAppEventContent';
 import EventDetailDialog from './dialog/EventDetailDialog';
 import DateDetailDialog from './dialog/DateDetailDialog';
-import { useGetAppointmentScheduleQuery } from '../calendar-api';
+import { AppointmentScheduleType, useGetAppointmentScheduleQuery } from '../calendar-api';
 import { date } from 'zod';
 import { AppLoading } from '@/shared/components';
+import { useSocket } from '@/shared/context';
 
 type Props = {
 	handleDates: (rangeInfo: DatesSetArg) => void;
@@ -30,7 +31,12 @@ const CalendarBody = (props: Props) => {
 	const { handleDates, currentDate, calendarRef } = props;
 
 	const dispatch = useAppDispatch();
+	const socket = useSocket()
+	const account = useAppSelector(selectAccount);
 
+	const scheduleData = useAppSelector(selectScheduleData)
+
+	
 	const [appointments, setAppointments] = useState([]);
 	const [dateRange, setDateRange] = useState(null);
 
@@ -40,6 +46,23 @@ const CalendarBody = (props: Props) => {
 			skip: !dateRange,
 		}
 	);
+
+	useEffect(() => {
+		const cb = (data: AppointmentScheduleType) => {
+			dispatch(addScheduleData(data));
+			console.log('socket schedule', data);
+			
+		};
+		if (socket && account) {
+			socket.on(`/user/${account.id}/private/notification`, cb);
+		}
+
+		return () => {
+			if (socket && account) {
+				socket.off(`/user/${account.id}/private/notification`, cb);
+			}
+		};
+	}, [socket]);
 
 	useEffect(() => {
 		if (currentDate) {
@@ -56,7 +79,15 @@ const CalendarBody = (props: Props) => {
 	useEffect(() => {
 		console.log('asdw ', data);
 		if (data) {
-			const list = data.content.map((item) => {
+			
+			dispatch(addScheduleData(data.content))
+		}
+	}, [data]);
+
+	useEffect(()=>{
+		console.log(' schedule data ', scheduleData)
+		if(scheduleData){
+			const list = scheduleData.map((item) => {
 				return {
 					id: item.id,
 					title: 'Counselling session',
@@ -67,7 +98,10 @@ const CalendarBody = (props: Props) => {
 
 			setAppointments(list);
 		}
-	}, [data]);
+
+	},[scheduleData])
+
+
 
 	const handleDateSelect = (selectInfo: DateSelectArg) => {
 		console.log('dateselect, ', selectInfo);
