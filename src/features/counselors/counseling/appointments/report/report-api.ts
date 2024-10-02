@@ -1,4 +1,4 @@
-import { Account, PaginationContent } from '@shared/types';
+import { Account, Counselor, PaginationContent, Student } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -13,7 +13,7 @@ export const reportApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      createCounselingReport: build.mutation<void, CreateReportApiArg>({
+      createAppointmentReport: build.mutation<void, CreateReportApiArg>({
         query: (arg) => ({
           method: 'POST',
           url: `/api/appointments/report/${arg.appointmentId}`,
@@ -22,17 +22,36 @@ export const reportApi = api
         invalidatesTags: ['appointments']
       }),
 
+      getAppointmentReport: build.query<AppointmentReportApiResponse, string>({
+        query: (appointmentId) => ({
+          url: `/api/appointments/report/${appointmentId}`,
+        }),
+      }),
     })
   })
 
 export const {
-  useCreateCounselingReportMutation
+  useCreateAppointmentReportMutation,
+  useGetAppointmentReportQuery
 } = reportApi
 
 type CreateReportApiArg = {
   appointmentId: string,
   report: Report
 }
+
+
+type AppointmentReportApiResponse = ApiResponse<AppointmentReport>
+
+
+type AppointmentReport = {
+  id: number,
+  student: Student,
+  counselor: Counselor,
+  appointment: Appointment
+} & Report
+
+
 
 type Report = {
   consultationGoal?: {
@@ -55,3 +74,16 @@ type Report = {
     description?: string;
   };
 };
+
+
+type Appointment = {
+  id: number,
+  requireDate: string,
+  startDateTime: string,
+  endDateTime: string,
+  status: string,
+  meetingType: 'ONLINE' | 'OFFLINE',
+  reason: string,
+  meetUrl?: string,
+  address?: string,
+}

@@ -18,3 +18,15 @@ export type Profile = {
   dateOfBirth: number,
   avatarLink: string
 }
+
+export type Counselor  = {
+  profile: Profile
+  email: string,
+  rating: number,
+}
+
+export type Student  = {
+  profile: Profile
+  email: string,
+  studentCode: number,
+}

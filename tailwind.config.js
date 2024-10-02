@@ -1559,6 +1559,11 @@ export default {
 					dark: '#c65d14',
 					contrastText: 'rgb(255, 255, 255)',
 				},
+				text: {
+					primary: "#111827",
+					secondary: "#6b7280",
+					disabled: "#959ca9"
+				},
 				background: {
 					paper: "#FFFFFF",
 					DEFAULT: "#f1f5f9"
