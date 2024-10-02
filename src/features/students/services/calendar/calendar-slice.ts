@@ -102,7 +102,7 @@ export const calendarAppSlice = createSlice({
 		addScheduleData: (state, actions) => {
 			const prev = state.data ? state.data : []
 			state.data = [...actions.payload, ...prev]
-		}
+		},
 	},
 	selectors: {
 		selectEventDialog: (state) => state.eventDialog,

@@ -86,7 +86,6 @@ function NotificationCard(props: NotificationCardProps) {
 				{item.title && (
 					<Typography className='font-semibold line-clamp-1'>
 						{item.title}
-						{item.notificationId}
 					</Typography>
 				)}
 
