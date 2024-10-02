@@ -54,12 +54,12 @@ const CalendarBody = (props: Props) => {
 			
 		};
 		if (socket && account) {
-			socket.on(`/user/${account.id}/private/notification`, cb);
+			socket.on(`/user/${account.profile.id}/private/notification`, cb);
 		}
 
 		return () => {
 			if (socket && account) {
-				socket.off(`/user/${account.id}/private/notification`, cb);
+				socket.off(`/user/${account.profile.id}/private/notification`, cb);
 			}
 		};
 	}, [socket]);
