@@ -1,9 +1,10 @@
 import React, { ReactNode } from 'react'
 import './scrollbar.css'
+import clsx from 'clsx';
 
-const Scrollbar = ({ children }: { children: ReactNode }) => {
+const Scrollbar = ({ children, className }: { children: ReactNode, className?: string }) => {
   return (
-    <div className="custom-scrollbar">
+    <div className={clsx(className, 'custom-scrollbar')}>
       {children}
     </div>
   )

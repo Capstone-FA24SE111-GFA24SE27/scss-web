@@ -17,7 +17,7 @@ const RequestsContent = () => {
   if (isLoading) {
     return <AppLoading />
   }
-  if (!appointmentRequests) {
+  if (!appointmentRequests.length) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
   }
 

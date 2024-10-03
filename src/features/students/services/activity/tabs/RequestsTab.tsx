@@ -9,16 +9,6 @@ import { useState } from 'react'
 const RequestsTab = () => {
   const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({})
   const appointmentRequests = data?.content.data
-  console.log(data)
-
-  if (isLoading) {
-    return <AppLoading />
-  }
-  if (!appointmentRequests) {
-    return <Typography color='text.secondary' variant='h5' className='p-16'>No appoitment requests</Typography>
-  }
-
-  console.log(appointmentRequests)
 
   const statusColor = {
     'REJECTED': 'error',
@@ -26,7 +16,12 @@ const RequestsTab = () => {
     'APPROVED': 'success'
   }
 
-  const dispatch = useAppDispatch()
+  if (isLoading) {
+    return <AppLoading />
+  }
+  if (!appointmentRequests.length) {
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No appoitment requests</Typography>
+  }
 
   return (
     <>

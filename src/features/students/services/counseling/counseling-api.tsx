@@ -1,4 +1,4 @@
-import { PaginationContent } from '@/shared/types';
+import { PaginationContent, Profile } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -66,13 +66,15 @@ export type GetCounselorApiResponse = ApiResponse<Counselor>
 export type Counselor = {
   id: string,
   email: string,
-  avatarLink: string,
-  rating: number,
-  fullName: string,
-  phoneNumber: string,
-  dateOfBirth: number
+  gender: string,
+  expertise: Expertise
+  profile: Profile,
 }
 
+export type Expertise = {
+  id: number,
+  name: string,
+}
 
 export type GetCounselorsDailySlotsResponse = ApiResponse<DailySlot>
 export type GetCounselorsDailySlotsArg = {

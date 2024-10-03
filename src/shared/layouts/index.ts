@@ -1,5 +1,4 @@
-import AppLayout from "./AppLayout";
-export * from './AppLayout'
+import AppLayout from "./app";
 export {
-    AppLayout
+    AppLayout,
 }

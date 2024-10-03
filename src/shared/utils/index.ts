@@ -1,2 +1,2 @@
 export * from './dateTime'
-export * from './renderer'
+export * from '../components/render-html'

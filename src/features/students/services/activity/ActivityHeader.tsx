@@ -1,3 +1,4 @@
+import { Heading } from '@/shared/components';
 import { darken } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -28,19 +29,10 @@ function ProjectDashboardAppHeader() {
             {user?.fullName}
           </Avatar>
           <div className="flex flex-col min-w-0 mx-16">
-            <Typography className="text-lg md:text-2xl font-semibold tracking-tight leading-7 md:leading-snug truncate">
-              {`${user.fullName}'s activity at FPTU`}
-            </Typography>
-
-            <div className="flex items-center">
-
-              <Typography
-                className="leading-6 truncate"
-                color="text.secondary"
-              >
-                You have attended 2 events and 5 couseling sessions
-              </Typography>
-            </div>
+            <Heading 
+              title={user?.fullName}
+              description={'You have attended some couseling sessions'}
+            />
           </div>
         </div>
 

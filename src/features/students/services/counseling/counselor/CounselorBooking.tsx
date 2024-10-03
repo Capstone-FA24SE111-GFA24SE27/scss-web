@@ -171,7 +171,7 @@ function CounselorBooking() {
                     <Breadcrumbs
                         parents={[
                             {
-                                label: counselor.fullName || "",
+                                label: counselor.profile.fullName || "",
                                 url: `/services/counseling/${counselor.id}`
                             }
                         ]}
@@ -187,14 +187,14 @@ function CounselorBooking() {
                                 color: 'text.secondary'
                             }}
                             className="w-128 h-128 text-64 font-bold"
-                            src={counselor.avatarLink}
-                            alt={counselor.fullName}
+                            src={counselor.profile.avatarLink}
+                            alt={counselor.profile.fullName}
                         >
-                            {counselor?.fullName?.charAt(0)}
+                            {counselor?.profile.fullName?.charAt(0)}
                         </Avatar>
                         <div >
-                            <Typography className="mt-32 text-4xl font-bold truncate">{counselor.fullName}</Typography>
-                            <div className='flex items-end gap-8 text-lg text-gray-500'>
+                            <Typography className="mt-32 text-4xl font-bold truncate">{counselor.profile.fullName}</Typography>
+                            {/* <div className='flex items-end gap-8 text-lg text-gray-500'>
                                 <Rating
                                     name="simple-controlled"
                                     value={4.6}
@@ -202,18 +202,13 @@ function CounselorBooking() {
                                     precision={0.5}
                                 />
                                 <div>(116)</div>
-                            </div>
+                            </div> */}
 
                             <div className="flex flex-wrap items-center mt-16">
                                 <Chip
-                                    label={'Technology'}
+                                    label={counselor.expertise.name}
                                     className="mr-12 mb-12"
-                                    size="small"
-                                />
-                                <Chip
-                                    label={'Academic'}
-                                    className="mr-12 mb-12"
-                                    size="small"
+                                    size="medium"
                                 />
                             </div>
                         </div>
