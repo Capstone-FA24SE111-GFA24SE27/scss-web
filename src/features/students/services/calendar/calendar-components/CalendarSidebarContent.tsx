@@ -10,9 +10,9 @@ const CalendarSidebarContent = (props: Props) => {
 
     const navigate = useNavigate()
 	return (
-		<div className='flex flex-col flex-auto max-w-full w-md z-10'>
+		<div className='z-10 flex flex-col flex-auto max-w-full w-md'>
 			<IconButton
-				className='absolute top-0 right-0 my-16 mx-32 z-10'
+				className='absolute top-0 right-0 mx-32 my-16 z-999'
 				
 				size='large'
                 onClick={()=>navigate(-1)}

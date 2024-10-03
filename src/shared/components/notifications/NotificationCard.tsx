@@ -65,7 +65,7 @@ function NotificationCard(props: NotificationCardProps) {
 	return (
 		<Card
 			className={clsx(
-				'relative flex min-h-64 w-full items-center space-x-8 rounded-16 py-12 px-20 shadow',
+				'relative flex min-h-96 w-full items-center space-x-8 rounded-16 py-12 px-20 shadow',
 				className,
 				item.readStatus && 'opacity-60'
 			)}
@@ -86,7 +86,6 @@ function NotificationCard(props: NotificationCardProps) {
 				{item.title && (
 					<Typography className='font-semibold line-clamp-1'>
 						{item.title}
-						{item.notificationId}
 					</Typography>
 				)}
 

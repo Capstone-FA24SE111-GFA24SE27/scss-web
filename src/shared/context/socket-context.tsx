@@ -11,7 +11,7 @@ export const SocketProvider = ({ children }) => {
 	const socketRef = useRef(null);
 	const account = useAppSelector(selectAccount)
 
-	console.log(socketRef?.current)
+	console.log('socket',socketRef?.current)
 
 	useEffect(() => {
 		if (account) {
