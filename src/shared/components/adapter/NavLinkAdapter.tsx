@@ -5,6 +5,7 @@ export type NavLinkAdapterPropsType = NavLinkProps & {
 	activeClassName?: string;
 	activeStyle?: CSSProperties;
 	children?: ReactNode;
+	replace?: boolean
 };
 
 /**
@@ -13,7 +14,7 @@ export type NavLinkAdapterPropsType = NavLinkProps & {
  * The component is memoized to prevent unnecessary re-renders.
  */
 const NavLinkAdapter = forwardRef<HTMLAnchorElement, NavLinkAdapterPropsType>((props, ref) => {
-	const { activeClassName = 'active', activeStyle, role = 'button', ..._props } = props;
+	const { activeClassName = 'active', activeStyle, role = 'button', replace = false,  ..._props } = props;
 	const navigate = useNavigate();
 
 	return (
@@ -23,7 +24,7 @@ const NavLinkAdapter = forwardRef<HTMLAnchorElement, NavLinkAdapterPropsType>((p
 			{..._props}
 			onClick={(e) => {
 				e.preventDefault();
-				navigate(_props.to);
+				navigate(_props.to, {replace});
 			}}
 			className={({ isActive }) =>
 				[_props.className, isActive ? activeClassName : null].filter(Boolean).join(' ')

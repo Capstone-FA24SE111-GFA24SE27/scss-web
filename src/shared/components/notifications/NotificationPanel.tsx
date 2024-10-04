@@ -15,7 +15,7 @@ import {
 } from './notification-slice';
 
 import NotificationCard from './NotificationCard';
-import { Close} from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import {
 	useReadAllNotificationMutation,
 	useReadNotificationMutation,
@@ -24,7 +24,8 @@ import {
 const StyledSwipeableDrawer = styled(SwipeableDrawer)(({ theme }) => ({
 	'& .MuiDrawer-paper': {
 		backgroundColor: theme.palette.background.default,
-		width: 320,
+		width: 400,
+		padding: 25.6,
 	},
 }));
 
@@ -67,29 +68,21 @@ function NotificationPanel() {
 			disableSwipeToOpen
 		>
 			<IconButton
-				className='absolute top-0 right-0 m-4 z-999'
+				className='absolute top-0 right-0 p-16 m-4 z-999'
 				onClick={handleClose}
 				size='large'
 			>
 				<Close />
 			</IconButton>
-
-			<div className='flex flex-col h-full p-16'>
-				{/*  check if have notification here */}{' '}
-				{notifications?.length > 0 ? (
-					<div className='flex flex-col flex-auto'>
-						<div className='flex items-end justify-between mb-36 pt-136'>
-							<Typography className='font-semibold leading-none text-28'>
-								Notifications
-							</Typography>
-							<Typography
-								className='underline cursor-pointer text-12'
-								color='secondary'
-								onClick={handleDismissAll}
-							>
-								dismiss all
-							</Typography>
-						</div>
+			{/*  check if have notification here */}{' '}
+			{notifications?.length > 0 ? (
+				<div className='flex flex-col flex-auto max-h-full'>
+					<div className='flex items-end justify-between mb-36'>
+						<Typography className='font-semibold leading-none text-28'>
+							Notifications
+						</Typography>
+					</div>
+					<div className='flex flex-col flex-1 w-full overflow-auto'>
 						{notifications.map((item) => (
 							<NotificationCard
 								key={item.notificationId}
@@ -99,17 +92,26 @@ function NotificationPanel() {
 							/>
 						))}
 					</div>
-				) : (
-					<div className='flex items-center justify-center flex-1 p-16'>
+					<div className='flex justify-end w-full'>
 						<Typography
-							className='text-center text-24'
-							color='text.secondary'
+							className='underline cursor-pointer text-14'
+							color='secondary'
+							onClick={handleDismissAll}
 						>
-							There are no notifications for now.
+							Mark All as Read
 						</Typography>
 					</div>
-				)}
-			</div>
+				</div>
+			) : (
+				<div className='flex items-center justify-center flex-1 p-16'>
+					<Typography
+						className='text-center text-24'
+						color='text.secondary'
+					>
+						There are no notifications for now.
+					</Typography>
+				</div>
+			)}
 		</StyledSwipeableDrawer>
 	);
 }

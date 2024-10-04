@@ -8,7 +8,6 @@ import { AppointmentScheduleType, GetAppointmentApiArg } from './calendar-api';
 export const dateFormdat = 'YYYY-MM-DDTHH:mm:ss.sssZ';
 
 export type EventDialogType = {
-	type: 'event' | 'day';
 	props: {
 		open: boolean;
 		anchorPosition?: { top: number; left: number };
@@ -21,7 +20,6 @@ const initialState: {
 	data: AppointmentScheduleType[] | null;
 } = {
 	eventDialog: {
-		type: 'day',
 		props: {
 			open: false,
 			anchorPosition: { top: 200, left: 400 },
@@ -47,7 +45,6 @@ export const calendarAppSlice = createSlice({
 				const { id, title, allDay, start, end, extendedProps } = event;
 
 				const payload: EventDialogType = {
-					type: 'event',
 					props: {
 						open: true,
 						anchorPosition: {
@@ -65,48 +62,17 @@ export const calendarAppSlice = createSlice({
 				state.eventDialog = action.payload as EventDialogType;
 			},
 		},
-		openDayDetailDialog: {
-			prepare: (
-				selectInfo: Partial<DateSelectArg>,
-				events: AppointmentScheduleType[]
-			) => {
-				const { jsEvent } = selectInfo;
-
-				const payload: EventDialogType = {
-					type: 'day',
-					props: {
-						open: true,
-						anchorPosition: {
-							top: jsEvent!.pageY,
-							left: jsEvent!.pageX,
-						},
-					},
-					data: events,
-				};
-				console.log('day detail', JSON.stringify(payload));
-				return { payload, meta: undefined, error: null };
-			},
-			reducer: (state, action) => {
-				state.eventDialog = action.payload as EventDialogType;
-			},
-		},
-		closeDayDetailDialog: (state) => {
+		closeEventDetailDialog: (state) => {
 			state.eventDialog = initialState.eventDialog;
 		},
-		closeEventDetailDialog: (state) => {
-			state.eventDialog = {
-				...initialState.eventDialog,
-				type: 'event',
-			};
-		},
 		addScheduleData: (state, actions) => {
-			const prev = state.data ? state.data : []
-			state.data = [...actions.payload, ...prev]
-		}
+			const prev = state.data ? state.data : [];
+			state.data = [...actions.payload, ...prev];
+		},
 	},
 	selectors: {
 		selectEventDialog: (state) => state.eventDialog,
-		selectScheduleData: (state) => state.data
+		selectScheduleData: (state) => state.data,
 	},
 });
 
@@ -120,13 +86,12 @@ declare module '@shared/store' {
 		extends WithSlice<typeof calendarAppSlice> {}
 }
 
-export const { selectEventDialog, selectScheduleData } = injectedSlice.selectors;
+export const { selectEventDialog, selectScheduleData } =
+	injectedSlice.selectors;
 
 export const {
 	openEventDetailDialog,
 	closeEventDetailDialog,
-	openDayDetailDialog,
-	closeDayDetailDialog,
 	addScheduleData,
 } = calendarAppSlice.actions;
 

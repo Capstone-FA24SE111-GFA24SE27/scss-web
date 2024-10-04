@@ -11,15 +11,22 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import './index.css';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import { addScheduleData, openDayDetailDialog, openEventDetailDialog, selectScheduleData } from '../calendar-slice';
+import {
+	addScheduleData,
+	openEventDetailDialog,
+	selectScheduleData,
+} from '../calendar-slice';
 import { isDateRangeOverlapping } from '@/shared/utils';
 import CalendarAppEventContent from './CalendarAppEventContent';
-import EventDetailDialog from './dialog/EventDetailDialog';
-import DateDetailDialog from './dialog/DateDetailDialog';
-import { AppointmentScheduleType, useGetAppointmentScheduleQuery } from '../calendar-api';
+import EventDetailDialog from './event/EventDetailDialog';
+import {
+	AppointmentScheduleType,
+	useGetAppointmentScheduleQuery,
+} from '../calendar-api';
 import { date } from 'zod';
-import { AppLoading } from '@/shared/components';
+import { AppLoading, ContentLoading } from '@/shared/components';
 import { useSocket } from '@/shared/context';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
 	handleDates: (rangeInfo: DatesSetArg) => void;
@@ -31,16 +38,15 @@ const CalendarBody = (props: Props) => {
 	const { handleDates, currentDate, calendarRef } = props;
 
 	const dispatch = useAppDispatch();
-	const socket = useSocket()
+	const socket = useSocket();
 	const account = useAppSelector(selectAccount);
+	const navigate = useNavigate()
+	const scheduleData = useAppSelector(selectScheduleData);
 
-	const scheduleData = useAppSelector(selectScheduleData)
-
-	
 	const [appointments, setAppointments] = useState([]);
 	const [dateRange, setDateRange] = useState(null);
 
-	const { data: data, isLoading } = useGetAppointmentScheduleQuery(
+	const { data: data, isLoading, refetch: refetchSchedule } = useGetAppointmentScheduleQuery(
 		dateRange,
 		{
 			skip: !dateRange,
@@ -48,18 +54,23 @@ const CalendarBody = (props: Props) => {
 	);
 
 	useEffect(() => {
-		const cb = (data: AppointmentScheduleType) => {
-			dispatch(addScheduleData(data));
+
+		const cb = (data: any) => {
 			console.log('socket schedule', data);
+			if(data){
+				refetchSchedule()
+			}
 			
 		};
-		if (socket && account) {
-			socket.on(`/user/${account.profile.id}/private/notification`, cb);
+		if (socket && account) {	
+			console.log(`/user/${account.profile.id}/appointment`,  account);
+
+			socket.on(`/user/${account.profile.id}/appointment`, cb);
 		}
 
 		return () => {
 			if (socket && account) {
-				socket.off(`/user/${account.profile.id}/private/notification`, cb);
+				socket.off(`/user/${account.profile.id}/appointment`, cb);
 			}
 		};
 	}, [socket]);
@@ -77,16 +88,24 @@ const CalendarBody = (props: Props) => {
 	}, [currentDate]);
 
 	useEffect(() => {
-		console.log('asdw ', data);
 		if (data) {
+			let newData: AppointmentScheduleType[] = []
+			if(scheduleData){
+				newData = data.content.filter((item) => scheduleData.findIndex(schedule => schedule.id === item.id) === -1);
+			console.log('check 1');
+		} else {
+			console.log('check 2');
+			newData = data.content
+			}
+			console.log('newData', newData);
 			
-			dispatch(addScheduleData(data.content))
+			if (newData.length > 0) dispatch(addScheduleData(newData));
 		}
 	}, [data]);
 
-	useEffect(()=>{
-		console.log(' schedule data ', scheduleData)
-		if(scheduleData){
+	useEffect(() => {
+		console.log(' schedule data ', scheduleData);
+		if (scheduleData) {
 			const list = scheduleData.map((item) => {
 				return {
 					id: item.id,
@@ -98,27 +117,19 @@ const CalendarBody = (props: Props) => {
 
 			setAppointments(list);
 		}
-
-	},[scheduleData])
-
-
+	}, [scheduleData]);
 
 	const handleDateSelect = (selectInfo: DateSelectArg) => {
 		console.log('dateselect, ', selectInfo);
-		const eventsInSelectedDate = appointments.filter((event) =>
-			isDateRangeOverlapping(
-				new Date(event.start),
-				new Date(event.end),
-				selectInfo.start,
-				selectInfo.end
-			)
-		);
-		dispatch(openDayDetailDialog(selectInfo, eventsInSelectedDate));
+		const param = selectInfo.startStr + '&' + selectInfo.endStr
+		navigate(`date/${param}`)
 	};
 
 	const handleEventClick = (clickInfo: EventClickArg) => {
 		clickInfo.jsEvent.preventDefault();
-		const chosenAppointment = data.content.find(item => item.id == clickInfo.event.id)
+		const chosenAppointment = data.content.find(
+			(item) => item.id == clickInfo.event.id
+		);
 
 		dispatch(openEventDetailDialog(clickInfo, chosenAppointment));
 	};
@@ -128,8 +139,8 @@ const CalendarBody = (props: Props) => {
 	};
 
 	if (isLoading) {
-		return <AppLoading />;
-	}
+        return <ContentLoading className='m-32' />
+    }
 
 	return (
 		<div className='flex items-start flex-auto w-full h-full '>
@@ -153,7 +164,6 @@ const CalendarBody = (props: Props) => {
 				ref={calendarRef}
 			/>
 			<EventDetailDialog />
-			<DateDetailDialog />
 		</div>
 	);
 };
