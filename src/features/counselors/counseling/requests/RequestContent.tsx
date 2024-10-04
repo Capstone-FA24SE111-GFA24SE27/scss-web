@@ -38,7 +38,7 @@ const RequestsContent = () => {
 
   return (
     <>
-      <List className='px-16'>
+      <List className='px-16 w-full'>
         {
           appointmentRequests.map(appointment =>
             <ListItem
@@ -61,7 +61,7 @@ const RequestsContent = () => {
                 </div>
 
                 <div className='flex gap-8'>
-                  <Typography className='w-60' color='textSecondary'>Type:</Typography>
+                  <Typography className='w-60' color='textSecondary'>Location:</Typography>
                   <Typography
                     className='font-semibold'
                   >

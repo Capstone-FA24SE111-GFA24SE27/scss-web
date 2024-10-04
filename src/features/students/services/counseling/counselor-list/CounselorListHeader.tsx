@@ -1,9 +1,13 @@
-import { FilterAltOutlined, Search } from '@mui/icons-material'
+import { FilterAltOutlined, Search, Tune } from '@mui/icons-material'
 import { Box, IconButton, Input, TextField, Tooltip } from '@mui/material'
+import { useAppSelector } from '@shared/store'
 import { motion } from 'framer-motion'
 import React from 'react'
+import { selectFilter } from './filter-slice'
+import CounselorListFilterButton from './CounselorListFilterButton'
 
-const CounselorFilter = () => {
+const CounselorListHeader = () => {
+  const filter = useAppSelector(selectFilter)
   return (
     <div className="flex flex-1 items-center p-24">
       <TextField
@@ -17,16 +21,11 @@ const CounselorFilter = () => {
           }
         }}
       />
-      <div className='w-96 flex justify-center'>
-        <Tooltip title={'Filter'}>
-          <IconButton
-          >
-            <FilterAltOutlined className='size-32' />
-          </IconButton>
-        </Tooltip>
+      <div className='pl-16'>
+        {!filter.open && <CounselorListFilterButton />}
       </div>
     </div>
   )
 }
 
-export default CounselorFilter
+export default CounselorListHeader

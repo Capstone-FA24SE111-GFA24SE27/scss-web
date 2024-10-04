@@ -47,7 +47,7 @@ const RequestsTab = () => {
                   </div>
                 </div>
                 <div className='flex gap-8'>
-                  <Typography className='w-52' color='textSecondary'>Type:</Typography>
+                  <Typography className='w-52' color='textSecondary'>Location:</Typography>
                   <Typography
                     className='font-semibold'
                   >

@@ -13,6 +13,10 @@ function CounselorListContent() {
 
     console.log(counselors)
 
+    if (isLoading) {
+        return <ContentLoading />;
+    }
+    
     if (!counselors.length ) {
         return (
             <div className="flex flex-1 items-center justify-center">
@@ -24,10 +28,6 @@ function CounselorListContent() {
                 </Typography>
             </div>
         );
-    }
-
-    if (isLoading) {
-        return <ContentLoading />;
     }
 
     return (

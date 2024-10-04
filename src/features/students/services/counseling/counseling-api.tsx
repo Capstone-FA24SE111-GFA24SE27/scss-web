@@ -16,7 +16,7 @@ export const counselingApi = api
     endpoints: (build) => ({
       getCounselors: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors?SortDirection=ASC&sortBy=id`,
+          url: `/api/counselors`,
         }),
         providesTags: ['counselors']
       }),
@@ -95,6 +95,7 @@ export type Slot = {
   status: AppointmentStatus,
   myAppointment: boolean
 }
+
 
 export type AppointmentStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'
 

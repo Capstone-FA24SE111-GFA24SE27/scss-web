@@ -137,7 +137,7 @@ function CounselorBooking() {
         }
 
         return () => {
-            socket.off(`/user/${formData.date}/${counselorId}/slot`);
+            socket?.off(`/user/${formData.date}/${counselorId}/slot`);
         };
     }, [socket]);
 
@@ -167,7 +167,7 @@ function CounselorBooking() {
     return (
         <>
             <div className="relative flex flex-col flex-auto items-center p-24 sm:p-48">
-            <div className="w-full max-w-3xl">
+                <div className="w-full max-w-3xl">
                     <Breadcrumbs
                         parents={[
                             {

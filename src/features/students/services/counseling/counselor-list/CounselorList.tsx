@@ -3,7 +3,10 @@ import { useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { PageSimple } from '@shared/components';
 import CounselorList from './CounselorListContent';
-import CounselorListContent from './CounselorListContent';
+import CounselorListHeader from './CounselorListHeader';
+import { useAppDispatch, useAppSelector } from '@shared/store';
+import { filterClose, selectFilter } from './filter-slice';
+import CounselorListSidebarContent from './CounselorListSidebarContent';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -17,8 +20,9 @@ const Root = styled(PageSimple)(({ theme }) => ({
  */
 function CounselingList() {
   const pageLayout = useRef(null);
-  const routeParams = useParams();
-  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
+  const dispatch = useAppDispatch();
+  const filter = useAppSelector(selectFilter)
+  // const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
   // useGetContactsListQuery();
   // useGetContactsCountriesQuery();
@@ -28,14 +32,15 @@ function CounselingList() {
     <div>
       <Root
         className='!min-h-screen'
-        header={<div>Header here</div>}
+        header={<div><CounselorListHeader /></div>}
         content={<CounselorList />}
         ref={pageLayout}
-        rightSidebarContent={<div>side bar here</div>}
-        rightSidebarOpen={rightSidebarOpen}
-        rightSidebarOnClose={() => setRightSidebarOpen(false)}
+        rightSidebarContent={<CounselorListSidebarContent />}
+        rightSidebarOpen={filter.open}
+        rightSidebarOnClose={() => dispatch(filterClose())}
         rightSidebarVariant="permanent"
         scroll={isMobile ? 'normal' : 'content'}
+        rightSidebarWidth={320}
       />
     </div>
 

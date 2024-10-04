@@ -242,6 +242,7 @@ export const defaultThemeOptions = {
 			styleOverrides: {
 				root: {
 					display: 'flex',
+					width: '100%',
 					flexDirection: 'column',
 				},
 			},

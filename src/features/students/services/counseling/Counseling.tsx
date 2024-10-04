@@ -6,6 +6,7 @@ import CounselorList from './counselor-list';
 import CounselingSidebarContent from './CounselingSidebarContent';
 import CounselingHeader from './CounselingHeader';
 import { Tab, Tabs } from '@mui/material';
+import QuickBooking from './quick-booking';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -48,7 +49,7 @@ function Counseling() {
 						textColor="secondary"
 						variant="scrollable"
 						scrollButtons="auto"
-						classes={{ root: 'w-full h-32 border-b-2 bg-background-paper px-16' }}
+						classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
 					>
 						<Tab
 							className="text-lg font-semibold min-h-40 min-w-64 px-16"
@@ -62,10 +63,10 @@ function Counseling() {
 				</div>
 			}
 			content={
-				<div className="w-full h-full">
+				<div className="w-full pr-8">
 					<div className=''>
-						{tabValue === 0 && <div>Randomize here</div>}
-						{tabValue === 1 && <CounselorList />}
+						{tabValue === 0 && <QuickBooking />}
+						{tabValue === 1 && <CounselorList/>}
 					</div>
 				</div>
 			}
