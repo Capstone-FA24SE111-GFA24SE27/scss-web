@@ -5,7 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
-import { CakeOutlined, ChevronRight, Close, EmailOutlined, Female, LocalPhoneOutlined, Male, NotesOutlined, Transgender } from '@mui/icons-material';
+import { CakeOutlined, ChevronRight, Close, ContactSupport, EmailOutlined, Female, Help, LocalPhoneOutlined, Male, NotesOutlined, PsychologyAlt, Transgender } from '@mui/icons-material';
 import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, FormLabel, IconButton, ListItemButton, Radio, RadioGroup, Rating, SvgIcon, TextField, Tooltip } from '@mui/material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState } from 'react';
@@ -25,6 +25,7 @@ import { apiService, useAppDispatch } from '@shared/store'
 
 const schema = z.object({
   slotId: z.number().min(1, "Slot is required"),
+  slotCode: z.string().min(1, "Slot code is required"),
   date: z.string().min(1, "Counseling date is required"),
   isOnline: z.coerce.boolean().optional(),
   reason: z.string().min(2, "Please enter a valid reason").optional(),
@@ -32,7 +33,7 @@ const schema = z.object({
     id: z.number(),
     name: z.string(),
   }).optional(),
-  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional()
+  gender: z.enum(['MALE', 'FEMALE', '']).optional()
 });
 
 
@@ -43,7 +44,6 @@ type FormType = z.infer<typeof schema>;
 function QuickBooking() {
   const routeParams = useParams();
   const socket = useSocket()
-  const { id: counselorId } = routeParams as { id: string };
   const navigate = useNavigate()
   const today = dayjs().format('YYYY-MM-DD');
   const [startOfMonth, setStartOfMonth] = useState(today);
@@ -51,22 +51,25 @@ function QuickBooking() {
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
 
   const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useBookCounselorMutation()
+  const [isGettingRandomMatchedCounselor, setGettingRandomMatchedGender] = useState(false)
 
-  const [getCounselorRandomMatch, { isLoading: isGettingRandomMatchedCounselor, isSuccess: isSuccessGettingRandomMatchedCounselor }] =
-    useGetRandomMatchedCousenlorMutation()
+  const [getRandomMatchedCounselor,
+    {
+      isLoading: isLoadingRandomMatchedCounselor,
+      isSuccess: isSuccessGettingRandomMatchedCounselor
+    }
+  ] = useGetRandomMatchedCousenlorMutation()
 
 
-  const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor>()
-
+  const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(null)
 
   const defaultValues = {
     slotId: 0,
     date: startOfMonth,
     // isOnline: true,
-    // reason: "",
   }
 
-  const { control, formState, watch, handleSubmit, setValue } = useForm<FormType>({
+  const { control, formState, watch, handleSubmit, setValue, reset } = useForm<FormType>({
     defaultValues,
     resolver: zodResolver(schema)
   });
@@ -88,15 +91,35 @@ function QuickBooking() {
   // const { data: counserDailySlotsData, isFetching: isFetchingCounselorSlots } = useGetCounselorDailyQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
   const onSubmit = () => {
-    getCounselorRandomMatch({
+    setGettingRandomMatchedGender(true)
+    setProgress(20  )
+    getRandomMatchedCounselor({
       date: formData.date,
       slotId: formData.slotId,
       expertiseId: formData.expertise?.id,
       gender: formData.gender,
     })
       .unwrap()
-      .then(response => setRandomMatchedCounselor(response?.content))
+      .then(response => {
+        setRandomMatchedCounselor(response?.content)
+      })
+  }
 
+  const onSubmitBooking = () => {
+    bookCounselor({
+      counselorId: randomMatchedCounselor?.id,
+      appointmentRequest: {
+        slotCode: formData.slotCode,
+        date: formData.date,
+        isOnline: formData.isOnline,
+        reason: formData.reason,
+      }
+    })
+      .unwrap()
+      .then(() => {
+        reset();
+        setRandomMatchedCounselor(null)
+      })
   }
 
   const handleDateChange = (selectedDate) => {
@@ -121,6 +144,7 @@ function QuickBooking() {
 
     setValue("date", currentDate)
     setValue("slotId", 0)
+    setValue("slotCode", '')
   }
 
   const handleMonthChange = (newMonth) => {
@@ -135,22 +159,36 @@ function QuickBooking() {
   //   return <ContentLoading className='m-32' />
   // }
 
-  // const [progress, setProgress] = useState(10);
+  const [progress, setProgress] = useState(20);
 
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-  //   }, 800);
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
+
+  useEffect(() => {
+    if (isGettingRandomMatchedCounselor) {
+      const timer = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress >= 100) {
+            setGettingRandomMatchedGender(false)
+            clearInterval(timer); // Stop the timer when progress reaches 100
+            return 100; // Ensure the progress does not exceed 100
+          }
+          return prevProgress + 20; // Gradually increase progress by 10
+        });
+      }, 250); // Update progress every 500ms
+
+      return () => {
+        clearInterval(timer); // Cleanup the timer if the component unmounts
+      };
+    }
+  }, [isGettingRandomMatchedCounselor]); // Start the effect when the condition is met
+
+  console.log(progress, isGettingRandomMatchedCounselor)
+
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto p-32 bg-background-paper gap-16 min-h-screen">
+      <div className="relative flex flex-col flex-auto p-32 bg-background-paper min-h-screen">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <div className='flex'>
+        <div className='flex mt-32'>
 
           <div className="flex flex-1 flex-col gap-4">
             <div className='w-fit'>
@@ -193,7 +231,10 @@ function QuickBooking() {
                             <Button
                               variant={formData.slotId === slot.slotId ? 'contained' : 'outlined'}
                               disabled={['UNAVAILABLE', 'EXPIRED'].includes(slot.status)}
-                              onClick={() => setValue("slotId", slot.slotId)}
+                              onClick={() => {
+                                setValue("slotId", slot.slotId)
+                                setValue("slotCode", slot.slotCode)
+                              }}
                               color='primary'
                             >
                               {dayjs(slot.startTime, 'HH:mm:ss').format('HH:mm')} -  {dayjs(slot.endTime, 'HH:mm:ss').format('HH:mm')}
@@ -281,8 +322,8 @@ function QuickBooking() {
                           <Tooltip title="Clear gender selection">
                             <IconButton
                               onClick={() => {
-                                setSelectedGender(null); // Clear the selected gender
-                                field.onChange(null); // Update the form state
+                                setSelectedGender(''); // Clear the selected gender
+                                field.onChange(''); // Update the form state
                               }}
                               sx={{
                                 borderRadius: '50%',
@@ -306,124 +347,128 @@ function QuickBooking() {
 
             <Divider className='mt-16' />
 
+            <Button
+              size='large'
+              className='mt-16'
+              variant='contained' color='secondary'
+              onClick={handleSubmit(onSubmit)}
+              disabled={isLoadingRandomMatchedCounselor}
+            >
+              Find my counselor
+            </Button>
+
           </div>
 
           <div className='flex-1'>
             <div className=''>
-              <Button
-                size='large'
-                variant='contained' color='secondary'
-                onClick={handleSubmit(onSubmit)}
-              >
-                Match me with a counselor that fits my criteria.
-              </Button>
+
               {
-                randomMatchedCounselor && (
-                  <div>
-
-                    <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`}>
-                      <ListItemButton
-                        component={NavLinkAdapter}
-                        to={`${randomMatchedCounselor.profile.id}`}
-                        className='bg-primary-main/10 w-full rounded'
-                      >
-                        <div className='w-full flex'>
-                          <Avatar
-                            alt={randomMatchedCounselor.profile.fullName}
-                            src={randomMatchedCounselor.profile.avatarLink}
-                          />
-                          <div className='ml-16'>
-                            <Typography className='font-semibold text-primary-main'>{randomMatchedCounselor.profile.fullName}</Typography>
-                            <Typography color='text.secondary'>{randomMatchedCounselor.email || 'counselor@fpt.edu.vn'}</Typography>
+                randomMatchedCounselor
+                  ?
+                  progress < 100
+                    ? <div className='flex flex-col items-center gap-16'>
+                      <Typography color='secondary' className='font-semibold text-center text-lg'>Matching the most suitable counselor for you.</Typography>
+                      <CircularProgressWithLabel value={progress} />
+                    </div>
+                    : <div>
+                      <Typography color='secondary' className='font-semibold text-center text-lg'>Best counselor that fits your criteria.</Typography>
+                      <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`}>
+                        <ListItemButton
+                          component={NavLinkAdapter}
+                          to={`${randomMatchedCounselor.profile.id}`}
+                          className=' w-full rounded'
+                        >
+                          <div className='w-full flex flex-col items-center'>
+                            <Avatar
+                              className='size-96 border-2 '
+                              alt={randomMatchedCounselor.profile.fullName}
+                              src={randomMatchedCounselor.profile.avatarLink}
+                            />
+                            <div className='mt-8 text-center'>
+                              <Typography className='font-semibold text-primary-main text-18'>{randomMatchedCounselor.profile.fullName}</Typography>
+                              <Typography className='text-16' color='text.secondary'>{randomMatchedCounselor.email || 'counselor@fpt.edu.vn'}</Typography>
+                            </div>
                           </div>
-                        </div>
-                        <ChevronRight />
-                      </ListItemButton>
-                    </Tooltip>
-
-                    <Divider />
+                          <ChevronRight />
+                        </ListItemButton>
+                      </Tooltip>
 
 
-                    <div className='px-32'>
-                      <Typography className='font-semibold text-primary text-lg'>Meeting Type</Typography>
-                      {/* <FormControl>
-                            <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
-                                name="radio-buttons-group"
+                      <div className='px-32'>
+                        <Divider className='mt-16' />
+                        <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
+
+                        <Controller
+                          name="isOnline"
+                          control={control}
+                          render={({ field }) => (
+                            <FormControl
                             >
-                                <div className='flex gap-16'>
-                                    <FormControlLabel value="female" control={<Radio />} label="Online" />
-                                    <FormControlLabel value="male" control={<Radio />} label="Offline" />
-                                </div>
-                            </RadioGroup>
-                        </FormControl> */}
-                      <Controller
-                        name="isOnline"
-                        control={control}
-                        render={({ field }) => (
-                          <FormControl
-                          >
-                            <RadioGroup
+                              <RadioGroup
+                                {...field}
+                                className="Settings-group"
+                                row
+                              >
+                                <FormControlLabel
+                                  value={true}
+                                  control={<Radio />}
+                                  label="Online"
+                                />
+                                <FormControlLabel
+                                  value={false}
+                                  control={<Radio />}
+                                  label="Offline"
+                                />
+                              </RadioGroup>
+                            </FormControl>
+                          )}
+                        />
+                      </div>
+
+
+                      <div className='px-32'>
+                        <Divider className="mt-16 " />
+                        <Controller
+                          control={control}
+                          name="reason"
+                          render={({ field }) => (
+                            <TextField
+                              className="mt-16"
                               {...field}
-                              className="Settings-group"
-                              row
-                            >
-                              <FormControlLabel
-                                value={true}
-                                control={<Radio />}
-                                label="Online"
-                              />
-                              <FormControlLabel
-                                value={false}
-                                control={<Radio />}
-                                label="Offline"
-                              />
-                            </RadioGroup>
-                          </FormControl>
-                        )}
-                      />
+                              label="Reason"
+                              placeholder="Reason"
+                              multiline
+                              rows={5}
+                              id="Reason"
+                              error={!!errors.reason}
+                              helperText={errors?.reason?.message}
+                              fullWidth
+
+                            />
+                          )}
+                        />
+                      </div>
+
+
+                      <div className='flex justify-center mt-24 px-32'>
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          className='w-full'
+                          disabled={isEmpty(dirtyFields) || !isValid || isBookingCounselor || !formData.reason}
+                          onClick={handleSubmit(onSubmitBooking)}>
+                          Confirm booking
+                        </Button>
+                      </div>
+
                     </div>
-
-                    <Divider className="mt-16 " />
-
-                    <div className='px-32'>
-                      {/* <TextField
-                            label=" for counseling"
-                            multiline
-                            rows={4}
-                            defaultValue=""
-                            className='mt-16 w-full'
-                        /> */}
-                      <Controller
-                        control={control}
-                        name="reason"
-                        render={({ field }) => (
-                          <TextField
-                            className="mt-16"
-                            {...field}
-                            label="Reason"
-                            placeholder="Reason"
-                            multiline
-                            rows={5}
-                            id="Reason"
-                            error={!!errors.reason}
-                            helperText={errors?.reason?.message}
-                            fullWidth
-
-                          />
-                        )}
-                      />
-                    </div>
-
+                  : <div className='flex flex-col items-center w-full'>
+                    <Typography color='textDisabled'>Your counselor will be showed here.</Typography>
+                    <ContactSupport className='size-120 text-text-disabled' />
                   </div>
-
-                )
               }
 
-
             </div>
-            {/* <CircularProgressWithLabel value={progress} />; */}
           </div>
         </div>
       </div>
@@ -436,10 +481,28 @@ export default QuickBooking;
 
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number },
+
 ) {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-      <CircularProgress variant="determinate" {...props} />
+      <CircularProgress
+        variant="determinate"
+        value={100} // Always 100 to act as the background circle
+        size={160} // Same size as the actual progress indicator
+        sx={{
+          color: 'background.default', // You can change the color or use theme colors
+          position: 'absolute', // Make it sit behind the progress indicator
+          left: 0,
+          top: 0,
+        }}
+        thickness={4} // Thickness of the background circle
+      />
+      <CircularProgress
+        variant="determinate"
+        {...props}
+        size={160}
+        color='secondary'
+      />
       <Box
         sx={{
           top: 0,
@@ -452,11 +515,19 @@ function CircularProgressWithLabel(
           justifyContent: 'center',
         }}
       >
-        <Typography
-          variant="caption"
-          component="div"
-          sx={{ color: 'text.secondary' }}
-        >{`${Math.round(props.value)}%`}</Typography>
+        <div className='flex flex-col justify-center'>
+          <Typography
+            variant="caption"
+            component="div"
+            sx={{ color: 'text.secondary' }}
+          >{`Finding your couselor...`}</Typography>
+          <Typography
+            variant="caption"
+            component="div"
+            className='text-center text-lg'
+            sx={{ color: 'text.secondary' }}
+          >{`${Math.round(props.value)}%`}</Typography>
+        </div>
       </Box>
     </Box>
   );
