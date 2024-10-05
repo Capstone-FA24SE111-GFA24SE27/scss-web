@@ -5,15 +5,15 @@ import clsx from 'clsx';
 import Box from '@mui/material/Box';
 import './loading.css'
 
-export type FuseLoadingProps = {
+export type LoadingProps = {
   delay?: number;
   className?: string;
 };
 
 /**
- * FuseLoading displays a loading state with an optional delay
+ * Loading displays a loading state with an optional delay
  */
-function FuseLoading(props: FuseLoadingProps) {
+function Loading(props: LoadingProps) {
   const { delay = 0, className } = props;
   const [showLoading, setShowLoading] = useState(!delay);
 
@@ -51,4 +51,4 @@ function FuseLoading(props: FuseLoadingProps) {
   );
 }
 
-export default FuseLoading;
+export default Loading;

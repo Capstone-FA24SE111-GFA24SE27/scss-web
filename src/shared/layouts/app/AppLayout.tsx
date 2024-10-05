@@ -1,4 +1,3 @@
-// import FuseMessage from '@fuse/core/FuseMessage';
 // import Configurator from 'app/theme-layouts/shared-components/configurator/Configurator';
 import { memo, ReactNode, Suspense } from 'react';
 import { NavbarLayout } from '../layout-components/navbar';

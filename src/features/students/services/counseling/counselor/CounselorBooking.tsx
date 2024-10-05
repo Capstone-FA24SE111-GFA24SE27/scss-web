@@ -291,7 +291,7 @@ function CounselorBooking() {
                                 >
                                     <RadioGroup
                                         {...field}
-                                        className="FuseSettings-group"
+                                        className="Settings-group"
                                         row
                                     >
                                         <FormControlLabel
