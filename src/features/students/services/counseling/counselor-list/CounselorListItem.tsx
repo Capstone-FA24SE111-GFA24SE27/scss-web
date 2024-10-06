@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import ListItemButton from '@mui/material/ListItemButton';
 import { NavLinkAdapter } from '@/shared/components';
 import { Box, Chip, Rating } from '@mui/material';
-import { Counselor } from './counseling-api';
+import { Counselor } from '../counseling-api';
 import { Mail, Phone } from '@mui/icons-material';
 
 type CounselorListItemPropsType = {
@@ -24,21 +24,21 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 		<>
 			<ListItemButton
 				className="p-8 flex gap-24 items-center"
-				sx={{ bgcolor: 'background.paper'}}
+				sx={{ bgcolor: 'background.paper' }}
 				component={NavLinkAdapter}
 				to={`${counselor.id}`}
 			>
 				<ListItemAvatar>
 					<Avatar
-						alt={counselor.fullName}
-						src={counselor.avatarLink}
+						alt={counselor.profile.fullName}
+						src={counselor.profile.avatarLink}
 						className='size-80'
 					/>
 				</ListItemAvatar>
 				<Box className='flex flex-col gap-12 mt-16 justify-between'>
 					<ListItemText
 						classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate text-lg' }}
-						primary={counselor.fullName}
+						primary={counselor.profile.fullName}
 						secondary={counselor.email}
 					/>
 					{/* <div className='flex gap-8'>
@@ -54,17 +54,13 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 
 					<div className="flex flex-wrap items-center">
 						<Chip
-							label={'Technology'}
+							label={counselor.expertise.name}
 							className="mr-12 mb-12"
 							size="small"
 							color='default'
 						/>
-						<Chip
-							label={'Academic'}
-							className="mr-12 mb-12"
-							size="small"
-						/>
 					</div>
+					
 				</Box>
 			</ListItemButton>
 			<Divider />

@@ -18,6 +18,8 @@
   background-color: #888; /* Scrollbar color */
   border-radius: 8px; /* Round the scrollbar thumb */
   border: 1px solid transparent; /* Space between scrollbar and edge */
+  min-height: 10px; /* Set a minimum height for the thumb */
+  max-height: 30px; /* Set a maximum height for the thumb */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {

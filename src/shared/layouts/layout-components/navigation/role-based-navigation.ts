@@ -182,8 +182,78 @@ const counselorNavigation: NavigationOptions = {
     ]
 }
 
+const managerNavigation: NavigationOptions = {
+    list: [
+        {
+            name: "Counseling",
+            description: "Counseling service",
+            route: 'counseling',
+            items: [
+                {
+                    icon: Archive,
+                    name: 'Requests',
+                    route: 'requests'
+                },
+                {
+                    icon: TagFaces,
+                    name: 'Appointments',
+                    route: 'appointments'
+                },
+                {
+                    icon: CalendarMonth,
+                    name: 'Calendar',
+                    route: 'calendar',
+                },
+            ]
+        },
+        {
+            name: 'Resources',
+            description: 'Resources for students & couselors',
+            route: 'resources',
+            items: [
+                {
+                    icon: EventSeat,
+                    name: 'Workshops',
+                    route: 'workshops'
+                },
+                {
+                    icon: Article,
+                    name: 'Articles',
+                    route: 'article'
+                },
+                {
+                    icon: NotStarted,
+                    name: 'Videos',
+                    route: 'videos'
+                },
+            ]
+        }
+    ],
+    shortcuts: [
+        {
+            icon: CalendarMonth,
+            name: 'Calendar',
+        },
+        {
+            icon: Mail,
+            name: 'Mail',
+        },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+    ]
+}
+
 
 export const roleBasedNavigation: RoleBasedNavigation = {
     [roles.STUDENT]: studentNavigation,
     [roles.COUNSELOR]: counselorNavigation,
+    [roles.MANAGER]: managerNavigation,
 }

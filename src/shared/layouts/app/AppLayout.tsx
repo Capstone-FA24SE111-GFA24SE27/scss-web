@@ -1,12 +1,11 @@
-// import FuseMessage from '@fuse/core/FuseMessage';
 // import Configurator from 'app/theme-layouts/shared-components/configurator/Configurator';
 import { memo, ReactNode, Suspense } from 'react';
-import { NavbarLayout } from './layout-components/navbar';
+import { NavbarLayout } from '../layout-components/navbar';
 // import RightSideLayout1 from './components/RightSideLayout1';
-import { ToolbarLayout } from './layout-components/toolbar';
-import { FooterLayout } from './layout-components/footer';
+import { ToolbarLayout } from '../layout-components/toolbar';
+import { FooterLayout } from '../layout-components/footer';
+import { RightSideLayout } from '../layout-components/right';
 import { AppLoading } from '@shared/components';
-import { RightSideLayout } from './layout-components/right';
 
 
 
@@ -47,7 +46,7 @@ export type Config = {
 	rightSidePanel: SidePanelConfig;
 };
 
-const defaultConfig: Config = {
+export const defaultConfig: Config = {
 	navbar: {
 		display: true,
 		position: 'left',
@@ -104,7 +103,7 @@ export default function AppLayout(props: AppLayoutProps) {
 					</div>
 
 					{config.footer.display && (
-						<FooterLayout className={config.footer.style === 'fixed' ? 'sticky bottom-0' : ''} />
+						<FooterLayout className={config.footer.style === 'fixed' ? 'sticky bottom-0' : 'absolute'} />
 					)}
 				</main>
 

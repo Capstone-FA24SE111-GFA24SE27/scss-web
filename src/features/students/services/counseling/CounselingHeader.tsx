@@ -8,7 +8,7 @@ import { Search } from '@mui/icons-material';
 import { FilterAltOutlined } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
-import { CounselorsFilter } from './CounselorsFilter';
+import { Heading } from '@/shared/components';
 
 /**
  * The contacts header.
@@ -28,56 +28,10 @@ function CounselingHeader() {
     // if (isLoading) {
     //     return null;
     // }
-    const [showFilter, setShowFilter] = useState(false)
     return (
         <>
-            <div className="p-24 sm:p-32 w-full border-b-1 bg-background-paper">
-                <div className="flex flex-col">
-                    <motion.span
-                        initial={{ x: -20 }}
-                        animate={{ x: 0, transition: { delay: 0.2 } }}
-                    >
-                        <Typography className="text-20 md:text-24 font-extrabold tracking-tight leading-none">
-                            Counseling Service
-                        </Typography>
-                    </motion.span>
-                    <motion.span
-                        initial={{ y: -20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
-                    >
-                        <Typography
-                            component={motion.span}
-                            className="text-14 font-medium ml-2"
-                            color="text.secondary"
-                        >
-                        </Typography>
-                    </motion.span>
-                </div>
-                <div className="flex flex-1 items-center mt-16 -mx-8">
-                    <Box
-                        component={motion.div}
-                        initial={{ y: -20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
-                        className="flex flex-1 w-full sm:w-auto items-center px-16 mx-8 border-1 rounded-full"
-                    >
-                        <Search />
-                        <Input
-                            placeholder="Search counselors"
-                            className="flex flex-1 px-16"
-                            disableUnderline
-                            fullWidth
-                            // value={searchText}
-                            inputProps={{
-                                'aria-label': 'Search'
-                            }}
-                        />
-                    </Box>
-                    <Tooltip title={'Filter'}>
-                        <IconButton onClick={() => setShowFilter(prevState => !prevState)}>
-                            <FilterAltOutlined className='size-32' />
-                        </IconButton>
-                    </Tooltip>
-                </div>
+            <div className="px-24 py-16 sm:px-32 w-full bg-background-paper">
+                <Heading title='Counseling Service' description='Providing personalized guidance and support for students.'/>
             </div>
         </>
     );

@@ -17,12 +17,12 @@ const RequestsContent = () => {
   if (isLoading) {
     return <AppLoading />
   }
-  if (!appointmentRequests) {
+  if (!appointmentRequests.length) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
   }
 
   const statusColor = {
-    'DENIED': 'error',
+    'REJECTED': 'error',
     'WAITING': 'warning',
     'APPROVED': 'success'
   }
@@ -38,7 +38,7 @@ const RequestsContent = () => {
 
   return (
     <>
-      <List className='px-16'>
+      <List className='px-16 w-full'>
         {
           appointmentRequests.map(appointment =>
             <ListItem
@@ -58,62 +58,23 @@ const RequestsContent = () => {
                     <AccessTime />
                     <Typography className=''>{dayjs(appointment.startTime, "HH:mm:ss").format('HH:mm')} - {dayjs(appointment.endTime, "HH:mm:ss").format('HH:mm')}</Typography>
                   </div>
-                </div>
 
-                <div className='flex gap-8'>
-                  <Typography className='w-60' color='textSecondary'>Type:</Typography>
-                  <Typography
-                    className='font-semibold'
-                  >
-                    {appointment.meetingType}
-                  </Typography>
-                </div>
+                  <Chip
+                    label={appointment.meetingType == 'ONLINE'? 'Online' : 'Offline'}
+                    icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+                    className='font-semibold items-center'
+                    size='small'
+                  />
 
-                {/* <div className='flex gap-4'>
-                  {
-                    appointment.meetingType === 'ONLINE' ?
-                      <div className='flex gap-24 items-center'>
-                        <Chip
-                          label='Online'
-                          icon={<Circle color='success' />}
-                          className='font-semibold  items-center'
-                        />
-                        {appointment.appointmentDetails?.meetUrl && (
-                          <div>
-                            <Link to={appointment.appointmentDetails?.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
-                              Meet URL
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                      : appointment.appointmentDetails?.address && (<div className='flex gap-8 items-center '>
-                        <Typography className='w-60' color='textSecondary'>Address:</Typography>
-                        <Typography className='font-semibold'>{appointment.appointmentDetails?.address || ''}</Typography>
-                      </div>)
-                  }
-                  {appointment.status === 'APPROVED' && (<Tooltip title={appointment.meetingType === 'ONLINE' ? 'Update meet URL' : 'Update address'}>
-                    <IconButton
-                      color='secondary'
-                      onClick={() => dispatch(openDialog({
-                        children: <UpdateDetailsAppointmentDialog appointment={appointment} />
-                      }
-                      ))}
-                    >
-                      <EditNote fontSize='medium' />
-                    </IconButton>
-                  </Tooltip>
-                  )
-                  }
-                </div> */}
-                <div className='flex gap-8'>
-                  <Typography className='w-60' color='textSecondary'>Status:</Typography>
-                  <Typography
-                    className='font-semibold'
+                  <Chip
+                    label={appointment.status}
+                    variant='filled'
                     color={statusColor[appointment.status]}
-                  >
-                    {appointment.status}
-                  </Typography>
-                </div>
+                    size='small'
+                  />
+
+                  </div>
+
                 <div className='flex gap-8'>
                   <Typography className='w-60' color='textSecondary'>Reason: </Typography>
                   <Typography

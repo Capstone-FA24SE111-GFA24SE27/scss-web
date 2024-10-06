@@ -1,10 +1,11 @@
-import { PaginationContent } from '@/shared/types';
+import { PaginationContent, Profile } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
 export const addTagTypes = [
   'counselors',
-  'appointments'
+  'appointments',
+  'expertises'
 ] as const;
 
 
@@ -16,7 +17,7 @@ export const counselingApi = api
     endpoints: (build) => ({
       getCounselors: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors?SortDirection=ASC&sortBy=id`,
+          url: `/api/counselors`,
         }),
         providesTags: ['counselors']
       }),
@@ -40,6 +41,23 @@ export const counselingApi = api
         }),
         invalidatesTags: ['appointments']
       }),
+      getCounselorExpertises: build.query<GetCounselorExpertisesApiResponse, void>({
+        query: () => ({
+          url: `/api/counselors/expertise`,
+        }),
+        providesTags: ['expertises']
+      }),
+      getCounselorSlots: build.query<GetCounselorSlotsApiResponse, string>({
+        query: (date) => ({
+          url: `/api/counselors/counseling-slot?date=${date}`,
+        }),
+      }),
+      getRandomMatchedCousenlor: build.mutation<GetCounselorApiResponse, GetCounselorRandomMatchApiArg>({
+        query: ({ slotId, date, gender = '', expertiseId = '' }) => ({
+          method: 'GET',
+          url: `/api/counselors/random/match?slotId=${slotId}&date=${date}&gender=${gender}&expertiseId=${expertiseId}&`,
+        }),
+      }),
     })
   })
 
@@ -48,6 +66,9 @@ export const {
   useGetCounselorQuery,
   useGetCounselorDailySlotsQuery,
   useBookCounselorMutation,
+  useGetCounselorExpertisesQuery,
+  useGetCounselorSlotsQuery,
+  useGetRandomMatchedCousenlorMutation
 } = counselingApi
 
 
@@ -66,13 +87,10 @@ export type GetCounselorApiResponse = ApiResponse<Counselor>
 export type Counselor = {
   id: string,
   email: string,
-  avatarLink: string,
-  rating: number,
-  fullName: string,
-  phoneNumber: string,
-  dateOfBirth: number
+  gender: string,
+  expertise: Expertise
+  profile: Profile,
 }
-
 
 export type GetCounselorsDailySlotsResponse = ApiResponse<DailySlot>
 export type GetCounselorsDailySlotsArg = {
@@ -94,6 +112,13 @@ export type Slot = {
   myAppointment: boolean
 }
 
+
+export type Expertise = {
+  id: number,
+  name: string
+}
+
+
 export type AppointmentStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'
 
 export type BookCounselorArg = {
@@ -108,6 +133,17 @@ export type AppointmentRequest = {
   reason: string;
 }
 
+
+export type GetCounselorExpertisesApiResponse = ApiResponse<Expertise[]>
+
+export type GetCounselorSlotsApiResponse = ApiResponse<Slot[]>
+
+export type GetCounselorRandomMatchApiArg = {
+  slotId: number,
+  date: string,
+  gender?: string,
+  expertiseId?: number
+}
 
 
 

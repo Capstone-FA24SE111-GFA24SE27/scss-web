@@ -26,12 +26,7 @@ const AppointmentsContent = () => {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null); // Track selected appointment
   const navigate = useNavigate();
 
-  if (isLoading) {
-    return <AppLoading />;
-  }
-  if (!appointments) {
-    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>;
-  }
+
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, appointment: Appointment) => {
     setOpenMenuId(openMenuId === appointment.id ? null : appointment.id); // Toggle menu
@@ -44,6 +39,13 @@ const AppointmentsContent = () => {
     setAnchorEl(null);
   };
 
+
+  if (isLoading) {
+    return <AppLoading />;
+  }
+  if (!appointments.length) {
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>;
+  }
 
 
   return (

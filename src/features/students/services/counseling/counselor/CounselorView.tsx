@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import { ContentLoading, NavLinkAdapter } from '@shared/components';
+import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
 import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
@@ -30,7 +30,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
         return <ContentLoading className='m-32' />
     }
 
-    if (!data) {
+    if (!counselor) {
         return <div className='relative p-48'>
             <Typography
                 color="text.secondary"
@@ -67,11 +67,13 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                                 color: 'text.secondary'
                             }}
                             className="w-128 h-128 text-64 font-bold"
-                            src={counselor.avatarLink}
-                            alt={counselor.fullName}
+                            src={counselor.profile.avatarLink}
+                            alt={counselor.profile.fullName}
                         >
-                            {counselor?.fullName?.charAt(0)}
+                            {counselor?.profile.fullName?.charAt(0)}
                         </Avatar>
+                        <Gender gender={counselor.profile.gender}/>
+
                         {
                             shouldShowBooking && (
                                 <div className="flex items-center ml-auto mb-4">
@@ -90,9 +92,9 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         }
                     </div>
 
-                    <Typography className="mt-12 text-4xl font-bold truncate">{counselor.fullName}</Typography>
+                    <Typography className="mt-12 text-4xl font-bold truncate">{counselor.profile.fullName}</Typography>
 
-                    <div className='flex items-end gap-8 text-lg text-gray-500'>
+                    {/* <div className='flex items-end gap-8 text-lg text-gray-500'>
                         <Rating
                             name="simple-controlled"
                             value={4.6}
@@ -100,26 +102,12 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                             precision={0.5}
                         />
                         <div>(116)</div>
-                    </div>
+                    </div> */}
 
-                    <div className="flex flex-wrap items-center mt-16">
-                        {/* {contact?.tags?.map((id) => (
-                            <Chip
-                                key={id}
-                                label={_.find(tags, { id })?.title}
-                                className="mr-12 mb-12"
-                                size="small"
-                            />
-                        ))} */}
+                    <div className="flex items-center mt-16 gap-8">
                         <Chip
-                            label={'Technology'}
-                            className="mr-12 mb-12"
-                            size="small"
-                        />
-                        <Chip
-                            label={'Academic'}
-                            className="mr-12 mb-12"
-                            size="small"
+                            label={counselor.expertise.name}
+                            size="medium"
                         />
                     </div>
 
@@ -133,22 +121,22 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                             </div>
                         )}
 
-                        {counselor.phoneNumber && (
+                        {counselor.profile.phoneNumber && (
                             <div className="flex items-center">
                                 <LocalPhoneOutlined />
-                                <div className="ml-24 leading-6">{counselor.phoneNumber}</div>
+                                <div className="ml-24 leading-6">{counselor.profile.phoneNumber}</div>
                             </div>
                         )}
 
 
-                        {counselor.dateOfBirth && (
+                        {counselor.profile.dateOfBirth && (
                             <div className="flex items-center">
                                 <CakeOutlined />
                                 <div className="ml-24 leading-6">{dayjs(315532800000).format('DD-MM-YYYY')}</div>
                             </div>
                         )}
 
-                        {counselor.dateOfBirth && (
+                        {counselor.profile.dateOfBirth && (
                             <div className="flex items-center">
                                 <NotesOutlined />
                                 <div className="ml-24 leading-6">

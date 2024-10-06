@@ -1,4 +1,4 @@
-// import FuseScrollbars from '@fuse/core/FuseScrollbars';
+// import FuseScrollbars from '@core/FuseScrollbars';
 import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import { forwardRef, memo, ReactNode, useImperativeHandle, useRef } from 'react';
@@ -46,6 +46,10 @@ const Root = styled('div')<PageSimpleProps>(({ theme, ...props }) => ({
 	width: '100%',
 	height: 'auto',
 	backgroundColor: theme.palette.background.default,
+
+	'& .PageSimple-root': {
+		minHeight: 'auto'
+	},
 
 	'&.PageSimple-scroll-content': {
 		height: '100%'
@@ -242,19 +246,19 @@ const PageSimple = forwardRef<
 			<GlobalStyles
 				styles={() => ({
 					...(scroll !== 'page' && {
-						'#fuse-toolbar': {
+						'#toolbar': {
 							position: 'static'
 						},
-						'#fuse-footer': {
+						'#footer': {
 							position: 'static'
 						}
 					}),
 					...(scroll === 'page' && {
-						'#fuse-toolbar': {
+						'#toolbar': {
 							position: 'sticky',
 							top: 0
 						},
-						'#fuse-footer': {
+						'#footer': {
 							position: 'sticky',
 							bottom: 0
 						}
@@ -293,7 +297,7 @@ const PageSimple = forwardRef<
 								// 	enable={false}
 								// 	className={clsx('PageSimple-content container')}
 								// >
-								<Scrollbar>
+								<Scrollbar className={clsx('PageSimple-content')}>
 									{content}
 								</Scrollbar>
 

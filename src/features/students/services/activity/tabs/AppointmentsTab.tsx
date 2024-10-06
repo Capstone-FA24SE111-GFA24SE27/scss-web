@@ -11,13 +11,6 @@ const AppointmentsTab = () => {
   const appointmentRequests = data?.content
   console.log(data)
 
-  if (isLoading) {
-    return <AppLoading />
-  }
-  if (!appointmentRequests) {
-    return <Typography color='text.secondary' variant='h5' className='p-16'>No appoitment requests</Typography>
-  }
-
   console.log(appointmentRequests)
 
   const statusColor = {
@@ -29,6 +22,13 @@ const AppointmentsTab = () => {
   }
 
   const dispatch = useAppDispatch()
+
+  if (isLoading) {
+    return <AppLoading />
+  }
+  if (!appointmentRequests.length) {
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
+  }
 
   return (
     <>

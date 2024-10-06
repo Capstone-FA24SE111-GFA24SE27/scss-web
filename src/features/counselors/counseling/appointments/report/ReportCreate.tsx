@@ -8,7 +8,7 @@ import { Button, Stepper, Step, StepLabel, Typography, Box, Switch, FormControlL
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { useCreateAppointmentReportMutation } from './report-api';
 import { useParams, useNavigate } from 'react-router';
-import { renderHTML } from '@/shared/utils';
+import { renderHTML } from '@/shared/components';
 import { Scrollbar, closeDialog, openDialog } from '@/shared/components';
 import { useAppDispatch } from '@shared/store';
 
