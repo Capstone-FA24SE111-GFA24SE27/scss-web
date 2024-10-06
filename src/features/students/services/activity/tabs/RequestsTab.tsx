@@ -19,6 +19,7 @@ const RequestsTab = () => {
   if (isLoading) {
     return <AppLoading />
   }
+
   if (!appointmentRequests.length) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No appoitment requests</Typography>
   }
@@ -35,7 +36,7 @@ const RequestsTab = () => {
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
             >
-              <div className='flex flex-col gap-16 w-full'>
+              <div className='flex flex-col gap-16 w-full justify-center'>
                 <div className='flex gap-24'>
                   <div className='flex gap-8 items-center '>
                     <CalendarMonth />
@@ -45,48 +46,22 @@ const RequestsTab = () => {
                     <AccessTime />
                     <Typography className=''>{dayjs(appointment.startTime, "HH:mm:ss").format('HH:mm')} - {dayjs(appointment.endTime, "HH:mm:ss").format('HH:mm')}</Typography>
                   </div>
-                </div>
-                <div className='flex gap-8'>
-                  <Typography className='w-52' color='textSecondary'>Location:</Typography>
-                  <Typography
-                    className='font-semibold'
-                  >
-                    {appointment.meetingType}
-                  </Typography>
+                  <Chip
+                    label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+                    icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+                    className='font-semibold items-center'
+                    size='small'
+                  />
+
+                  <Chip
+                    label={appointment.status}
+                    variant='filled'
+                    color={statusColor[appointment.status]}
+                    size='small'
+                  />
+
                 </div>
 
-                {/* <div className='flex gap-4'>
-                  {
-                    appointment.meetingType === 'ONLINE' ?
-                      <div className='flex gap-24 items-center'>
-                        <Chip
-                          label='Online'
-                          icon={<Circle color='success' />}
-                          className='font-semibold  items-center'
-                        />
-                        {appointment.appointmentDetails?.meetUrl && (
-                          <div>
-                            <Link to={appointment.appointmentDetails?.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
-                              Meet URL
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                      : appointment.appointmentDetails?.address && (<div className='flex gap-8 items-center '>
-                        <Typography className='w-60'>Address:</Typography>
-                        <Typography className='font-semibold'>{appointment.appointmentDetails?.address || ''}</Typography>
-                      </div>)
-                  }
-                </div> */}
-                <div className='flex gap-8'>
-                  <Typography className='w-52' color='textSecondary'>Status:</Typography>
-                  <Typography
-                    className='font-semibold'
-                    color={statusColor[appointment.status]}
-                  >
-                    {appointment.status}
-                  </Typography>
-                </div>
                 <div className='flex gap-8'>
                   <Typography className='w-52' color='textSecondary'>Reason: </Typography>
                   <Typography

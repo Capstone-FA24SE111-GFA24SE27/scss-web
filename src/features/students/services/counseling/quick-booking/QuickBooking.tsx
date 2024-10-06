@@ -84,15 +84,21 @@ function QuickBooking() {
   const { data: counselorExpertisesData, isLoading: isFetchingCounselorExpertises } = useGetCounselorExpertisesQuery()
   const counselorExpertises = counselorExpertisesData?.content || []
 
-
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // smooth scroll
+    });
+  };
 
 
   // const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId);
   // const { data: counserDailySlotsData, isFetching: isFetchingCounselorSlots } = useGetCounselorDailyQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
-  const onSubmit = () => {
+  const onSubmitMatching = () => {
+    scrollToTop()
     setGettingRandomMatchedGender(true)
-    setProgress(20  )
+    setProgress(20)
     getRandomMatchedCounselor({
       date: formData.date,
       slotId: formData.slotId,
@@ -346,16 +352,17 @@ function QuickBooking() {
             </div>
 
             <Divider className='mt-16' />
-
-            <Button
-              size='large'
-              className='mt-16'
-              variant='contained' color='secondary'
-              onClick={handleSubmit(onSubmit)}
-              disabled={isLoadingRandomMatchedCounselor}
-            >
-              Find my counselor
-            </Button>
+            <div className='flex justify-end'>
+              <Button
+                size='large'
+                className='mt-16 w-1/2'
+                variant='contained' color='secondary'
+                onClick={handleSubmit(onSubmitMatching)}
+                disabled={isLoadingRandomMatchedCounselor}
+              >
+                Find my counselor
+              </Button>
+            </div>
 
           </div>
 
@@ -365,14 +372,14 @@ function QuickBooking() {
               {
                 randomMatchedCounselor
                   ?
-                  progress < 100
+                  progress < 100 || isLoadingRandomMatchedCounselor
                     ? <div className='flex flex-col items-center gap-16'>
                       <Typography color='secondary' className='font-semibold text-center text-lg'>Matching the most suitable counselor for you.</Typography>
                       <CircularProgressWithLabel value={progress} />
                     </div>
                     : <div>
                       <Typography color='secondary' className='font-semibold text-center text-lg'>Best counselor that fits your criteria.</Typography>
-                      <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`}>
+                      <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`} className='mt-16'>
                         <ListItemButton
                           component={NavLinkAdapter}
                           to={`${randomMatchedCounselor.profile.id}`}
@@ -463,7 +470,7 @@ function QuickBooking() {
 
                     </div>
                   : <div className='flex flex-col items-center w-full'>
-                    <Typography color='textDisabled'>Your counselor will be showed here.</Typography>
+                    <Typography color='textDisabled'>Select your preferences and matched couselor will be showed.</Typography>
                     <ContactSupport className='size-120 text-text-disabled' />
                   </div>
               }
@@ -481,8 +488,15 @@ export default QuickBooking;
 
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number },
-
 ) {
+  const displayedText = {
+    '0': 'Finding your couselor...',
+    '20': 'Matching gender...',
+    '40': 'Matching date time...',
+    '60': 'Matching expertise...',
+    '80': 'Finding your couselor...',
+    '100': 'Finding your couselor...',
+  }
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress
@@ -520,11 +534,11 @@ function CircularProgressWithLabel(
             variant="caption"
             component="div"
             sx={{ color: 'text.secondary' }}
-          >{`Finding your couselor...`}</Typography>
+          >{`${displayedText[props.value]}`}</Typography>
           <Typography
             variant="caption"
             component="div"
-            className='text-center text-lg'
+            className='text-center text-lg p-8'
             sx={{ color: 'text.secondary' }}
           >{`${Math.round(props.value)}%`}</Typography>
         </div>
