@@ -1,23 +1,21 @@
-import Button from '@mui/material/Button';
-import { Breadcrumbs, ContentLoading, NavLinkAdapter } from '@shared/components';
-import { useNavigate, useParams } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import Divider from '@mui/material/Divider';
-import { CakeOutlined, ChevronRight, Close, ContactSupport, EmailOutlined, Female, Help, LocalPhoneOutlined, Male, NotesOutlined, PsychologyAlt, Transgender } from '@mui/icons-material';
-import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, FormLabel, IconButton, ListItemButton, Radio, RadioGroup, Rating, SvgIcon, TextField, Tooltip } from '@mui/material';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
-import { Slot, useGetCounselorQuery, AppointmentRequest, useBookCounselorMutation, GetCounselorsDailySlotsResponse, GetCounselorsDailySlotsArg, DailySlot, AppointmentStatus, useGetCounselorSlotsQuery, useGetCounselorExpertisesQuery, Counselor, useGetRandomMatchedCousenlorMutation } from '../counseling-api';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
-import { isEmpty } from 'lodash';
 import { useSocket } from '@/shared/context';
-import { useEffect } from 'react'
-import { apiService, useAppDispatch } from '@shared/store'
+import { Counselor } from '@/shared/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ChevronRight, Close, ContactSupport, Female, Male } from '@mui/icons-material';
+import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, IconButton, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { ContentLoading, NavLinkAdapter } from '@shared/components';
+import dayjs from 'dayjs';
+import { isEmpty } from 'lodash';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import { z } from 'zod';
+import { useBookCounselorMutation, useGetCounselorExpertisesQuery, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
 
 /**
  * The contact view.
@@ -30,6 +28,10 @@ const schema = z.object({
   isOnline: z.coerce.boolean().optional(),
   reason: z.string().min(2, "Please enter a valid reason").optional(),
   expertise: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).optional(),
+  specialization: z.object({
     id: z.number(),
     name: z.string(),
   }).optional(),
@@ -53,15 +55,19 @@ function QuickBooking() {
   const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useBookCounselorMutation()
   const [isGettingRandomMatchedCounselor, setGettingRandomMatchedGender] = useState(false)
 
-  const [getRandomMatchedCounselor,
-    {
-      isLoading: isLoadingRandomMatchedCounselor,
-      isSuccess: isSuccessGettingRandomMatchedCounselor
-    }
-  ] = useGetRandomMatchedCousenlorMutation()
 
 
   const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(null)
+
+  const [counselorType, setCounselorType] = useState('academic');
+
+  const handleCounselingTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCounselorType((event.target as HTMLInputElement).value);
+    setValue('specialization', {})
+    setValue('expertise', {})
+  };
+
+  console.log(counselorType)
 
   const defaultValues = {
     slotId: 0,
@@ -81,8 +87,11 @@ function QuickBooking() {
   const counselorSlots = counselorSlotsData?.content
 
 
-  const { data: counselorExpertisesData, isLoading: isFetchingCounselorExpertises } = useGetCounselorExpertisesQuery()
-  const counselorExpertises = counselorExpertisesData?.content || []
+  const { data: counselorExpertisesData, isFetching: isFetchingCounselorExpertises } = useGetCounselorExpertisesQuery()
+  const counselingExpertises = counselorExpertisesData?.content || []
+
+  const { data: counselorSpecializationsData, isFetching: isFetchingCounselorSpecializations } = useGetCounselorSpecializationsQuery()
+  const counselingSpecializations = counselorSpecializationsData?.content || []
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -103,6 +112,7 @@ function QuickBooking() {
       date: formData.date,
       slotId: formData.slotId,
       expertiseId: formData.expertise?.id,
+      specializationId: formData.specialization?.id,
       gender: formData.gender,
     })
       .unwrap()
@@ -113,7 +123,7 @@ function QuickBooking() {
 
   const onSubmitBooking = () => {
     bookCounselor({
-      counselorId: randomMatchedCounselor?.id,
+      counselorId: randomMatchedCounselor?.profile.id,
       appointmentRequest: {
         slotCode: formData.slotCode,
         date: formData.date,
@@ -161,6 +171,15 @@ function QuickBooking() {
   };
 
 
+  const [getRandomMatchedCounselor,
+    {
+      isLoading: isLoadingRandomMatchedCounselor,
+      isSuccess: isSuccessGettingRandomMatchedCounselor
+    }
+  ] = counselorType == 'academic'
+      ? useGetRandomMatchedCousenlorAcademicMutation()
+      : useGetRandomMatchedCousenlorNonAcademicMutation()
+
   // if (isLoading) {
   //   return <ContentLoading className='m-32' />
   // }
@@ -192,12 +211,29 @@ function QuickBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto p-32 bg-background-paper min-h-screen">
+      <div className="relative flex flex-col flex-auto px-32 mt-16 min-h-screen">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <div className='flex mt-32'>
+        <Paper className='flex mt-8 rounded p-32 shadow'>
 
-          <div className="flex flex-1 flex-col gap-4">
-            <div className='w-fit'>
+          <div className="flex flex-1 flex-col ">
+            <div>
+              <Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="counselorType"
+                  name="controlled-radio-buttons-group"
+                  value={counselorType}
+                  onChange={handleCounselingTypeChange}
+                  className='w-full flex'
+                >
+                  <FormControlLabel value="academic" control={<Radio />} label="Academic" />
+                  <FormControlLabel value="non-academic" control={<Radio />} label="Non-academic" />
+                </RadioGroup>
+              </FormControl>
+
+            </div>
+
+            <div className='w-fit mt-16'>
               <Typography className='font-semibold text-primary text-lg'>Select date</Typography>
               <DateCalendar
                 views={['day']}
@@ -256,30 +292,60 @@ function QuickBooking() {
 
             <Divider className='mt-32' />
 
-            <div className='mt-16'>
-              <Typography className='font-semibold text-primary text-lg'>Select counselor's expertise (optional)</Typography>
-              <Controller
-                name="expertise"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
-                    options={counselorExpertises}
-                    className='mt-16'
-                    getOptionLabel={(option) => option.name}
-                    onChange={(_, value) => field.onChange(value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Expertise "
-                        variant="outlined"
-                        error={!!errors.expertise}
+            {
+              counselorType === 'academic'
+                ? < div className='mt-16'>
+                  <Typography className='font-semibold text-primary text-lg'>Select counselor's speicalization (optional)</Typography>
+                  <Controller
+                    name="specialization"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        options={counselingSpecializations}
+                        className='mt-16'
+                        getOptionLabel={(option) => option.name}
+                        onChange={(_, value) => field.onChange(value)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Specialization "
+                            variant="outlined"
+                            error={!!errors.specialization}
+                          />
+                        )}
                       />
                     )}
                   />
-                )}
-              />
-            </div>
+                </div>
+                : < div className='mt-16'>
+                  <Typography className='font-semibold text-primary text-lg'>Select counselor's expertise (optional)</Typography>
+                  <Controller
+                    name="expertise"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        options={counselingExpertises}
+                        className='mt-16'
+                        getOptionLabel={(option) => option.name}
+                        onChange={(_, value) => field.onChange(value)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Expertise "
+                            variant="outlined"
+                            error={!!errors.expertise}
+                          />
+                        )}
+                      />
+                    )}
+                  />
+                </div>
+            }
+
+
+            <Divider className='mt-32' />
 
             <div className='mt-32'>
               <Typography className='font-semibold text-primary text-lg'>Select couselor's gender (optional)</Typography>
@@ -351,7 +417,6 @@ function QuickBooking() {
               </div>
             </div>
 
-            <Divider className='mt-16' />
             <div className='flex justify-end'>
               <Button
                 size='large'
@@ -393,7 +458,7 @@ function QuickBooking() {
                             />
                             <div className='mt-8 text-center'>
                               <Typography className='font-semibold text-primary-main text-18'>{randomMatchedCounselor.profile.fullName}</Typography>
-                              <Typography className='text-16' color='text.secondary'>{randomMatchedCounselor.email || 'counselor@fpt.edu.vn'}</Typography>
+                              <Typography className='text-16' color='text.secondary'>{randomMatchedCounselor.expertise?.name || randomMatchedCounselor.specialization?.name}</Typography>
                             </div>
                           </div>
                           <ChevronRight />
@@ -477,8 +542,8 @@ function QuickBooking() {
 
             </div>
           </div>
-        </div>
-      </div>
+        </Paper >
+      </div >
     </>
   );
 }
@@ -502,7 +567,7 @@ function CircularProgressWithLabel(
       <CircularProgress
         variant="determinate"
         value={100} // Always 100 to act as the background circle
-        size={160} // Same size as the actual progress indicator
+        size={200} // Same size as the actual progress indicator
         sx={{
           color: 'background.default', // You can change the color or use theme colors
           position: 'absolute', // Make it sit behind the progress indicator
@@ -514,7 +579,7 @@ function CircularProgressWithLabel(
       <CircularProgress
         variant="determinate"
         {...props}
-        size={160}
+        size={200}
         color='secondary'
       />
       <Box

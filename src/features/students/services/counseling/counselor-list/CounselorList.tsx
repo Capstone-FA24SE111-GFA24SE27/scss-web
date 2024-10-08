@@ -10,9 +10,9 @@ import CounselorListSidebarContent from './CounselorListSidebarContent';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
-  '& .PageSimple-header': {
-    backgroundColor: theme.palette.background.paper
-  },
+  // '& .PageSimple-header': {
+  //   backgroundColor: theme.palette.background.paper
+  // },
 }));
 
 /**

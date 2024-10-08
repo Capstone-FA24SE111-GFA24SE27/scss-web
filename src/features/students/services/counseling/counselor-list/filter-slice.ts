@@ -1,12 +1,15 @@
-import { createSlice, WithSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
 /**
  * The initial state of the filter slice.
  */
+
 const initialState = {
   open: true,
   // mobileOpen: false,
   // foldedOpen: false
+  searchTerm: '',
+  counselorType: 'ACADEMIC'
 };
 /**
  * The filter slice.
@@ -41,10 +44,18 @@ export const filterSlice = createSlice({
     },
     filterToggle: (state) => {
       state.open = !state.open;
+    },
+    setSearchTerm: (state, action: PayloadAction<string>) => {
+      state.searchTerm = action.payload
+    },
+    setCounselorType: (state, action: PayloadAction<'ACADEMIC' | 'NON-ACADEMIC'>) => {
+      state.counselorType = action.payload
     }
   },
   selectors: {
-    selectFilter: (filter) => filter
+    selectFilter: (filter) => filter,
+    selectSearchTerm: (state) => state.searchTerm,
+    selectCounselorType: (state) => state.counselorType,
   }
 });
 /**
@@ -56,8 +67,14 @@ export const {
   filterOpen,
   filterClose,
   filterToggle,
+  setSearchTerm,
+  setCounselorType,
 } = filterSlice.actions;
-export const { selectFilter } = injectedSlice.selectors;
+export const {
+  selectFilter,
+  selectSearchTerm,
+  selectCounselorType
+} = injectedSlice.selectors;
 export default filterSlice.reducer;
 
 declare module '@shared/store' {

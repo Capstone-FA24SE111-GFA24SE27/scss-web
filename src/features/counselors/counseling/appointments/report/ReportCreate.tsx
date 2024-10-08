@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { useForm, Controller, FieldError } from 'react-hook-form';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -61,8 +61,14 @@ const ReportCreate = () => {
   const formData = watch(); // Watching all form data
   const [activeStep, setActiveStep] = useState(0);
 
-  const handleNext = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  const handleNext = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+  };
+  const handleBack = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  };
 
   const [createCounselingMutation] = useCreateAppointmentReportMutation();
 
@@ -73,6 +79,8 @@ const ReportCreate = () => {
     });
     navigate('..');
   };
+
+  console.log(activeStep === steps.length - 1 ? 'submit' : 'next')
 
   return (
     <div className="flex flex-col justify-center mt-8 w-lg p-32 gap-16">
@@ -339,13 +347,13 @@ const ReportCreate = () => {
             disabled={activeStep === 0}
             onClick={handleBack}
             variant="outlined"
-            color="primary"
+            color="secondary"
             className="w-96"
           >
             Back
           </Button>
           <div className="flex gap-8">
-            <Button variant="outlined"
+            <Button variant="outlined" color='secondary'
               onClick={() => {
                 dispatch(openDialog({
                   children: <ReportPreview report={formData} />
@@ -360,7 +368,7 @@ const ReportCreate = () => {
               </Button>
             ) : (
 
-              <Button onClick={handleNext} variant="contained" color="primary" className="w-96">
+              <Button onClick={handleNext} variant="contained" color="secondary" className="w-96" type='button'>
                 Next
               </Button>
             )}

@@ -1,17 +1,19 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
 import { Appointment, AppointmentAttendanceStatus, useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api';
-import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components';
+import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@shared/components';
 import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, MoreVert, Summarize } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { useAppDispatch } from '@shared/store';
+import { useState, useEffect } from 'react';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
+import { useSocket } from '@/shared/context';
 
 const AppointmentsContent = () => {
-  const { data, isLoading } = useGetCounselingAppointmentQuery({});
-  const [denyAppointmentRequest] = useDenyAppointmentRequestMutation();
+  const { data, isLoading , refetch} = useGetCounselingAppointmentQuery({});
   const appointments = data?.content;
   const dispatch = useAppDispatch();
+  const socket = useSocket();
+  const account = useAppSelector(selectAccount)
 
   const statusColor = {
     'DENIED': 'error',
@@ -38,6 +40,26 @@ const AppointmentsContent = () => {
     setOpenMenuId(null);
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+
+    const cb = (data: unknown) => {
+      if (data) {
+        refetch()
+      }
+
+    };
+
+    if (socket && account) {
+      socket.on(`/user/${account.profile.id}/appointment`, cb);
+    }
+
+    return () => {
+      if (socket && account) {
+        socket.off(`/user/${account.profile.id}/appointment`, cb);
+      }
+    };
+  }, [socket]);
 
 
   if (isLoading) {

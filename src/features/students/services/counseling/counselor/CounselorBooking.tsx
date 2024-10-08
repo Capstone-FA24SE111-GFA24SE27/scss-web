@@ -10,14 +10,15 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Rating, Te
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import { Slot, useGetCounselorQuery, useGetCounselorDailySlotsQuery, AppointmentRequest, useBookCounselorMutation, GetCounselorsDailySlotsResponse, GetCounselorsDailySlotsArg, DailySlot, AppointmentStatus } from '../counseling-api';
+import { Slot, useGetCounselorAcademicQuery, useGetCounselorNonAcademicQuery, useGetCounselorDailySlotsQuery, AppointmentRequest, useBookCounselorMutation, GetCounselorsDailySlotsResponse, GetCounselorsDailySlotsArg, DailySlot, AppointmentStatus } from '../counseling-api';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { isEmpty } from 'lodash';
 import { useSocket } from '@/shared/context';
 import { useEffect } from 'react'
-import { apiService, useAppDispatch } from '@shared/store'
+import { apiService, useAppDispatch, useAppSelector } from '@shared/store'
+import { selectCounselorType } from '../counselor-list/filter-slice';
 
 /**
  * The contact view.
@@ -76,17 +77,21 @@ function CounselorBooking() {
 
 
     const navigate = useNavigate()
-    const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId);
+    const counselorType = useAppSelector(selectCounselorType)
+
+    const { data: counselorData, isLoading } = counselorType === 'ACADEMIC'
+        ? useGetCounselorAcademicQuery(counselorId)
+        : useGetCounselorNonAcademicQuery(counselorId)
     const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
-    const counselor = counselorData?.content
+    const counselor = counselorData
 
 
 
 
     const onSubmit = () => {
         bookCounselor({
-            counselorId: counselorId,
+            counselorId: Number(counselorId),
             appointmentRequest: formData
         })
             .unwrap()
@@ -172,7 +177,7 @@ function CounselorBooking() {
                         parents={[
                             {
                                 label: counselor.profile.fullName || "",
-                                url: `/services/counseling/${counselor.id}`
+                                url: `/services/counseling/${counselor.profile.id}`
                             }
                         ]}
                         currentPage={"Booking"}
@@ -206,7 +211,7 @@ function CounselorBooking() {
 
                             <div className="flex flex-wrap items-center mt-16">
                                 <Chip
-                                    label={counselor.expertise.name}
+                                    label={counselor.expertise?.name || counselor.specialization?.name}
                                     className="mr-12 mb-12"
                                     size="medium"
                                 />

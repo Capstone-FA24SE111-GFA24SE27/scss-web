@@ -4,14 +4,14 @@ import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/co
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useAppDispatch } from '@shared/store';
-import { useState } from 'react'
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
+import { useState, useEffect } from 'react'
+import { useSocket } from '@shared/context';
 const AppointmentsTab = () => {
-  const { data, isLoading } = useGetCounselingAppointmentQuery({})
+  const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({})
   const appointmentRequests = data?.content
-  console.log(data)
-
-  console.log(appointmentRequests)
+  const socket = useSocket();
+  const account = useAppSelector(selectAccount)
 
   const statusColor = {
     'REJECTED': 'error',
@@ -22,6 +22,26 @@ const AppointmentsTab = () => {
   }
 
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+
+    const cb = (data: unknown) => {
+      if (data) {
+        refetch()
+      }
+
+    };
+
+    if (socket && account) {
+      socket.on(`/user/${account.profile.id}/appointment`, cb);
+    }
+
+    return () => {
+      if (socket && account) {
+        socket.off(`/user/${account.profile.id}/appointment`, cb);
+      }
+    };
+  }, [socket]);
 
   if (isLoading) {
     return <AppLoading />
@@ -105,7 +125,7 @@ const AppointmentsTab = () => {
                       />
                       <div className='ml-16'>
                         <Typography className='font-semibold text-primary-main'>{appointment.counselorInfo.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.counselorInfo.email || 'counselor@fpt.edu.vn'}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselorInfo?.expertise.name}</Typography>
                       </div>
                     </div>
                     <ChevronRight />

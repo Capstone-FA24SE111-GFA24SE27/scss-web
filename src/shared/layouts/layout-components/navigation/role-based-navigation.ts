@@ -254,6 +254,7 @@ const managerNavigation: NavigationOptions = {
 
 export const roleBasedNavigation: RoleBasedNavigation = {
     [roles.STUDENT]: studentNavigation,
-    [roles.COUNSELOR]: counselorNavigation,
+    [roles.ACADEMIC_COUNSELOR]: counselorNavigation,
+    [roles.NON_ACADEMIC_COUNSELOR]: counselorNavigation,
     [roles.MANAGER]: managerNavigation,
 }

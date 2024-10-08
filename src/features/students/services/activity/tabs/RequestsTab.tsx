@@ -82,7 +82,7 @@ const RequestsTab = () => {
                       />
                       <div className='ml-16'>
                         <Typography className='font-semibold text-primary-main'>{appointment.counselor.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.counselor.email || 'counselor@fpt.edu.vn'}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselor?.expertise?.name || appointment.counselor?.specialization?.name}</Typography>
                       </div>
                     </div>
                     <ChevronRight />

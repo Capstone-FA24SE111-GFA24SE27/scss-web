@@ -23,7 +23,9 @@ export type Profile = {
 export type Counselor = {
   profile: Profile
   email: string,
-  rating: number,
+  rating?: number,
+  expertise?: Expertise,
+  specialization?: Specialization
 }
 
 export type Student = {
@@ -32,7 +34,12 @@ export type Student = {
   studentCode: number,
 }
 
-export type Gender = {
+export type Expertise = {
   id: number,
-  name: string,
+  name: string
+}
+
+export type Specialization = {
+  id: number,
+  name: string
 }

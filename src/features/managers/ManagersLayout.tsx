@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { AppLayout } from '@shared/layouts'
-const CounselorsLayout = () => {
+const ManagersLayout = () => {
   return (
     <AppLayout>
         <Outlet />
@@ -9,4 +9,4 @@ const CounselorsLayout = () => {
   )
 }
 
-export default CounselorsLayout
+export default ManagersLayout
