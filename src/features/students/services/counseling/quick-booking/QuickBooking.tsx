@@ -1,5 +1,5 @@
 import { useSocket } from '@/shared/context';
-import { Counselor } from '@/shared/types';
+import { CounselingType, Counselor } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronRight, Close, ContactSupport, Female, Male } from '@mui/icons-material';
 import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, IconButton, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
@@ -30,11 +30,11 @@ const schema = z.object({
   expertise: z.object({
     id: z.number(),
     name: z.string(),
-  }).optional(),
+  }).optional().nullable(),
   specialization: z.object({
     id: z.number(),
     name: z.string(),
-  }).optional(),
+  }).optional().nullable(),
   gender: z.enum(['MALE', 'FEMALE', '']).optional()
 });
 
@@ -59,21 +59,22 @@ function QuickBooking() {
 
   const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(null)
 
-  const [counselorType, setCounselorType] = useState('academic');
+  const [counselingType, setCounselingType] = useState<CounselingType>('ACADEMIC');
 
   const handleCounselingTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCounselorType((event.target as HTMLInputElement).value);
-    setValue('specialization', {})
-    setValue('expertise', {})
+    setCounselingType((event.target as HTMLInputElement).value as CounselingType);
+    setValue('specialization', null)
+    setValue('expertise', null)
   };
 
-  console.log(counselorType)
+  console.log(counselingType)
 
   const defaultValues = {
     slotId: 0,
     date: startOfMonth,
     // isOnline: true,
   }
+
 
   const { control, formState, watch, handleSubmit, setValue, reset } = useForm<FormType>({
     defaultValues,
@@ -104,7 +105,10 @@ function QuickBooking() {
   // const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId);
   // const { data: counserDailySlotsData, isFetching: isFetchingCounselorSlots } = useGetCounselorDailyQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
+  console.log(formData)
+
   const onSubmitMatching = () => {
+    confirm('Submit')
     scrollToTop()
     setGettingRandomMatchedGender(true)
     setProgress(20)
@@ -176,7 +180,7 @@ function QuickBooking() {
       isLoading: isLoadingRandomMatchedCounselor,
       isSuccess: isSuccessGettingRandomMatchedCounselor
     }
-  ] = counselorType == 'academic'
+  ] = counselingType == 'ACADEMIC'
       ? useGetRandomMatchedCousenlorAcademicMutation()
       : useGetRandomMatchedCousenlorNonAcademicMutation()
 
@@ -186,6 +190,7 @@ function QuickBooking() {
 
   const [progress, setProgress] = useState(20);
 
+  console.log(formData.expertise, formData.specialization)
 
   useEffect(() => {
     if (isGettingRandomMatchedCounselor) {
@@ -206,8 +211,6 @@ function QuickBooking() {
     }
   }, [isGettingRandomMatchedCounselor]); // Start the effect when the condition is met
 
-  console.log(progress, isGettingRandomMatchedCounselor)
-
 
   return (
     <>
@@ -220,14 +223,14 @@ function QuickBooking() {
               <Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
               <FormControl>
                 <RadioGroup
-                  aria-labelledby="counselorType"
+                  aria-labelledby="counselingType"
                   name="controlled-radio-buttons-group"
-                  value={counselorType}
+                  value={counselingType}
                   onChange={handleCounselingTypeChange}
                   className='w-full flex'
                 >
-                  <FormControlLabel value="academic" control={<Radio />} label="Academic" />
-                  <FormControlLabel value="non-academic" control={<Radio />} label="Non-academic" />
+                  <FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
+                  <FormControlLabel value="NON-ACADEMIC" control={<Radio />} label="Non-academic" />
                 </RadioGroup>
               </FormControl>
 
@@ -262,7 +265,7 @@ function QuickBooking() {
                 {
                   isFetchingCounselorSlots
                     ? <ContentLoading />
-                    : !counselorSlots.length
+                    : !counselorSlots?.length
                       ? <Typography color='text.secondary'>No available slots</Typography>
                       : counselorSlots
                         .map(slot => (
@@ -293,7 +296,7 @@ function QuickBooking() {
             <Divider className='mt-32' />
 
             {
-              counselorType === 'academic'
+              counselingType === 'ACADEMIC'
                 ? < div className='mt-16'>
                   <Typography className='font-semibold text-primary text-lg'>Select counselor's speicalization (optional)</Typography>
                   <Controller
@@ -306,6 +309,7 @@ function QuickBooking() {
                         className='mt-16'
                         getOptionLabel={(option) => option.name}
                         onChange={(_, value) => field.onChange(value)}
+                        value={field.value || null}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -330,6 +334,7 @@ function QuickBooking() {
                         className='mt-16'
                         getOptionLabel={(option) => option.name}
                         onChange={(_, value) => field.onChange(value)}
+                        value={field.value || null}
                         renderInput={(params) => (
                           <TextField
                             {...params}

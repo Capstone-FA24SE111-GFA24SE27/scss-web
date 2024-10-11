@@ -18,7 +18,7 @@ import { isEmpty } from 'lodash';
 import { useSocket } from '@/shared/context';
 import { useEffect } from 'react'
 import { apiService, useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType } from '../counselor-list/filter-slice';
+import { selectCounselorType } from '../counselor-list/counselor-list-slice';
 
 /**
  * The contact view.

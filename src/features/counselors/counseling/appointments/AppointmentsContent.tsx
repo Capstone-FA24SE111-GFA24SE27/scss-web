@@ -161,7 +161,7 @@ const AppointmentsContent = () => {
                     <ListItemButton
                       component={NavLinkAdapter}
                       to={`student/${appointment.studentInfo.profile.id}`}
-                      className='bg-primary-main/10 w-full rounded'
+                      className='bg-primary-light/5 w-full rounded shadow'
                     >
                       <div className='flex gap-16 items-start w-full'>
                         <Avatar

@@ -13,19 +13,20 @@ import { memo } from 'react'
 import { Rating } from '@mui/material';
 import { useGetCounselorAcademicQuery, useGetCounselorNonAcademicQuery } from '../counseling-api';
 import { useAppSelector } from '@shared/store';
-import { selectCounselorType } from '../counselor-list/filter-slice';
+import { selectCounselorType } from '../counselor-list/counselor-list-slice';
+import { CounselingType } from '@/shared/types';
 /**
  * The contact view.
  */
 
 interface CounselorViewProps {
-    shouldShowBooking?: boolean
+    shouldShowBooking?: boolean,
+    counselingType?: CounselingType
 }
-function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
+function CounselorView({ shouldShowBooking = true, counselingType = 'ACADEMIC' }: CounselorViewProps) {
     const routeParams = useParams();
     const { id: counselorId } = routeParams as { id: string };
-    const counselorType = useAppSelector(selectCounselorType)
-    const { data, isLoading } = counselorType === 'ACADEMIC'
+    const { data, isLoading } = counselingType === 'ACADEMIC'
         ? useGetCounselorAcademicQuery(counselorId)
         : useGetCounselorNonAcademicQuery(counselorId)
     const counselor = data

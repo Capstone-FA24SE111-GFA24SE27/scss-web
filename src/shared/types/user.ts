@@ -43,3 +43,5 @@ export type Specialization = {
   id: number,
   name: string
 }
+
+export type CounselingType = 'ACADEMIC' | 'NON-ACADEMIC'

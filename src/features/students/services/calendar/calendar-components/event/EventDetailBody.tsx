@@ -129,7 +129,7 @@ export const EventDetailBody = (props: Props) => {
 					<ListItemButton
 						component={NavLinkAdapter}
 						to={`/services/calendar/counselor/${appointment.counselorInfo.profile.id}`}
-						className='w-full rounded bg-primary-main/10'
+						className='w-full rounded bg-primary-main/5'
 					>
 						<div className='flex w-full' onClick={handleNavClicked}>
 							<Avatar

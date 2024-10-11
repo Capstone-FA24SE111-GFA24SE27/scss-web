@@ -2,28 +2,34 @@ import { FilterAltOutlined, Search, Tune } from '@mui/icons-material'
 import { Box, Button, IconButton, Input, Tab, Tabs, TextField, Tooltip } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '@shared/store'
 import { motion } from 'framer-motion'
-import { useState, ChangeEvent } from 'react'
-import { selectFilter, setCounselorType, setSearchTerm } from './filter-slice'
+import { useState, ChangeEvent, useEffect } from 'react'
+import { selectCounselorType, selectFilter, setCounselorType, setSearchTerm } from './counselor-list-slice'
 import CounselorListFilterButton from './CounselorListFilterButton'
 import { debounce } from 'lodash'
+import { CounselingType } from '@/shared/types'
 
 const CounselorListHeader = () => {
   const filter = useAppSelector(selectFilter)
-
   const dispatch = useAppDispatch()
 
   const [tabValue, setTabValue] = useState(0);
 
   function handleChangeTab(event: React.SyntheticEvent, value: number) {
+    let counselingType: CounselingType = 'ACADEMIC'
     setTabValue(value);
-    switch (tabValue) {
+    switch (value) {
       case 0:
-        dispatch(setCounselorType('ACADEMIC'))
+        counselingType = 'ACADEMIC'
         break;
       case 1:
-        dispatch(setCounselorType('NON-ACADEMIC'))
+        counselingType = 'NON-ACADEMIC'
+        break;
+      default:
+        counselingType = 'ACADEMIC'
         break;
     }
+    dispatch(setCounselorType(counselingType))
+
   }
 
   const debounceSearch = debounce((debouncedSearchTerm: string) => {
@@ -54,7 +60,7 @@ const CounselorListHeader = () => {
             {!filter.open && <CounselorListFilterButton />}
           </div>
         </div>
-        <div >
+        <div>
           <Tabs
             value={tabValue}
             onChange={handleChangeTab}

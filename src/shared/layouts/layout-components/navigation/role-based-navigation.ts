@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -57,10 +57,16 @@ const studentNavigation: NavigationOptions = {
                     route: 'activity'
                 },
                 {
+                    icon: QuestionAnswer,
+                    name: 'Q&A',
+                    route: 'qna',
+                },
+                {
                     icon: CalendarMonth,
                     name: 'Calendar',
                     route: 'calendar',
                 },
+               
             ]
         },
         {

@@ -14,7 +14,7 @@ const initialState = {
 /**
  * The filter slice.
  */
-export const filterSlice = createSlice({
+export const counselorListSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
@@ -61,22 +61,22 @@ export const filterSlice = createSlice({
 /**
  * Lazy loading
  */
-rootReducer.inject(filterSlice);
-const injectedSlice = filterSlice.injectInto(rootReducer);
+rootReducer.inject(counselorListSlice);
+const injectedSlice = counselorListSlice.injectInto(rootReducer);
 export const {
   filterOpen,
   filterClose,
   filterToggle,
   setSearchTerm,
   setCounselorType,
-} = filterSlice.actions;
+} = counselorListSlice.actions;
 export const {
   selectFilter,
   selectSearchTerm,
   selectCounselorType
 } = injectedSlice.selectors;
-export default filterSlice.reducer;
+export default counselorListSlice.reducer;
 
 declare module '@shared/store' {
-  export interface LazyLoadedSlices extends WithSlice<typeof filterSlice> { }
+  export interface LazyLoadedSlices extends WithSlice<typeof counselorListSlice> { }
 }

@@ -6,15 +6,15 @@ import { AppLoading, ContentLoading } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import CounselorListItem from './CounselorListItem';
 import { useGetCounselorsAcademicQuery, useGetCounselorsNonAcademicQuery } from '../counseling-api';
-import { selectCounselorType, selectSearchTerm } from './filter-slice';
+import { selectCounselorType, selectSearchTerm } from './counselor-list-slice';
 
 function CounselorListContent() {
     const search = useAppSelector(selectSearchTerm)
     const counselorType = useAppSelector(selectCounselorType)
-    console.log(counselorType)
     const { data: academicCounselors, isFetching: isFetchingAcademicCounselors } = useGetCounselorsAcademicQuery({ search })
     const { data: nonAcademicCounselors, isFetching: isFetchingNonAcademicCounselors } = useGetCounselorsNonAcademicQuery({ search })
 
+    console.log(counselorType)
 
     const counselors = (counselorType === 'ACADEMIC' ? academicCounselors?.content?.data : nonAcademicCounselors?.content?.data) || []
 

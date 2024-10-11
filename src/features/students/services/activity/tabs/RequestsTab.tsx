@@ -20,7 +20,7 @@ const RequestsTab = () => {
     return <AppLoading />
   }
 
-  if (!appointmentRequests.length) {
+  if (!appointmentRequests?.length) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No appoitment requests</Typography>
   }
 
@@ -73,7 +73,7 @@ const RequestsTab = () => {
                   <ListItemButton
                     component={NavLinkAdapter}
                     to={`counselor/${appointment.counselor.profile.id}`}
-                    className='bg-primary-main/10 w-full rounded'
+                    className='bg-primary-light/5 w-full rounded shadow'
                   >
                     <div className='w-full flex'>
                       <Avatar
