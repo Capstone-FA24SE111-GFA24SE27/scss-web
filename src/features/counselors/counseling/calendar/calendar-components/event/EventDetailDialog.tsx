@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from '@shared/store';
-import React from 'react';
 import {
 	closeEventDetailDialog,
 	selectEventDialog,
@@ -8,8 +7,8 @@ import {
 	Popover,
 } from '@mui/material';
 import { EventDetailBody } from './EventDetailBody';
-import { EventHolidayBody } from './EventHolidayBody';
 import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
+import { EventHolidayBody } from './EventHolidayBody';
 
 const EventDetailDialog = () => {
 	const dispatch = useAppDispatch();
@@ -25,7 +24,8 @@ const EventDetailDialog = () => {
 	if (eventDialog.data === null) {
 		return null;
 	}
-	
+
+
 
 	return (
 		<Popover

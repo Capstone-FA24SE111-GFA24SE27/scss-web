@@ -1,7 +1,8 @@
-import { Profile } from '@/shared/types';
-import {  ApiResponse, apiService } from '@shared/store';
+import { AppointmentScheduleType, HolidayScheduleType, Profile } from '@/shared/types';
+import { CheckBoxOutlineBlankOutlined } from '@mui/icons-material';
+import { ApiResponse, apiService } from '@shared/store';
 
-export const addTagTypes = ['appointments'];
+export const addTagTypes = ['appointments, holidays'];
 
 export const CalendarApi = apiService
 	.enhanceEndpoints({
@@ -9,49 +10,34 @@ export const CalendarApi = apiService
 	})
 	.injectEndpoints({
 		endpoints: (build) => ({
-			getAppointmentSchedule: build.query<GetAppointmentApiResponse, GetAppointmentApiArg>({
-				query: ({fromDate, toDate}) => ({
-					url: `/api/booking-counseling/appointment?fromDate=${fromDate}&toDate=${toDate}`
+			getAppointmentSchedule: build.query<
+				GetAppointmentApiResponse,
+				GetAppointmentApiArg
+			>({
+				query: ({ fromDate, toDate }) => ({
+					url: `/api/booking-counseling/appointment?fromDate=${fromDate}&toDate=${toDate}`,
 				}),
-			providesTags: ['appointments']
+				providesTags: ['appointments'],
+			}),
+			getHolidaySchedule: build.query<
+				GetHolidaysApiResponse,
+				GetHolidaysApiArg
+			>({
+				query: () => ({
+					url: `/api/holidays`,
+				}),
+				providesTags: ['holidays'],
 			}),
 		}),
 	});
 
+type GetHolidaysApiResponse = ApiResponse<HolidayScheduleType[]>;
+type GetHolidaysApiArg = {};
 export type GetAppointmentApiResponse = ApiResponse<AppointmentScheduleType[]>;
 export type GetAppointmentApiArg = {
-		fromDate: string;
-		toDate: string;
-}
-
-export const {
-	useGetAppointmentScheduleQuery
-} = CalendarApi;
-
-export type AppointmentScheduleType = {
-	id: string;
-	startDateTime: string;
-	endDateTime: string;
-	status: 'APPROVED' | 'REJECTED' | 'WAITING' | 'ABSENT' | 'ATTEND';
-	meetingType: 'ONLINE' | 'OFFLINE';
-	meetUrl: string;
-	address: string;
-	counselorInfo: {
-		rating: string;
-		id: number;
-		profile: Profile
-	} ;
-	studentInfo: {
-		studentCode: string;
-		profile: Profile
-	} ;
-	appointmentFeedback: AppointmentFeedback;
+	fromDate: string;
+	toDate: string;
 };
 
-export type AppointmentFeedback = {
-	id: number,
-	rating: number,
-	comment: string,
-	appointmentId: number,
-	createdAt: number,
-  }
+export const { useGetAppointmentScheduleQuery, useGetHolidayScheduleQuery } = CalendarApi;
+
