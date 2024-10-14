@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Paper, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
 import { Appointment, AppointmentAttendanceStatus, useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api';
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@shared/components';
 import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, MoreVert, Summarize } from '@mui/icons-material';
@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import { useSocket } from '@/shared/context';
 
 const AppointmentsContent = () => {
-  const { data, isLoading , refetch} = useGetCounselingAppointmentQuery({});
+  const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({});
   const appointments = data?.content;
   const dispatch = useAppDispatch();
   const socket = useSocket();
@@ -72,15 +72,15 @@ const AppointmentsContent = () => {
 
   return (
     <>
-      <List className='px-16'>
+      <List className='p-16 flex flex-col gap-16'>
         {
           appointments.map(appointment =>
-            <ListItem
+            <Paper
               key={appointment.id}
-              className="p-16 flex gap-8 rounded-lg shadow"
+              className="p-16 flex gap-8 shadow"
               sx={{ bgcolor: 'background.paper' }}
             >
-              <div className='flex flex-col gap-16 w-full'>
+              <div className='flex flex-col w-full'>
                 <div className='flex justify-between'>
                   <div className='flex gap-24'>
                     <div className='flex gap-8 items-center '>
@@ -122,10 +122,10 @@ const AppointmentsContent = () => {
                     </Menu>
                   </div>
                 </div>
-                <div className='flex gap-4'>
+                <div className='flex gap-4 mb-8'>
                   {appointment.meetingType === 'ONLINE' ? (
                     <div className='flex gap-24 items-center'>
-                      <Chip label='Online' icon={<Circle color='success' />} className='font-semibold items-center' />
+                      <Chip label='Online' size='small' icon={<Circle color='success' />} className='font-semibold items-center' />
                       {appointment.meetUrl && (
                         <div>
                           <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
@@ -156,7 +156,7 @@ const AppointmentsContent = () => {
                   </Tooltip>
                 </div>
 
-                <div className='pl-16 border-l-2'>
+                <div className='pl-16 border-l'>
                   <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
                     <ListItemButton
                       component={NavLinkAdapter}
@@ -235,7 +235,7 @@ const AppointmentsContent = () => {
                   </div>
                 </div>
               </div>
-            </ListItem>
+            </Paper>
           )}
       </List>
     </>

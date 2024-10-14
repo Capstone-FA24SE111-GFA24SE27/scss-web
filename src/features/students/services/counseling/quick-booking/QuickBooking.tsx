@@ -108,7 +108,6 @@ function QuickBooking() {
   console.log(formData)
 
   const onSubmitMatching = () => {
-    confirm('Submit')
     scrollToTop()
     setGettingRandomMatchedGender(true)
     setProgress(20)
@@ -214,340 +213,344 @@ function QuickBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto px-32 mt-16 min-h-screen">
+      <div className="relative flex flex-col flex-auto p-32 min-h-screen">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <Paper className='flex mt-8 rounded p-32 shadow'>
+        <Box className='flex mt-8 gap-16'>
+          <Paper className='flex-1 p-32 shadow'>
+            <div className="flex flex-1 flex-col ">
+              <div>
+                <Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
+                <FormControl>
+                  <RadioGroup
+                    aria-labelledby="counselingType"
+                    name="controlled-radio-buttons-group"
+                    value={counselingType}
+                    onChange={handleCounselingTypeChange}
+                    className='w-full flex'
+                  >
+                    <FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
+                    <FormControlLabel value="NON-ACADEMIC" control={<Radio />} label="Non-academic" />
+                  </RadioGroup>
+                </FormControl>
 
-          <div className="flex flex-1 flex-col ">
-            <div>
-              <Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
-              <FormControl>
-                <RadioGroup
-                  aria-labelledby="counselingType"
-                  name="controlled-radio-buttons-group"
-                  value={counselingType}
-                  onChange={handleCounselingTypeChange}
-                  className='w-full flex'
-                >
-                  <FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
-                  <FormControlLabel value="NON-ACADEMIC" control={<Radio />} label="Non-academic" />
-                </RadioGroup>
-              </FormControl>
+              </div>
 
-            </div>
+              <div className='w-fit mt-16'>
+                <Typography className='font-semibold text-primary text-lg'>Select date</Typography>
+                <DateCalendar
+                  views={['day']}
+                  className='w-full'
+                  disablePast
 
-            <div className='w-fit mt-16'>
-              <Typography className='font-semibold text-primary text-lg'>Select date</Typography>
-              <DateCalendar
-                views={['day']}
-                className='w-full'
-                disablePast
-
-                sx={{
-                  '&.Mui-selected': {
-                    backgroundColor: '#e67e22'
-                  },
-                }}
-                value={dayjs(formData.date)}
-                onChange={handleDateChange}
-                onMonthChange={handleMonthChange}
-              />
-              {
-                errors.date && <Typography color='error' className='mt-4'>{errors?.date?.message}</Typography>
-              }
-            </div>
-
-
-            <div className=''>
-              <Typography className='font-semibold text-primary text-lg'>Select time</Typography>
-              {/* <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography> */}
-              <div className='flex flex-wrap gap-16 mt-8'>
+                  sx={{
+                    '&.Mui-selected': {
+                      backgroundColor: '#e67e22'
+                    },
+                  }}
+                  value={dayjs(formData.date)}
+                  onChange={handleDateChange}
+                  onMonthChange={handleMonthChange}
+                />
                 {
-                  isFetchingCounselorSlots
-                    ? <ContentLoading />
-                    : !counselorSlots?.length
-                      ? <Typography color='text.secondary'>No available slots</Typography>
-                      : counselorSlots
-                        .map(slot => (
-                          <Tooltip
-                            key={slot.slotCode}
-                            title={slot.slotCode.split('-').join(" ").concat(slot.myAppointment ? " - You booked this slot" : "")}
-                          >
-                            <Button
-                              variant={formData.slotId === slot.slotId ? 'contained' : 'outlined'}
-                              disabled={['UNAVAILABLE', 'EXPIRED'].includes(slot.status)}
-                              onClick={() => {
-                                setValue("slotId", slot.slotId)
-                                setValue("slotCode", slot.slotCode)
-                              }}
-                              color='primary'
-                            >
-                              {dayjs(slot.startTime, 'HH:mm:ss').format('HH:mm')} -  {dayjs(slot.endTime, 'HH:mm:ss').format('HH:mm')}
-                            </Button>
-                          </Tooltip>
-                        ))
+                  errors.date && <Typography color='error' className='mt-4'>{errors?.date?.message}</Typography>
                 }
               </div>
-              {
-                errors.slotId && <Typography color='error' className='mt-8'>{errors?.slotId?.message}</Typography>
-              }
-            </div>
-
-            <Divider className='mt-32' />
-
-            {
-              counselingType === 'ACADEMIC'
-                ? < div className='mt-16'>
-                  <Typography className='font-semibold text-primary text-lg'>Select counselor's speicalization (optional)</Typography>
-                  <Controller
-                    name="specialization"
-                    control={control}
-                    render={({ field }) => (
-                      <Autocomplete
-                        {...field}
-                        options={counselingSpecializations}
-                        className='mt-16'
-                        getOptionLabel={(option) => option.name}
-                        onChange={(_, value) => field.onChange(value)}
-                        value={field.value || null}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Specialization "
-                            variant="outlined"
-                            error={!!errors.specialization}
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </div>
-                : < div className='mt-16'>
-                  <Typography className='font-semibold text-primary text-lg'>Select counselor's expertise (optional)</Typography>
-                  <Controller
-                    name="expertise"
-                    control={control}
-                    render={({ field }) => (
-                      <Autocomplete
-                        {...field}
-                        options={counselingExpertises}
-                        className='mt-16'
-                        getOptionLabel={(option) => option.name}
-                        onChange={(_, value) => field.onChange(value)}
-                        value={field.value || null}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Expertise "
-                            variant="outlined"
-                            error={!!errors.expertise}
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </div>
-            }
 
 
-            <Divider className='mt-32' />
-
-            <div className='mt-32'>
-              <Typography className='font-semibold text-primary text-lg'>Select couselor's gender (optional)</Typography>
-              <div className="mt-8">
-                <Controller
-                  name="gender"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="flex gap-8 items-center">
-                      {/* Male Icon */}
-                      <Tooltip title="Male">
-                        <IconButton
-                          onClick={() => {
-                            setSelectedGender('MALE');
-                            field.onChange('MALE');
-                          }}
-                          sx={{
-                            border: selectedGender === 'MALE' ? '2px solid #1976d2' : 'none',
-                            borderRadius: '50%', // Keep the border round
-                          }}
-                        >
-                          <Male className="text-blue-500" fontSize="large" />
-                        </IconButton>
-                      </Tooltip>
-
-                      {/* Female Icon */}
-                      <Tooltip title="Female">
-                        <IconButton
-                          onClick={() => {
-                            setSelectedGender('FEMALE');
-                            field.onChange('FEMALE');
-                          }}
-                          sx={{
-                            border: selectedGender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
-                            borderRadius: '50%',
-                          }}
-                        >
-                          <Female className="text-pink-500" fontSize="large" />
-                        </IconButton>
-                      </Tooltip>
-
-                      {/* Clear Button */}
-                      <div className='flex-1 flex justify-end'>
-                        {
-                          selectedGender &&
-                          <Tooltip title="Clear gender selection">
-                            <IconButton
-                              onClick={() => {
-                                setSelectedGender(''); // Clear the selected gender
-                                field.onChange(''); // Update the form state
-                              }}
-                              sx={{
-                                borderRadius: '50%',
-                              }}
+              <div className=''>
+                <Typography className='font-semibold text-primary text-lg'>Select time</Typography>
+                {/* <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography> */}
+                <div className='flex flex-wrap gap-16 mt-8'>
+                  {
+                    isFetchingCounselorSlots
+                      ? <ContentLoading />
+                      : !counselorSlots?.length
+                        ? <Typography color='text.secondary'>No available slots</Typography>
+                        : counselorSlots
+                          .map(slot => (
+                            <Tooltip
+                              key={slot.slotCode}
+                              title={slot.slotCode.split('-').join(" ").concat(slot.myAppointment ? " - You booked this slot" : "")}
                             >
-                              <Close /> {/* X Icon for Clear */}
-                            </IconButton>
-                          </Tooltip>
-                        }
-
-                      </div>
-
-                    </div>
-                  )}
-                />
-                {errors.gender && (
-                  <p className="text-red-500 mt-2">{errors.gender.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className='flex justify-end'>
-              <Button
-                size='large'
-                className='mt-16 w-1/2'
-                variant='contained' color='secondary'
-                onClick={handleSubmit(onSubmitMatching)}
-                disabled={isLoadingRandomMatchedCounselor}
-              >
-                Find my counselor
-              </Button>
-            </div>
-
-          </div>
-
-          <div className='flex-1'>
-            <div className=''>
-
-              {
-                randomMatchedCounselor
-                  ?
-                  progress < 100 || isLoadingRandomMatchedCounselor
-                    ? <div className='flex flex-col items-center gap-16'>
-                      <Typography color='secondary' className='font-semibold text-center text-lg'>Matching the most suitable counselor for you.</Typography>
-                      <CircularProgressWithLabel value={progress} />
-                    </div>
-                    : <div>
-                      <Typography color='secondary' className='font-semibold text-center text-lg'>Best counselor that fits your criteria.</Typography>
-                      <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`} className='mt-16'>
-                        <ListItemButton
-                          component={NavLinkAdapter}
-                          to={`${randomMatchedCounselor.profile.id}`}
-                          className=' w-full rounded'
-                        >
-                          <div className='w-full flex flex-col items-center'>
-                            <Avatar
-                              className='size-96 border-2 '
-                              alt={randomMatchedCounselor.profile.fullName}
-                              src={randomMatchedCounselor.profile.avatarLink}
-                            />
-                            <div className='mt-8 text-center'>
-                              <Typography className='font-semibold text-primary-main text-18'>{randomMatchedCounselor.profile.fullName}</Typography>
-                              <Typography className='text-16' color='text.secondary'>{randomMatchedCounselor.expertise?.name || randomMatchedCounselor.specialization?.name}</Typography>
-                            </div>
-                          </div>
-                          <ChevronRight />
-                        </ListItemButton>
-                      </Tooltip>
-
-
-                      <div className='px-32'>
-                        <Divider className='mt-16' />
-                        <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
-
-                        <Controller
-                          name="isOnline"
-                          control={control}
-                          render={({ field }) => (
-                            <FormControl
-                            >
-                              <RadioGroup
-                                {...field}
-                                className="Settings-group"
-                                row
+                              <Button
+                                variant={formData.slotId === slot.slotId ? 'contained' : 'outlined'}
+                                disabled={['UNAVAILABLE', 'EXPIRED'].includes(slot.status)}
+                                onClick={() => {
+                                  setValue("slotId", slot.slotId)
+                                  setValue("slotCode", slot.slotCode)
+                                }}
+                                color='primary'
+                                className='font-normal'
                               >
-                                <FormControlLabel
-                                  value={true}
-                                  control={<Radio />}
-                                  label="Online"
-                                />
-                                <FormControlLabel
-                                  value={false}
-                                  control={<Radio />}
-                                  label="Offline"
-                                />
-                              </RadioGroup>
-                            </FormControl>
-                          )}
-                        />
-                      </div>
+                                {dayjs(slot.startTime, 'HH:mm:ss').format('HH:mm')} -  {dayjs(slot.endTime, 'HH:mm:ss').format('HH:mm')}
+                              </Button>
+                            </Tooltip>
+                          ))
+                  }
+                </div>
+                {
+                  errors.slotId && <Typography color='error' className='mt-8'>{errors?.slotId?.message}</Typography>
+                }
+              </div>
 
+              <Divider className='mt-32' />
 
-                      <div className='px-32'>
-                        <Divider className="mt-16 " />
-                        <Controller
-                          control={control}
-                          name="reason"
-                          render={({ field }) => (
+              {
+                counselingType === 'ACADEMIC'
+                  ? < div className='mt-16'>
+                    <Typography className='font-semibold text-primary text-lg'>Select counselor's speicalization (optional)</Typography>
+                    <Controller
+                      name="specialization"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={counselingSpecializations}
+                          className='mt-16'
+                          getOptionLabel={(option) => option.name}
+                          onChange={(_, value) => field.onChange(value)}
+                          value={field.value || null}
+                          renderInput={(params) => (
                             <TextField
-                              className="mt-16"
-                              {...field}
-                              label="Reason"
-                              placeholder="Reason"
-                              multiline
-                              rows={5}
-                              id="Reason"
-                              error={!!errors.reason}
-                              helperText={errors?.reason?.message}
-                              fullWidth
-
+                              {...params}
+                              label="Specialization "
+                              variant="outlined"
+                              error={!!errors.specialization}
                             />
                           )}
                         />
-                      </div>
-
-
-                      <div className='flex justify-center mt-24 px-32'>
-                        <Button
-                          variant='contained'
-                          color='secondary'
-                          className='w-full'
-                          disabled={isEmpty(dirtyFields) || !isValid || isBookingCounselor || !formData.reason}
-                          onClick={handleSubmit(onSubmitBooking)}>
-                          Confirm booking
-                        </Button>
-                      </div>
-
-                    </div>
-                  : <div className='flex flex-col items-center w-full'>
-                    <Typography color='textDisabled'>Select your preferences and matched couselor will be showed.</Typography>
-                    <ContactSupport className='size-120 text-text-disabled' />
+                      )}
+                    />
+                  </div>
+                  : < div className='mt-16'>
+                    <Typography className='font-semibold text-primary text-lg'>Select counselor's expertise (optional)</Typography>
+                    <Controller
+                      name="expertise"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={counselingExpertises}
+                          className='mt-16'
+                          getOptionLabel={(option) => option.name}
+                          onChange={(_, value) => field.onChange(value)}
+                          value={field.value || null}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Expertise "
+                              variant="outlined"
+                              error={!!errors.expertise}
+                            />
+                          )}
+                        />
+                      )}
+                    />
                   </div>
               }
 
+
+              <Divider className='mt-32' />
+
+              <div className='mt-32'>
+                <Typography className='font-semibold text-primary text-lg'>Select couselor's gender (optional)</Typography>
+                <div className="mt-8">
+                  <Controller
+                    name="gender"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex gap-8 items-center">
+                        {/* Male Icon */}
+                        <Tooltip title="Male">
+                          <IconButton
+                            onClick={() => {
+                              setSelectedGender('MALE');
+                              field.onChange('MALE');
+                            }}
+                            sx={{
+                              border: selectedGender === 'MALE' ? '2px solid #1976d2' : 'none',
+                              borderRadius: '50%', // Keep the border round
+                            }}
+                          >
+                            <Male className="text-blue-500" fontSize="large" />
+                          </IconButton>
+                        </Tooltip>
+
+                        {/* Female Icon */}
+                        <Tooltip title="Female">
+                          <IconButton
+                            onClick={() => {
+                              setSelectedGender('FEMALE');
+                              field.onChange('FEMALE');
+                            }}
+                            sx={{
+                              border: selectedGender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
+                              borderRadius: '50%',
+                            }}
+                          >
+                            <Female className="text-pink-500" fontSize="large" />
+                          </IconButton>
+                        </Tooltip>
+
+                        {/* Clear Button */}
+                        <div className='flex-1 flex justify-end'>
+                          {
+                            selectedGender &&
+                            <Tooltip title="Clear gender selection">
+                              <IconButton
+                                onClick={() => {
+                                  setSelectedGender(''); // Clear the selected gender
+                                  field.onChange(''); // Update the form state
+                                }}
+                                sx={{
+                                  borderRadius: '50%',
+                                }}
+                              >
+                                <Close /> {/* X Icon for Clear */}
+                              </IconButton>
+                            </Tooltip>
+                          }
+
+                        </div>
+
+                      </div>
+                    )}
+                  />
+                  {errors.gender && (
+                    <p className="text-red-500 mt-2">{errors.gender.message}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className='flex justify-end'>
+                <Button
+                  size='large'
+                  className='mt-16 w-1/2'
+                  variant='contained' color='secondary'
+                  onClick={handleSubmit(onSubmitMatching)}
+                  disabled={isLoadingRandomMatchedCounselor}
+                >
+                  Find my counselor
+                </Button>
+              </div>
+
             </div>
-          </div>
-        </Paper >
+
+          </Paper >
+          <Paper className='shadow flex-1'>
+            <div className='flex-1 p-32'>
+              <div className=''>
+
+                {
+                  randomMatchedCounselor
+                    ?
+                    progress < 100 || isLoadingRandomMatchedCounselor
+                      ? <div className='flex flex-col items-center gap-16'>
+                        <Typography color='secondary' className='font-semibold text-center text-lg'>Matching the most suitable counselor for you.</Typography>
+                        <CircularProgressWithLabel value={progress} />
+                      </div>
+                      : <div>
+                        <Typography color='secondary' className='font-semibold text-center text-lg'>Best counselor that fits your criteria.</Typography>
+                        <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`} className='mt-16'>
+                          <ListItemButton
+                            component={NavLinkAdapter}
+                            to={`${randomMatchedCounselor.profile.id}`}
+                            className=' w-full rounded'
+                          >
+                            <div className='w-full flex flex-col items-center'>
+                              <Avatar
+                                className='size-96 border-2 '
+                                alt={randomMatchedCounselor.profile.fullName}
+                                src={randomMatchedCounselor.profile.avatarLink}
+                              />
+                              <div className='mt-8 text-center'>
+                                <Typography className='font-semibold text-primary-main text-18'>{randomMatchedCounselor.profile.fullName}</Typography>
+                                <Typography className='text-16' color='text.secondary'>{randomMatchedCounselor.expertise?.name || randomMatchedCounselor.specialization?.name}</Typography>
+                              </div>
+                            </div>
+                            <ChevronRight />
+                          </ListItemButton>
+                        </Tooltip>
+
+
+                        <div className='px-32'>
+                          <Divider className='mt-16' />
+                          <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
+
+                          <Controller
+                            name="isOnline"
+                            control={control}
+                            render={({ field }) => (
+                              <FormControl
+                              >
+                                <RadioGroup
+                                  {...field}
+                                  className="Settings-group"
+                                  row
+                                >
+                                  <FormControlLabel
+                                    value={true}
+                                    control={<Radio />}
+                                    label="Online"
+                                  />
+                                  <FormControlLabel
+                                    value={false}
+                                    control={<Radio />}
+                                    label="Offline"
+                                  />
+                                </RadioGroup>
+                              </FormControl>
+                            )}
+                          />
+                        </div>
+
+
+                        <div className='px-32'>
+                          <Divider className="mt-16 " />
+                          <Controller
+                            control={control}
+                            name="reason"
+                            render={({ field }) => (
+                              <TextField
+                                className="mt-16"
+                                {...field}
+                                label="Reason"
+                                placeholder="Reason"
+                                multiline
+                                rows={5}
+                                id="Reason"
+                                error={!!errors.reason}
+                                helperText={errors?.reason?.message}
+                                fullWidth
+
+                              />
+                            )}
+                          />
+                        </div>
+
+
+                        <div className='flex justify-center mt-24 px-32'>
+                          <Button
+                            variant='contained'
+                            color='secondary'
+                            className='w-full'
+                            disabled={isEmpty(dirtyFields) || !isValid || isBookingCounselor || !formData.reason}
+                            onClick={handleSubmit(onSubmitBooking)}>
+                            Confirm booking
+                          </Button>
+                        </div>
+
+                      </div>
+                    : <div className='flex flex-col items-center w-full'>
+                      <Typography color='textDisabled'>Select your preferences and matched couselor will be showed.</Typography>
+                      <ContactSupport className='size-200 text-text-disabled' />
+                    </div>
+                }
+
+              </div>
+            </div>
+          </Paper>
+        </Box>
       </div >
     </>
   );

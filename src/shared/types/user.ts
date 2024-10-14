@@ -6,7 +6,7 @@ export type User = {
 export type Account = {
   id: number,
   email: string,
-  role: string,
+  role: Role,
   status: string,
   profile: Profile
 }
@@ -43,5 +43,7 @@ export type Specialization = {
   id: number,
   name: string
 }
+
+export type Role = "STUDENT" | "ACADEMIC_COUNSELOR" | "SUPPORT_STAFF" | "MANAGER" | "ADMIN" | "NON_ACADEMIC_COUNSELOR"
 
 export type CounselingType = 'ACADEMIC' | 'NON-ACADEMIC'

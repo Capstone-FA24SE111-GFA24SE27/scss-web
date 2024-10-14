@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Rating, TextField, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment } from '../activity-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
@@ -52,12 +52,12 @@ const AppointmentsTab = () => {
 
   return (
     <>
-      <List>
+      <List className='p-16 flex flex-col gap-16'>
         {
           appointmentRequests.map(appointment =>
-            <ListItem
+            <Paper
               key={appointment.id}
-              className="p-16 flex gap-16"
+              className="p-16 flex gap-16 shadow"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
@@ -76,12 +76,8 @@ const AppointmentsTab = () => {
                 <div className='flex gap-4'>
                   {
                     appointment.meetingType === 'ONLINE' ?
-                      <div className='flex gap-24 items-center'>
-                        <Chip
-                          label='Online'
-                          icon={<Circle color='success' />}
-                          className='font-semibold  items-center'
-                        />
+                      <div className='flex gap-24  items-center'>
+                        <Chip label='Online' size='small' icon={<Circle color='success' />} className='font-semibold items-center' />
                         {appointment.meetUrl && (
                           <div>
                             <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
@@ -125,7 +121,7 @@ const AppointmentsTab = () => {
                       />
                       <div className='ml-16'>
                         <Typography className='font-semibold text-primary-main'>{appointment.counselorInfo.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.counselorInfo?.expertise.name}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselorInfo?.expertise?.name}</Typography>
                       </div>
                     </div>
                     <ChevronRight />
@@ -173,7 +169,7 @@ const AppointmentsTab = () => {
                   </>
                 }
               </div>
-            </ListItem>
+            </Paper>
           )}
       </List >
     </>

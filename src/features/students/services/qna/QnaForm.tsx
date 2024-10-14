@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
@@ -9,22 +9,26 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ArrowBack, ArrowLeft } from '@mui/icons-material';
 import { NavLinkAdapter } from '@/shared/components';
-import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { FormControl, FormControlLabel, FormHelperText, Radio, RadioGroup } from '@mui/material';
+import { useState } from 'react';
+import { usePostQuestionMutation } from './qna-api';
 
 
 const formSchema = z.object({
-	title: z.string().nonempty('You must enter a title'),
-	content: z.string().nonempty('You must enter content'),
+	content: z.string().min(1, 'You must enter content'),
+	questionType: z.enum(['ACADEMIC', 'NON-ACADEMIC'], {
+		errorMap: () => ({ message: 'Please select a question type' }),
+	}),
 });
 
 type FormValues = z.infer<typeof formSchema>;
-const defaultValues = { title: '', content: '' };
+const defaultValues = { questionType: undefined, content: '' };
 
 
 /**
  * The help center support.
  */
-function HelpCenterSupport() {
+function QnaForm() {
 	const { control, handleSubmit, watch, formState } = useForm({
 		mode: 'onChange',
 		defaultValues,
@@ -32,10 +36,20 @@ function HelpCenterSupport() {
 	});
 	const { isValid, dirtyFields, errors } = formState;
 
+	const [postQuestion, { isLoading, isSuccess }] = usePostQuestionMutation()
+
 	const form = watch();
+	const navigate = useNavigate()
 
 	function onSubmit(data: FormValues) {
-		console.log(data);
+		postQuestion({
+			content: data.content, 
+			questionType: data.questionType,
+		})
+			.unwrap()
+			.then(() => {
+				navigate('..')
+			})
 	}
 
 	if (_.isEmpty(form)) {
@@ -43,12 +57,12 @@ function HelpCenterSupport() {
 	}
 
 	return (
-		<div className="flex flex-col items-center p-24 sm:p-40 container">
+		<div className="flex flex-col items-center p-32 container">
 			<div className="flex flex-col w-full max-w-4xl">
-				<div className="sm:mt-32">
+				<div className="">
 					<Button
 						component={NavLinkAdapter}
-						to=".."
+						to="."
 						startIcon={<ArrowBack />}
 					>
 						Back to QnA
@@ -71,39 +85,33 @@ function HelpCenterSupport() {
 						</div>
 						<div className="space-y-32">
 							<div>
-								<Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
-								<FormControl>
+								<Typography className='font-semibold text-primary text-lg'>Select question type</Typography>
+								{/* <FormControl>
 									<RadioGroup
 										aria-labelledby="counselorType"
 										name="controlled-radio-buttons-group"
-										
+
 										className='w-full flex'
 									>
 										<FormControlLabel value="academic" control={<Radio />} label="Academic" />
 										<FormControlLabel value="non-academic" control={<Radio />} label="Non-academic" />
 									</RadioGroup>
-								</FormControl>
-
-							</div>
-
-							<Controller
-								control={control}
-								name="title"
-								render={({ field }) => (
-									<TextField
-										className="w-full"
-										{...field}
-										label="Title"
-										placeholder="Title"
-										id="title"
-										error={!!errors.title}
-										helperText={errors?.title?.message}
-										variant="outlined"
-										required
-										fullWidth
-									/>
+									
+								</FormControl> */}
+								<Controller
+									name="questionType"
+									control={control}
+									render={({ field }) => (
+										<RadioGroup {...field}>
+											<FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
+											<FormControlLabel value="NON-ACADEMIC" control={<Radio />} label="Non-academic" />
+										</RadioGroup>
+									)}
+								/>
+								{errors.questionType && (
+									<FormHelperText error>{errors.questionType?.message as string}</FormHelperText>
 								)}
-							/>
+							</div>
 
 							<Controller
 								name="content"
@@ -115,11 +123,10 @@ function HelpCenterSupport() {
 										className="mt-16 w-full"
 										margin="normal"
 										multiline
-										minRows={4}
+										minRows={6}
 										variant="outlined"
 										error={!!errors.content}
 										helperText={errors?.content?.message}
-										required
 									/>
 								)}
 							/>
@@ -130,7 +137,7 @@ function HelpCenterSupport() {
 								className="mx-8"
 								variant="contained"
 								color="secondary"
-								disabled={_.isEmpty(dirtyFields) || !isValid}
+								disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}
 								type="submit"
 							>
 								Save
@@ -143,4 +150,4 @@ function HelpCenterSupport() {
 	);
 }
 
-export default HelpCenterSupport;
+export default QnaForm;

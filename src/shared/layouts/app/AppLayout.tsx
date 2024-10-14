@@ -56,7 +56,7 @@ export const defaultConfig: Config = {
 		style: 'fixed',
 	},
 	footer: {
-		display: true,
+		display: false,
 		style: 'static',
 	},
 	leftSidePanel: {

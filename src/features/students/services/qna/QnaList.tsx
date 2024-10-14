@@ -1,20 +1,13 @@
 
 
 import { NavLinkAdapter } from '@/shared/components';
-import { ArrowForward, ArrowRightAlt, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Switch, TextField, Typography } from '@mui/material';
+import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { SyntheticEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { useGetQuestionsQuery } from './qna-api';
 
-const qnaData = [
-  { question: "What is the capital of France?", answer: "Paris", type: 'Non-academic' },
-  { question: "What is 2 + 2?", answer: "4" , answered: true },
-  { question: "Who wrote 'To Kill a Mockingbird'?", answer: "Harper Lee", type: 'Non-academic', answered: true },
-  { question: "What is the boiling point of water?", answer: "100°C" },
-  { question: "What is the largest planet in our solar system?", answer: "Jupiter", type: 'Non-academic', answered: true },
-  { question: "Who painted the Mona Lisa?", answer: "Leonardo da Vinci" },
-];
 
 const container = {
   show: {
@@ -30,17 +23,20 @@ const item = {
 };
 
 const QnaList = () => {
-  const [hideCompleted, setHideCompleted] = useState(false);
+  const [openAnswers, setOpenAnswers] = useState(false);
 
-  const [expanded, setExpanded] = useState<string | boolean>(false);
+  const [expanded, setExpanded] = useState<number | boolean>(false);
 
-  const toggleAccordion = (panel: string) => (_: SyntheticEvent, _expanded: boolean) => {
+  const toggleAccordion = (panel: number) => (_: SyntheticEvent, _expanded: boolean) => {
     setExpanded(_expanded ? panel : false);
   };
   const navigate = useNavigate()
 
+  const { data: qnaData } = useGetQuestionsQuery()
+  const qnaList = qnaData?.content?.data || []
+
   return (
-    qnaData?.length > 0 && (
+    qnaList?.length > 0 && (
       <motion.div
         variants={container}
         initial="hidden"
@@ -61,7 +57,7 @@ const QnaList = () => {
           />
           <TextField
             select
-            label="Choose counseling type"
+            label="Choose type"
             className="w-200"
             slotProps={{
               inputLabel: {
@@ -75,13 +71,13 @@ const QnaList = () => {
           </TextField>
           <FormControlLabel
             className='flex-1 flex justify-end'
-            label="Answered Only"
+            label="Open Answers"
             control={
               <Switch
                 onChange={(ev) => {
-                  setHideCompleted(ev.target.checked);
+                  setOpenAnswers(ev.target.checked);
                 }}
-                checked={hideCompleted}
+                checked={openAnswers}
                 name="hideCompleted"
               />
             }
@@ -89,65 +85,83 @@ const QnaList = () => {
         </div>
 
         <div className='space-y-16'>
-          {qnaData.map((qna) => (
-            <motion.div
-              variants={item}
-              key={qna.question}
-            >
-              <Accordion
-                className='shadow'
-                expanded={expanded === qna.question}
-                onChange={toggleAccordion(qna.question)}
+          {qnaList.map((qna) => {
+            return (
+              <motion.div
+                variants={item}
+                key={qna.id}
               >
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                  <div className="flex items-center gap-8">
-                    {/* <Chip label={qna.type === 'Non-academic' ? 'Non-Academic' : 'Academic'} color={qna.type === 'Non-academic' ? 'info' : 'success'} className='w-112'/> */}
-                    <Typography className='w-112 font-semibold' color={qna.type === 'Non-academic' ? 'info' : 'warning'}>{qna.type === 'Non-academic' ? 'Non-Academic' : 'Academic'}</Typography>
-                    <Divider orientation='vertical' />
-                    {
-                      qna.answered
-                        ? <CheckCircleOutlineOutlined color='success'/>
-                        : <HelpOutlineOutlined color='disabled' />
-                    }
-                    <Typography className="pr-8 font-medium">{qna.question}</Typography>
-                  </div>
-                </AccordionSummary>
-
-                <AccordionDetails className='flex'>
-                  <div className='w-112 flex items-start'>
-                    <IconButton><ThumbUpOutlined /></IconButton>
-                    <IconButton><ThumbDownOutlined /></IconButton>
-                  </div>
-                  <div className='flex flex-col gap-8'>
-                    <Button className='flex gap-16 items-center'>
-                      <Avatar
-                        className='size-32'
-                        alt={qna.question}
-                        src="https://material-ui.com/static/images/avatar/1.jpg"
-                      />
-                      <div>
-                        <Typography className='font-semibold text-sm'>{'Some counselor Abc'}</Typography>
-                        <Typography className='text-sm text-start' color='textSecondary'>{'Tâm lý học'}</Typography>
-                      </div>
-                    </Button>
-                    <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
-                    <Typography className="px-8">{qna.answer}</Typography>
-                  </div>
-                </AccordionDetails>
-                <Box
-                  className='bg-primary-main/5 w-full py-8 flex justify-end px-16 cursor-pointer'
-                  onClick={() => navigate('1')}
-                >
-                  <Button
-                    color='secondary'
-                    endIcon={<ArrowForward />}
+                <Paper className='overflow-hidden shadow'>
+                  <Accordion
+                    className='shadow'
+                    expanded={openAnswers || expanded === qna.id}
+                    onChange={toggleAccordion(qna.id)}
                   >
-                    Start a conversation
-                  </Button>
-                </Box>
-              </Accordion>
-            </motion.div>
-          ))
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                      <div className='flex flex-col gap-8'>
+
+                        <div className='flex gap-8'>
+                          <Chip label={qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={qna.questionType === 'ACADEMIC' ? 'info' : 'warning'} size='small' />
+                          <Chip label={'Verified'} color={'success'} size='small' />
+                          {qna.closed && <Chip label={'Closed'} color={'warning'} size='small' />}
+                        </div>
+                        <div className="flex flex-1 items-center gap-8">
+                          {/* <Divider orientation='vertical' /> */}
+                          {qna.answer
+                            ? <CheckCircleOutlineOutlined color='success' />
+                            : <HelpOutlineOutlined color='disabled' />}
+
+                          <Typography className="pr-8 font-semibold w-full">{qna.content}</Typography>
+                        </div>
+                      </div>
+
+                    </AccordionSummary>
+
+                    <AccordionDetails className='flex'>
+                      <div className='flex flex-col gap-8'>
+                        {qna.counselor &&
+                          <Button className='flex gap-16 items-center justify-start w-fit px-16'>
+                            <Avatar
+                              className='size-32'
+                              alt={qna.counselor?.profile.fullName}
+                              src={qna.counselor?.profile.avatarLink} />
+                            <div>
+                              <Typography className='font-semibold text-sm'>{qna.counselor?.profile.fullName}</Typography>
+                              <Typography className='text-sm text-start' color='textSecondary'>{qna.counselor?.expertise?.name}</Typography>
+                            </div>
+                          </Button>}
+                        {qna.answer ?
+                          <div>
+                            <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
+                            <Typography className="px-8">{qna.answer}</Typography>
+                          </div>
+                          : <div>
+                            <Typography className="px-8 italic" color='textDisabled'>{'The counselor has not answer yet'}</Typography>
+                          </div>}
+                      </div>
+                    </AccordionDetails>
+                    <Box
+                      className='bg-primary-light/5 w-full py-8 flex justify-between px-16 '
+                    >
+                      <div className='w-112 flex items-start'>
+                        <IconButton><ThumbUpOutlined /></IconButton>
+                        <IconButton><ThumbDownOutlined /></IconButton>
+                      </div>
+                      <Button
+                        variant='outlined'
+                        color='secondary'
+                        startIcon={<ChatBubbleOutline />}
+                        onClick={() => navigate(`conversations/${qna.id}`)}
+                        disabled={!qna.counselor}
+                      >
+                        Start a conversation
+                      </Button>
+                    </Box>
+                  </Accordion>
+                </Paper>
+              </motion.div>
+            );
+          })
           }
         </div >
       </motion.div >

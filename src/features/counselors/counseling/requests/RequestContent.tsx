@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
 import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './requests-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
@@ -38,12 +38,12 @@ const RequestsContent = () => {
 
   return (
     <>
-      <List className='px-16 w-full'>
+      <List className='p-16 flex flex-col gap-16'>
         {
           appointmentRequests.map(appointment =>
-            <ListItem
+            <Paper
               key={appointment.id}
-              className="p-16 flex gap-16 rounded-lg"
+              className="p-16 shadow"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
@@ -60,7 +60,7 @@ const RequestsContent = () => {
                   </div>
 
                   <Chip
-                    label={appointment.meetingType == 'ONLINE'? 'Online' : 'Offline'}
+                    label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
                     icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
                     className='font-semibold items-center'
                     size='small'
@@ -73,7 +73,7 @@ const RequestsContent = () => {
                     size='small'
                   />
 
-                  </div>
+                </div>
 
                 <div className='flex gap-8'>
                   <Typography className='w-60' color='textSecondary'>Reason: </Typography>
@@ -120,7 +120,7 @@ const RequestsContent = () => {
                       <div className='flex flex-col w-full gap-8 text-secondary-main '>
                         <Typography className='font-semibold'>Do you want to approve this appoitment request?</Typography>
                         <div className='flex gap-16'>
-                          <Button color='error' variant='contained' className='w-96'
+                          <Button color='error' className='w-96'
                             onClick={() => dispatch(openDialog({
                               children: (
                                 <div>
@@ -145,7 +145,7 @@ const RequestsContent = () => {
                             Deny
                           </Button>
 
-                          <Button color='success' variant='contained' className='w-96'
+                          <Button color='success' className='w-96'
                             onClick={() => dispatch(openDialog({
                               children: (
                                 <ApproveAppointmentDialog appointment={appointment} />
@@ -176,7 +176,7 @@ const RequestsContent = () => {
                   )
                 } */}
               </div>
-            </ListItem >
+            </Paper >
           )}
       </List >
     </>

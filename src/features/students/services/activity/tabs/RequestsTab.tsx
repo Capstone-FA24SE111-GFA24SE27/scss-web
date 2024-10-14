@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Rating, TextField, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { AppointmentRequest, useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation } from '../activity-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
@@ -26,12 +26,12 @@ const RequestsTab = () => {
 
   return (
     <>
-      <List>
+      <List className='p-16 flex flex-col gap-16'>
         {
           appointmentRequests.map(appointment =>
-            <ListItem
+            <Paper
               key={appointment.id}
-              className="p-16 flex gap-16"
+              className="p-16 flex gap-16 shadow"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
@@ -89,7 +89,7 @@ const RequestsTab = () => {
                   </ListItemButton>
                 </Tooltip>
               </div>
-            </ListItem>
+            </Paper>
           )}
       </List >
     </>

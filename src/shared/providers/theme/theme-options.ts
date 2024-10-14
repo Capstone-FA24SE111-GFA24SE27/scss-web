@@ -90,6 +90,7 @@ export const defaultThemeOptions = {
 			styleOverrides: {
 				root: {
 					textTransform: 'none',
+					fontWeight: 600, 
 				},
 				sizeMedium: {
 					borderRadius: 20,
@@ -109,7 +110,7 @@ export const defaultThemeOptions = {
 					'&:hover, &:focus': {
 						boxShadow: 'none'
 					}
-				}
+				},
 			}
 		},
 		MuiButtonGroup: {

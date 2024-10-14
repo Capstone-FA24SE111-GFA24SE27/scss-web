@@ -262,6 +262,7 @@ function CounselorBooking() {
                                                         variant={formData.slotCode === slot.slotCode ? 'contained' : 'outlined'}
                                                         disabled={['UNAVAILABLE', 'EXPIRED'].includes(slot.status)}
                                                         onClick={() => setValue("slotCode", slot.slotCode)}
+                                                        className='font-normal'
                                                         color='primary'
                                                     >
                                                         {dayjs(slot.startTime, 'HH:mm:ss').format('HH:mm')} -  {dayjs(slot.endTime, 'HH:mm:ss').format('HH:mm')}

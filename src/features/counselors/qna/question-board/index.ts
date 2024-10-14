@@ -1,0 +1,1 @@
+export { questionBoardRoutes } from './question-board-routes'
