@@ -27,17 +27,10 @@ function CalendarAppEventContent(props: CalendarAppEventContentProps) {
 				backgroundColor: color,
 				color: '#eee',
 			}}
-			className={clsx(
-				'flex items-center w-full rounded-4 px-8 py-2 h-22 text-white h-full cursor-pointer select-none',
-				eventInfo.view.type === 'dayGridMonth' ? 'flex-row' : 'flex-col'
-			)}
+			className={clsx('flex items-center w-full rounded-4 px-8 py-2 h-22 text-white h-full cursor-pointer select-none', eventInfo.view.type === 'dayGridMonth' ? 'flex-row' : 'flex-col')}
 		>
-			<Typography className='font-semibold text-12'>
-				{eventInfo.timeText}
-			</Typography>
-			<Typography className='px-4 truncate text-12'>
-				{eventInfo.event.title}
-			</Typography>
+			<Typography className="font-semibold text-12">{eventInfo.timeText}</Typography>
+			<Typography className="px-4 truncate text-12">{eventInfo.event.title}</Typography>
 		</Box>
 	);
 }

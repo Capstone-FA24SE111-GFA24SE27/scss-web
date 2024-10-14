@@ -17,7 +17,6 @@ import {
 import React, { useState } from 'react';
 import { useSendCouselingAppointmentFeedbackMutation } from '../../../activity/activity-api';
 import { useAppDispatch } from '@shared/store';
-import { AppointmentScheduleType } from '../../calendar-api';
 import {
 	AccessTime,
 	CalendarMonth,
@@ -26,6 +25,7 @@ import {
 } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
+import { AppointmentScheduleType } from '@/shared/types';
 
 type Props = {
 	appointment: AppointmentScheduleType;

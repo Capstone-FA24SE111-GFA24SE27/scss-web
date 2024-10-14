@@ -22,14 +22,16 @@ import { isDateRangeOverlapping } from '@/shared/utils';
 import CalendarAppEventContent from './CalendarAppEventContent';
 import EventDetailDialog from './event/EventDetailDialog';
 import {
+	AppointmentScheduleType,
 	useGetAppointmentScheduleQuery,
-	useGetHolidayScheduleQuery,
 } from '../calendar-api';
 import { date } from 'zod';
 import { AppLoading, ContentLoading } from '@/shared/components';
 import { useSocket } from '@/shared/context';
 import { useNavigate } from 'react-router-dom';
-import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
+
+import { useGetHolidayScheduleQuery } from '@/features/students/services/calendar/calendar-api';
+import { HolidayScheduleType } from '@/shared/types';
 
 type Props = {
 	handleDates: (rangeInfo: DatesSetArg) => void;
@@ -49,6 +51,7 @@ const CalendarBody = (props: Props) => {
 
 	const [appointments, setAppointments] = useState([]);
 	const [holidays, setHolidays] = useState([]);
+
 	const [dateRange, setDateRange] = useState(null);
 
 	const {
@@ -108,13 +111,17 @@ const CalendarBody = (props: Props) => {
 				newData = data.content;
 			}
 
-			if (newData.length > 0) dispatch(addScheduleData(newData));
+			if (newData.length > 0) {
+				console.log('newdata', newData);
+				dispatch(addScheduleData(newData));
+			}
 		}
 	}, [data]);
 
 	useEffect(() => {
 		if (holidayfetchData) {
 			let newData: HolidayScheduleType[] = [];
+
 			if (holidaysData) {
 				newData = holidayfetchData.content.filter(
 					(item) =>
@@ -131,7 +138,7 @@ const CalendarBody = (props: Props) => {
 	}, [holidayfetchData]);
 
 	useEffect(() => {
-		if (scheduleData) {
+		if (scheduleData && scheduleData.length > 0) {
 			const list = scheduleData.map((item) => {
 				return {
 					id: item.id,
@@ -140,16 +147,17 @@ const CalendarBody = (props: Props) => {
 					end: item.endDateTime,
 				};
 			});
+			console.log('setapp', list);
 
 			setAppointments(list);
 		}
 	}, [scheduleData]);
 
 	useEffect(() => {
-		if (holidaysData) {
+		if (holidaysData && holidaysData.length > 0) {
 			const list = holidaysData.map((item) => {
 				return {
-					id: item.id + 'holiday',
+					id: item.id + '-holiday',
 					title: item.name,
 					start: item.startDate,
 					end: item.endDate,
@@ -158,6 +166,7 @@ const CalendarBody = (props: Props) => {
 					},
 				};
 			});
+
 			setHolidays(list);
 		}
 	}, [holidaysData]);
@@ -170,11 +179,18 @@ const CalendarBody = (props: Props) => {
 
 	const handleEventClick = (clickInfo: EventClickArg) => {
 		clickInfo.jsEvent.preventDefault();
-		const chosenAppointment = data.content.find(
-			(item) => item.id == clickInfo.event.id
-		);
+		if (clickInfo.event.extendedProps.isHoliday) {
+			const chosenHoliday = holidayfetchData.content.find(
+				(item) => item.id == clickInfo.event.id.split('-')[0]
+			);
+			dispatch(openEventDetailDialog(clickInfo, chosenHoliday, 'holiday'));
+		} else {
+			const chosenAppointment = data.content.find(
+				(item) => item.id == clickInfo.event.id
+			);
+		dispatch(openEventDetailDialog(clickInfo, chosenAppointment, 'appointment'));
+	}
 
-		dispatch(openEventDetailDialog(clickInfo, chosenAppointment));
 	};
 
 	const handleDatesWithin = (rangeInfo: DatesSetArg) => {
