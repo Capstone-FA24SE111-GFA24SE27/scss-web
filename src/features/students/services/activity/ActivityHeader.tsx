@@ -31,7 +31,7 @@ function ProjectDashboardAppHeader() {
           <div className="flex flex-col min-w-0 mx-16">
             <Heading 
               title={user?.fullName}
-              description={'You have attended some couseling sessions'}
+              description={'Activies throughout FPTU school life'}
             />
           </div>
         </div>

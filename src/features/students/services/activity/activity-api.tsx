@@ -1,4 +1,4 @@
-import { Account, PaginationContent } from '@shared/types';
+import { Account, Counselor, PaginationContent, Student } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -63,12 +63,8 @@ export type Appointment = {
   reason: string,
   meetUrl?: string,
   address?: string,
-  counselorInfo: null | {
-    rating: string
-  } & Account,
-  studentInfo: null | {
-    studentCode: string
-  } & Account,
+  counselorInfo: Counselor,
+  studentInfo: Student,
   appointmentFeedback: AppointmentFeedback
 }
 
@@ -97,12 +93,8 @@ export type AppointmentRequest = {
   meetingType: 'ONLINE' | 'OFFLINE',
   reason: string,
   appointmentDetails: AppointmentDetails | null,
-  counselor: {
-    rating: string
-  } & Account,
-  student: {
-    studentCode: string
-  } & Account,
+  counselor: Counselor,
+  student: Student,
 }
 
 export type AppointmentDetails = {

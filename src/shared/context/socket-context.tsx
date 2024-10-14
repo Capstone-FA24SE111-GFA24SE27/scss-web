@@ -10,9 +10,7 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }) => {
 	const socketRef = useRef(null);
 	const account = useAppSelector(selectAccount)
-
-	console.log('socket',socketRef?.current)
-
+	console.log("Socket context: ", socketRef?.current)
 	useEffect(() => {
 		if (account) {
 			socketRef.current = io('http://localhost:4000');

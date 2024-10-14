@@ -99,7 +99,7 @@ const EventsContent = () => {
                   </Typography>
                 </div> */}
                 <ListItem
-                  className='w-full rounded flex-col bg-primary-main/5 gap-16'
+                  className='w-full rounded flex-col bg-primary-light/5 gap-16'
                 >
                   <div className='flex gap-16 items-start w-full'>
 

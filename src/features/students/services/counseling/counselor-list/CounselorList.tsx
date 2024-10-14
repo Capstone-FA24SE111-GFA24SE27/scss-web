@@ -5,14 +5,14 @@ import { PageSimple } from '@shared/components';
 import CounselorList from './CounselorListContent';
 import CounselorListHeader from './CounselorListHeader';
 import { useAppDispatch, useAppSelector } from '@shared/store';
-import { filterClose, selectFilter } from './filter-slice';
+import { filterClose, selectFilter } from './counselor-list-slice';
 import CounselorListSidebarContent from './CounselorListSidebarContent';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
-  '& .PageSimple-header': {
-    backgroundColor: theme.palette.background.paper
-  },
+  // '& .PageSimple-header': {
+  //   backgroundColor: theme.palette.background.paper
+  // },
 }));
 
 /**
@@ -32,7 +32,7 @@ function CounselingList() {
     <div>
       <Root
         className='!min-h-screen'
-        header={<div><CounselorListHeader /></div>}
+        header={<CounselorListHeader />}
         content={<CounselorList />}
         ref={pageLayout}
         rightSidebarContent={<CounselorListSidebarContent />}

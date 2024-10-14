@@ -5,7 +5,6 @@ const CounselorListSidebarContent = () => {
   return (
     <div className='p-24'>
       <CounselorListFilterButton />
-      <div>Filter content</div>
     </div>
   )
 }

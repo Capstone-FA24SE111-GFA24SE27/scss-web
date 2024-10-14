@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from '@mui/material'
 import { useAppDispatch } from '@shared/store';
 import { ReactElement } from 'react'
 import clsx from 'clsx'
-import { filterToggle } from './filter-slice';
+import { filterToggle } from './counselor-list-slice';
 
 const CounselorListFilterButton = (props: { className?: string, children?: ReactElement }) => {
   const {

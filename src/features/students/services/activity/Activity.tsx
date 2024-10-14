@@ -58,11 +58,6 @@ function Activity() {
 					<Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
 
-						label="Events"
-					/>
-					<Tab
-						className="text-lg font-semibold min-h-40 min-w-64 px-16"
-
 						label="Others"
 					/>
 				</Tabs>

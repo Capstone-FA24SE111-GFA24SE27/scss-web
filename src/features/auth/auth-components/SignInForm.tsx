@@ -16,11 +16,11 @@ import { useLoginDefaultMutation } from '../auth-api'
  * Form Validation Schema
  */
 const schema = z.object({
-	email: z.string().email('You must enter a valid email').min(1, 'You must enter an email'),
+	email: z.string(),
+		// .email('You must enter a valid email').min(1, 'You must enter an email'),
 	password: z
 		.string()
-		.min(4, 'Password is too short - must be at least 4 chars.')
-		.nonempty('Please enter your password.')
+		// .min(1, 'Password is too short - must be at least 4 chars.')
 });
 
 type FormType = {
@@ -50,8 +50,8 @@ function SignInForm() {
 	const { isValid, dirtyFields, errors } = formState;
 
 	useEffect(() => {
-		setValue('email', 'student@example.com', { shouldDirty: true, shouldValidate: true });
-		setValue('password', 'student112233', { shouldDirty: true, shouldValidate: true });
+		setValue('email', 'sm1', { shouldDirty: true, shouldValidate: true });
+		setValue('password', 's', { shouldDirty: true, shouldValidate: true });
 	}, [setValue]);
 
 	function onSubmit(formData: FormType) {

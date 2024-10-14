@@ -2,6 +2,6 @@ import AppointmentsTab from "./AppointmentsTab";
 import RequestsTab from "./RequestsTab";
 export {
   AppointmentsTab,
-  RequestsTab
+  RequestsTab,
 }
 export { tabRoutes } from './tab-routes'

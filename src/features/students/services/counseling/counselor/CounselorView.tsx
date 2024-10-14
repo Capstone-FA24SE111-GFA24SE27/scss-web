@@ -6,25 +6,30 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/system/Box';
-import { format } from 'date-fns/format';
 import _ from 'lodash';
 import { CakeOutlined, EmailOutlined, LocalPhoneOutlined, NotesOutlined } from '@mui/icons-material';
-import { Rating } from '@mui/material';
-import { useGetCounselorQuery } from '../counseling-api';
 import dayjs from 'dayjs';
-import { Breadcrumbs } from '@shared/components';
+import { memo } from 'react'
+import { Rating } from '@mui/material';
+import { useGetCounselorAcademicQuery, useGetCounselorNonAcademicQuery } from '../counseling-api';
+import { useAppSelector } from '@shared/store';
+import { selectCounselorType } from '../counselor-list/counselor-list-slice';
+import { CounselingType } from '@/shared/types';
 /**
  * The contact view.
  */
 
 interface CounselorViewProps {
-    shouldShowBooking?: boolean
+    shouldShowBooking?: boolean,
+    counselingType?: CounselingType
 }
-function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
+function CounselorView({ shouldShowBooking = true, counselingType = 'ACADEMIC' }: CounselorViewProps) {
     const routeParams = useParams();
     const { id: counselorId } = routeParams as { id: string };
-    const { data, isLoading } = useGetCounselorQuery(counselorId);
-    const counselor = data?.content
+    const { data, isLoading } = counselingType === 'ACADEMIC'
+        ? useGetCounselorAcademicQuery(counselorId)
+        : useGetCounselorNonAcademicQuery(counselorId)
+    const counselor = data
 
     if (isLoading) {
         return <ContentLoading className='m-32' />
@@ -72,7 +77,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         >
                             {counselor?.profile.fullName?.charAt(0)}
                         </Avatar>
-                        <Gender gender={counselor.profile.gender}/>
+                        <Gender gender={counselor.profile.gender} />
 
                         {
                             shouldShowBooking && (
@@ -104,12 +109,14 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         <div>(116)</div>
                     </div> */}
 
-                    <div className="flex items-center mt-16 gap-8">
+                    <div className="flex items-center mt-16 gap-8 ">
                         <Chip
-                            label={counselor.expertise.name}
+                            label={counselor.expertise?.name || counselor.specialization?.name}
                             size="medium"
+                            className='text-lg px-16'
                         />
                     </div>
+
 
                     <Divider className="mt-16 mb-24" />
 
@@ -132,7 +139,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         {counselor.profile.dateOfBirth && (
                             <div className="flex items-center">
                                 <CakeOutlined />
-                                <div className="ml-24 leading-6">{dayjs(315532800000).format('DD-MM-YYYY')}</div>
+                                <div className="ml-24 leading-6">{dayjs(counselor.profile.dateOfBirth).format('DD-MM-YYYY')}</div>
                             </div>
                         )}
 
@@ -154,4 +161,4 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
     );
 }
 
-export default CounselorView;
+export default memo(CounselorView);

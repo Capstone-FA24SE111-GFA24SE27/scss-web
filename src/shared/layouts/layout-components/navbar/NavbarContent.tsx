@@ -38,7 +38,7 @@ function NavbarContent(props: NavbarContentProps) {
 	const { className = '' } = props;
 
 	return (
-		<Root className={clsx('flex h-full flex-auto flex-col overflow-hidden', className)}>
+		<Root className={clsx('flex h-full flex-auto flex-col overflow-hidden bg-background-paper', className)}>
 			<div className="flex flex-row items-center h-48 px-20 shrink-0 md:h-64">
 				<div className="flex flex-1 mx-4">
 					<img alt='logo' src='/assets/images/logo/FPT-education.png'/>
@@ -49,20 +49,20 @@ function NavbarContent(props: NavbarContentProps) {
 			</div>
 
 			<StyledContent
-				className="flex min-h-0 flex-1 flex-col"
+				className="flex min-h-0 flex-1 flex-col bg-background-paper"
 				// option={{ suppressScrollX: true, wheelPropagation: false }}
 			>
 				{/* <UserNavbarHeader /> */}
 
 				<NavigationList />
 
-				<div className="flex items-center justify-center py-48 flex-0 opacity-10">
+				{/* <div className="flex items-center justify-center py-48 flex-0 opacity-10">
 					<img
 						className="w-full max-w-64"
 						src="assets/images/logo/FPT-education.png"
 						alt="footer logo"
 					/>
-				</div>
+				</div> */}
 			</StyledContent>
 		</Root>
 	);

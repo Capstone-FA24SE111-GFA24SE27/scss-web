@@ -1,18 +1,25 @@
 import { useState } from "react";
+import clsx from 'clsx';
 
 type Props = {
   text: string
-  limit: number
+  limit: number,
+  className?: string
 }
 
-const ExpendableText = ({ text, limit }: Props) => {
+const ExpendableText = ({ text, limit, className = "" }: Props) => {
   const [showMore, setShowMore] = useState(false);
+  if (text.length < limit) {
+    return <div className={className}>{text}</div>
+  }
   return (
-    <div>
+    <div className={className}>
       {showMore ? text : `${text.substring(0, limit)}...`}{' '}
-      <button className="text-accent hover:opacity-80 dark:hover:text-primary-light font-semibold" onClick={() => setShowMore(!showMore)}>
+      <span
+        className={clsx("text-secondary-main hover:text-secondary-light font-semibold cursor-pointer")}
+        onClick={() => setShowMore(!showMore)}>
         {showMore ? "Show less" : "Show more"}
-      </button>
+      </span>
     </div>
   )
 }

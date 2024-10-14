@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Rating, TextField, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { AppointmentRequest, useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation } from '../activity-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
@@ -20,18 +20,18 @@ const RequestsTab = () => {
     return <AppLoading />
   }
 
-  if (!appointmentRequests.length) {
+  if (!appointmentRequests?.length) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No appoitment requests</Typography>
   }
 
   return (
     <>
-      <List>
+      <List className='p-16 flex flex-col gap-16'>
         {
           appointmentRequests.map(appointment =>
-            <ListItem
+            <Paper
               key={appointment.id}
-              className="p-16 flex gap-16"
+              className="p-16 flex gap-16 shadow"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
@@ -73,7 +73,7 @@ const RequestsTab = () => {
                   <ListItemButton
                     component={NavLinkAdapter}
                     to={`counselor/${appointment.counselor.profile.id}`}
-                    className='bg-primary-main/10 w-full rounded'
+                    className='bg-primary-light/5 w-full rounded shadow'
                   >
                     <div className='w-full flex'>
                       <Avatar
@@ -82,14 +82,14 @@ const RequestsTab = () => {
                       />
                       <div className='ml-16'>
                         <Typography className='font-semibold text-primary-main'>{appointment.counselor.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.counselor.email || 'counselor@fpt.edu.vn'}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselor?.expertise?.name || appointment.counselor?.specialization?.name}</Typography>
                       </div>
                     </div>
                     <ChevronRight />
                   </ListItemButton>
                 </Tooltip>
               </div>
-            </ListItem>
+            </Paper>
           )}
       </List >
     </>

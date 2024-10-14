@@ -1,17 +1,17 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Rating, TextField, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment } from '../activity-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useAppDispatch } from '@shared/store';
-import { useState } from 'react'
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
+import { useState, useEffect } from 'react'
+import { useSocket } from '@shared/context';
 const AppointmentsTab = () => {
-  const { data, isLoading } = useGetCounselingAppointmentQuery({})
+  const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({})
   const appointmentRequests = data?.content
-  console.log(data)
-
-  console.log(appointmentRequests)
+  const socket = useSocket();
+  const account = useAppSelector(selectAccount)
 
   const statusColor = {
     'REJECTED': 'error',
@@ -23,21 +23,41 @@ const AppointmentsTab = () => {
 
   const dispatch = useAppDispatch()
 
+  useEffect(() => {
+
+    const cb = (data: unknown) => {
+      if (data) {
+        refetch()
+      }
+
+    };
+
+    if (socket && account) {
+      socket.on(`/user/${account.profile.id}/appointment`, cb);
+    }
+
+    return () => {
+      if (socket && account) {
+        socket.off(`/user/${account.profile.id}/appointment`, cb);
+      }
+    };
+  }, [socket]);
+
   if (isLoading) {
     return <AppLoading />
   }
-  if (!appointmentRequests.length) {
+  if (!appointmentRequests?.length) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
   }
 
   return (
     <>
-      <List>
+      <List className='p-16 flex flex-col gap-16'>
         {
           appointmentRequests.map(appointment =>
-            <ListItem
+            <Paper
               key={appointment.id}
-              className="p-16 flex gap-16"
+              className="p-16 flex gap-16 shadow"
               sx={{ bgcolor: 'background.paper' }}
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
@@ -56,12 +76,8 @@ const AppointmentsTab = () => {
                 <div className='flex gap-4'>
                   {
                     appointment.meetingType === 'ONLINE' ?
-                      <div className='flex gap-24 items-center'>
-                        <Chip
-                          label='Online'
-                          icon={<Circle color='success' />}
-                          className='font-semibold  items-center'
-                        />
+                      <div className='flex gap-24  items-center'>
+                        <Chip label='Online' size='small' icon={<Circle color='success' />} className='font-semibold items-center' />
                         {appointment.meetUrl && (
                           <div>
                             <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
@@ -96,7 +112,7 @@ const AppointmentsTab = () => {
                   <ListItemButton
                     component={NavLinkAdapter}
                     to={`counselor/${appointment.counselorInfo.profile.id}`}
-                    className='bg-primary-main/10 w-full rounded'
+                    className='bg-primary-light/5 w-full rounded shadow'
                   >
                     <div className='w-full flex'>
                       <Avatar
@@ -105,7 +121,7 @@ const AppointmentsTab = () => {
                       />
                       <div className='ml-16'>
                         <Typography className='font-semibold text-primary-main'>{appointment.counselorInfo.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.counselorInfo.email || 'counselor@fpt.edu.vn'}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselorInfo?.expertise?.name}</Typography>
                       </div>
                     </div>
                     <ChevronRight />
@@ -153,7 +169,7 @@ const AppointmentsTab = () => {
                   </>
                 }
               </div>
-            </ListItem>
+            </Paper>
           )}
       </List >
     </>

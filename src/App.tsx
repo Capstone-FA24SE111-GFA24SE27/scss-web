@@ -1,5 +1,6 @@
 import { authRoutes } from '@/features/auth';
 import { studentsRoutes } from '@features/students';
+import { managersRoutes } from '@features/managers';
 import { StyledEngineProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -13,7 +14,7 @@ import { useRoutes } from 'react-router-dom';
 import { counselorsRoutes } from '@features/counselors';
 import Dialog from '@shared/components/dialog';
 import { SnackbarProvider } from 'notistack';
-import { SocketProvider } from './shared/context/socket-context';
+import { SocketProvider } from '@shared/context/socket-context';
 
 const App = () => {
 	const account = useAppSelector(selectAccount);
@@ -22,8 +23,14 @@ const App = () => {
 		case roles.STUDENT:
 			roleBasedRoutes = studentsRoutes;
 			break;
-		case roles.COUNSELOR:
+		case roles.ACADEMIC_COUNSELOR:
 			roleBasedRoutes = counselorsRoutes;
+			break;
+		case roles.NON_ACADEMIC_COUNSELOR:
+			roleBasedRoutes = counselorsRoutes;
+			break;
+		case roles.MANAGER:
+			roleBasedRoutes = managersRoutes;
 			break;
 		default:
 			roleBasedRoutes = authRoutes;

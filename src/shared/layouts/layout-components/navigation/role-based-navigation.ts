@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -57,10 +57,16 @@ const studentNavigation: NavigationOptions = {
                     route: 'activity'
                 },
                 {
+                    icon: QuestionAnswer,
+                    name: 'Q&A',
+                    route: 'qna',
+                },
+                {
                     icon: CalendarMonth,
                     name: 'Calendar',
                     route: 'calendar',
                 },
+
             ]
         },
         {
@@ -134,6 +140,28 @@ const counselorNavigation: NavigationOptions = {
                     icon: CalendarMonth,
                     name: 'Calendar',
                     route: 'calendar',
+                },
+            ]
+        },
+        {
+            name: "Q&A",
+            description: "Questions and answer",
+            route: 'qna',
+            items: [
+                {
+                    icon: Assignment,
+                    name: 'Question Board',
+                    route: 'question-board'
+                },
+                {
+                    icon: Class,
+                    name: 'My Q&A',
+                    route: 'my-qna'
+                },
+                {
+                    icon: Forum,
+                    name: 'Conversations',
+                    route: 'conversations'
                 },
             ]
         },
@@ -254,6 +282,7 @@ const managerNavigation: NavigationOptions = {
 
 export const roleBasedNavigation: RoleBasedNavigation = {
     [roles.STUDENT]: studentNavigation,
-    [roles.COUNSELOR]: counselorNavigation,
+    [roles.ACADEMIC_COUNSELOR]: counselorNavigation,
+    [roles.NON_ACADEMIC_COUNSELOR]: counselorNavigation,
     [roles.MANAGER]: managerNavigation,
 }

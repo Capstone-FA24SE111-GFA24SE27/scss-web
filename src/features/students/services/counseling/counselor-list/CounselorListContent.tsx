@@ -5,19 +5,24 @@ import Divider from '@mui/material/Divider';
 import { AppLoading, ContentLoading } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import CounselorListItem from './CounselorListItem';
-import { useGetCounselorsQuery } from '../counseling-api';
+import { useGetCounselorsAcademicQuery, useGetCounselorsNonAcademicQuery } from '../counseling-api';
+import { selectCounselorType, selectSearchTerm } from './counselor-list-slice';
 
 function CounselorListContent() {
-    const { data, isLoading } = useGetCounselorsQuery({})
-    const counselors = data?.content?.data || []
+    const search = useAppSelector(selectSearchTerm)
+    const counselorType = useAppSelector(selectCounselorType)
+    const { data: academicCounselors, isFetching: isFetchingAcademicCounselors } = useGetCounselorsAcademicQuery({ search })
+    const { data: nonAcademicCounselors, isFetching: isFetchingNonAcademicCounselors } = useGetCounselorsNonAcademicQuery({ search })
 
-    console.log(counselors)
+    console.log(counselorType)
 
-    if (isLoading) {
+    const counselors = (counselorType === 'ACADEMIC' ? academicCounselors?.content?.data : nonAcademicCounselors?.content?.data) || []
+
+    if (isFetchingAcademicCounselors || isFetchingNonAcademicCounselors) {
         return <ContentLoading />;
     }
-    
-    if (!counselors.length ) {
+
+    if (!counselors.length) {
         return (
             <div className="flex flex-1 items-center justify-center">
                 <Typography
@@ -40,7 +45,7 @@ function CounselorListContent() {
                 <List className="w-full m-0 p-0">
                     {counselors.map(item =>
                         <CounselorListItem
-                            key={item.id}
+                            key={item.profile.id}
                             counselor={item} />
                     )}
                 </List>
