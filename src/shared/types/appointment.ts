@@ -84,6 +84,24 @@ export type AppointmentDetails = {
 	meetUrl: string;
 };
 
+export type AppointmentRequest = {
+	id: number,
+	requireDate: string,
+	startTime: string,
+	endTime: string,
+	status: 'APPROVED' | 'DENIED' | 'WAITING',
+	meetingType: 'ONLINE' | 'OFFLINE',
+	reason: string,
+	appointmentDetails: AppointmentDetails | null,
+	counselor: {
+	  rating: string
+	} & Account,
+	student: {
+	  studentCode: string
+	} & Account,
+  }
+  
+ 
 
 
 export type UpdateAppointmentDetailsArg = {

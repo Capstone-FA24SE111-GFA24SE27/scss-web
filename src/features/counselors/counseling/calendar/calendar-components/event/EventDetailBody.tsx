@@ -44,7 +44,7 @@ import {
 import {
 	useTakeAppointmentAttendanceMutation,
 	useUpdateAppointmentDetailsMutation,
-} from '../../../appointments/appointments-api';
+} from '../../../counseling-api';
 
 type Props = {
 	appointment: AppointmentScheduleType;

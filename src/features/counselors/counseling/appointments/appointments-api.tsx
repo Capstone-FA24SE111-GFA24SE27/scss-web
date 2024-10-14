@@ -19,54 +19,54 @@ export const appointmentsApi = api
         }),
         providesTags: ['appointments']
       }),
-      approveAppointmentRequestOnline: build.mutation<unknown, ApproveCounselingAppointmentRequestOnlineArg>({
-        query: (arg) => ({
-          method: 'PUT',
-          url: `/api/booking-counseling/approve/online/${arg.requestId}`,
-          body: arg.meetingDetails
-        }),
-        invalidatesTags: ['appointments']
-      }),
-      approveAppointmentRequestOffline: build.mutation<unknown, ApproveCounselingAppointmentRequestOfflineArg>({
-        query: (arg) => ({
-          method: 'PUT',
-          url: `/api/booking-counseling/approve/offline/${arg.requestId}`,
-          body: arg.meetingDetails
-        }),
-        invalidatesTags: ['appointments']
-      }),
-      denyAppointmentRequest: build.mutation<unknown, number>({
-        query: (requestId) => ({
-          method: 'PUT',
-          url: `/api/booking-counseling/deny/${requestId}`,
-        }),
-        invalidatesTags: ['appointments']
-      }),
-      updateAppointmentDetails: build.mutation<unknown, UpdateAppointmentDetailsArg>({
-        query: (arg) => ({
-          method: 'PUT',
-          url: `/api/booking-counseling/${arg.requestId}/update-details`,
-          body: arg.meetingDetails
-        }),
-        invalidatesTags: ['appointments']
-      }),
-      takeAppointmentAttendance: build.mutation<unknown, TakeAppointmentAttendance>({
-        query: (arg) => ({
-          method: 'PUT',
-          url: `/api/booking-counseling/take-attendance/${arg.appointmentId}/${arg.counselingAppointmentStatus}`,
-        }),
-        invalidatesTags: ['appointments']
-      }),
+      // approveAppointmentRequestOnline: build.mutation<unknown, ApproveCounselingAppointmentRequestOnlineArg>({
+      //   query: (arg) => ({
+      //     method: 'PUT',
+      //     url: `/api/booking-counseling/approve/online/${arg.requestId}`,
+      //     body: arg.meetingDetails
+      //   }),
+      //   invalidatesTags: ['appointments']
+      // }),
+      // approveAppointmentRequestOffline: build.mutation<unknown, ApproveCounselingAppointmentRequestOfflineArg>({
+      //   query: (arg) => ({
+      //     method: 'PUT',
+      //     url: `/api/booking-counseling/approve/offline/${arg.requestId}`,
+      //     body: arg.meetingDetails
+      //   }),
+      //   invalidatesTags: ['appointments']
+      // }),
+      // denyAppointmentRequest: build.mutation<unknown, number>({
+      //   query: (requestId) => ({
+      //     method: 'PUT',
+      //     url: `/api/booking-counseling/deny/${requestId}`,
+      //   }),
+      //   invalidatesTags: ['appointments']
+      // }),
+      // updateAppointmentDetails: build.mutation<unknown, UpdateAppointmentDetailsArg>({
+      //   query: (arg) => ({
+      //     method: 'PUT',
+      //     url: `/api/booking-counseling/${arg.requestId}/update-details`,
+      //     body: arg.meetingDetails
+      //   }),
+      //   invalidatesTags: ['appointments']
+      // }),
+      // takeAppointmentAttendance: build.mutation<unknown, TakeAppointmentAttendance>({
+      //   query: (arg) => ({
+      //     method: 'PUT',
+      //     url: `/api/booking-counseling/take-attendance/${arg.appointmentId}/${arg.counselingAppointmentStatus}`,
+      //   }),
+      //   invalidatesTags: ['appointments']
+      // }),
     })
   })
 
 export const {
   useGetCounselingAppointmentQuery,
-  useDenyAppointmentRequestMutation,
-  useApproveAppointmentRequestOnlineMutation,
-  useApproveAppointmentRequestOfflineMutation,
-  useUpdateAppointmentDetailsMutation,
-  useTakeAppointmentAttendanceMutation
+  // useDenyAppointmentRequestMutation,
+  // useApproveAppointmentRequestOnlineMutation,
+  // useApproveAppointmentRequestOfflineMutation,
+  // useUpdateAppointmentDetailsMutation,
+  // useTakeAppointmentAttendanceMutation
 } = appointmentsApi
 
 
@@ -75,26 +75,26 @@ export type GetCounselingAppointmentApiArg = {
 
 }
 
-export type GetCounselorApiResponse = ApiResponse<Appointment>
+// export type GetCounselorApiResponse = ApiResponse<Appointment>
 
 
 
-export type ApproveCounselingAppointmentRequestOnlineArg = {
-  requestId: number,
-  meetingDetails: {
-    meetUrl?: string,
-  }
-}
+// export type ApproveCounselingAppointmentRequestOnlineArg = {
+//   requestId: number,
+//   meetingDetails: {
+//     meetUrl?: string,
+//   }
+// }
 
-export type ApproveCounselingAppointmentRequestOfflineArg = {
-  requestId: number,
-  meetingDetails: {
-    address?: string,
-  }
-}
+// export type ApproveCounselingAppointmentRequestOfflineArg = {
+//   requestId: number,
+//   meetingDetails: {
+//     address?: string,
+//   }
+// }
 
-export type UpdateAppointmentDetailsArg = {
-  requestId: number,
-  meetingDetails: Partial<AppointmentDetails>
-}
+// export type UpdateAppointmentDetailsArg = {
+//   requestId: number,
+//   meetingDetails: Partial<AppointmentDetails>
+// }
 

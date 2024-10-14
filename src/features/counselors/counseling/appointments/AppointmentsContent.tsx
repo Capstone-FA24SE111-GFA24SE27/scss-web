@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Paper, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
-import {  useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api';
+import {   useGetCounselingAppointmentQuery  } from './appointments-api';
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@shared/components';
 import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, MoreVert, Summarize } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { useSocket } from '@/shared/context';
 import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
+import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '../counseling-api';
 
 const AppointmentsContent = () => {
   const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({});
