@@ -1,4 +1,4 @@
-import { Account, PaginationContent } from '@shared/types';
+import { Account, Appointment, PaginationContent, TakeAppointmentAttendance, UpdateAppointmentDetailsArg } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -76,51 +76,16 @@ export type GetCounselingAppointmentApiArg = {
 }
 
 export type GetCounselorApiResponse = ApiResponse<Appointment>
-
-export type Appointment = {
-  id: number,
-  requireDate: string,
-  startTime: string,
-  endTime: string,
-  status: 'APPROVED' | 'DENIED' | 'WAITING',
-  meetingType: 'ONLINE' | 'OFFLINE',
-  reason: string,
-  appointmentDetails: AppointmentDetails | null,
-  counselor: {
-    rating: string
-  } & Account,
-  student: {
-    studentCode: string
-  } & Account,
-}
-
-export type AppointmentDetails = {
-  address: string
-  meetUrl: string
-}
-
 export type ApproveCounselingAppointmentRequestOnlineArg = {
-  requestId: number,
-  meetingDetails: {
-    meetUrl?: string,
-  }
-}
+	requestId: number;
+	meetingDetails: {
+		meetUrl?: string;
+	};
+};
 
 export type ApproveCounselingAppointmentRequestOfflineArg = {
-  requestId: number,
-  meetingDetails: {
-    address?: string,
-  }
-}
-
-export type UpdateAppointmentDetailsArg = {
-  requestId: number,
-  meetingDetails: Partial<AppointmentDetails>
-}
-
-export type TakeAppointmentAttendance = {
-  appointmentId: number,
-  counselingAppointmentStatus: 'CANCELED' | 'ATTEND' | 'ABSENT' | 'EXPIRED' | 'WAITING'
-}
-
-export type AppointmentAttendanceStatus = 'CANCELED' | 'ATTEND' | 'ABSENT' | 'EXPIRED' | 'WAITING'
+	requestId: number;
+	meetingDetails: {
+		address?: string;
+	};
+};

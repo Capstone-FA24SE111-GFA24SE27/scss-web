@@ -1,4 +1,4 @@
-import { Profile } from '@/shared/types';
+import { AppointmentScheduleType, Profile } from '@/shared/types';
 import {  ApiResponse, apiService } from '@shared/store';
 
 export const addTagTypes = ['appointments'];
@@ -27,31 +27,3 @@ export type GetAppointmentApiArg = {
 export const {
 	useGetAppointmentScheduleQuery
 } = CalendarApi;
-
-export type AppointmentScheduleType = {
-	id: string;
-	startDateTime: string;
-	endDateTime: string;
-	status: 'APPROVED' | 'REJECTED' | 'WAITING' | 'ABSENT' | 'ATTEND';
-	meetingType: 'ONLINE' | 'OFFLINE';
-	meetUrl: string;
-	address: string;
-	counselorInfo: {
-		rating: string;
-		id: number;
-		profile: Profile
-	} ;
-	studentInfo: {
-		studentCode: string;
-		profile: Profile
-	} ;
-	appointmentFeedback: AppointmentFeedback;
-};
-
-export type AppointmentFeedback = {
-	id: number,
-	rating: number,
-	comment: string,
-	appointmentId: number,
-	createdAt: number,
-  }

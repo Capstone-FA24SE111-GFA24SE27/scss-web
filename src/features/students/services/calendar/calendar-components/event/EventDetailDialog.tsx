@@ -8,6 +8,8 @@ import {
 	Popover,
 } from '@mui/material';
 import { EventDetailBody } from './EventDetailBody';
+import { EventHolidayBody } from './EventHolidayBody';
+import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
 
 const EventDetailDialog = () => {
 	const dispatch = useAppDispatch();
@@ -23,9 +25,6 @@ const EventDetailDialog = () => {
 	if (eventDialog.data === null) {
 		return null;
 	}
-
-	const appointment = eventDialog.data[0];
-
 	
 
 	return (
@@ -44,7 +43,14 @@ const EventDetailDialog = () => {
 			onClose={closeDialog}
 			component='div'
 		>
-			<EventDetailBody appointment={appointment} onNavClicked={()=>closeDialog()}/>
+			{
+				eventDialog.props.type === 'holiday' ? (
+					<EventHolidayBody holiday={eventDialog.data as HolidayScheduleType} />
+				) : (
+					<EventDetailBody appointment={eventDialog.data as AppointmentScheduleType} onNavClicked={()=>closeDialog()}/>
+
+				)
+			}
 		</Popover>
 	);
 };

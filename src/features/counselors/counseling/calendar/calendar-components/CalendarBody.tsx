@@ -22,7 +22,6 @@ import { isDateRangeOverlapping } from '@/shared/utils';
 import CalendarAppEventContent from './CalendarAppEventContent';
 import EventDetailDialog from './event/EventDetailDialog';
 import {
-	AppointmentScheduleType,
 	useGetAppointmentScheduleQuery,
 } from '../calendar-api';
 import { date } from 'zod';
@@ -31,7 +30,7 @@ import { useSocket } from '@/shared/context';
 import { useNavigate } from 'react-router-dom';
 
 import { useGetHolidayScheduleQuery } from '@/features/students/services/calendar/calendar-api';
-import { HolidayScheduleType } from '@/shared/types';
+import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
 
 type Props = {
 	handleDates: (rangeInfo: DatesSetArg) => void;

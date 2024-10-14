@@ -1,8 +1,8 @@
 import { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import { WithSlice, createSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
-import { AppointmentScheduleType, GetAppointmentApiArg } from './calendar-api';
-import { HolidayScheduleType } from '@/shared/types';
+import {  GetAppointmentApiArg } from './calendar-api';
+import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
 
 export const dateFormdat = 'YYYY-MM-DDTHH:mm:ss.sssZ';
 
