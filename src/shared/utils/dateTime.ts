@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export function isDateRangeOverlapping(
 	startDate1: Date,
 	endDate1: Date,
@@ -27,5 +29,18 @@ export function dateMsToString(time: number) {
 	// Get local time as a string
 	const localTime = date.toLocaleString();
 
-  return localTime
+	return localTime
 }
+
+export const formatChatDate = (inputDate) => {
+	const today = dayjs();
+	const date = dayjs(inputDate.split('.')[0]);
+
+	if (date.isSame(today, 'day')) {
+		return date.format('h:mm A'); 
+	} else if (date.isSame(today, 'year')) {
+		return date.format('MMM D [at] h:mm A');
+	} else {
+		return date.format('MMM D, YYYY [at] h:mm A');
+	}
+};

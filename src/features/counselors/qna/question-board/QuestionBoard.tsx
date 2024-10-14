@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useGetQuestionsQuery, useTakeQuestionMutation } from '../qna-api';
 import { useNavigate } from 'react-router-dom';
 import { SyntheticEvent, useState } from 'react'
-import { ExpendableText } from '@/shared/components';
+import { ContentLoading, ExpendableText } from '@/shared/components';
 
 const container = {
   show: {
@@ -23,7 +23,9 @@ const item = {
 
 const QuestionBoard = () => {
   const role: Role = useAppSelector(selectAccount)?.role
-  const { data: questionData } = useGetQuestionsQuery({ role })
+  const { data: questionData, isLoading } = useGetQuestionsQuery({ role })
+  const questionList = questionData?.content?.data
+
   const [openAnswers, setOpenAnswers] = useState(false);
   const [takeQuestion, { isLoading: isTakingQuestion }] = useTakeQuestionMutation()
 
@@ -33,12 +35,23 @@ const QuestionBoard = () => {
     setExpanded(_expanded ? panel : false);
   };
   const navigate = useNavigate()
-  const questionList = questionData?.content?.data
   const hanldeTakeQuestion = (questionId: number) => {
     takeQuestion(questionId)
   }
+
+  if (isLoading) {
+    return <ContentLoading />
+  }
+
+  if (!questionList.length) {
+    return (
+      <div className='text-center'>
+        <Typography>No questions found</Typography>
+      </div>
+    )
+  }
   return (
-    <div className='grid grid-col-3'>
+    <div className=''>
       {
         questionList?.length > 0 && (
           <motion.div
@@ -88,7 +101,7 @@ const QuestionBoard = () => {
               />
             </div>
 
-            <div className='space-y-16'>
+            <div className='grid grid-cols-3 gap-16'>
               {questionList.map((question) => (
                 <motion.div
                   variants={item}
@@ -107,7 +120,7 @@ const QuestionBoard = () => {
                         <ExpendableText text={question.content} limit={300} />
                       </div>
                     </div>
-                    <Box className=''>
+                    <Box className='w-96'>
                       <Button
                         color='secondary'
                         className=''

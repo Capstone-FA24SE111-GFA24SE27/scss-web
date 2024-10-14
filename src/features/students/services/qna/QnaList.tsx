@@ -1,12 +1,13 @@
 
 
-import { NavLinkAdapter } from '@/shared/components';
+import { ContentLoading, NavLinkAdapter } from '@/shared/components';
 import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useGetQuestionsQuery } from './qna-api';
+import { Question, useGetQuestionsQuery, useReadMessageMutation } from './qna-api';
+import { selectAccount, useAppSelector } from '@shared/store';
 
 
 const container = {
@@ -23,6 +24,11 @@ const item = {
 };
 
 const QnaList = () => {
+  const { data: qnaData, isLoading, refetch } = useGetQuestionsQuery()
+  const qnaList = qnaData?.content?.data || []
+
+  const account = useAppSelector(selectAccount)
+
   const [openAnswers, setOpenAnswers] = useState(false);
 
   const [expanded, setExpanded] = useState<number | boolean>(false);
@@ -31,9 +37,35 @@ const QnaList = () => {
     setExpanded(_expanded ? panel : false);
   };
   const navigate = useNavigate()
+  const [readMessage] = useReadMessageMutation()
 
-  const { data: qnaData } = useGetQuestionsQuery()
-  const qnaList = qnaData?.content?.data || []
+  const handleSelectChat = (qnaItem: Question) => {
+    readMessage(qnaItem.chatSession?.id)
+    navigate(`conversations/${qnaItem.id}`)
+  }
+
+
+  const countUnreadMessages = (qnaItem: Question) => {
+    const readMessages = qnaItem?.chatSession?.messages.filter((message) => message.sender.id !== account.id && !message.read)
+    return readMessages?.length
+  }
+
+  useEffect(() => {
+    refetch()
+  }, []);
+
+
+  if (isLoading) {
+    return <ContentLoading />
+  }
+
+  if (!qnaList.length) {
+    return (
+      <div className='text-center'>
+        <Typography>No questions found</Typography>
+      </div>
+    )
+  }
 
   return (
     qnaList?.length > 0 && (
@@ -120,16 +152,16 @@ const QnaList = () => {
                     <AccordionDetails className='flex'>
                       <div className='flex flex-col gap-8'>
                         {qna.counselor &&
-                          <Button className='flex gap-16 items-center justify-start w-fit px-16'>
+                          <div className='flex gap-16 items-center justify-start w-fit '>
                             <Avatar
                               className='size-32'
                               alt={qna.counselor?.profile.fullName}
                               src={qna.counselor?.profile.avatarLink} />
                             <div>
                               <Typography className='font-semibold text-sm'>{qna.counselor?.profile.fullName}</Typography>
-                              <Typography className='text-sm text-start' color='textSecondary'>{qna.counselor?.expertise?.name}</Typography>
+                              <Typography className='text-sm text-start' color='textSecondary'>{qna.counselor?.expertise?.name || qna.counselor?.specialization?.name}</Typography>
                             </div>
-                          </Button>}
+                          </div>}
                         {qna.answer ?
                           <div>
                             <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
@@ -151,10 +183,14 @@ const QnaList = () => {
                         variant='outlined'
                         color='secondary'
                         startIcon={<ChatBubbleOutline />}
-                        onClick={() => navigate(`conversations/${qna.id}`)}
+                        onClick={() => handleSelectChat(qna)}
                         disabled={!qna.counselor}
+                        className='space-x-4'
                       >
-                        Start a conversation
+                        Chat
+                        {
+                          countUnreadMessages(qna) ? <Chip label={countUnreadMessages(qna)} size='small' color='secondary' /> : ''
+                        }
                       </Button>
                     </Box>
                   </Accordion>

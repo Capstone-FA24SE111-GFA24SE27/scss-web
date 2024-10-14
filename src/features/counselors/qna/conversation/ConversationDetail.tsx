@@ -2,11 +2,12 @@ import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Send } from '@mui/icon
 import { Avatar, IconButton, Paper, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { Message, useGetQuestionQuery } from '../qna-api';
+import { Message, useGetQuestionQuery, useReadMessageMutation } from '../qna-api';
 import { ContentLoading, Scrollbar } from '@/shared/components';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { useSocket } from '@/shared/context';
 import { useSendMessageMutation } from '@/features/students/services/qna/qna-api';
+import { formatChatDate } from '@/shared/utils';
 
 const ConversationDetail = () => {
   const routeParams = useParams();
@@ -17,11 +18,12 @@ const ConversationDetail = () => {
   const { data: qnaData, isFetching } = useGetQuestionQuery(questionCardId)
   const qna = qnaData?.content
   const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState<Message[]>([])
 
   console.log(messages)
 
   const [sendMessage] = useSendMessageMutation()
+  const [readMessage] = useReadMessageMutation()
 
   const handleSendMessage = () => {
     sendMessage({
@@ -42,6 +44,9 @@ const ConversationDetail = () => {
     const cb = (data: Message) => {
       console.log('QnA Message: ', data)
       setMessages((prevMessages) => [...prevMessages, data])
+      if (data.sender.id !== account.id && !data.read) {
+        readMessage(qna?.chatSession.id)
+      }
     };
 
     if (socket) {
@@ -50,6 +55,7 @@ const ConversationDetail = () => {
 
     return () => {
       if (socket) {
+        console.log("Thoat ra roi")
         socket.off(`/user/${qna?.chatSession.id}/chat`);
       }
     };
@@ -95,22 +101,28 @@ const ConversationDetail = () => {
           <Typography className="pr-8 font-semibold w-full">{qna?.content}</Typography>
         </div>
       </div>
-      <Scrollbar className="flex-grow p-16 space-y-4">
+      <div className="flex-grow p-16 pb-96 space-y-4 overflow-y-auto h-[calc(100vh-265px)]">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.sender.id === myId ? 'justify-end' : 'justify-start'
               }`}
           >
-            <Paper
-              className={`px-16 py-8 text-white ${message.sender.id === myId ? 'bg-secondary-main text-white' : 'bg-primary-main'
-                }`}
-            >
-              {message.content}
-            </Paper>
+            <div>
+
+              <Paper
+                className={`p-16 text-white ${message.sender.id === myId ? 'bg-secondary-main text-white' : 'bg-primary-main'
+                  }`}
+              >
+                {message.content}
+                {/* {message.sentAt} -
+              {message.read? 'read': 'not read'} */}
+              </Paper>
+              <Typography color='textSecondary' className={`mt-4 text-sm ${message.sender.id === myId ? 'text-end' : 'text-start'} `}>{formatChatDate(message.sentAt)}</Typography>
+            </div>
           </div>
         ))}
-      </Scrollbar>
+      </div>
       <div className="flex items-center w-full gap-16 bg-background-paper p-16 absolute bottom-0">
         <TextField
           fullWidth

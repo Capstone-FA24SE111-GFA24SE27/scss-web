@@ -1,4 +1,4 @@
-import { NavLinkAdapter } from '@/shared/components';
+import { ContentLoading, Heading, NavLinkAdapter } from '@/shared/components';
 import { ArrowForward, ArrowRightAlt, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -22,6 +22,9 @@ const item = {
 };
 
 const MyQna = () => {
+  const { data: qnaData, isLoading } = useGetMyQuestionsQuery({})
+  const qnaList = qnaData?.content?.data || []
+
   const [openAnswers, setOpenAnswers] = useState(true);
 
   const [expanded, setExpanded] = useState<number | boolean>(false);
@@ -33,8 +36,6 @@ const MyQna = () => {
 
   const [answer, setAnswer] = useState('')
 
-  const { data: qnaData } = useGetMyQuestionsQuery({})
-  const qnaList = qnaData?.content?.data || []
 
   const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
 
@@ -45,29 +46,45 @@ const MyQna = () => {
     })
   }
 
+  if (isLoading) {
+    return <ContentLoading />
+  }
+
+  if (!qnaData) {
+    return (
+      <div className='text-center'>
+        <Typography>No questions found</Typography>
+      </div>
+    )
+  }
 
 
   return (
-    qnaList?.length > 0 && (
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className='p-32 w-full space-y-16'
-      >
-        <div className='flex gap-16'>
-          <TextField
-            label="Search for questions"
-            placeholder="Enter a keyword..."
-            className="w-320"
-            variant="outlined"
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              }
-            }}
-          />
-          {/* <TextField
+    <div>
+      <div className='p-32 bg-background-paper'>
+        <Heading title='My Q&A' description='List of your questions and answers' />
+      </div>
+      {
+        qnaList?.length > 0 && (
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className='p-32 w-full space-y-16'
+          >
+            <div className='flex gap-16'>
+              <TextField
+                label="Search for questions"
+                placeholder="Enter a keyword..."
+                className="w-320"
+                variant="outlined"
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  }
+                }}
+              />
+              {/* <TextField
             select
             label="Choose type"
             className="w-200"
@@ -81,34 +98,36 @@ const MyQna = () => {
             <MenuItem value="ACADEMIC">Academic</MenuItem>
             <MenuItem value="NON-ACADEMIC">Non-Academic</MenuItem>
           </TextField> */}
-          <FormControlLabel
-            className='flex-1 flex justify-end'
-            label="Open Answers"
-            control={
-              <Switch
-                onChange={(ev) => {
-                  setOpenAnswers(ev.target.checked);
-                }}
-                checked={openAnswers}
-                name="hideCompleted"
+              <FormControlLabel
+                className='flex-1 flex justify-end'
+                label="Open Answers"
+                control={
+                  <Switch
+                    onChange={(ev) => {
+                      setOpenAnswers(ev.target.checked);
+                    }}
+                    checked={openAnswers}
+                    name="hideCompleted"
+                  />
+                }
               />
-            }
-          />
-        </div>
+            </div>
 
-        <div className='space-y-16'>
-          {qnaList.map((qna) => (
-            <MyQnaItem
-              key={qna.id}
-              qna={qna}
-            />
-          ))
-          }
-        </div >
-      </motion.div >
-    )
-
+            <div className='space-y-16'>
+              {qnaList.map((qna) => (
+                <MyQnaItem
+                  key={qna.id}
+                  qna={qna}
+                />
+              ))
+              }
+            </div >
+          </motion.div >
+        )
+      }
+    </div>
   );
+
 }
 
 

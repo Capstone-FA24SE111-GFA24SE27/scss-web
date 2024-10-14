@@ -1,26 +1,35 @@
-import { Avatar, Input, Paper, Typography } from '@mui/material';
+import { Avatar, Chip, Divider, Input, Paper, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { useGetMyQuestionsQuery } from '../qna-api';
+import { Question, useGetMyQuestionsQuery, useReadMessageMutation } from '../qna-api';
 import dayjs from 'dayjs';
 import { Search } from '@mui/icons-material';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { selectAccount, useAppSelector } from '@shared/store';
+import { useEffect } from 'react'
 
 const Conversation = () => {
-  const { data: qnaData } = useGetMyQuestionsQuery({})
+  const { data: qnaData, refetch } = useGetMyQuestionsQuery({})
   const qnaList = qnaData?.content?.data || []
-  const chatSessions = qnaData?.content?.data.map(qna => qna.chatSession)
+  const account = useAppSelector(selectAccount)
 
-  const [messages, setMessages] = useState([{ sender: 'them', text: 'What is the Capital of France!' }]);
   const [input, setInput] = useState('');
   const navigate = useNavigate();
-  const sendMessage = () => {
-    if (input) {
-      setMessages([...messages, { sender: 'me', text: input }]);
-      setInput('');
-    }
-  };
+  const countUnreadMessages = (qnaItem: Question) => {
+    const readMessages = qnaItem?.chatSession?.messages.filter((message) => message.sender.id !== account.id && !message.read)
+    return readMessages?.length
+  }
+
+  const [readMessage] = useReadMessageMutation()
+  const handleSelectChat = (qnaItem: Question) => {
+    readMessage(qnaItem.chatSession.id)
+    navigate(`${qnaItem.id}`)
+  }
+
+  useEffect(() => {
+    refetch()
+  }, []);
 
   return (
     <div className='flex h-full'>
@@ -40,17 +49,23 @@ const Conversation = () => {
         </Paper>
         <div className="space-y-8 ">
           {qnaList.map((qnaItem) => (
-            <div key={qnaItem.id} className="flex items-center gap-8 p-8 cursor-pointer hover:bg-primary-main/5 rounded"
-              onClick={() => navigate(`${qnaItem?.id}`)}
-            >
-              <Avatar src={qnaItem.student.profile.avatarLink} alt='Student image' />
-              <div className="ml-4 w-full">
-                <div className='flex justify-between items-center'>
-                  <Typography className="text-lg font-semibold">{qnaItem.student.profile.fullName}</Typography>
-                  <Typography className="text-sm text-text-disabled">{dayjs(qnaItem?.chatSession?.lastInteractionDate).format('YYYY-MM-DD')}</Typography>
+            <div key={qnaItem.id} >
+              <div className="flex items-center gap-8 p-8 cursor-pointer hover:bg-primary-main/5 rounded"
+                onClick={() => handleSelectChat(qnaItem)}
+              >
+                <Avatar src={qnaItem.student.profile.avatarLink} alt='Student image' />
+                <div className="ml-4 w-full">
+                  <div className='flex justify-between items-center'>
+                    <Typography className="text-lg font-semibold">{qnaItem.student.profile.fullName}</Typography>
+                    {/* <Typography className="text-sm text-text-disabled">{dayjs(qnaItem?.chatSession?.lastInteractionDate).format('YYYY-MM-DD')}</Typography> */}
+                  </div>
+                  <div className='flex justify-between items-center'>
+                    <div className="text-sm text-primary-light line-clamp-1">{qnaItem.chatSession?.messages?.at(-1)?.content || qnaItem.content}</div>
+                    <Chip label={countUnreadMessages(qnaItem)} size='small' color='secondary' />
+                  </div>
                 </div>
-                <p className="text-sm text-primary-light line-clamp-1">{qnaItem.chatSession?.messages?.at(-1)?.content || qnaItem.content}</p>
               </div>
+              <Divider />
             </div>
           ))}
         </div>
