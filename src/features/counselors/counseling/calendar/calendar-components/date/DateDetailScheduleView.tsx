@@ -99,12 +99,11 @@ const DateDetailScheduleView = () => {
 						</div>
 				)) : 
 					appointments.map((item) => (
-						<div key={item.id} className='rounded shadow-md bg-background-paper '>
 							<EventDetailBody
+							key={item.id}
 								appointment={item}
 								onNavClicked={() => {}}
 								/>
-						</div>
 					))
 				
 			}

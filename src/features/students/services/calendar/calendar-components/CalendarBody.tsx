@@ -18,18 +18,14 @@ import {
 	selectHolidays,
 	selectScheduleData,
 } from '../calendar-slice';
-import { isDateRangeOverlapping } from '@/shared/utils';
 import CalendarAppEventContent from './CalendarAppEventContent';
 import EventDetailDialog from './event/EventDetailDialog';
-import {
-	useGetAppointmentScheduleQuery,
-	useGetHolidayScheduleQuery,
-} from '../calendar-api';
-import { date } from 'zod';
+
 import { AppLoading, ContentLoading } from '@/shared/components';
 import { useSocket } from '@/shared/context';
 import { useNavigate } from 'react-router-dom';
 import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
+import { useGetAppointmentScheduleQuery, useGetHolidayScheduleQuery } from '../calendar-api';
 
 type Props = {
 	handleDates: (rangeInfo: DatesSetArg) => void;
@@ -170,11 +166,25 @@ const CalendarBody = (props: Props) => {
 
 	const handleEventClick = (clickInfo: EventClickArg) => {
 		clickInfo.jsEvent.preventDefault();
-		const chosenAppointment = data.content.find(
-			(item) => item.id == clickInfo.event.id
-		);
-
-		dispatch(openEventDetailDialog(clickInfo, chosenAppointment));
+		if (clickInfo.event.extendedProps.isHoliday) {
+			const chosenHoliday = holidayfetchData.content.find(
+				(item) => item.id == clickInfo.event.id.split('-')[0]
+			);
+			dispatch(
+				openEventDetailDialog(clickInfo, chosenHoliday, 'holiday')
+			);
+		} else {
+			const chosenAppointment = data.content.find(
+				(item) => item.id == clickInfo.event.id
+			);
+			dispatch(
+				openEventDetailDialog(
+					clickInfo,
+					chosenAppointment,
+					'appointment'
+				)
+			);
+		}
 	};
 
 	const handleDatesWithin = (rangeInfo: DatesSetArg) => {

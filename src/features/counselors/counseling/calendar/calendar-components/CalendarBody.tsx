@@ -29,8 +29,8 @@ import { AppLoading, ContentLoading } from '@/shared/components';
 import { useSocket } from '@/shared/context';
 import { useNavigate } from 'react-router-dom';
 
-import { useGetHolidayScheduleQuery } from '@/features/students/services/calendar/calendar-api';
 import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
+import { useGetHolidayScheduleQuery } from '../../counseling-api';
 
 type Props = {
 	handleDates: (rangeInfo: DatesSetArg) => void;

@@ -24,12 +24,12 @@ const CalendarHeader = (props: Props) => {
 	};
 
 	return (
-		<div className='w-full p-24 sm:p-32 border-b-1 bg-background-paper'>
+		<div className='flex flex-col w-full p-16 sm:p-24 border-b-1 bg-background-paper'>
 			<motion.span
 				initial={{ x: -20 }}
 				animate={{ x: 0, transition: { delay: 0.2 } }}
 			>
-				<Typography className='font-extrabold leading-none tracking-tight text-20 md:text-24'>
+				<Typography className='font-extrabold leading-none tracking-tight text-20 md:text-24 '>
 					Your Calendar
 				</Typography>
 			</motion.span>
