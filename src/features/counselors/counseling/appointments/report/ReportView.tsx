@@ -21,31 +21,35 @@ const ReportPage = () => {
     return <ContentLoading />
   }
 
+  if(!report) {
+    return <Typography className=''>No report found </Typography>
+  }
+
   return (
-    <div className="p-32 bg-white shadow-lg border border-gray-300 w-lg flex flex-col gap-16">
+    <div className="flex flex-col gap-16 p-32 bg-white border border-gray-300 shadow-lg w-lg">
       {/* Page Title */}
-      <Typography className="text-20 md:text-24 font-extrabold tracking-tight leading-none">
+      <Typography className="font-extrabold leading-none tracking-tight text-20 md:text-24">
         Counseling Report
       </Typography>
 
-      <div className="flex gap-24 mt-4 pb-8">
-        <div className='flex gap-8 items-center '>
+      <div className="flex gap-24 pb-8 mt-4">
+        <div className='flex items-center gap-8 '>
           <CalendarMonth />
           <Typography className='' >{dayjs(report.appointment.requireDate).format('YYYY-MM-DD')}</Typography>
         </div>
-        <div className='flex gap-8 items-center'>
+        <div className='flex items-center gap-8'>
           <AccessTime />
           <Typography className=''>{dayjs(report.appointment.startDateTime).format('HH:mm')} - {dayjs(report.appointment.endDateTime).format('HH:mm')}</Typography>
         </div>
       </div>
 
       <div className='flex'>
-        <div className='flex flex-col gap-8 flex-1'>
-          <Typography className="font-semibold text-lg text-primary-light">
+        <div className='flex flex-col flex-1 gap-8'>
+          <Typography className="text-lg font-semibold text-primary-light">
             Counselee
           </Typography>
           <div
-            className='rounded flex justify-start gap-16'
+            className='flex justify-start gap-16 rounded'
           >
             <Avatar
               alt={report.student.profile.fullName}
@@ -57,12 +61,12 @@ const ReportPage = () => {
             </div>
           </div>
         </div>
-        <div className='flex flex-col gap-8 flex-1'>
-          <Typography className="font-semibold text-lg text-primary-light">
+        <div className='flex flex-col flex-1 gap-8'>
+          <Typography className="text-lg font-semibold text-primary-light">
             Counselor
           </Typography>
           <div
-            className='rounded flex justify-start gap-16'
+            className='flex justify-start gap-16 rounded'
           >
             <Avatar
               alt={report.counselor.profile.fullName}
@@ -80,13 +84,13 @@ const ReportPage = () => {
 
       {/* Consultation Goal */}
       <section className="mb-16">
-        <Typography variant="h6" className="font-semibold mb-4 bg-primary-main pb-2 text-primary-contrastText px-8">
+        <Typography variant="h6" className="px-8 pb-2 mb-4 font-semibold bg-primary-main text-primary-contrastText">
           Consultation Goal
         </Typography>
-        <div className="mt-4 space-y-8 mx-8">
+        <div className="mx-8 mt-4 space-y-8">
           {report.consultationGoal?.specificGoal && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Specific Goal:
               </Typography>
               {renderHTML(report.consultationGoal.specificGoal)}
@@ -94,7 +98,7 @@ const ReportPage = () => {
           )}
           {report.consultationGoal?.reason && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Reason:
               </Typography>
               {renderHTML(report.consultationGoal.reason)}
@@ -105,13 +109,13 @@ const ReportPage = () => {
 
       {/* Consultation Content */}
       <section className="mb-16">
-        <Typography variant="h6" className="font-semibold mb-4 bg-primary-main pb-2 text-primary-contrastText px-8">
+        <Typography variant="h6" className="px-8 pb-2 mb-4 font-semibold bg-primary-main text-primary-contrastText">
           Consultation Content
         </Typography>
-        <div className="mt-4 space-y-8 mx-8">
+        <div className="mx-8 mt-4 space-y-8">
           {report.consultationContent?.summaryOfDiscussion && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Summary of Discussion:
               </Typography>
               {renderHTML(report.consultationContent.summaryOfDiscussion)}
@@ -119,7 +123,7 @@ const ReportPage = () => {
           )}
           {report.consultationContent?.mainIssues && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Main Issues:
               </Typography>
               {renderHTML(report.consultationContent.mainIssues)}
@@ -127,7 +131,7 @@ const ReportPage = () => {
           )}
           {report.consultationContent?.studentEmotions && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Student Emotions:
               </Typography>
               {renderHTML(report.consultationContent.studentEmotions)}
@@ -135,7 +139,7 @@ const ReportPage = () => {
           )}
           {report.consultationContent?.studentReactions && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Student Reactions:
               </Typography>
               {renderHTML(report.consultationContent.studentReactions)}
@@ -146,27 +150,27 @@ const ReportPage = () => {
 
       {/* Consultation Conclusion */}
       <section className="mb-16">
-        <Typography variant="h6" className="font-semibold mb-4 bg-primary-main pb-2 text-primary-contrastText px-8">
+        <Typography variant="h6" className="px-8 pb-2 mb-4 font-semibold bg-primary-main text-primary-contrastText">
           Consultation Conclusion
         </Typography>
-        <div className="mt-4 space-y-8 mx-8">
+        <div className="mx-8 mt-4 space-y-8">
           {report.consultationConclusion?.counselorConclusion && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Counselor Conclusion:
               </Typography>
               {renderHTML(report.consultationConclusion.counselorConclusion)}
             </div>
           )}
           <div className='flex gap-8'>
-            <Typography className="font-semibold text-lg text-primary-light">
+            <Typography className="text-lg font-semibold text-primary-light">
               Follow-up Needed:
             </Typography>
             <Typography className='text-lg'>{report.consultationConclusion?.followUpNeeded ? 'Yes' : 'No'}</Typography>
           </div>
           {report.consultationConclusion?.followUpNotes && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Follow-up Notes:
               </Typography>
               {renderHTML(report.consultationConclusion.followUpNotes)}
@@ -177,13 +181,13 @@ const ReportPage = () => {
 
       {/* Intervention */}
       <section>
-        <Typography variant="h6" className="font-semibold mb-4 bg-primary-main pb-2 text-primary-contrastText px-8">
+        <Typography variant="h6" className="px-8 pb-2 mb-4 font-semibold bg-primary-main text-primary-contrastText">
           Intervention
         </Typography>
-        <div className="mt-4 space-y-4 mx-8">
+        <div className="mx-8 mt-4 space-y-4">
           {report.intervention?.type && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Type:
               </Typography>
               {renderHTML(report.intervention.type)}
@@ -191,7 +195,7 @@ const ReportPage = () => {
           )}
           {report.intervention?.description && (
             <div>
-              <Typography className="font-semibold text-lg text-primary-light">
+              <Typography className="text-lg font-semibold text-primary-light">
                 Description:
               </Typography>
               {renderHTML(report.intervention.description)}

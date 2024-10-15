@@ -1,10 +1,9 @@
-import { AppointmentScheduleType, HolidayScheduleType, Profile } from '@/shared/types';
-import { CheckBoxOutlineBlankOutlined } from '@mui/icons-material';
+import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
 import { ApiResponse, apiService } from '@shared/store';
 
 export const addTagTypes = ['appointments, holidays'];
 
-export const CalendarApi = apiService
+export const calendarApi = apiService
 	.enhanceEndpoints({
 		addTagTypes,
 	})
@@ -39,5 +38,5 @@ export type GetAppointmentApiArg = {
 	toDate: string;
 };
 
-export const { useGetAppointmentScheduleQuery, useGetHolidayScheduleQuery } = CalendarApi;
-
+export const { useGetAppointmentScheduleQuery, useGetHolidayScheduleQuery } =
+	calendarApi;

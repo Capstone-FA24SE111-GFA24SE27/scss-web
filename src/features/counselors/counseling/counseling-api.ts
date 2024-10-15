@@ -4,11 +4,12 @@ import {
 	Appointment,
 	AppointmentDetails,
 	AppointmentFeedback,
+	HolidayScheduleType,
 	PaginationContent,
 	TakeAppointmentAttendance,
 } from '@shared/types';
 
-const addTagTypes = ['appointments'] as const;
+const addTagTypes = ['appointments', 'holidays'] as const;
 
 export const counselingApi = api
 	.enhanceEndpoints({
@@ -66,6 +67,15 @@ export const counselingApi = api
 				}),
 				invalidatesTags: ['appointments'],
 			}),
+			getHolidaySchedule: build.query<
+				GetHolidaysApiResponse,
+				GetHolidaysApiArg
+			>({
+				query: () => ({
+					url: `/api/holidays`,
+				}),
+				providesTags: ['holidays'],
+			}),
 		}),
 	});
 
@@ -75,6 +85,7 @@ export const {
 	useApproveAppointmentRequestOfflineMutation,
 	useUpdateAppointmentDetailsMutation,
 	useTakeAppointmentAttendanceMutation,
+	useGetHolidayScheduleQuery,
 } = counselingApi;
 
 export type GetCounselorApiResponse = ApiResponse<Appointment>;
@@ -97,3 +108,6 @@ export type UpdateAppointmentDetailsArg = {
 	requestId: number;
 	meetingDetails: Partial<AppointmentDetails>;
 };
+
+type GetHolidaysApiResponse = ApiResponse<HolidayScheduleType[]>;
+type GetHolidaysApiArg = {};

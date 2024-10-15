@@ -36,7 +36,7 @@ import {
 	Summarize,
 } from '@mui/icons-material';
 import dayjs from 'dayjs';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	AppointmentAttendanceStatus,
 	AppointmentScheduleType,
@@ -59,7 +59,8 @@ export const EventDetailBody = (props: Props) => {
 	const [selectedAppointment, setSelectedAppointment] =
 		useState<AppointmentScheduleType | null>(null); // Track selected appointment
 	const navigate = useNavigate();
-	const dispatch = useAppDispatch();
+  	const location = useLocation()
+  	const dispatch = useAppDispatch();
 
 	const statusColor = {
 		REJECTED: 'error',
@@ -88,6 +89,16 @@ export const EventDetailBody = (props: Props) => {
 		setOpenMenuId(null);
 		setAnchorEl(null);
 	};
+
+	const handleLocalNavigate = (route: string) => {
+		const pathSegments = location.pathname.split('/').filter(Boolean);
+	
+		console.log('segment', pathSegments)
+		// Create a new path using the first two segments
+		 const newPath = `/${pathSegments[0]}/${pathSegments[1]}/${route}`;
+	
+		return newPath
+	  }
 
 	if (!appointment) {
 		return (
@@ -239,13 +250,13 @@ export const EventDetailBody = (props: Props) => {
 					</Tooltip>
 				</div>
 
-				<div className='pl-16 border-l'>
+				<div className=''>
 					<Tooltip
 						title={`View ${appointment.studentInfo.profile.fullName}'s profile`}
 					>
 						<ListItemButton
 							component={NavLinkAdapter}
-							to={`student/${appointment.studentInfo.profile.id}`}
+							to={handleLocalNavigate(`student/${appointment.studentInfo.profile.id}`)}
 							className='w-full rounded shadow bg-primary-light/5'
 						>
 							<div
