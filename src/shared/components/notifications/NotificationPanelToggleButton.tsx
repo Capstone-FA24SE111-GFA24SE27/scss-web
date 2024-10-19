@@ -61,6 +61,7 @@ function NotificationPanelToggleButton(
 		};
 		if (socket && account) {
 			socket.on(`/user/${account.profile.id}/private/notification`, cb);
+			console.log(`/user/${account.profile.id}/private/notification`)
 		}
 
 		return () => {

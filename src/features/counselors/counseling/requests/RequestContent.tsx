@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
-import { Appointment, AppointmentAttendanceStatus, useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation, useGetCounselingAppointmentRequestsQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './requests-api'
+import {   useGetCounselingAppointmentRequestsQuery} from './requests-api'
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
@@ -7,7 +7,8 @@ import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
 import { Dialog } from '@shared/components';
 import dayjs from 'dayjs';
-import { ExpandableText } from '@shared/components'
+import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation } from '../counseling-api';
+import { Appointment, AppointmentRequest } from '@/shared/types';
 const RequestsContent = () => {
   const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({})
 
@@ -31,15 +32,17 @@ const RequestsContent = () => {
 
 
 
-  const handleDenyRequest = (appointment: Appointment) => {
+  const handleDenyRequest = (appointment: AppointmentRequest) => {
     console.log(appointment)
     denyAppointmentRequest(appointment.id)
     dispatch(() => closeDialog())
   }
 
+  console.log(appointmentRequests)
+
   return (
     <>
-      <List className='p-16 flex flex-col gap-16'>
+      <List className='flex flex-col gap-16 p-16'>
         {
           appointmentRequests.map(appointment =>
             <Paper
@@ -49,13 +52,13 @@ const RequestsContent = () => {
             // component={NavLinkAdapter}
             // to={`appointment/${appointment.id}`}
             >
-              <div className='flex flex-col gap-16 w-full'>
+              <div className='flex flex-col w-full gap-16'>
                 <div className='flex gap-24'>
-                  <div className='flex gap-8 items-center '>
+                  <div className='flex items-center gap-8 '>
                     <CalendarMonth />
                     <Typography className='' >{appointment.requireDate}</Typography>
                   </div>
-                  <div className='flex gap-8 items-center'>
+                  <div className='flex items-center gap-8'>
                     <AccessTime />
                     <Typography className=''>{dayjs(appointment.startTime, "HH:mm:ss").format('HH:mm')} - {dayjs(appointment.endTime, "HH:mm:ss").format('HH:mm')}</Typography>
                   </div>
@@ -63,7 +66,7 @@ const RequestsContent = () => {
                   <Chip
                     label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
                     icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
-                    className='font-semibold items-center'
+                    className='items-center font-semibold'
                     size='small'
                   />
 
@@ -81,24 +84,24 @@ const RequestsContent = () => {
                   <ExpandableText text={appointment.reason} limit={175} />
                 </div>
                 {/* <ListItem
-                  className='bg-primary-light/5 w-full rounded flex gap-16'
+                  className='flex w-full gap-16 rounded bg-primary-light/5'
                 >
                   <Avatar
-                    alt={appointment.student.profile.fullName}
-                    src={appointment.student.profile.avatarLink}
+                    alt={appointment.studentInfo.profile.fullName}
+                    src={appointment.studentInfo.profile.avatarLink}
                   />
                   <div >
-                    <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
-                    <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
+                    <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
+                    <Typography color='text.secondary'>{appointment.studentInfo.email || 'counselor@fpt.edu.vn'}</Typography>
                   </div>
                 </ListItem> */}
                 <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
                   <ListItemButton
                     component={NavLinkAdapter}
                     to={`student/${appointment.student.profile.id}`}
-                    className='bg-primary-light/5 w-full rounded shadow'
+                    className='w-full rounded shadow bg-primary-light/5'
                   >
-                    <div className='w-full flex'>
+                    <div className='flex w-full'>
                       <Avatar
                         alt={appointment.student.profile.fullName}
                         src={appointment.student.profile.avatarLink}
@@ -161,7 +164,7 @@ const RequestsContent = () => {
                 {/* {
                   appointment.status === 'APPROVED' && (
                     <div className=''>
-                      <Typography className='font-semibold' color='secondary'>Do the student attend the session ?</Typography>
+                      <Typography className='font-semibold' color='secondary'>Do the studentInfo attend the session ?</Typography>
                       <Button className='mt-8' variant='outlined' color='secondary'
                         onClick={() => dispatch(openDialog({
                           children: <CheckAttendanceDialog appointment={appointment} />
@@ -181,7 +184,7 @@ const RequestsContent = () => {
   )
 }
 
-const ApproveAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+const ApproveAppointmentDialog = ({ appointment }: { appointment: AppointmentRequest }) => {
   console.log(appointment.meetingType)
   const [approveAppointmentRequestOnline] = useApproveAppointmentRequestOnlineMutation();
   const [approveAppointmentRequestOffline] = useApproveAppointmentRequestOfflineMutation();

@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
@@ -11,6 +11,7 @@ import { AccessTime, CakeOutlined, CalendarMonth, EmailOutlined, LocalPhoneOutli
 import { ListItemButton, Paper, Rating } from '@mui/material';
 import dayjs from 'dayjs';
 import { useGetStudentQuery } from './student-api';
+import { useEffect } from 'react';
 
 /**
  * The contact view.
@@ -24,6 +25,7 @@ function StudentView({ }: StudentViewProps) {
   const { data, isLoading } = useGetStudentQuery(studentId);
   const student = data?.content
   const navigate = useNavigate();
+  const location = useLocation()
 
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
@@ -40,10 +42,21 @@ function StudentView({ }: StudentViewProps) {
     </div>
   }
 
+  const handleLocalNavigate = (route: string) => {
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+
+    console.log('segment', pathSegments)
+    // Create a new path using the first two segments
+     const newPath = `/${pathSegments[0]}/${pathSegments[1]}/${route}`;
+
+    // Navigate to the new path
+    navigate(newPath);
+  }
+
   return (
     <div className='w-md'>
       <Box
-        className="relative w-full h-160 sm:h-192 px-32 sm:px-48"
+        className="relative w-full px-32 h-160 sm:h-192 sm:px-48"
         sx={{
           backgroundColor: 'background.default'
         }}
@@ -54,9 +67,9 @@ function StudentView({ }: StudentViewProps) {
           alt="user background"
         />
       </Box>
-      <div className="relative flex flex-col flex-auto items-center p-24 pt-0 sm:p-48 sm:pt-0">
+      <div className="relative flex flex-col items-center flex-auto p-24 pt-0 sm:p-48 sm:pt-0">
         <div className="w-full max-w-3xl">
-          <div className="flex flex-auto items-end -mt-64">
+          <div className="flex items-end flex-auto -mt-64">
             <Avatar
               sx={{
                 borderWidth: 4,
@@ -65,7 +78,7 @@ function StudentView({ }: StudentViewProps) {
                 backgroundColor: 'background.default',
                 color: 'text.secondary'
               }}
-              className="w-128 h-128 text-64 font-bold"
+              className="font-bold w-128 h-128 text-64"
               src={student.profile.avatarLink}
               alt={student.profile.fullName}
             >
@@ -73,7 +86,7 @@ function StudentView({ }: StudentViewProps) {
             </Avatar>
             <Gender gender={student.profile.gender} />
 
-            <div className="flex items-center ml-auto mb-4">
+            <div className="flex items-center mb-4 ml-auto">
               <Button
                 variant="contained"
                 color="secondary"
@@ -100,11 +113,11 @@ function StudentView({ }: StudentViewProps) {
                     <div>(116)</div>
                 </div> */}
 
-          <div className="flex items-center mt-16 gap-8 ">
+          <div className="flex items-center gap-8 mt-16 ">
             <Chip
               label={student.studentCode}
               size="medium"
-              className='text-lg px-16'
+              className='px-16 text-lg'
             />
           </div>
 
@@ -138,7 +151,7 @@ function StudentView({ }: StudentViewProps) {
               <div className="flex items-center">
                 {/* <SchoolOutlined /> */}
                 <span className='font-semibold'>GPA</span>
-                <div className="ml-24 leading-6 flex items-center justify-between w-full">
+                <div className="flex items-center justify-between w-full ml-24 leading-6">
                   6.9/10
                   <Button variant='outlined' color='secondary' onClick={() => navigate('academic-transcript')}>View academic transcript</Button>
                 </div>
@@ -151,30 +164,30 @@ function StudentView({ }: StudentViewProps) {
               <Typography className='font-semibold'>
                 History of couseling
               </Typography>
-              <div className='mt-8 flex flex-col gap-8'>
-                <Paper className='shadow py-4 px-8 rounded flex justify-between'>
+              <div className='flex flex-col gap-8 mt-8'>
+                <Paper className='flex justify-between px-8 py-4 rounded shadow'>
                   <div className='flex gap-8'>
-                    <div className='flex gap-8 items-center '>
+                    <div className='flex items-center gap-8 '>
                       <CalendarMonth fontSize='small' />
                       <Typography className='' fontSize='small' >2024-10-07</Typography>
                     </div>
-                    <div className='flex gap-8 items-center'>
+                    <div className='flex items-center gap-8'>
                       {/* <AccessTime fontSize='small' /> */}
                       <Typography fontSize='small'>09:15 - 10:15</Typography>
                     </div>
                   </div>
-                  <Button size='small' className='flex gap-8 px-8' color='secondary' onClick={() => navigate('/counseling/appointments/1/report')}>
+                  <Button size='small' className='flex gap-8 px-8' color='secondary' onClick={()=>handleLocalNavigate('1/report')}>
                     {/* <Summarize /> */}
                     View report
                   </Button>
                 </Paper>
-                <Paper className='shadow py-4 px-8 rounded flex justify-between'>
+                <Paper className='flex justify-between px-8 py-4 rounded shadow'>
                   <div className='flex gap-8'>
-                    <div className='flex gap-8 items-center'>
+                    <div className='flex items-center gap-8'>
                       <CalendarMonth fontSize='small' />
                       <Typography className='' fontSize='small' >2024-10-08</Typography>
                     </div>
-                    <div className='flex gap-8 items-center'>
+                    <div className='flex items-center gap-8'>
                       {/* <AccessTime fontSize='small' /> */}
                       <Typography fontSize='small'>09:15 - 10:15</Typography>
                     </div>

@@ -1,8 +1,7 @@
 import { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import { WithSlice, createSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
-import { DeepPartial } from 'react-hook-form';
-import { formatISO } from 'date-fns/formatISO';
+import {  GetAppointmentApiArg } from './calendar-api';
 import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
 
 export const dateFormdat = 'YYYY-MM-DDTHH:mm:ss.sssZ';
@@ -32,6 +31,7 @@ const initialState: {
 	data: null,
 	holidays: null,
 };
+
 /**
  * The CalendarApp labels slice.
  */
@@ -75,13 +75,13 @@ export const calendarAppSlice = createSlice({
 		},
 		addHolidays: (state, actions) => {
 			const prev = state.holidays ? state.holidays : [];
-			state.holidays = [...actions.payload, ... prev]
-		}
+			state.holidays = [...actions.payload, ...prev];
+		},
 	},
 	selectors: {
 		selectEventDialog: (state) => state.eventDialog,
 		selectScheduleData: (state) => state.data,
-		selectHolidays: (state) => state.holidays
+		selectHolidays: (state) => state.holidays,
 	},
 });
 
@@ -102,7 +102,7 @@ export const {
 	openEventDetailDialog,
 	closeEventDetailDialog,
 	addScheduleData,
-	addHolidays
+	addHolidays,
 } = calendarAppSlice.actions;
 
 export type labelsSliceType = typeof calendarAppSlice;

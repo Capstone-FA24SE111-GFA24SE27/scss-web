@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Paper, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
-import { Appointment, AppointmentAttendanceStatus, useDenyAppointmentRequestMutation, useGetCounselingAppointmentQuery, useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from './appointments-api';
+import {   useGetCounselingAppointmentQuery  } from './appointments-api';
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@shared/components';
 import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, MoreVert, Summarize } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { useSocket } from '@/shared/context';
+import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
+import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '../counseling-api';
 
 const AppointmentsContent = () => {
   const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({});
@@ -72,22 +74,22 @@ const AppointmentsContent = () => {
 
   return (
     <>
-      <List className='p-16 flex flex-col gap-16'>
+      <List className='flex flex-col gap-16 p-16'>
         {
           appointments.map(appointment =>
             <Paper
               key={appointment.id}
-              className="p-16 flex gap-8 shadow"
+              className="flex gap-8 p-16 shadow"
               sx={{ bgcolor: 'background.paper' }}
             >
               <div className='flex flex-col w-full'>
                 <div className='flex justify-between'>
                   <div className='flex gap-24'>
-                    <div className='flex gap-8 items-center '>
+                    <div className='flex items-center gap-8 '>
                       <CalendarMonth />
                       <Typography className=''>{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
                     </div>
-                    <div className='flex gap-8 items-center'>
+                    <div className='flex items-center gap-8'>
                       <AccessTime />
                       <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
                     </div>
@@ -95,7 +97,7 @@ const AppointmentsContent = () => {
                   <div className='relative'>
                     {
                       !appointment.havingReport && ['ATTEND'].includes(appointment.status) && (
-                        <div className='size-10 right-10 rounded-full bg-secondary-main absolute'></div>
+                        <div className='absolute rounded-full size-10 right-10 bg-secondary-main'></div>
                       )
                     }
                     <IconButton color='primary' onClick={(event) => handleClick(event, appointment)}>
@@ -124,8 +126,8 @@ const AppointmentsContent = () => {
                 </div>
                 <div className='flex gap-4 mb-8'>
                   {appointment.meetingType === 'ONLINE' ? (
-                    <div className='flex gap-24 items-center'>
-                      <Chip label='Online' size='small' icon={<Circle color='success' />} className='font-semibold items-center' />
+                    <div className='flex items-center gap-24'>
+                      <Chip label='Online' size='small' icon={<Circle color='success' />} className='items-center font-semibold' />
                       {appointment.meetUrl && (
                         <div>
                           <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
@@ -135,7 +137,7 @@ const AppointmentsContent = () => {
                       )}
                     </div>
                   ) : appointment.address && (
-                    <div className='flex gap-8 items-center '>
+                    <div className='flex items-center gap-8 '>
                       <Typography className='w-60' color='textSecondary'>Address:</Typography>
                       <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                     </div>
@@ -161,9 +163,9 @@ const AppointmentsContent = () => {
                     <ListItemButton
                       component={NavLinkAdapter}
                       to={`student/${appointment.studentInfo.profile.id}`}
-                      className='bg-primary-light/5 w-full rounded shadow'
+                      className='w-full rounded shadow bg-primary-light/5'
                     >
-                      <div className='flex gap-16 items-start w-full'>
+                      <div className='flex items-start w-full gap-16'>
                         <Avatar
                           alt={appointment.studentInfo.profile.fullName}
                           src={appointment.studentInfo.profile.avatarLink}
@@ -183,7 +185,7 @@ const AppointmentsContent = () => {
                         <div className='flex gap-4'>
                           <div className='flex items-center'>
                             <Typography className={'w-[13rem]'} color='textSecondary'>Attendance Status:</Typography>
-                            <Typography className='font-semibold pl-4' color={statusColor[appointment.status]}>
+                            <Typography className='pl-4 font-semibold' color={statusColor[appointment.status]}>
                               {appointment.status}
                             </Typography>
                           </div>
@@ -347,7 +349,7 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
       <DialogTitle id="alert-dialog-title">Update attendance for this student</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description" className='flex flex-col gap-16'>
-          <div className='rounded flex justify-start gap-16'>
+          <div className='flex justify-start gap-16 rounded'>
             <Avatar
               alt={appointment.studentInfo.profile.fullName}
               src={appointment.studentInfo.profile.avatarLink}

@@ -19,7 +19,6 @@ const DateDetailScheduleView = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [appointments, setAppointments] = useState([]);
 	const [holiday, setHoliday] = useState([])
-
 	const dateData = dateRange.split('&');
 	const startStr = dateData[0];
 	const endStr = dateData[1];
@@ -42,6 +41,7 @@ const DateDetailScheduleView = () => {
 				);
 			});
 			setAppointments(eventsInDateRange);
+			console.log(eventsInDateRange)
 			setIsLoading(false);
 		}
 	}, [appointmentList]);
@@ -66,7 +66,6 @@ const DateDetailScheduleView = () => {
 		}
 	}, [holidayList]);
 
-
 	if (isLoading) {
 		return <ContentLoading className='m-32' />;
 	}
@@ -85,7 +84,7 @@ const DateDetailScheduleView = () => {
 				<Typography className='pr-32 text-xl font-semibold leading-none'>
 					Schedule from
 				</Typography>
-				<Typography className='pr-32 leading-none text-28'>
+				<Typography className='pr-32 leading-none text-24'>
 					{displayDate(startDate)} to {displayDate(endDate)}
 				</Typography>
 			</div>
@@ -100,12 +99,11 @@ const DateDetailScheduleView = () => {
 						</div>
 				)) : 
 					appointments.map((item) => (
-						<div key={item.id} className='rounded shadow-md bg-background-paper '>
 							<EventDetailBody
+							key={item.id}
 								appointment={item}
 								onNavClicked={() => {}}
 								/>
-						</div>
 					))
 				
 			}
