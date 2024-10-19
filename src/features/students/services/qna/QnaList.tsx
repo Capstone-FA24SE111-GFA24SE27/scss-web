@@ -1,8 +1,8 @@
 
 
 import { ContentLoading, NavLinkAdapter } from '@/shared/components';
-import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
+import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, Search, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, InputAdornment, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -61,9 +61,8 @@ const QnaList = () => {
 
   if (!qnaList.length) {
     return (
-      <div className='text-center'>
-        <Typography>No questions found</Typography>
-      </div>
+      <div className='text-center p-32 text-text-disabled'>
+        <Typography variant='h5' className='text-text-disabled'>No questions found</Typography></div>
     )
   }
 
@@ -84,6 +83,13 @@ const QnaList = () => {
             slotProps={{
               inputLabel: {
                 shrink: true,
+              },
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                )
               }
             }}
           />
@@ -116,7 +122,7 @@ const QnaList = () => {
           />
         </div>
 
-        <div className='space-y-16'>
+        <div className='space-y-16 relative'>
           {qnaList.map((qna) => {
             return (
               <motion.div
@@ -132,10 +138,13 @@ const QnaList = () => {
                     <AccordionSummary expandIcon={<ExpandMore />}>
                       <div className='flex flex-col gap-8'>
 
-                        <div className='flex gap-8'>
+                        <div className='flex w-full gap-16'>
                           <Chip label={qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={qna.questionType === 'ACADEMIC' ? 'info' : 'warning'} size='small' />
                           <Chip label={'Verified'} color={'success'} size='small' />
                           {qna.closed && <Chip label={'Closed'} color={'warning'} size='small' />}
+                          {
+                            countUnreadMessages(qna) ? <Chip label={countUnreadMessages(qna)} size='small' color='secondary' /> : ''
+                          }
                         </div>
                         <div className="flex flex-1 items-center gap-8">
                           {/* <Divider orientation='vertical' /> */}
@@ -180,19 +189,20 @@ const QnaList = () => {
                         <IconButton><ThumbDownOutlined /></IconButton>
                       </div>
                       <Button
-                        variant='outlined'
+                        variant='contained'
                         color='secondary'
                         startIcon={<ChatBubbleOutline />}
                         onClick={() => handleSelectChat(qna)}
                         disabled={!qna.counselor}
                         className='space-x-4'
                       >
-                        Chat
+                        Start to chat
                         {
                           countUnreadMessages(qna) ? <Chip label={countUnreadMessages(qna)} size='small' color='secondary' /> : ''
                         }
                       </Button>
                     </Box>
+
                   </Accordion>
                 </Paper>
               </motion.div>

@@ -1,12 +1,12 @@
 import { Role } from '@/shared/types';
-import { ArrowForward, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDownOutlined, ThumbUpOutlined } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, FormControlLabel, IconButton, ListItem, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
+import { ArrowForward, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, Search, ThumbDownOutlined, ThumbUpOutlined } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, FormControlLabel, IconButton, InputAdornment, ListItem, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { motion } from 'framer-motion';
 import { useGetQuestionsQuery, useTakeQuestionMutation } from '../qna-api';
 import { useNavigate } from 'react-router-dom';
 import { SyntheticEvent, useState } from 'react'
-import { ContentLoading, ExpendableText } from '@/shared/components';
+import { ContentLoading, ExpandableText, Heading } from '@/shared/components';
 
 const container = {
   show: {
@@ -43,15 +43,19 @@ const QuestionBoard = () => {
     return <ContentLoading />
   }
 
-  if (!questionList.length) {
+  if (!questionList?.length) {
     return (
-      <div className='text-center'>
-        <Typography>No questions found</Typography>
+      <div className='text-center p-32'>
+        <Typography variant='h5' className='text-text-disabled'>No questions found</Typography>
       </div>
+
     )
   }
   return (
     <div className=''>
+      <div className='p-32 bg-background-paper'>
+        <Heading title='Question Board' description='List of verified questions for counselors to answer' />
+      </div>
       {
         questionList?.length > 0 && (
           <motion.div
@@ -69,6 +73,13 @@ const QuestionBoard = () => {
                 slotProps={{
                   inputLabel: {
                     shrink: true,
+                  },
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    )
                   }
                 }}
               />
@@ -117,7 +128,7 @@ const QuestionBoard = () => {
                       <div>
                         <Typography className='font-semibold'>{question.student?.profile.fullName}<span className='text-text-disabled font-normal text-sm pl-8'>11 hours ago</span></Typography>
                         {/* <Typography className='text-sm text-start' color='textSecondary'>{question.content}</Typography> */}
-                        <ExpendableText text={question.content} limit={300} />
+                        <ExpandableText text={question.content} limit={300} />
                       </div>
                     </div>
                     <Box className='w-96'>
@@ -137,7 +148,7 @@ const QuestionBoard = () => {
           </motion.div >
         )
       }
-    </div>
+    </div >
   )
 }
 

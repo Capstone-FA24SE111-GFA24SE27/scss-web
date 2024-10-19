@@ -1,5 +1,5 @@
 import { FilterAltOutlined, Search, Tune } from '@mui/icons-material'
-import { Box, Button, IconButton, Input, Tab, Tabs, TextField, Tooltip } from '@mui/material'
+import { Box, Button, IconButton, Input, InputAdornment, Tab, Tabs, TextField, Tooltip } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '@shared/store'
 import { motion } from 'framer-motion'
 import { useState, ChangeEvent, useEffect } from 'react'
@@ -45,13 +45,20 @@ const CounselorListHeader = () => {
       <div className="w-full p-24 flex flex-col gap-16">
         <div className='flex'>
           <TextField
-            label="Search for a counselor"
+            label="Search for counselors"
             placeholder="Enter a keyword..."
             className="flex w-full"
             variant="outlined"
             slotProps={{
               inputLabel: {
                 shrink: true,
+              },
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                )
               }
             }}
             onChange={handleSearch}

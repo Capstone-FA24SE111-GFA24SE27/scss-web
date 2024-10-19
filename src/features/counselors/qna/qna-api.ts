@@ -83,7 +83,8 @@ export const {
   useAnswerQuestionMutation,
   useGetQuestionQuery,
   useReadMessageMutation,
-  useEditAnswerMutation
+  useEditAnswerMutation,
+  useSendMessageMutation,
 } = usersApi
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>

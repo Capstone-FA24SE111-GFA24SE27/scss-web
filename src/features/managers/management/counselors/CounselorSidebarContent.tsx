@@ -5,7 +5,7 @@ import { Close } from '@mui/icons-material';
 /**
  * The contacts sidebar content.
  */
-function CounselingSidebarContent() {
+function CounselorSidebarContent() {
     return (
         <div className="flex flex-col flex-auto max-w-full w-md">
             <IconButton
@@ -22,4 +22,4 @@ function CounselingSidebarContent() {
     );
 }
 
-export default CounselingSidebarContent;
+export default CounselorSidebarContent;

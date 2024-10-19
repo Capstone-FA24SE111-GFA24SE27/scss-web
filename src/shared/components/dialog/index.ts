@@ -1,2 +1,5 @@
-export { default } from './Dialog';
+import Dialog from './Dialog';
 export * from './dialog-slice'
+export {
+  Dialog
+}

@@ -1,5 +1,5 @@
 import { NavLinkAdapter } from '@/shared/components';
-import { ArrowForward, ArrowRightAlt, CheckCircleOutlineOutlined, Edit, EditNote, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
+import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, Edit, EditNote, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useState } from 'react'
@@ -61,6 +61,10 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
     navigate(`/qna/conversations/${qna.id}`)
   }
 
+  const handleChat = () => {
+    readMessage(qna.chatSession.id)
+    navigate(`${qna.id}`)
+  }
   return (
     <motion.div
       variants={item}
@@ -182,7 +186,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
             </div>
           </AccordionDetails>
           <Box
-            className='bg-primary-light/5 w-full py-8 flex justify-end px-16 cursor-pointer'
+            className='bg-primary-light/5 w-full py-8 flex justify-end px-16 cursor-pointer gap-16'
           >
             <Button
               variant='outlined'
@@ -190,7 +194,15 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
               onClick={handleSelectChat}
               endIcon={<ArrowForward />}
             >
-              Start a conversation
+              Go to conversations
+            </Button>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={handleChat}
+              endIcon={<ChatBubbleOutline />}
+            >
+              Chat
             </Button>
           </Box>
         </Accordion>

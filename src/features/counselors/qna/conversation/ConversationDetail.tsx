@@ -6,7 +6,7 @@ import { Message, useGetQuestionQuery, useReadMessageMutation } from '../qna-api
 import { ContentLoading, Scrollbar } from '@/shared/components';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { useSocket } from '@/shared/context';
-import { useSendMessageMutation } from '@/features/students/services/qna/qna-api';
+import { useSendMessageMutation } from '../qna-api';
 import { formatChatDate } from '@/shared/utils';
 
 const ConversationDetail = () => {
@@ -15,7 +15,7 @@ const ConversationDetail = () => {
   const socket = useSocket()
   const account = useAppSelector(selectAccount)
   const myId = account.id
-  const { data: qnaData, isFetching } = useGetQuestionQuery(questionCardId)
+  const { data: qnaData, isFetching, refetch } = useGetQuestionQuery(questionCardId)
   const qna = qnaData?.content
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -61,6 +61,10 @@ const ConversationDetail = () => {
     };
   }, [socket, qna]);
 
+  useEffect(() => {
+    refetch()
+  }, []);
+
   // const sendMessage = () => {
   //   if (input) {
   //     setMessages([...messages, { sender: 'me', text: input }]);
@@ -101,7 +105,7 @@ const ConversationDetail = () => {
           <Typography className="pr-8 font-semibold w-full">{qna?.content}</Typography>
         </div>
       </div>
-      <div className="flex-grow p-16 pb-96 space-y-4 overflow-y-auto h-[calc(100vh-265px)]">
+      <Scrollbar className="flex-grow p-16 pb-96 space-y-4 overflow-y-auto !h-[calc(100vh-265px)]">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -122,7 +126,7 @@ const ConversationDetail = () => {
             </div>
           </div>
         ))}
-      </div>
+      </Scrollbar>
       <div className="flex items-center w-full gap-16 bg-background-paper p-16 absolute bottom-0">
         <TextField
           fullWidth

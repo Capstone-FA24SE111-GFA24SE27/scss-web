@@ -12,7 +12,7 @@ import { selectAccount, useAppSelector } from '@shared/store';
 import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { counselorsRoutes } from '@features/counselors';
-import Dialog from '@shared/components/dialog';
+import { Dialog } from '@shared/components';
 import { SnackbarProvider } from 'notistack';
 import { SocketProvider } from '@shared/context/socket-context';
 

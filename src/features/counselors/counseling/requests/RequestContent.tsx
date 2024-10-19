@@ -5,8 +5,9 @@ import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from 
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
-import Dialog from '@shared/components/dialog';
+import { Dialog } from '@shared/components';
 import dayjs from 'dayjs';
+import { ExpandableText } from '@shared/components'
 const RequestsContent = () => {
   const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({})
 
@@ -77,10 +78,7 @@ const RequestsContent = () => {
 
                 <div className='flex gap-8'>
                   <Typography className='w-60' color='textSecondary'>Reason: </Typography>
-                  <Typography
-                  >
-                    {appointment.reason}
-                  </Typography>
+                  <ExpandableText text={appointment.reason} limit={175} />
                 </div>
                 {/* <ListItem
                   className='bg-primary-light/5 w-full rounded flex gap-16'

@@ -5,7 +5,7 @@ import { AccessTime, CalendarMonth, Circle, Edit, EditNote } from '@mui/icons-ma
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
-import Dialog from '@shared/components/dialog';
+import { Dialog } from '@shared/components';
 import dayjs from 'dayjs';
 const EventsContent = () => {
   const { data, isLoading } = useGetCounselingAppointmentQuery({})
