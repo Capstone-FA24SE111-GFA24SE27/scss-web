@@ -88,8 +88,6 @@ export const {
 	useGetHolidayScheduleQuery,
 } = counselingApi;
 
-export type GetCounselorApiResponse = ApiResponse<Appointment>;
-
 export type ApproveCounselingAppointmentRequestOnlineArg = {
 	requestId: number;
 	meetingDetails: {

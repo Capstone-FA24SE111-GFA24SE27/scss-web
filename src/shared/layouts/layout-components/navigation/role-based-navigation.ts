@@ -279,10 +279,87 @@ const managerNavigation: NavigationOptions = {
     ]
 }
 
+const adminNavigation: NavigationOptions = {
+    list: [
+        {
+            name: "Accounts",
+            description: "Manage users' accounts",
+            route: 'account',
+            items: [
+                {
+                    icon: Assignment,
+                    name: 'Question Board',
+                    route: 'question-board'
+                },
+            ]
+        },
+    ],
+    shortcuts: [
+        {
+            icon: CalendarMonth,
+            name: 'Calendar',
+        },
+        {
+            icon: Mail,
+            name: 'Mail',
+        },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+    ]
+}
+
+const supportStaffNavigation: NavigationOptions = {
+    list: [
+        {
+            name: "Q&A",
+            description: "Questions and answer",
+            route: 'qna',
+            items: [
+                {
+                    icon: QuestionAnswer,
+                    name: 'Q&A',
+                    route: '',
+                },
+            ]
+        },
+    ],
+    shortcuts: [
+        {
+            icon: CalendarMonth,
+            name: 'Calendar',
+        },
+        {
+            icon: Mail,
+            name: 'Mail',
+        },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+    ]
+}
+
 
 export const roleBasedNavigation: RoleBasedNavigation = {
     [roles.STUDENT]: studentNavigation,
     [roles.ACADEMIC_COUNSELOR]: counselorNavigation,
     [roles.NON_ACADEMIC_COUNSELOR]: counselorNavigation,
     [roles.MANAGER]: managerNavigation,
+    [roles.ADMIN]: adminNavigation,
+    [roles.SUPPORT_STAFF]: supportStaffNavigation,
+
 }

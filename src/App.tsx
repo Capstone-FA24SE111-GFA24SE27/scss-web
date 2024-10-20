@@ -15,6 +15,8 @@ import { counselorsRoutes } from '@features/counselors';
 import Dialog from '@shared/components/dialog';
 import { SnackbarProvider } from 'notistack';
 import { SocketProvider } from '@shared/context/socket-context';
+import { adminRoutes } from './features/admin';
+import { supportStaffRoutes } from './features/staffs';
 
 const App = () => {
 	const account = useAppSelector(selectAccount);
@@ -31,6 +33,12 @@ const App = () => {
 			break;
 		case roles.MANAGER:
 			roleBasedRoutes = managersRoutes;
+			break;
+		case roles.ADMIN:
+			roleBasedRoutes = adminRoutes;
+			break;
+			case roles.SUPPORT_STAFF:
+			roleBasedRoutes = supportStaffRoutes;
 			break;
 		default:
 			roleBasedRoutes = authRoutes;

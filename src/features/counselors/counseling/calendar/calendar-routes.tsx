@@ -12,7 +12,7 @@ export const calendarRoutes: RouteObject[] = [
 		element: <Calendar />,
 		children: [
 			...studentsRoutes,
-      ...reportRoutes,
+			...reportRoutes,
 			{
 				path: 'date/:date',
 				element: <DateDetailScheduleView />,

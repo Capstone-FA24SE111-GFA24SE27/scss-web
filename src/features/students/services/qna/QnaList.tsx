@@ -4,7 +4,7 @@ import { NavLinkAdapter } from '@/shared/components';
 import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useGetQuestionsQuery } from './qna-api';
 
@@ -35,13 +35,17 @@ const QnaList = () => {
   const { data: qnaData } = useGetQuestionsQuery()
   const qnaList = qnaData?.content?.data || []
 
+  useEffect(()=>{
+    console.log(qnaData)
+  },[qnaData])
+
   return (
     qnaList?.length > 0 && (
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className='p-32 w-full space-y-16'
+        className='w-full p-32 space-y-16'
       >
         <div className='flex gap-16'>
           <TextField
@@ -70,7 +74,7 @@ const QnaList = () => {
             <MenuItem value="NON-ACADEMIC">Non-Academic</MenuItem>
           </TextField>
           <FormControlLabel
-            className='flex-1 flex justify-end'
+            className='flex justify-end flex-1'
             label="Open Answers"
             control={
               <Switch
@@ -105,13 +109,13 @@ const QnaList = () => {
                           <Chip label={'Verified'} color={'success'} size='small' />
                           {qna.closed && <Chip label={'Closed'} color={'warning'} size='small' />}
                         </div>
-                        <div className="flex flex-1 items-center gap-8">
+                        <div className="flex items-center flex-1 gap-8">
                           {/* <Divider orientation='vertical' /> */}
                           {qna.answer
                             ? <CheckCircleOutlineOutlined color='success' />
                             : <HelpOutlineOutlined color='disabled' />}
 
-                          <Typography className="pr-8 font-semibold w-full">{qna.content}</Typography>
+                          <Typography className="w-full pr-8 font-semibold">{qna.content}</Typography>
                         </div>
                       </div>
 
@@ -120,19 +124,19 @@ const QnaList = () => {
                     <AccordionDetails className='flex'>
                       <div className='flex flex-col gap-8'>
                         {qna.counselor &&
-                          <Button className='flex gap-16 items-center justify-start w-fit px-16'>
+                          <Button className='flex items-center justify-start gap-16 px-16 w-fit'>
                             <Avatar
                               className='size-32'
                               alt={qna.counselor?.profile.fullName}
                               src={qna.counselor?.profile.avatarLink} />
                             <div>
-                              <Typography className='font-semibold text-sm'>{qna.counselor?.profile.fullName}</Typography>
+                              <Typography className='text-sm font-semibold'>{qna.counselor?.profile.fullName}</Typography>
                               <Typography className='text-sm text-start' color='textSecondary'>{qna.counselor?.expertise?.name}</Typography>
                             </div>
                           </Button>}
                         {qna.answer ?
                           <div>
-                            <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
+                            <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
                             <Typography className="px-8">{qna.answer}</Typography>
                           </div>
                           : <div>
@@ -141,9 +145,9 @@ const QnaList = () => {
                       </div>
                     </AccordionDetails>
                     <Box
-                      className='bg-primary-light/5 w-full py-8 flex justify-between px-16 '
+                      className='flex justify-between w-full px-16 py-8 bg-primary-light/5 '
                     >
-                      <div className='w-112 flex items-start'>
+                      <div className='flex items-start w-112'>
                         <IconButton><ThumbUpOutlined /></IconButton>
                         <IconButton><ThumbDownOutlined /></IconButton>
                       </div>
