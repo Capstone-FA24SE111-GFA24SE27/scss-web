@@ -1,4 +1,4 @@
-import { Account, Counselor, PaginationContent, Student } from '@shared/types';
+import { Account, AppointmentReport, Counselor, PaginationContent, Student } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -42,38 +42,6 @@ type CreateReportApiArg = {
 
 
 type AppointmentReportApiResponse = ApiResponse<AppointmentReport>
-
-
-type AppointmentReport = {
-  id: number,
-  student: Student,
-  counselor: Counselor,
-  appointment: Appointment
-} & Report
-
-
-
-type Report = {
-  consultationGoal?: {
-    specificGoal?: string;
-    reason?: string;
-  };
-  consultationContent?: {
-    summaryOfDiscussion?: string;
-    mainIssues?: string;
-    studentEmotions?: string;
-    studentReactions?: string;
-  };
-  consultationConclusion?: {
-    counselorConclusion?: string;
-    followUpNeeded?: boolean;
-    followUpNotes?: string;
-  };
-  intervention?: {
-    type?: string;
-    description?: string;
-  };
-};
 
 
 type Appointment = {

@@ -9,6 +9,8 @@ import { Dialog } from '@shared/components';
 import dayjs from 'dayjs';
 import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation } from '../counseling-api';
 import { Appointment, AppointmentRequest } from '@/shared/types';
+import { ExpandableText } from '@shared/components'
+
 const RequestsContent = () => {
   const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({})
 

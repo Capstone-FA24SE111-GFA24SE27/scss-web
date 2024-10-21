@@ -196,7 +196,7 @@ const QnaList = () => {
                         disabled={!qna.counselor}
                         className='space-x-4'
                       >
-                        Start to chat
+                        Chat
                         {
                           countUnreadMessages(qna) ? <Chip label={countUnreadMessages(qna)} size='small' color='secondary' /> : ''
                         }

@@ -473,7 +473,7 @@ function QuickBooking() {
                         </Tooltip>
 
 
-                        <div className='px-32'>
+                        <div className='px-16'>
                           <Divider className='mt-16' />
                           <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
 

@@ -1,1 +1,2 @@
-export * from './socket-context'
+export * from './socket'
+export * from './theme'

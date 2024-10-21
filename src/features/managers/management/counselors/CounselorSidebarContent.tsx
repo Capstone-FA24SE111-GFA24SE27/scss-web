@@ -16,7 +16,6 @@ function CounselorSidebarContent() {
             >
                 <Close/>
             </IconButton>
-
             <Outlet />
         </div>
     );

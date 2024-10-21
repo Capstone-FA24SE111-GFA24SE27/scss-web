@@ -65,13 +65,13 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 				muiFilterTextFieldProps: {
 					variant: 'outlined',
 					size: 'small',
-					sx: {
-						'& .MuiInputBase-root': {
-							padding: '0px 8px',
-							height: '32px!important',
-							minHeight: '32px!important'
-						}
-					}
+					// sx: {
+					// 	'& .MuiInputBase-root': {
+					// 		padding: '0px 8px',
+					// 		height: '32px!important',
+					// 		minHeight: '32px!important'
+					// 	}
+					// }
 				},
 				muiSelectAllCheckboxProps: {
 					className: 'w-48'

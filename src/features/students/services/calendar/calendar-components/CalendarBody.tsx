@@ -22,7 +22,7 @@ import CalendarAppEventContent from './CalendarAppEventContent';
 import EventDetailDialog from './event/EventDetailDialog';
 
 import { AppLoading, ContentLoading } from '@/shared/components';
-import { useSocket } from '@/shared/context';
+import { useSocket } from '@/shared/context/socket';
 import { useNavigate } from 'react-router-dom';
 import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
 import { useGetAppointmentScheduleQuery, useGetHolidayScheduleQuery } from '../calendar-api';

@@ -4,14 +4,15 @@ import { styled } from '@mui/material/styles';
 import { AppLoading, Breadcrumbs, Heading, PageSimple } from '@shared/components';
 import { Autocomplete, MenuItem, Paper, Rating, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
 import CounselorSidebarContent from '../CounselorSidebarContent';
-import { Mail, Phone, Star } from '@mui/icons-material';
+import { Feedback, Mail, Phone, Star } from '@mui/icons-material';
 import { Controller } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
 import { CounselingSlot, useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
 import { z } from 'zod';
 import dayjs from 'dayjs';
-import AppointmentsTable from './tabs/AppointmentsTable';
-import RequestsTable from './tabs/RequestsTable';
+import AppointmentsTable from './AppointmentsTab';
+import RequestsTable from './RequestsTab';
+import FeedbackTab from './FeedbackTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -22,14 +23,11 @@ const Root = styled(PageSimple)(({ theme }) => ({
 
 function Counseling() {
   const pageLayout = useRef(null);
+  const routeParams = useParams()
   const { id } = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const { data, isLoading } = useGetCounselorQuery(Number(id));
-  // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
-  // useGetContactsListQuery();
-  // useGetContactsCountriesQuery();
-  // useGetContactsTagsQuery();
   const counselorData = data?.content
 
   const { data: counselingSlotsData, isLoading: isLoadingCounselingSlotsData } = useGetCounselingSlotsQuery()
@@ -92,9 +90,9 @@ function Counseling() {
   };
 
 
-  // useEffect(() => {
-  //   setRightSidebarOpen(Boolean(routeParams.id));
-  // }, [routeParams]);
+  useEffect(() => {
+    setRightSidebarOpen(Boolean(routeParams.appointmentId));
+  }, [routeParams]);
 
   if (isLoading) {
     return <AppLoading />;
@@ -243,11 +241,11 @@ function Counseling() {
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Feedbacks"
+              label="Requests"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Requests"
+              label="Feedbacks"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
@@ -266,6 +264,7 @@ function Counseling() {
             <div className="w-full pr-8">
               {tabValue === 0 && <AppointmentsTable />}
               {tabValue === 1 && <RequestsTable />}
+              {tabValue === 2 && <FeedbackTab />}
             </div>
           </Paper>
         </div>

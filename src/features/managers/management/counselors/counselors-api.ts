@@ -1,10 +1,11 @@
-import { Counselor, PaginationContent, Profile } from '@/shared/types';
+import { Appointment, AppointmentFeedback, AppointmentReport, AppointmentRequest, Counselor, PaginationContent, Profile, Student } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
 export const addTagTypes = [
   'counselors',
-  'counselingSlots'
+  'counselingSlots',
+  'appointments',
 ] as const;
 
 
@@ -66,6 +67,30 @@ export const counselorsMangementApi = api
         }),
         invalidatesTags: ['counselors']
       }),
+      getCounselorAppointmentsManagement: build.query<GetCounselorAppointmentsApiResponse, GetCounselorAppointmentsApiArg>({
+        query: ({ counselorId }) => ({
+          url: `/api/manage/counselors/appointment/filter/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments']
+      }),
+      getAppointmentReportManagement: build.query<AppointmentReportApiResponse, AppointmentReportApiArg>({
+        query: ({ appointmentId, counselorId }) => ({
+          url: `/api/manage/counselors/report/${appointmentId}/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments']
+      }),
+      getCounselorAppointmentRequestsManagement: build.query<GetCounselingAppointmentApiResponse, number>({
+        query: (counselorId) => ({
+          url: `/api/manage/counselors/appointment-request/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments',]
+      }),
+      getCounselorFeedbacks: build.query<GetCounselorFeedbacksApResponse, GetCounselorFeedbacksApiArg>({
+        query: ({ counselorId }) => ({
+          url: `/api/manage/counselors/feedback/filter/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments',]
+      }),
     })
   })
 
@@ -77,7 +102,11 @@ export const {
   useGetCounselingSlotsQuery,
   useUpdateCounselorCounselingSlotsMutation,
   useDeleteCounselorCounselingSlotsMutation,
-  useUpdateCounselorAvailableDateRangeMutation
+  useUpdateCounselorAvailableDateRangeMutation,
+  useGetCounselorAppointmentsManagementQuery,
+  useGetAppointmentReportManagementQuery,
+  useGetCounselorAppointmentRequestsManagementQuery,
+  useGetCounselorFeedbacksQuery,
 } = counselorsMangementApi
 
 
@@ -131,6 +160,31 @@ type UpdateCounselorAvailableDateRange = {
 
 type GetCounselingSlotsResponse = ApiResponse<CounselingSlot[]>
 
+export type GetCounselorAppointmentsApiArg = {
+  sortDirection?: 'ASC' | 'DESC',
+  sortBy?: string,
+  page?: number,
+  counselorId: number,
+}
+
+export type GetCounselorAppointmentsApiResponse = ApiResponse<PaginationContent<Appointment>>
+
+export type AppointmentReportApiArg = {
+  counselorId: number,
+  appointmentId: number,
+}
+export type AppointmentReportApiResponse = ApiResponse<AppointmentReport>
+
+export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<AppointmentRequest>>
 
 
+export type GetCounselorFeedbacksApResponse = ApiResponse<PaginationContent<AppointmentFeedbacksApManagement>>
 
+export type AppointmentFeedbacksApManagement = AppointmentFeedback & {
+  appointment: Appointment
+}
+
+
+export type GetCounselorFeedbacksApiArg = {
+  counselorId: number
+}

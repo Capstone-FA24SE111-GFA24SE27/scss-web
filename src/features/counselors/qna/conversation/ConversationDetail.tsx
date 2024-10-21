@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { Message, useGetQuestionQuery, useReadMessageMutation } from '../qna-api';
 import { ContentLoading, Scrollbar } from '@/shared/components';
 import { selectAccount, useAppSelector } from '@shared/store';
-import { useSocket } from '@/shared/context';
+import { useSocket } from '@/shared/context/socket';
 import { useSendMessageMutation } from '../qna-api';
 import { formatChatDate } from '@/shared/utils';
 
