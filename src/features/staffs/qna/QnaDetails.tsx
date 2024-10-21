@@ -1,6 +1,6 @@
-import { ContentLoading, NavLinkAdapter } from '@/shared/components';
+import { ContentLoading, NavLinkAdapter, selectDialogProps } from '@/shared/components';
 import React from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
 	useGetQuestionQuery,
 	usePostFlagQuestionStatusMutation,
@@ -21,6 +21,9 @@ import {
 	Flag,
 	RemoveCircle,
 } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '@shared/store';
+import useConfirmDialog from '@/shared/hooks/useConfirmDialog';
+import useAlertDialog from '@/shared/hooks/useAlertDialog';
 
 const QnaDetails = () => {
 	const routeParams = useParams();
@@ -28,6 +31,8 @@ const QnaDetails = () => {
 	const { data, isLoading } = useGetQuestionQuery(qnaId, { skip: !qnaId });
 	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
 	const [flagQuestion] = usePostFlagQuestionStatusMutation();
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate()
 
 	if (isLoading) {
 		return <ContentLoading />;
@@ -46,27 +51,72 @@ const QnaDetails = () => {
 		REJECTED: 'error',
 	};
 
+	const handleNavigateBack = () => {
+
+	}
+
 	const handleVerify = () => {
-		reviewQuestion({ id: qna.id, status: 'VERIFIED' });
+		useConfirmDialog(
+			{
+				dispatch: dispatch,
+				title: 'Are you sure you want to verify this question?',
+				confirmButtonFucntion: async () =>{ 
+					const result = await reviewQuestion({ id: qna.id, status: 'VERIFIED' })
+					useAlertDialog({title: result.data.message, dispatch: dispatch})
+					if(result.data.status === 200) {
+						navigate(-1)
+					}
+				}
+			}	
+		)
+		
 	};
 
 	const handleReject = () => {
-		reviewQuestion({ id: qna.id, status: 'REJECTED' });
+		useConfirmDialog(
+			{
+				dispatch: dispatch,
+				title: 'Are you sure you want to reject this question?',
+				confirmButtonFucntion: async () =>{ 
+					const result = await reviewQuestion({ id: qna.id, status: 'REJECTED' });
+					if(result?.data?.status === 200) {
+						useAlertDialog({title: "Question is rejected successfully", dispatch: dispatch})
+						navigate(-1)
+					} else {
+						useAlertDialog({title: result.data.message, dispatch: dispatch})
+
+					}
+
+				}
+			}	
+		)
+		
 	};
 
 	const handleFlag = () => {
-		flagQuestion({ id: qna.id });
+		useConfirmDialog(
+			{
+				dispatch: dispatch,
+				title: 'Are you sure you want to flag this question?',
+				confirmButtonFucntion: async () =>{ 
+					const result = await flagQuestion({ id: qna.id });
+					useAlertDialog({title: result.data.message, dispatch: dispatch})
+
+				}
+			}	
+		)
+		
 	};
 
 	return (
 		<div className='relative w-full h-full p-16 '>
-			<div className='w-full pb-32 bg-background-paper h-full'>
-				<Typography className='pt-16 pr-32 pb-32 text-xl font-semibold leading-none'>
+			<div className='w-full h-full pb-32 bg-background-paper'>
+				<Typography className='pt-16 pb-32 pr-32 text-xl font-semibold leading-none'>
 					Question Details
 				</Typography>
 
 				<div className='flex flex-col gap-16'>
-					<div className='gap-8 flex'>
+					<div className='flex gap-8'>
 						<Chip
 							label={
 								qna.questionType === 'ACADEMIC'
@@ -100,22 +150,20 @@ const QnaDetails = () => {
 						)}
 					</div>
 					<div>
-						<Typography className='font-semibold text-lg'>
+						<Typography className='text-lg font-semibold'>
 							Content
 						</Typography>
 						<Typography className=''>{qna.content}</Typography>
 					</div>
 					<div>
-						<Typography className='font-semibold text-lg'>
+						<Typography className='text-lg font-semibold'>
 							Enquirer
 						</Typography>
-						<Tooltip
-							title={`View ${qna.student.profile.fullName}'s profile`}
-						>
+						
 							<ListItemButton
 								// component={NavLinkAdapter}
 								// to={handleLocalNavigate(`student/${qna.student.profile.id}`)}
-								className='w-full rounded shadow bg-primary-light/5'
+								className='w-full rounded shadow cursor-default bg-primary-light/5'
 							>
 								<div
 									// onClick={handleNavClicked}
@@ -135,12 +183,10 @@ const QnaDetails = () => {
 										</Typography>
 									</div>
 								</div>
-								<ChevronRight />
 							</ListItemButton>
-						</Tooltip>
 					</div>
 					<div>
-						<Typography className='font-semibold text-lg'>
+						<Typography className='text-lg font-semibold'>
 							Informant
 						</Typography>
 
@@ -175,7 +221,7 @@ const QnaDetails = () => {
 								</ListItemButton>
 							</Tooltip>
 						) : (
-							<div className='flex gap-4 items-center'>
+							<div className='flex items-center gap-4'>
 								<Error />
 								<Typography
 									className='font-medium'
@@ -188,8 +234,8 @@ const QnaDetails = () => {
 					</div>
 				</div>
 			</div>
-			<Typography className='font-semibold text-lg'>Action</Typography>
-			<div className='w-full sticky bottom-0 left-0 flex gap-16'>
+			<Typography className='text-lg font-semibold'>Action</Typography>
+			<div className='sticky bottom-0 left-0 flex w-full gap-16'>
 				<Button
 					className='flex items-center gap-4'
 					onClick={handleVerify}

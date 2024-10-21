@@ -37,7 +37,7 @@ const App = () => {
 		case roles.ADMIN:
 			roleBasedRoutes = adminRoutes;
 			break;
-			case roles.SUPPORT_STAFF:
+		case roles.SUPPORT_STAFF:
 			roleBasedRoutes = supportStaffRoutes;
 			break;
 		default:

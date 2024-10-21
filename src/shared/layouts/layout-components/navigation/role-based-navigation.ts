@@ -1,5 +1,6 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer } from '@mui/icons-material';
+import BadgeIcon from '@mui/icons-material/Badge';
 
 interface SubList {
     name: string,
@@ -287,22 +288,48 @@ const adminNavigation: NavigationOptions = {
             route: 'account',
             items: [
                 {
-                    icon: Assignment,
-                    name: 'Question Board',
-                    route: 'question-board'
+                    icon: SupervisedUserCircle,
+                    name: 'Manager',
+                    route: 'manager'
                 },
+                {
+                    icon: AccountBox,
+                    name: 'Counselor',
+                    route: 'counselor'
+                },
+                {
+                    icon: EmojiPeople,
+                    name: 'Support Staff',
+                    route: 'staff'
+                },
+                {
+                    icon: BadgeIcon,
+                    name: 'Student',
+                    route: 'student'
+                },
+            ]
+        },
+        {
+            name: "Resources",
+            description: "Manage system's resources",
+            route: 'resources',
+            items: [
+                {
+                    icon: Event,
+                    name: 'Holiday',
+                    route: 'holiday'
+                },
+                {
+                    icon: LocalOffer,
+                    name: 'Problem Tag',
+                    route: 'tag'
+                },
+                
             ]
         },
     ],
     shortcuts: [
-        {
-            icon: CalendarMonth,
-            name: 'Calendar',
-        },
-        {
-            icon: Mail,
-            name: 'Mail',
-        },
+       
     ],
     userMenu: [
         {

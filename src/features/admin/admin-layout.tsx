@@ -1,10 +1,13 @@
+import { AppLayout } from '@/shared/layouts'
 import React from 'react'
+import { Outlet } from 'react-router-dom'
 
-type Props = {}
 
-const AdminLayout = (props: Props) => {
+const AdminLayout = () => {
   return (
-    <div>admin-layout</div>
+    <AppLayout>
+      <Outlet/>
+    </AppLayout>
   )
 }
 

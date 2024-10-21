@@ -1,4 +1,10 @@
-import React, { ChangeEvent, ChangeEventHandler, SyntheticEvent, useEffect, useState } from 'react';
+import React, {
+	ChangeEvent,
+	ChangeEventHandler,
+	SyntheticEvent,
+	useEffect,
+	useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -37,6 +43,9 @@ import {
 } from '@mui/icons-material';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { Question } from '@/shared/types';
+import useConfirmDialog from '@/shared/hooks/useConfirmDialog';
+import useAlertDialog from '@/shared/hooks/useAlertDialog';
+import { useDispatch } from 'react-redux';
 
 const container = {
 	show: {
@@ -62,11 +71,12 @@ const QnaList = () => {
 	const [flagQuestion] = usePostFlagQuestionStatusMutation();
 
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const { data: qnaData } = useGetQuestionsQuery({
 		keyword: debounceSearchKeyword,
 		page: page,
-		type: debounceType
+		type: debounceType,
 	});
 	const qnaList = qnaData?.content?.data || [];
 
@@ -99,20 +109,57 @@ const QnaList = () => {
 	};
 
 	const handleVerify = () => {
-		reviewQuestion({ id: selectedQna.id, status: 'VERIFIED' });
+		useConfirmDialog({
+			dispatch: dispatch,
+			title: 'Are you sure you want to verify this question?',
+			confirmButtonFucntion: async () => {
+				const result = await reviewQuestion({
+					id: selectedQna.id,
+					status: 'VERIFIED',
+				});
+				useAlertDialog({
+					title: result.data.message,
+					dispatch: dispatch,
+				});
+			
+			},
+		});
 	};
 
 	const handleReject = () => {
-		reviewQuestion({ id: selectedQna.id, status: 'REJECTED' });
+		useConfirmDialog({
+			dispatch: dispatch,
+			title: 'Are you sure you want to reject this question?',
+			confirmButtonFucntion: async () => {
+				const result = await reviewQuestion({
+					id: selectedQna.id,
+					status: 'REJECTED',
+				});
+				if (result?.data?.status === 200) {
+					useAlertDialog({
+						title: 'Question is rejected successfully',
+						dispatch: dispatch,
+					});
+				} else {
+					useAlertDialog({
+						title: result.data.message,
+						dispatch: dispatch,
+					});
+				}
+			},
+		});
 	};
 
 	const handleFlag = () => {
 		flagQuestion({ id: selectedQna.id });
 	};
 
-	const handleTypeSelect = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		setType(event.target.value as TypeOfQuestionType)
-	}
+	const handleTypeSelect = (
+		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		if(event.target.value === 'All') return
+		setType(event.target.value as TypeOfQuestionType);
+	};
 
 	return (
 		<motion.div
@@ -137,7 +184,7 @@ const QnaList = () => {
 				<TextField
 					select
 					label='Choose type'
-					defaultValue={''}
+					defaultValue={'All'}
 					className='w-200 '
 					onChange={handleTypeSelect}
 					slotProps={{
@@ -146,9 +193,9 @@ const QnaList = () => {
 						},
 					}}
 				>
-					<MenuItem value=''>All</MenuItem>
+					<MenuItem value='All'>All</MenuItem>
 					<MenuItem value='ACADEMIC'>Academic</MenuItem>
-					<MenuItem value='NON-ACADEMIC'>Non-Academic</MenuItem>
+					<MenuItem value='NON_ACADEMIC'>Non-Academic</MenuItem>
 				</TextField>
 			</div>
 			{qnaList?.length > 0 && (
@@ -156,11 +203,11 @@ const QnaList = () => {
 					{qnaList.map((qna) => {
 						return (
 							<motion.div variants={item} key={qna.id}>
-								<Paper className='overflow-hidden shadow p-12 gap-8 flex flex-col'>
+								<Paper className='flex flex-col gap-8 p-12 overflow-hidden shadow'>
 									<div className='relative flex items-center '>
-										<div className='flex flex-col gap-8 w-full'>
-											<div className='flex  items-center justify-between w-full '>
-												<div className='gap-8 flex'>
+										<div className='flex flex-col w-full gap-8'>
+											<div className='flex items-center justify-between w-full '>
+												<div className='flex gap-8'>
 													<Chip
 														label={
 															qna.questionType ===
@@ -223,7 +270,7 @@ const QnaList = () => {
 																handleClose();
 															}}
 														>
-															<Visibility color='info'/>
+															<Visibility color='info' />
 															View
 														</MenuItem>
 														<MenuItem
