@@ -42,7 +42,7 @@ export const usersApi = api
 				query: (questionCardId) => ({
 					url: `/api/question-cards/review/${questionCardId}`,
 				}),
-				providesTags: ['qna'],
+				providesTags: (result, error, id) => ['qna'],
 			}),
 			postReviewQuestionStatus: build.mutation<
 				PostReviewQuestionResponse,
@@ -54,6 +54,16 @@ export const usersApi = api
 				}),
 				invalidatesTags: ['qna'],
 			}),
+			postFlagQuestionStatus: build.mutation<
+				PostFlagQuestionResponse,
+				PostFlagQuestionArg
+			>({
+				query: (args) => ({
+					url: `/api/question-cards/review/flag/${args.id}`,
+					method: 'POST',
+				}),
+				invalidatesTags: ['qna'],
+			}),
 		}),
 	});
 
@@ -61,6 +71,7 @@ export const {
 	useGetQuestionsQuery,
 	useGetQuestionQuery,
 	usePostReviewQuestionStatusMutation,
+	usePostFlagQuestionStatusMutation
 } = usersApi;
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>;
@@ -76,11 +87,21 @@ export type GetQuestionsApiArgs = {
 	page?: number;
 };
 
+export type TypeOfQuestionType = 'ACADEMIC' | 'NON-ACADEMIC' | ''
+
 export type PostReviewQuestionArg = {
 	id: number;
 	status: 'PENDING' | 'VERIFIED' | 'FLAGGED' | 'REJECTED';
 };
 export type PostReviewQuestionResponse = {
+	message: string;
+	status: number;
+};
+
+export type PostFlagQuestionArg = {
+	id: number;
+};
+export type PostFlagQuestionResponse = {
 	message: string;
 	status: number;
 };
