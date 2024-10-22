@@ -1,20 +1,16 @@
-import Button from '@mui/material/Button';
-import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
-import { useNavigate, useParams } from 'react-router-dom';
+import { CounselingType } from '@/shared/types';
+import { CakeOutlined, EmailOutlined, LocalPhoneOutlined, NotesOutlined } from '@mui/icons-material';
 import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/system/Box';
-import _ from 'lodash';
-import { CakeOutlined, EmailOutlined, LocalPhoneOutlined, NotesOutlined } from '@mui/icons-material';
+import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
 import dayjs from 'dayjs';
-import { memo } from 'react'
-import { Rating } from '@mui/material';
-import { useGetCounselorAcademicQuery, useGetCounselorNonAcademicQuery } from '../counseling-api';
-import { useAppSelector } from '@shared/store';
-import { selectCounselorType } from '../counselor-list/counselor-list-slice';
-import { CounselingType } from '@/shared/types';
+import { memo } from 'react';
+import { useParams } from 'react-router-dom';
+import { useGetCounselorQuery } from '../counseling-api';
 /**
  * The contact view.
  */
@@ -23,13 +19,12 @@ interface CounselorViewProps {
     shouldShowBooking?: boolean,
     counselingType?: CounselingType
 }
-function CounselorView({ shouldShowBooking = true, counselingType = 'ACADEMIC' }: CounselorViewProps) {
+function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
     const routeParams = useParams();
     const { id: counselorId } = routeParams as { id: string };
-    const { data, isLoading } = counselingType === 'ACADEMIC'
-        ? useGetCounselorAcademicQuery(counselorId)
-        : useGetCounselorNonAcademicQuery(counselorId)
-    const counselor = data
+    const { data, isLoading } = useGetCounselorQuery(counselorId)
+    const counselor = data?.content
+    console.log(counselor)
 
     if (isLoading) {
         return <ContentLoading className='m-32' />
@@ -72,8 +67,8 @@ function CounselorView({ shouldShowBooking = true, counselingType = 'ACADEMIC' }
                                 color: 'text.secondary'
                             }}
                             className="w-128 h-128 text-64 font-bold"
-                            src={counselor.profile.avatarLink}
-                            alt={counselor.profile.fullName}
+                            src={counselor?.profile?.avatarLink}
+                            alt={counselor?.profile?.fullName}
                         >
                             {counselor?.profile.fullName?.charAt(0)}
                         </Avatar>

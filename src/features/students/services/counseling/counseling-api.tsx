@@ -22,15 +22,21 @@ export const counselingApi = api
         }),
         providesTags: ['counselors']
       }),
-      getCounselorsNonAcademic: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
+      getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
           url: `/api/counselors/non-academic?search=${search}`,
         }),
         providesTags: ['counselors']
       }),
-      getCounselorAcademic: build.query<GetCounselorApiResponse, string>({
+      getCounselorAcademic: build.query<GetCounselorApiAcademicResponse, string>({
         query: (counselorId) => ({
           url: `/api/counselors/academic/${counselorId}`,
+        }),
+        providesTags: ['counselors']
+      }),
+      getCounselor: build.query<GetCounselorApiResponse, string>({
+        query: (counselorId) => ({
+          url: `/api/counselors/${counselorId}`,
         }),
         providesTags: ['counselors']
       }),
@@ -89,6 +95,7 @@ export const counselingApi = api
 export const {
   useGetCounselorsAcademicQuery,
   useGetCounselorsNonAcademicQuery,
+  useGetCounselorQuery,
   useGetCounselorAcademicQuery,
   useGetCounselorNonAcademicQuery,
   useGetCounselorDailySlotsQuery,
@@ -97,7 +104,7 @@ export const {
   useGetCounselorSpecializationsQuery,
   useGetCounselorSlotsQuery,
   useGetRandomMatchedCousenlorAcademicMutation,
-  useGetRandomMatchedCousenlorNonAcademicMutation
+  useGetRandomMatchedCousenlorNonAcademicMutation,
 } = counselingApi
 
 
@@ -111,7 +118,8 @@ export type GetCounselorsApiArg = {
   ratingTo?: number
 }
 
-export type GetCounselorApiResponse = Counselor
+export type GetCounselorApiResponse = ApiResponse<Counselor>
+export type GetCounselorApiAcademicResponse = Counselor
 export type GetRandomMatchedCounselorApiResponse = ApiResponse<Counselor>
 
 

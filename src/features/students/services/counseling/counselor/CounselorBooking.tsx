@@ -10,7 +10,7 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Rating, Te
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import { Slot, useGetCounselorAcademicQuery, useGetCounselorNonAcademicQuery, useGetCounselorDailySlotsQuery, AppointmentRequest, useBookCounselorMutation, GetCounselorsDailySlotsResponse, GetCounselorsDailySlotsArg, DailySlot, AppointmentStatus } from '../counseling-api';
+import { Slot, useGetCounselorAcademicQuery, useGetCounselorNonAcademicQuery, useGetCounselorDailySlotsQuery, AppointmentRequest, useBookCounselorMutation, GetCounselorsDailySlotsResponse, GetCounselorsDailySlotsArg, DailySlot, AppointmentStatus, useGetCounselorQuery } from '../counseling-api';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -79,9 +79,7 @@ function CounselorBooking() {
     const navigate = useNavigate()
     const counselorType = useAppSelector(selectCounselorType)
 
-    const { data: counselorData, isLoading } = counselorType === 'ACADEMIC'
-        ? useGetCounselorAcademicQuery(counselorId)
-        : useGetCounselorNonAcademicQuery(counselorId)
+    const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId)
     const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
     const counselor = counselorData
