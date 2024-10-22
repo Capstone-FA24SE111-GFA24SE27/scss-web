@@ -17,7 +17,7 @@ export const counselorsMangementApi = api
     endpoints: (build) => ({
       getCounselorsAcademicManagement: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/manage/counselors/academic`,
+          url: `/api/manage/counselors/academic?page=${page}`,
         }),
         providesTags: ['counselors']
       }),
@@ -27,7 +27,7 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselors']
       }),
-      getCounselor: build.query<GetCounselorApiResponse, number>({
+      getCounselorManagement: build.query<GetCounselorApiResponse, number>({
         query: (counselorId) => ({
           url: `/api/manage/counselors/${counselorId}`,
         }),
@@ -97,7 +97,7 @@ export const counselorsMangementApi = api
 export const {
   useGetCounselorsAcademicManagementQuery,
   useGetCounselorsNonAcademicManagementQuery,
-  useGetCounselorQuery,
+  useGetCounselorManagementQuery,
   useUpdateCounselorStatusMutation,
   useGetCounselingSlotsQuery,
   useUpdateCounselorCounselingSlotsMutation,

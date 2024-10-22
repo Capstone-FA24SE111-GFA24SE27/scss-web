@@ -7,7 +7,7 @@ import CounselorSidebarContent from '../CounselorSidebarContent';
 import { Feedback, Mail, Phone, Star } from '@mui/icons-material';
 import { Controller } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
-import { CounselingSlot, useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
+import { CounselingSlot, useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorManagementQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import AppointmentsTable from './AppointmentsTab';
@@ -27,7 +27,7 @@ function Counseling() {
   const { id } = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
-  const { data, isLoading } = useGetCounselorQuery(Number(id));
+  const { data, isLoading } = useGetCounselorManagementQuery(Number(id));
   const counselorData = data?.content
 
   const { data: counselingSlotsData, isLoading: isLoadingCounselingSlotsData } = useGetCounselingSlotsQuery()

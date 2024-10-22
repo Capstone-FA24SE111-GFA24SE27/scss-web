@@ -12,14 +12,15 @@ import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { ManagementCounselor, useGetCounselorsAcademicManagementQuery } from './counselors-api';
 function CounselorsTable() {
 
-
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
+  console.log(pagination)
+
 
   const { data, isLoading } = useGetCounselorsAcademicManagementQuery({
-    page: pagination.pageIndex
+    page: pagination.pageIndex + 1
   })
   console.log(data)
 
@@ -61,15 +62,15 @@ function CounselorsTable() {
         </Typography>
       )
     },
-    {
-      accessorKey: 'specialization',
-      header: 'Specialization',
-      Cell: ({ row }) => (
-        <Typography className='w-fit'>
-          {row.original.profile.expertise?.name || row.original.profile.specialization?.name}
-        </Typography>
-      )
-    },
+    // {
+    //   accessorKey: 'specialization',
+    //   header: 'Specialization',
+    //   Cell: ({ row }) => (
+    //     <Typography className='w-fit'>
+    //       {row.original.profile.expertise?.name || row.original.profile.specialization?.name}
+    //     </Typography>
+    //   )
+    // },
     {
       accessorKey: 'phoneNumber',
       header: 'Phone',
@@ -162,7 +163,7 @@ function CounselorsTable() {
         data={data?.content.data || []}
         columns={columns}
         manualPagination
-        rowCount={data?.content.totalElements || 0}
+        rowCount={data?.content.totalElements || 1}
         onPaginationChange={setPagination}
         state={{ pagination }}
         renderRowActionMenuItems={({ closeMenu, row, table }) => [

@@ -7,10 +7,12 @@ import { selectCounselorType, selectFilter, setCounselorType, setSearchTerm } fr
 import CounselorListFilterButton from './CounselorListFilterButton'
 import { debounce } from 'lodash'
 import { CounselingType } from '@/shared/types'
+import { useSearchParams } from 'react-router-dom'
 
 const CounselorListHeader = () => {
   const filter = useAppSelector(selectFilter)
   const dispatch = useAppDispatch()
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [tabValue, setTabValue] = useState(0);
 
@@ -29,7 +31,6 @@ const CounselorListHeader = () => {
         break;
     }
     dispatch(setCounselorType(counselingType))
-
   }
 
   const debounceSearch = debounce((debouncedSearchTerm: string) => {

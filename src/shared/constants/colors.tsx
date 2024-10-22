@@ -4,6 +4,9 @@ export const statusColor = {
   'WAITING': 'warning',
   'APPROVED': 'success',
   'ATTEND': 'success',
+  'VERIFIED': 'success',
+  'PENDING': 'warning',
+  'FLAGGED': 'error',
 }
 
 export const meetingTypeColor = {
