@@ -1,16 +1,17 @@
 import { Heading, NavLinkAdapter, PageSimple } from '@/shared/components'
+import { Add, Chat, Forum } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Outlet, useLocation, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
+import QnaForm from './QnaForm'
 import QnaList from './QnaList'
 import QnaSidebarContent from './QnaSidebarContent'
-import QnaForm from './QnaForm'
 const Qna = () => {
   const routeParams = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const location = useLocation()
   useEffect(() => {
-    setRightSidebarOpen(Boolean(routeParams.id));
+    setRightSidebarOpen(Boolean(location?.pathname.includes('conversations')));
   }, [routeParams]);
   const isMobile = false
 
@@ -25,7 +26,10 @@ const Qna = () => {
             title='Questions and Answers'
             description='List of questions and answers you have started'
           />
-          <Button variant='contained' color='secondary' component={NavLinkAdapter} to='create'>Ask a question</Button>
+          <div className='flex gap-8'>
+            <Button variant='contained' color='primary' component={NavLinkAdapter} to='conversations' startIcon={<Forum />}>Chat</Button>
+            <Button variant='contained' color='secondary' component={NavLinkAdapter} to='create' startIcon={<Add />}>Ask a question</Button>
+          </div>
         </div>
       }
       rightSidebarOpen={rightSidebarOpen}

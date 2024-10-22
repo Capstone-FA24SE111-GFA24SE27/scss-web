@@ -7,16 +7,16 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AppLoading } from '@shared/components';
 import { specialRoutes } from '@shared/configs';
 import { roles } from '@shared/constants';
-import { ThemeProvider } from '@shared/providers';
+import { ThemeProvider } from '@shared/context';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { counselorsRoutes } from '@features/counselors';
-import Dialog from '@shared/components/dialog';
+import { Dialog } from '@shared/components';
 import { SnackbarProvider } from 'notistack';
-import { SocketProvider } from '@shared/context/socket-context';
 import { adminRoutes } from './features/admin';
 import { supportStaffRoutes } from './features/staffs';
+import { SocketProvider } from '@shared/context';
 
 const App = () => {
 	const account = useAppSelector(selectAccount);

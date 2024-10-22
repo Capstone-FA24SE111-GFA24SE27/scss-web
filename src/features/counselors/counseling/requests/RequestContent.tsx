@@ -5,10 +5,12 @@ import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from 
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
-import Dialog from '@shared/components/dialog';
+import { Dialog } from '@shared/components';
 import dayjs from 'dayjs';
 import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation } from '../counseling-api';
 import { Appointment, AppointmentRequest } from '@/shared/types';
+import { ExpandableText } from '@shared/components'
+
 const RequestsContent = () => {
   const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({})
 
@@ -81,10 +83,7 @@ const RequestsContent = () => {
 
                 <div className='flex gap-8'>
                   <Typography className='w-60' color='textSecondary'>Reason: </Typography>
-                  <Typography
-                  >
-                    {appointment.reason}
-                  </Typography>
+                  <ExpandableText text={appointment.reason} limit={175} />
                 </div>
                 {/* <ListItem
                   className='flex w-full gap-16 rounded bg-primary-light/5'

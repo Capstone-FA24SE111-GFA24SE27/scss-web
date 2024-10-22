@@ -5,7 +5,6 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import NavbarContent from './NavbarContent';
 import { selectNavbar } from './navbar-slice';
 import { useAppSelector } from '@/shared/store';
-import { defaultThemeOptions, ThemeProvider } from '@/shared/providers';
 
 const navbarWidth = 280;
 

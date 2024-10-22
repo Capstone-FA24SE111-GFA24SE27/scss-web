@@ -1,10 +1,10 @@
 import { NavLinkAdapter } from '@/shared/components';
-import { ArrowForward, ArrowRightAlt, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
+import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, Edit, EditNote, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Question, useAnswerQuestionMutation, useGetMyQuestionsQuery } from '../qna-api';
+import { Question, useAnswerQuestionMutation, useGetMyQuestionsQuery, useReadMessageMutation } from '../qna-api';
 
 
 const container = {
@@ -31,7 +31,12 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 
   const [answer, setAnswer] = useState('')
 
+  const [editedAnswer, setEditedAnswer] = useState(qna.answer || '')
+
+  const [editMode, setEditMode] = useState(false)
+
   const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
+  const [editAnswer, { isLoading: editingAnswer }] = useAnswerQuestionMutation()
 
   const handleAnswerQuestion = (questionId: number) => {
     answerQuestion({
@@ -40,8 +45,26 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
     })
   }
 
+  const editAnswerQuestion = (questionId: number) => {
+    editAnswer({
+      questionCardId: questionId,
+      content: editedAnswer
+    })
+    setAnswer(editedAnswer)
+    setEditedAnswer(editedAnswer || '')
+    setEditMode(false)
+  }
 
+  const [readMessage] = useReadMessageMutation()
+  const handleSelectChat = () => {
+    readMessage(qna.chatSession.id)
+    navigate(`/qna/conversations/${qna.id}`)
+  }
 
+  const handleChat = () => {
+    readMessage(qna.chatSession.id)
+    navigate(`${qna.id}`)
+  }
   return (
     <motion.div
       variants={item}
@@ -79,10 +102,56 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
             <div className='flex flex-col gap-8 w-full px-16'>
               {
                 qna.answer ?
-                  <div>
-                    <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
-                    <Typography className="px-8">{qna.answer}</Typography>
-                  </div>
+                  editMode ?
+                    <div>
+                      <TextField
+                        label="My answer"
+                        placeholder="Enter a keyword..."
+                        variant="outlined"
+                        value={editedAnswer}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                          setEditedAnswer(event.target.value);
+                        }}
+                        multiline
+                        minRows={4}
+                        fullWidth
+                        slotProps={{
+                          inputLabel: {
+                            shrink: true,
+                          }
+                        }}
+                      />
+                      <div className='w-full flex justify-end gap-8'>
+                        <Button
+                          variant='outlined'
+                          className='mt-8'
+                          color='primary'
+                          size='small'
+                          onClick={() => setEditMode(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          className='mt-8'
+                          size='small'
+                          disabled={editingAnswer || !editedAnswer.length || editedAnswer == answer}
+                          onClick={() => editAnswerQuestion(qna.id)}>
+                          Submit
+                        </Button>
+                      </div>
+                    </div>
+                    : <div>
+                      <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
+                      <div className='flex items-center'>
+                        <Typography className="px-8">{qna.answer}</Typography>
+                        <IconButton size='small' onClick={() => setEditMode(true)}>
+                          <EditNote />
+                        </IconButton>
+                      </div>
+                    </div>
+
                   : <div>
                     <TextField
                       label="My answer"
@@ -117,15 +186,23 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
             </div>
           </AccordionDetails>
           <Box
-            className='bg-primary-light/5 w-full py-8 flex justify-end px-16 cursor-pointer'
-            onClick={() => navigate('1')}
+            className='bg-primary-light/5 w-full py-8 flex justify-end px-16 cursor-pointer gap-16'
           >
             <Button
               variant='outlined'
               color='secondary'
+              onClick={handleSelectChat}
               endIcon={<ArrowForward />}
             >
-              Start a conversation
+              Go to conversations
+            </Button>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={handleChat}
+              endIcon={<ChatBubbleOutline />}
+            >
+              Chat
             </Button>
           </Box>
         </Accordion>

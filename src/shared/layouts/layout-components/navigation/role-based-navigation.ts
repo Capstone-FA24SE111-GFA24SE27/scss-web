@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 
 interface SubList {
@@ -214,49 +214,39 @@ const counselorNavigation: NavigationOptions = {
 const managerNavigation: NavigationOptions = {
     list: [
         {
-            name: "Counseling",
-            description: "Counseling service",
-            route: 'counseling',
+            name: "Dashboard",
+            description: "Data visualization & analytics",
+            route: 'management',
             items: [
                 {
                     icon: Archive,
-                    name: 'Requests',
-                    route: 'requests'
+                    name: 'Home',
+                    route: 'home'
                 },
                 {
                     icon: TagFaces,
-                    name: 'Appointments',
-                    route: 'appointments'
-                },
-                {
-                    icon: CalendarMonth,
-                    name: 'Calendar',
-                    route: 'calendar',
+                    name: 'Analytics',
+                    route: 'analytics'
                 },
             ]
         },
         {
-            name: 'Resources',
-            description: 'Resources for students & couselors',
-            route: 'resources',
+            name: "Management",
+            description: "Manage counselors and students",
+            route: 'management',
             items: [
                 {
-                    icon: EventSeat,
-                    name: 'Workshops',
-                    route: 'workshops'
+                    icon: SupportAgent,
+                    name: 'Counselors',
+                    route: 'counselors'
                 },
                 {
-                    icon: Article,
-                    name: 'Articles',
-                    route: 'article'
-                },
-                {
-                    icon: NotStarted,
-                    name: 'Videos',
-                    route: 'videos'
+                    icon: Face,
+                    name: 'Students',
+                    route: 'students'
                 },
             ]
-        }
+        },
     ],
     shortcuts: [
         {

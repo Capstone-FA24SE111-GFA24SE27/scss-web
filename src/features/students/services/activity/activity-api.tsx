@@ -15,7 +15,7 @@ export const activityApi = api
     endpoints: (build) => ({
       getCounselingAppointment: build.query<GetCounselingAppointmentApiResponse, GetCounselingAppointmentApiArg>({
         query: ({ }) => ({
-          url: `/api/booking-counseling/appointment?fromDate=2024-09-01&toDate=2024-10-30`,
+          url: `/api/appointments/student`,
         }),
         providesTags: ['appointments']
       }),
@@ -48,7 +48,7 @@ export type GetCounselingAppointmentRequestsApiArg = {
 }
 
 
-export type GetCounselingAppointmentApiResponse = ApiResponse<Appointment[]>
+export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>
 export type GetCounselingAppointmentApiArg = {
 
 }

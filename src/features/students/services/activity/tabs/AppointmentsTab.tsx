@@ -6,10 +6,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useState, useEffect } from 'react'
-import { useSocket } from '@shared/context';
+import { useSocket } from '@/shared/context/socket';
 const AppointmentsTab = () => {
   const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({})
-  const appointmentRequests = data?.content
+  const appointmentRequests = data?.content.data
   const socket = useSocket();
   const account = useAppSelector(selectAccount)
 
@@ -121,7 +121,7 @@ const AppointmentsTab = () => {
                       />
                       <div className='ml-16'>
                         <Typography className='font-semibold text-primary-main'>{appointment.counselorInfo.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.counselorInfo?.expertise?.name}</Typography>
+                        <Typography color='text.secondary'>{appointment.counselorInfo?.expertise?.name || appointment.counselorInfo?.specialization?.name}</Typography>
                       </div>
                     </div>
                     <ChevronRight />
@@ -194,7 +194,7 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
   }
 
   return (
-    <div className='w-[40rem]'>
+    <div className='w-[50rem]'>
       <DialogTitle id="alert-dialog-title">Edit details?</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
@@ -205,8 +205,11 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
             name={'comment'}
             label={'Comment'}
             fullWidth
+            multiline
+            rows={4}
+            maxRows={4}
+            
             value={comment}
-            variant="standard"
             className='mt-16'
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setComment(event.target.value);
@@ -232,7 +235,7 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
         <Button
           onClick={() => handleSendFeedback()}
           color="secondary" variant='contained'
-          disabled={!comment && !rating}
+          disabled={!comment || !rating}
         >
           Confirm
         </Button>

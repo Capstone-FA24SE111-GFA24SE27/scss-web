@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 type PageItem = {
   label: string,
-  url: string
+  url: string,
 }
 type Props = {
   parents: PageItem[],
@@ -16,7 +16,7 @@ const Breadcrumbs = ({ parents, currentPage, className = '' }: Props) => {
     <div className={className}>
       <MUIbreadcrumbs aria-label="breadcrumb">
         {parents.map(item =>
-          <Link to={item.url} className='hover:!underline'>
+          <Link to={item.url} key={item.url} className='hover:!underline'>
             {item.label}
           </Link>
         )}

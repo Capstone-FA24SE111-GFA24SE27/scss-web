@@ -6,7 +6,9 @@ import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chi
 import { motion } from 'framer-motion';
 import { SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useGetQuestionsQuery } from './qna-api';
+import { Question, useGetQuestionsQuery, useReadMessageMutation } from './qna-api';
+import { selectAccount, useAppSelector } from '@shared/store';
+import { statusColor } from '@/shared/constants';
 
 
 const container = {
@@ -106,7 +108,7 @@ const QnaList = () => {
 
                         <div className='flex gap-8'>
                           <Chip label={qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={qna.questionType === 'ACADEMIC' ? 'info' : 'warning'} size='small' />
-                          <Chip label={'Verified'} color={'success'} size='small' />
+                          <Chip label={qna.status} color={statusColor[qna.status]} size='small' />
                           {qna.closed && <Chip label={'Closed'} color={'warning'} size='small' />}
                         </div>
                         <div className="flex items-center flex-1 gap-8">

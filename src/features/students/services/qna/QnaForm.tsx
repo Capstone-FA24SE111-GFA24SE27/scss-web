@@ -48,7 +48,7 @@ function QnaForm() {
 		})
 			.unwrap()
 			.then(() => {
-				navigate('..')
+				navigate('.')
 			})
 	}
 
