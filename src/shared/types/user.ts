@@ -21,14 +21,18 @@ export type Profile = {
 }
 
 export type Counselor = {
+  id: number,
   profile: Profile
   email: string,
   rating?: number,
   expertise?: Expertise,
   specialization?: Specialization
+  // status: 'AVAILABLE' | 'UNAVAILABLE'
+  status: string,
 }
 
 export type Student = {
+  id: number,
   profile: Profile
   email: string,
   studentCode: number,

@@ -1,18 +1,18 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Paper, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
-import {   useGetCounselingAppointmentQuery  } from './appointments-api';
+import { useGetCounselorCounselingAppointmentQuery } from './appointments-api';
 import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@shared/components';
 import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, MoreVert, Summarize } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
-import { useSocket } from '@/shared/context';
+import { useSocket } from '@/shared/context/socket';
 import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
 import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '../counseling-api';
 
 const AppointmentsContent = () => {
-  const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({});
-  const appointments = data?.content;
+  const { data, isLoading, refetch } = useGetCounselorCounselingAppointmentQuery({});
+  const appointments = data?.content?.data;
   const dispatch = useAppDispatch();
   const socket = useSocket();
   const account = useAppSelector(selectAccount)
@@ -67,7 +67,7 @@ const AppointmentsContent = () => {
   if (isLoading) {
     return <AppLoading />;
   }
-  if (!appointments.length) {
+  if (!appointments?.length) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>;
   }
 

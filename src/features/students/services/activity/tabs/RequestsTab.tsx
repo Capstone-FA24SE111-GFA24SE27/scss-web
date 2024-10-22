@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { AppointmentRequest, useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation } from '../activity-api'
-import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
+import { AppLoading, ExpandableText, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -64,10 +64,7 @@ const RequestsTab = () => {
 
                 <div className='flex gap-8'>
                   <Typography className='w-52' color='textSecondary'>Reason: </Typography>
-                  <Typography
-                  >
-                    {appointment.reason}
-                  </Typography>
+                  <ExpandableText text={appointment.reason} limit={175} />
                 </div>
                 <Tooltip title={`View ${appointment.counselor.profile.fullName}'s profile`}>
                   <ListItemButton

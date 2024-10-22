@@ -1,4 +1,4 @@
-import { Account, Profile } from './user';
+import { Account, Counselor, Profile, Student } from './user';
 
 export type AppointmentScheduleType = {
 	id: string;
@@ -9,15 +9,15 @@ export type AppointmentScheduleType = {
 	meetUrl?: string;
 	address?: string;
 	counselorInfo:
-		| null
-		| ({
-				rating: string;
-		  } & Account);
+	| null
+	| ({
+		rating: string;
+	} & Account);
 	studentInfo:
-		| null
-		| ({
-				studentCode: string;
-		  } & Account);
+	| null
+	| ({
+		studentCode: string;
+	} & Account);
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
 };
@@ -41,11 +41,11 @@ export type AppointmentFeedback = {
 export type TakeAppointmentAttendance = {
 	appointmentId: number;
 	counselingAppointmentStatus:
-		| 'CANCELED'
-		| 'ATTEND'
-		| 'ABSENT'
-		| 'EXPIRED'
-		| 'WAITING';
+	| 'CANCELED'
+	| 'ATTEND'
+	| 'ABSENT'
+	| 'EXPIRED'
+	| 'WAITING';
 };
 
 export type AppointmentAttendanceStatus =
@@ -66,15 +66,15 @@ export type Appointment = {
 	meetUrl?: string;
 	address?: string;
 	counselorInfo:
-		| null
-		| ({
-				rating: string;
-		  } & Account);
+	| null
+	| ({
+		rating: string;
+	} & Account);
 	studentInfo:
-		| null
-		| ({
-				studentCode: string;
-		  } & Account);
+	| null
+	| ({
+		studentCode: string;
+	} & Account);
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
 };
@@ -94,17 +94,49 @@ export type AppointmentRequest = {
 	reason: string,
 	appointmentDetails: AppointmentDetails | null,
 	counselor: {
-	  rating: string
+		rating: string
 	} & Account,
 	student: {
-	  studentCode: string
+		studentCode: string
 	} & Account,
-  }
-  
- 
+}
+
+
 
 
 export type UpdateAppointmentDetailsArg = {
 	requestId: number;
 	meetingDetails: Partial<AppointmentDetails>;
+};
+
+
+export type AppointmentReport = {
+	id: number,
+	student: Student,
+	counselor: Counselor,
+	appointment: Appointment
+} & Report
+
+
+
+export type Report = {
+	consultationGoal?: {
+		specificGoal?: string;
+		reason?: string;
+	};
+	consultationContent?: {
+		summaryOfDiscussion?: string;
+		mainIssues?: string;
+		studentEmotions?: string;
+		studentReactions?: string;
+	};
+	consultationConclusion?: {
+		counselorConclusion?: string;
+		followUpNeeded?: boolean;
+		followUpNotes?: string;
+	};
+	intervention?: {
+		type?: string;
+		description?: string;
+	};
 };
