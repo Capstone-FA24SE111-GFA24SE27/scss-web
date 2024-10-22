@@ -95,7 +95,7 @@ const QuestionBoard = () => {
               >
                 <MenuItem value="ALL">All</MenuItem>
                 <MenuItem value="ACADEMIC">Academic</MenuItem>
-                <MenuItem value="NON-ACADEMIC">Non-Academic</MenuItem>
+                <MenuItem value="NON_ACADEMIC">Non-Academic</MenuItem>
               </TextField>
               <FormControlLabel
                 className='flex-1 flex justify-end'

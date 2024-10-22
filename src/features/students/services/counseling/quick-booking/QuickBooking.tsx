@@ -215,8 +215,8 @@ function QuickBooking() {
     <>
       <div className="relative flex flex-col flex-auto p-32 min-h-screen">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <Box className='flex mt-8 gap-16'>
-          <Paper className='flex-1 p-32 shadow'>
+        <Box className='grid mt-8 gap-16 grid-cols-12'>
+          <Paper className='col-span-8 p-32 shadow'>
             <div className="flex flex-1 flex-col ">
               <div>
                 <Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
@@ -229,7 +229,7 @@ function QuickBooking() {
                     className='w-full flex'
                   >
                     <FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
-                    <FormControlLabel value="NON-ACADEMIC" control={<Radio />} label="Non-academic" />
+                    <FormControlLabel value="NON_ACADEMIC" control={<Radio />} label="Non-academic" />
                   </RadioGroup>
                 </FormControl>
               </div>
@@ -437,7 +437,7 @@ function QuickBooking() {
             </div>
 
           </Paper >
-          <Paper className='shadow w-sm'>
+          <Paper className='col-span-4 shadow'>
             <div className='flex-1 p-32'>
               <div className=''>
 

@@ -24,7 +24,7 @@ const CounselorListHeader = () => {
         counselingType = 'ACADEMIC'
         break;
       case 1:
-        counselingType = 'NON-ACADEMIC'
+        counselingType = 'NON_ACADEMIC'
         break;
       default:
         counselingType = 'ACADEMIC'
@@ -35,7 +35,7 @@ const CounselorListHeader = () => {
 
   const debounceSearch = debounce((debouncedSearchTerm: string) => {
     dispatch(setSearchTerm(debouncedSearchTerm))
-  }, 1000);
+  }, 500);
 
   function handleSearch(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     debounceSearch(event.target.value)

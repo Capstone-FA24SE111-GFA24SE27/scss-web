@@ -50,4 +50,4 @@ export type Specialization = {
 
 export type Role = "STUDENT" | "ACADEMIC_COUNSELOR" | "SUPPORT_STAFF" | "MANAGER" | "ADMIN" | "NON_ACADEMIC_COUNSELOR"
 
-export type CounselingType = 'ACADEMIC' | 'NON-ACADEMIC'
+export type CounselingType = 'ACADEMIC' | 'NON_ACADEMIC'

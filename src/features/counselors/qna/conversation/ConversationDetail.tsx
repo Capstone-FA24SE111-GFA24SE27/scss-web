@@ -2,12 +2,12 @@ import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Send } from '@mui/icon
 import { Avatar, IconButton, Paper, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { Message, useGetQuestionQuery, useReadMessageMutation } from '../qna-api';
+import { Message, useGetCounselorQuestionQuery, useReadMessageMutation } from '../qna-api';
 import { ContentLoading, Scrollbar } from '@/shared/components';
 import { selectAccount, useAppSelector } from '@shared/store';
-import { useSocket } from '@/shared/context/socket';
+import { useSocket } from '@/shared/context';
 import { useSendMessageMutation } from '../qna-api';
-import { formatChatDate } from '@/shared/utils';
+import { formatDateTime } from '@/shared/utils';
 
 const ConversationDetail = () => {
   const routeParams = useParams();
@@ -15,7 +15,7 @@ const ConversationDetail = () => {
   const socket = useSocket()
   const account = useAppSelector(selectAccount)
   const myId = account.id
-  const { data: qnaData, isFetching, refetch } = useGetQuestionQuery(questionCardId)
+  const { data: qnaData, isFetching, refetch } = useGetCounselorQuestionQuery(questionCardId)
   const qna = qnaData?.content
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -83,7 +83,7 @@ const ConversationDetail = () => {
           color="text.secondary"
           variant="h5"
         >
-          There are no messages!
+          There are no data!
         </Typography>
       </div>
     );
@@ -122,7 +122,7 @@ const ConversationDetail = () => {
                 {/* {message.sentAt} -
               {message.read? 'read': 'not read'} */}
               </Paper>
-              <Typography color='textSecondary' className={`mt-4 text-sm ${message.sender.id === myId ? 'text-end' : 'text-start'} `}>{formatChatDate(message.sentAt)}</Typography>
+              <Typography color='textSecondary' className={`mt-4 text-sm ${message.sender.id === myId ? 'text-end' : 'text-start'} `}>{formatDateTime(message.sentAt)}</Typography>
             </div>
           </div>
         ))}

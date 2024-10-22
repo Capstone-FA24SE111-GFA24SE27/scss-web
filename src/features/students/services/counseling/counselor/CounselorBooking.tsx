@@ -15,7 +15,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { isEmpty } from 'lodash';
-import { useSocket } from '@/shared/context/socket';
+import { useSocket } from '@/shared/context';
 import { useEffect } from 'react'
 import { apiService, useAppDispatch, useAppSelector } from '@shared/store'
 import { selectCounselorType } from '../counselor-list/counselor-list-slice';
@@ -82,7 +82,7 @@ function CounselorBooking() {
     const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId)
     const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
-    const counselor = counselorData
+    const counselor = counselorData.content
 
 
 

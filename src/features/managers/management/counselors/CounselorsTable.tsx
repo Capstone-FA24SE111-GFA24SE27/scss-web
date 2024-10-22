@@ -6,7 +6,6 @@ import * as React from 'react';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
-import clsx from 'clsx';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { ManagementCounselor, useGetCounselorsAcademicManagementQuery } from './counselors-api';

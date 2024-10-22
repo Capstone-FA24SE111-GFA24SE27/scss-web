@@ -63,7 +63,7 @@ function StudentView({ }: StudentViewProps) {
       >
         <img
           className="absolute inset-0 object-cover w-full h-full"
-          src={'/assets/images/fptu-cover.png'}
+          src={'/assets/images/fptu-cover.jpeg'}
           alt="user background"
         />
       </Box>

@@ -2,11 +2,11 @@ import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Send } from '@mui/icon
 import { Avatar, IconButton, Paper, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { Message, useGetQuestionQuery, useReadMessageMutation, useSendMessageMutation } from '../qna-api';
+import { Message, useGetCounselorQuestionQuery, useReadMessageMutation, useSendMessageMutation } from '../qna-api';
 import { ContentLoading, Scrollbar } from '@/shared/components';
 import { selectAccount, useAppSelector } from '@shared/store';
-import { useSocket } from '@/shared/context/socket';
-import { formatChatDate } from '@/shared/utils';
+import { useSocket } from '@/shared/context';
+import { formatDateTime } from '@/shared/utils';
 
 const ConversationDetail = () => {
   const routeParams = useParams();
@@ -14,7 +14,7 @@ const ConversationDetail = () => {
   const socket = useSocket()
   const account = useAppSelector(selectAccount)
   const myId = account.id
-  const { data: qnaData, isFetching, refetch } = useGetQuestionQuery(questionCardId)
+  const { data: qnaData, isFetching, refetch } = useGetCounselorQuestionQuery(questionCardId)
   const qna = qnaData?.content
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -113,7 +113,7 @@ const ConversationDetail = () => {
                   {/* {message.sentAt} -
 {message.read? 'read': 'not read'} */}
                 </Paper>
-                <Typography color='textSecondary' className={`mt-4 text-sm ${message.sender.id === myId ? 'text-end' : 'text-start'} `}>{formatChatDate(message.sentAt)}</Typography>
+                <Typography color='textSecondary' className={`mt-4 text-sm ${message.sender.id === myId ? 'text-end' : 'text-start'} `}>{formatDateTime(message.sentAt)}</Typography>
               </div>
             </div>
 

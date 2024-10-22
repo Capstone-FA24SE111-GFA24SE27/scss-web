@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
-import { useSocket } from '@/shared/context/socket';
+import { useSocket } from '@/shared/context';
 import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
 import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '../counseling-api';
 

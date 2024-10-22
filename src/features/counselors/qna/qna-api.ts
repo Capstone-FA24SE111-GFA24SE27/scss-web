@@ -8,7 +8,7 @@ export const addTagTypes = [
 ] as const;
 
 
-export const usersApi = api
+export const counselorQnaApi = api
   .enhanceEndpoints({
     addTagTypes
   })
@@ -53,7 +53,7 @@ export const usersApi = api
         }),
         invalidatesTags: ['qna']
       }),
-      getQuestion: build.query<GetQuestionApiResponse, string>({
+      getCounselorQuestion: build.query<GetQuestionApiResponse, string>({
         query: (questionCardId) => ({
           url: `/api/question-cards/counselor/${questionCardId}`,
         }),
@@ -81,11 +81,11 @@ export const {
   useTakeQuestionMutation,
   useGetMyQuestionsQuery,
   useAnswerQuestionMutation,
-  useGetQuestionQuery,
+  useGetCounselorQuestionQuery,
   useReadMessageMutation,
   useEditAnswerMutation,
   useSendMessageMutation,
-} = usersApi
+} = counselorQnaApi
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
 
@@ -125,7 +125,7 @@ export type Question = {
   title: string;
   content: string;
   answer: string | null,
-  questionType: 'ACADEMIC' | 'NON-ACADEMIC';
+  questionType: 'ACADEMIC' | 'NON_ACADEMIC';
   status: 'VERIFIED' | 'PENDING' | 'REJECTED';
   student: Student;
   counselor: Counselor | null;

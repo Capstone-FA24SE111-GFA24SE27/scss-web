@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useState, useEffect } from 'react'
-import { useSocket } from '@/shared/context/socket';
+import { useSocket } from '@/shared/context';
 const AppointmentsTab = () => {
   const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({})
   const appointmentRequests = data?.content.data
