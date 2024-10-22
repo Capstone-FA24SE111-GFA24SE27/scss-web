@@ -5,13 +5,13 @@ import { Close } from '@mui/icons-material';
 /**
  * The contacts sidebar content.
  */
-function EventsSidebarContent() {
+function CounselorSidebarContent() {
     return (
         <div className="flex flex-col flex-auto max-w-full w-md">
             <IconButton
                 className="absolute top-0 right-0 my-16 mx-32 z-10"
                 component={NavLinkAdapter}
-                to="/services/counseling"
+                to="."
                 size="large"
             >
                 <Close/>
@@ -21,4 +21,4 @@ function EventsSidebarContent() {
     );
 }
 
-export default EventsSidebarContent;
+export default CounselorSidebarContent;

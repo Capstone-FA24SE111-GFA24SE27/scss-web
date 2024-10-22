@@ -26,7 +26,7 @@ import {
 } from '../calendar-api';
 import { date } from 'zod';
 import { AppLoading, ContentLoading } from '@/shared/components';
-import { useSocket } from '@/shared/context';
+import { useSocket } from '@/shared/context/socket';
 import { useNavigate } from 'react-router-dom';
 
 import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';

@@ -46,6 +46,13 @@ export const usersApi = api
         }),
         invalidatesTags: ['qna']
       }),
+      editAnswer: build.mutation<void, AnswerQuestionApiArg>({
+        query: ({ questionCardId, content }) => ({
+          url: `/api/question-cards/answer/edit/${questionCardId}`,
+          method: 'PUT',
+        }),
+        invalidatesTags: ['qna']
+      }),
       getQuestion: build.query<GetQuestionApiResponse, string>({
         query: (questionCardId) => ({
           url: `/api/question-cards/counselor/${questionCardId}`,
@@ -59,11 +66,12 @@ export const usersApi = api
           body: { content }
         }),
       }),
-      readMessage: build.mutation<void, string>({
+      readMessage: build.mutation<void, number>({
         query: (chatSessionId) => ({
           url: `/api/question-cards/read/${chatSessionId}/messages`,
           method: 'PUT',
         }),
+        invalidatesTags: ['qna']
       }),
     })
   })
@@ -74,6 +82,9 @@ export const {
   useGetMyQuestionsQuery,
   useAnswerQuestionMutation,
   useGetQuestionQuery,
+  useReadMessageMutation,
+  useEditAnswerMutation,
+  useSendMessageMutation,
 } = usersApi
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
@@ -136,5 +147,5 @@ export type Message = {
   content: string,
   read: boolean,
   sender: Account,
-  sendAt: string,
+  sentAt: string,
 }

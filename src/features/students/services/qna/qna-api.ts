@@ -48,7 +48,7 @@ export const usersApi = api
         }),
         providesTags: ['qna']
       }),
-      readMessage: build.mutation<void, string>({
+      readMessage: build.mutation<void, number>({
         query: (chatSessionId) => ({
           url: `/api/question-cards/read/${chatSessionId}/messages`,
           method: 'PUT',
@@ -63,6 +63,7 @@ export const {
   useGetMyQuestionsQuery,
   useGetQuestionQuery,
   useSendMessageMutation,
+  useReadMessageMutation
 } = usersApi
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
@@ -116,5 +117,5 @@ export type Message = {
   content: string,
   read: boolean,
   sender: Account,
-  sendAt: string,
+  sentAt: string,
 }

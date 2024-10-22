@@ -1,4 +1,4 @@
-import ExpendableText from './ExpandableText'
+import ExpandableText from './ExpandableText'
 export {
-  ExpendableText
+  ExpandableText
 }

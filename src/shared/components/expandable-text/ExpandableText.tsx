@@ -3,11 +3,11 @@ import clsx from 'clsx';
 
 type Props = {
   text: string
-  limit: number,
+  limit?: number,
   className?: string
 }
 
-const ExpendableText = ({ text, limit, className = "" }: Props) => {
+const ExpandableText = ({ text, limit = 300, className = "" }: Props) => {
   const [showMore, setShowMore] = useState(false);
   if (text.length < limit) {
     return <div className={className}>{text}</div>
@@ -24,4 +24,4 @@ const ExpendableText = ({ text, limit, className = "" }: Props) => {
   )
 }
 
-export default ExpendableText
+export default ExpandableText

@@ -232,8 +232,8 @@ function QuickBooking() {
                     <FormControlLabel value="NON-ACADEMIC" control={<Radio />} label="Non-academic" />
                   </RadioGroup>
                 </FormControl>
-
               </div>
+              <Divider className='mt-16'/>
 
               <div className='w-fit mt-16'>
                 <Typography className='font-semibold text-primary text-lg'>Select date</Typography>
@@ -437,7 +437,7 @@ function QuickBooking() {
             </div>
 
           </Paper >
-          <Paper className='shadow flex-1'>
+          <Paper className='shadow w-sm'>
             <div className='flex-1 p-32'>
               <div className=''>
 
@@ -473,7 +473,7 @@ function QuickBooking() {
                         </Tooltip>
 
 
-                        <div className='px-32'>
+                        <div className='px-16'>
                           <Divider className='mt-16' />
                           <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
 
