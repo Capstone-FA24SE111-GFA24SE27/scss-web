@@ -1,7 +1,7 @@
 import { useAppSelector } from '@shared/store';
 import { useAppDispatch } from '@shared/store';
 import React, { ReactElement, ReactNode, useEffect } from 'react';
-import { closeDialog, openDialog, selectDialogProps } from '../components/dialog/dialog-slice';
+import { closeDialog, openDialog, selectDialogProps } from '../../components/dialog/dialog-slice';
 import {
 	Button,
 	Dialog,
@@ -15,18 +15,14 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 
 type Props = {
 	title?: string;
-	cancelButtonTitle?: string;
 	confirmButtonTitle?: string;
-	confirmButtonFucntion: any;
   dispatch: ThunkDispatch<any,any,any>
 };
 
-const useConfirmDialog = (props: Props) => {
+const useAlertDialog = (props: Props) => {
 	const {
-		title = 'Are you sure?',
-		cancelButtonTitle = 'Cancel',
-		confirmButtonTitle = 'Confirm',
-		confirmButtonFucntion,
+		title = '',
+		confirmButtonTitle = 'OK',
     dispatch
 	} = props;
 	
@@ -35,20 +31,14 @@ const useConfirmDialog = (props: Props) => {
 		dispatch(closeDialog());
 	};
 
-	const handleConfirm = () => {
-		if (confirmButtonFucntion) {
-			confirmButtonFucntion();
-		}
-		handleClose();
-	};
+
 
 	const customChildren = (
 		<div className='flex flex-col bg-background-paper'>
 			<DialogTitle id='alert-dialog-title'>{title}</DialogTitle>
 			
 			<DialogActions>
-				<Button onClick={handleClose} color='error'>{cancelButtonTitle}</Button>
-				<Button onClick={handleConfirm} autoFocus color='success'>
+				<Button onClick={handleClose} autoFocus color='success'>
 					{confirmButtonTitle}
 				</Button>
 			</DialogActions>
@@ -58,4 +48,4 @@ const useConfirmDialog = (props: Props) => {
 	return dispatch(openDialog({ children: customChildren }));
 };
 
-export default useConfirmDialog;
+export default useAlertDialog;

@@ -93,7 +93,6 @@ export const EventDetailBody = (props: Props) => {
 	const handleLocalNavigate = (route: string) => {
 		const pathSegments = location.pathname.split('/').filter(Boolean);
 	
-		console.log('segment', pathSegments)
 		// Create a new path using the first two segments
 		 const newPath = `/${pathSegments[0]}/${pathSegments[1]}/${route}`;
 	

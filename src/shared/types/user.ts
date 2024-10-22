@@ -26,6 +26,7 @@ export type Counselor = {
 	rating?: number;
 	expertise?: Expertise;
 	specialization?: Specialization;
+	status: string,
 };
 
 export type Student = {

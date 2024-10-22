@@ -1,4 +1,9 @@
-import { ContentLoading, NavLinkAdapter, selectDialogProps } from '@/shared/components';
+import {
+	ContentLoading,
+	NavLinkAdapter,
+	openDialog,
+	selectDialogProps,
+} from '@/shared/components';
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -22,17 +27,18 @@ import {
 	RemoveCircle,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@shared/store';
-import useConfirmDialog from '@/shared/hooks/useConfirmDialog';
-import useAlertDialog from '@/shared/hooks/useAlertDialog';
+import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
+import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import QnaFlagForm from './QnaFlagFormDialog';
 
 const QnaDetails = () => {
 	const routeParams = useParams();
 	const { id: qnaId } = routeParams as { id: string };
 	const { data, isLoading } = useGetQuestionQuery(qnaId, { skip: !qnaId });
 	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
-	const [flagQuestion] = usePostFlagQuestionStatusMutation();
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate()
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	if (isLoading) {
 		return <ContentLoading />;
@@ -51,61 +57,66 @@ const QnaDetails = () => {
 		REJECTED: 'error',
 	};
 
-	const handleNavigateBack = () => {
+	const handleNavigateBack = () => {};
 
-	}
+	const handleLocalNavigate = (route: string) => {
+		const pathSegments = location.pathname.split('/').filter(Boolean);
+
+		// Create a new path using the first two segments
+		const newPath = `/${pathSegments[0]}/${route}`;
+
+		return newPath;
+	};
 
 	const handleVerify = () => {
-		useConfirmDialog(
-			{
-				dispatch: dispatch,
-				title: 'Are you sure you want to verify this question?',
-				confirmButtonFucntion: async () =>{ 
-					const result = await reviewQuestion({ id: qna.id, status: 'VERIFIED' })
-					useAlertDialog({title: result.data.message, dispatch: dispatch})
-					if(result.data.status === 200) {
-						navigate(-1)
-					}
+		useConfirmDialog({
+			dispatch: dispatch,
+			title: 'Are you sure you want to verify this question?',
+			confirmButtonFucntion: async () => {
+				const result = await reviewQuestion({
+					id: qna.id,
+					status: 'VERIFIED',
+				});
+				useAlertDialog({
+					title: result.data.message,
+					dispatch: dispatch,
+				});
+				if (result.data.status === 200) {
+					navigate(-1);
 				}
-			}	
-		)
-		
+			},
+		});
 	};
 
 	const handleReject = () => {
-		useConfirmDialog(
-			{
-				dispatch: dispatch,
-				title: 'Are you sure you want to reject this question?',
-				confirmButtonFucntion: async () =>{ 
-					const result = await reviewQuestion({ id: qna.id, status: 'REJECTED' });
-					if(result?.data?.status === 200) {
-						useAlertDialog({title: "Question is rejected successfully", dispatch: dispatch})
-						navigate(-1)
-					} else {
-						useAlertDialog({title: result.data.message, dispatch: dispatch})
-
-					}
-
+		useConfirmDialog({
+			dispatch: dispatch,
+			title: 'Are you sure you want to reject this question?',
+			confirmButtonFucntion: async () => {
+				const result = await reviewQuestion({
+					id: qna.id,
+					status: 'REJECTED',
+				});
+				if (result?.data?.status === 200) {
+					useAlertDialog({
+						title: 'Question is rejected successfully',
+						dispatch: dispatch,
+					});
+					navigate(-1);
+				} else {
+					useAlertDialog({
+						title: result.data.message,
+						dispatch: dispatch,
+					});
 				}
-			}	
-		)
-		
+			},
+		});
 	};
 
 	const handleFlag = () => {
-		useConfirmDialog(
-			{
-				dispatch: dispatch,
-				title: 'Are you sure you want to flag this question?',
-				confirmButtonFucntion: async () =>{ 
-					const result = await flagQuestion({ id: qna.id });
-					useAlertDialog({title: result.data.message, dispatch: dispatch})
-
-				}
-			}	
-		)
-		
+		dispatch(openDialog({
+			children: <QnaFlagForm qna={qna}/>
+		}))
 	};
 
 	return (
@@ -159,16 +170,17 @@ const QnaDetails = () => {
 						<Typography className='text-lg font-semibold'>
 							Enquirer
 						</Typography>
-						
+						<Tooltip
+							title={`View ${qna.student.profile.fullName}'s profile`}
+						>
 							<ListItemButton
-								// component={NavLinkAdapter}
-								// to={handleLocalNavigate(`student/${qna.student.profile.id}`)}
+								component={NavLinkAdapter}
+								to={handleLocalNavigate(
+									`student/${qna.student.profile.id}`
+								)}
 								className='w-full rounded shadow cursor-default bg-primary-light/5'
 							>
-								<div
-									// onClick={handleNavClicked}
-									className='flex items-start w-full gap-16'
-								>
+								<div className='flex items-start w-full gap-16'>
 									<Avatar
 										alt={qna.student.profile.fullName}
 										src={qna.student.profile.avatarLink}
@@ -183,7 +195,9 @@ const QnaDetails = () => {
 										</Typography>
 									</div>
 								</div>
+								<ChevronRight />
 							</ListItemButton>
+						</Tooltip>
 					</div>
 					<div>
 						<Typography className='text-lg font-semibold'>
@@ -192,27 +206,28 @@ const QnaDetails = () => {
 
 						{qna.counselor ? (
 							<Tooltip
-								title={`View ${qna.student.profile.fullName}'s profile`}
+								title={`View ${qna.counselor.profile.fullName}'s profile`}
 							>
 								<ListItemButton
-									// component={NavLinkAdapter}
-									// to={handleLocalNavigate(`student/${qna.student.profile.id}`)}
+									component={NavLinkAdapter}
+									to={handleLocalNavigate(
+										`student/${qna.counselor.profile.id}`
+									)}
 									className='w-full rounded shadow bg-primary-light/5'
 								>
 									<div
-										// onClick={handleNavClicked}
 										className='flex items-start w-full gap-16'
 									>
 										<Avatar
-											alt={qna.student.profile.fullName}
-											src={qna.student.profile.avatarLink}
+											alt={qna.counselor.profile.fullName}
+											src={qna.counselor.profile.avatarLink}
 										/>
 										<div>
 											<Typography className='font-semibold text-primary-main'>
-												{qna.student.profile.fullName}
+												{qna.counselor.profile.fullName}
 											</Typography>
 											<Typography color='text.secondary'>
-												{qna.student.email ||
+												{qna.counselor.email ||
 													'emailisnull.edu.vn'}
 											</Typography>
 										</div>

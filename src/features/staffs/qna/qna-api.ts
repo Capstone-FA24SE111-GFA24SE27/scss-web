@@ -61,6 +61,9 @@ export const usersApi = api
 				query: (args) => ({
 					url: `/api/question-cards/review/flag/${args.id}`,
 					method: 'POST',
+					body: {
+						'reason': args.body
+					}
 				}),
 				invalidatesTags: ['qna'],
 			}),
@@ -100,6 +103,7 @@ export type PostReviewQuestionResponse = {
 
 export type PostFlagQuestionArg = {
 	id: number;
+	body: string;
 };
 export type PostFlagQuestionResponse = {
 	message: string;

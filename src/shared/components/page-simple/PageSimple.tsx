@@ -8,7 +8,6 @@ import { Theme } from '@mui/system';
 import PageSimpleHeader from './PageSimpleHeader';
 import PageSimpleSidebar from './PageSimpleSidebar';
 import { Scrollbar } from '@shared/components';
-import Dialog from '../dialog';
 
 const headerHeight = 72;
 const toolbarHeight = 64;
@@ -272,7 +271,7 @@ const PageSimple = forwardRef<
 				leftSidebarWidth={leftSidebarWidth}
 				rightSidebarWidth={rightSidebarWidth}
 			>
-				<div className="z-10 flex h-full flex-auto flex-col">
+				<div className="z-10 flex flex-col flex-auto h-full">
 					<div className="PageSimple-wrapper">
 						{leftSidebarContent && (
 							<PageSimpleSidebar

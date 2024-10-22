@@ -5,7 +5,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
 	TypeOfQuestionType,
@@ -43,9 +43,11 @@ import {
 } from '@mui/icons-material';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { Question } from '@/shared/types';
-import useConfirmDialog from '@/shared/hooks/useConfirmDialog';
-import useAlertDialog from '@/shared/hooks/useAlertDialog';
+import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
+import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import { useDispatch } from 'react-redux';
+import { NavLinkAdapter, openDialog } from '@/shared/components';
+import QnaFlagForm from './QnaFlagFormDialog';
 
 const container = {
 	show: {
@@ -71,6 +73,7 @@ const QnaList = () => {
 	const [flagQuestion] = usePostFlagQuestionStatusMutation();
 
 	const navigate = useNavigate();
+  	const location = useLocation()
 	const dispatch = useDispatch();
 
 	const { data: qnaData } = useGetQuestionsQuery({
@@ -94,6 +97,15 @@ const QnaList = () => {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [openId, setOpenId] = useState(null);
 	const [selectedQna, setSelectedQna] = useState(null);
+
+	const handleLocalNavigate = (route: string) => {
+		const pathSegments = location.pathname.split('/').filter(Boolean);
+	
+		// Create a new path using the first two segments
+		 const newPath = `/${pathSegments[0]}/${route}`;
+	
+		return newPath
+	  }
 
 	const handleMenuButtonClick = (
 		event: React.MouseEvent<HTMLButtonElement>,
@@ -151,7 +163,9 @@ const QnaList = () => {
 	};
 
 	const handleFlag = () => {
-		flagQuestion({ id: selectedQna.id });
+		dispatch(openDialog({
+			children: <QnaFlagForm qna={selectedQna.id}/>
+		}))
 	};
 
 	const handleTypeSelect = (
@@ -320,16 +334,15 @@ const QnaList = () => {
 											</div>
 										</div>
 									</div>
-									{/* <Tooltip
+									<Tooltip
 										title={`View ${qna.student.profile.fullName}'s profile`}
-									> */}
+									>
 									<ListItemButton
-										// component={NavLinkAdapter}
-										// to={handleLocalNavigate(`student/${qna.student.profile.id}`)}
+										component={NavLinkAdapter}
+										to={handleLocalNavigate(`student/${qna.student.profile.id}`)}
 										className='w-full rounded shadow bg-primary-light/5'
 									>
 										<div
-											// onClick={handleNavClicked}
 											className='flex items-start w-full gap-16'
 										>
 											<Avatar
@@ -354,8 +367,10 @@ const QnaList = () => {
 												</Typography>
 											</div>
 										</div>
+									<ChevronRight />
+
 									</ListItemButton>
-									{/* </Tooltip> */}
+									</Tooltip>
 								</Paper>
 							</motion.div>
 						);
