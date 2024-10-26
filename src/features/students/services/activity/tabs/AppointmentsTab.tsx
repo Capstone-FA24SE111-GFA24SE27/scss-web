@@ -52,7 +52,7 @@ const AppointmentsTab = () => {
 
   return (
     <>
-      <List className='p-16 flex flex-col gap-16'>
+      <List className='flex flex-col gap-16'>
         {
           appointmentRequests.map(appointment =>
             <Paper
@@ -72,26 +72,33 @@ const AppointmentsTab = () => {
                     <AccessTime />
                     <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
                   </div>
-                </div>
-                <div className='flex gap-4'>
+                  <Chip
+                    label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+                    icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+                    className='font-semibold items-center'
+                    size='small'
+                  />
                   {
-                    appointment.meetingType === 'ONLINE' ?
-                      <div className='flex gap-24  items-center'>
-                        <Chip label='Online' size='small' icon={<Circle color='success' />} className='font-semibold items-center' />
-                        {appointment.meetUrl && (
-                          <div>
-                            <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
-                              Meet URL
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                      : appointment.address && (<div className='flex gap-16 items-center'>
-                        <Typography className='w-68' color='textSecondary'>Address:</Typography>
-                        <Typography className='font-semibold'>{appointment.address || ''}</Typography>
-                      </div>)
+                    appointment.meetingType === 'ONLINE' && <div className='flex gap-24  items-center'>
+                      {appointment.meetUrl && (
+                        <div>
+                          <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
+                            Meet URL
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                   }
+
                 </div>
+
+                {
+                  appointment.meetingType === 'OFFLINE' && appointment.address && (<div className='flex gap-16 items-center'>
+                    <Typography className='w-68' color='textSecondary'>Address:</Typography>
+                    <Typography className='font-semibold'>{appointment.address || ''}</Typography>
+                  </div>)
+                }
+
                 <div className='flex gap-16'>
                   <Typography className='w-68' color='textSecondary'>Attendance:</Typography>
                   <Typography
@@ -101,6 +108,7 @@ const AppointmentsTab = () => {
                     {appointment.status}
                   </Typography>
                 </div>
+
                 {/* <div className='flex gap-8'>
                   <Typography className='w-52'>Reason: </Typography>
                   <Typography
@@ -128,33 +136,32 @@ const AppointmentsTab = () => {
                   </ListItemButton>
                 </Tooltip>
                 {appointment.appointmentFeedback ?
-                  <>
-                    <div className='w-full'>
-                      <Divider className='border border-black' />
-                      <div className='flex items-start gap-16 mt-16'>
-                        <Typography className='w-96'>Your feedback:</Typography>
+                  <div className='w-full'>
+                    <Divider className='border' />
+                    <div className='flex items-start gap-16 mt-16'>
+                      <Typography className='w-96'>Your feedback:</Typography>
+                      <div>
                         <div>
-                          <div>
-                            <div className='flex items-center gap-8'>
-                              <Rating
-                                size='medium'
-                                value={appointment.appointmentFeedback.rating}
-                                readOnly
-                              />
-                              <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-                            </div>
+                          <div className='flex items-center gap-8'>
+                            <Rating
+                              size='medium'
+                              value={appointment.appointmentFeedback.rating}
+                              readOnly
+                            />
+                            <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                           </div>
-                          <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
                         </div>
+                        <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
                       </div>
                     </div>
-                  </>
+                  </div>
                   : appointment.status === 'ATTEND' && <>
-                    <Divider />
-                    <div className='flex flex-col w-full justify-end gap-8 text-secondary-main '>
-                      <Typography className='font-semibold'>Send feedback about the appointment!</Typography>
-                      <div className='flex gap-16'>
-                        <Button variant='outlined'
+                    <div className='flex flex-col w-full  gap-8 text-secondary-main '>
+                      <Divider />
+                      {/* <Typography className='font-semibold'>Send feedback about the appointment!</Typography> */}
+                      <div className='flex '>
+                        <Button
+                          // variant='outlined'
                           onClick={() => dispatch(openDialog({
                             children: (
                               <SendFeedbackDialog appointment={appointment} />
@@ -208,7 +215,7 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
             multiline
             rows={4}
             maxRows={4}
-            
+
             value={comment}
             className='mt-16'
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

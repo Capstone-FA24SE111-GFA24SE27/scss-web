@@ -1,3 +1,5 @@
+import { Appointment } from ".";
+
 export type User = {
   accessToken: string;
   account: Account | null
@@ -51,3 +53,28 @@ export type Specialization = {
 export type Role = "STUDENT" | "ACADEMIC_COUNSELOR" | "SUPPORT_STAFF" | "MANAGER" | "ADMIN" | "NON_ACADEMIC_COUNSELOR"
 
 export type CounselingType = 'ACADEMIC' | 'NON_ACADEMIC'
+
+
+export type StudentDocument = {
+  studentProfile: Student,
+  counselingProfile: StudentCounselingDocumentInfo
+  counselingAppointment: Appointment[]
+}
+
+export type StudentCounselingDocumentInfo = {
+  introduction: string;
+  currentHealthStatus: string;
+  psychologicalStatus: string;
+  stressFactors: string;
+  academicDifficulties: string;
+  studyPlan: string;
+  careerGoals: string;
+  partTimeExperience: string;
+  internshipProgram: string;
+  extracurricularActivities: string;
+  personalInterests: string;
+  socialRelationships: string;
+  financialSituation: string;
+  financialSupport: string;
+  desiredCounselingFields: string;
+};

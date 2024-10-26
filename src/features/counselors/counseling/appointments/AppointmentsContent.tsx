@@ -84,7 +84,7 @@ const AppointmentsContent = () => {
             >
               <div className='flex flex-col w-full'>
                 <div className='flex justify-between'>
-                  <div className='flex gap-24'>
+                  <div className='flex gap-24 items-center'>
                     <div className='flex items-center gap-8 '>
                       <CalendarMonth />
                       <Typography className=''>{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
@@ -93,6 +93,12 @@ const AppointmentsContent = () => {
                       <AccessTime />
                       <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
                     </div>
+                    <Chip
+                      label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+                      icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+                      className='font-semibold items-center'
+                      size='small'
+                    />
                   </div>
                   <div className='relative'>
                     {
@@ -127,17 +133,17 @@ const AppointmentsContent = () => {
                 <div className='flex gap-4 mb-8'>
                   {appointment.meetingType === 'ONLINE' ? (
                     <div className='flex items-center gap-24'>
-                      <Chip label='Online' size='small' icon={<Circle color='success' />} className='items-center font-semibold' />
                       {appointment.meetUrl && (
-                        <div>
+                        <div className='flex items-center gap-8'>
+                          <Typography className='w-60' color='textSecondary'>Address:</Typography>
                           <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
-                            Meet URL
+                            {appointment.meetUrl}
                           </Link>
                         </div>
                       )}
                     </div>
                   ) : appointment.address && (
-                    <div className='flex items-center gap-8 '>
+                    <div className='flex items-center gap-8'>
                       <Typography className='w-60' color='textSecondary'>Address:</Typography>
                       <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                     </div>

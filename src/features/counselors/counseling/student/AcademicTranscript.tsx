@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Typography } from '@mui/material';
 import { Breadcrumbs, ContentLoading, Heading } from '@shared/components';
 import { useParams } from 'react-router-dom';
-import { useGetStudentQuery } from './student-api';
+import { useGetStudentViewQuery } from './student-api';
 
 interface Subject {
   no: number;
@@ -51,7 +51,7 @@ const subjects: Subject[] = [
 const AcademicTranscript = () => {
   const routeParams = useParams();
   const { id: studentId } = routeParams as { id: string };
-  const { data, isLoading } = useGetStudentQuery(studentId);
+  const { data, isLoading } = useGetStudentViewQuery(studentId);
   const student = data?.content
 
   if (isLoading) {
@@ -78,7 +78,7 @@ const AcademicTranscript = () => {
             url: `../`
           }
         ]}
-        currentPage={"Booking"}
+        currentPage={"Academic Transcript"}
       />
       <Heading
         title='Academic Transcript of Student'
