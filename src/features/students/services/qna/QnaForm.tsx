@@ -23,7 +23,7 @@ const formSchema = z.object({
 	questionType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
 		errorMap: () => ({ message: 'Please select a question type' }),
 	}),
-	topicId: z.string().optional(),
+	topicId: z.string().min(1, 'You must select a topic'),
 
 });
 
@@ -113,7 +113,7 @@ function QnaForm() {
 			reset({
 				questionType: question?.questionType || 'ACADEMIC',
 				content: question?.content || '',
-				topicId: question?.topic.id.toString() || '',
+				topicId: question?.topic.id.toString(),
 			});
 		}
 	}, [editMode, question, reset]);

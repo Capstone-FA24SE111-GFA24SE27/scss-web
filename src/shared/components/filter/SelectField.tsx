@@ -14,6 +14,7 @@ interface SelectFieldProps {
   className?: string;
   size?: 'small' | 'medium',
   disabled?: boolean;
+  includeClearOption?: boolean; // Add a prop to include the "Clear" option
 }
 
 const SelectField = ({
@@ -23,7 +24,8 @@ const SelectField = ({
   onChange,
   className = '',
   size = 'medium',
-  disabled = false
+  disabled = false,
+  includeClearOption = false, // Default is false
 }: SelectFieldProps) => {
   return (
     <TextField
@@ -46,6 +48,11 @@ const SelectField = ({
           {option.label}
         </MenuItem>
       ))}
+      {includeClearOption && ( // Render the clear option conditionally
+        <MenuItem key="clear" value="">
+          Clear
+        </MenuItem>
+      )}
     </TextField>
   );
 };

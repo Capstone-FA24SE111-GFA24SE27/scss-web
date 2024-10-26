@@ -367,7 +367,6 @@ const ReportCreate = () => {
                 Submit
               </Button>
             ) : (
-
               <Button onClick={handleNext} variant="contained" color="secondary" className="w-96" type='button'>
                 Next
               </Button>

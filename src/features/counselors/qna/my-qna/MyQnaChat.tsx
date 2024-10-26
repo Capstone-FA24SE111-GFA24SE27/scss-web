@@ -8,7 +8,7 @@ import { selectAccount, useAppSelector } from '@shared/store';
 import { useSocket } from '@/shared/context';
 import { formatDateTime } from '@/shared/utils';
 
-const ConversationDetail = () => {
+const MyQnaChat = () => {
   const routeParams = useParams();
   const { id: questionCardId } = routeParams as { id: string };
   const socket = useSocket()
@@ -132,6 +132,11 @@ const ConversationDetail = () => {
           placeholder="Type a message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && message) {
+              handleSendMessage();
+            }
+          }}
         />
         <IconButton color="primary" onClick={handleSendMessage} disabled={!message}>
           <Send />
@@ -141,4 +146,4 @@ const ConversationDetail = () => {
   )
 }
 
-export default ConversationDetail
+export default MyQnaChat

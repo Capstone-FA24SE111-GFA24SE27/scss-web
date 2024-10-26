@@ -192,10 +192,11 @@ const AppointmentsContent = () => {
                           <Tooltip title={'Update attendance'}>
                             <IconButton
                               color='secondary'
-                              onClick={() => dispatch(openDialog({
-                                children: <CheckAttendanceDialog appointment={appointment} />
-                              }
-                              ))}
+                              onClick={() => dispatch(
+                                openDialog({
+                                  children: <CheckAttendanceDialog appointment={appointment} />
+                                })
+                              )}
                             >
                               <EditNote fontSize='medium' />
                             </IconButton>

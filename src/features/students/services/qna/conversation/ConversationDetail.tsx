@@ -129,6 +129,11 @@ const ConversationDetail = () => {
           placeholder="Type a message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && message) {
+              handleSendMessage();
+            }
+          }}
         />
         <IconButton color="primary" onClick={handleSendMessage} disabled={!message}>
           <Send />

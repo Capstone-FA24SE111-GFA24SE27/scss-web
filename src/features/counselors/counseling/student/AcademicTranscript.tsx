@@ -75,7 +75,7 @@ const AcademicTranscript = () => {
         parents={[
           {
             label: "Student",
-            url: `/counseling/appointments/student/2`
+            url: `../`
           }
         ]}
         currentPage={"Booking"}

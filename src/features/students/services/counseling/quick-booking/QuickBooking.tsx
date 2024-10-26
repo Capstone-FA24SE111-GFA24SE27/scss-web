@@ -215,8 +215,8 @@ function QuickBooking() {
     <>
       <div className="relative flex flex-col flex-auto p-32 min-h-screen">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <Box className='grid mt-8 gap-16 grid-cols-12'>
-          <Paper className='col-span-8 p-32 shadow'>
+        <Box className='w-full flex mt-8 gap-16'>
+          <Paper className='w-full p-32 shadow'>
             <div className="flex flex-1 flex-col ">
               <div>
                 <Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
@@ -437,8 +437,8 @@ function QuickBooking() {
             </div>
 
           </Paper >
-          <Paper className='col-span-4 shadow'>
-            <div className='flex-1 p-32'>
+          <Paper className='w-lg shadow'>
+            <div className='p-32'>
               <div className=''>
 
                 {
@@ -505,7 +505,7 @@ function QuickBooking() {
                         </div>
 
 
-                        <div className='px-32'>
+                        <div className='px-16'>
                           <Divider className="mt-16 " />
                           <Controller
                             control={control}
@@ -517,7 +517,7 @@ function QuickBooking() {
                                 label="Reason"
                                 placeholder="Reason"
                                 multiline
-                                rows={5}
+                                rows={8}
                                 id="Reason"
                                 error={!!errors.reason}
                                 helperText={errors?.reason?.message}
@@ -534,7 +534,7 @@ function QuickBooking() {
                             variant='contained'
                             color='secondary'
                             className='w-full'
-                            disabled={isEmpty(dirtyFields) || !isValid || isBookingCounselor || !formData.reason}
+                            disabled={!isValid || isBookingCounselor || !formData.reason}
                             onClick={handleSubmit(onSubmitBooking)}>
                             Confirm booking
                           </Button>

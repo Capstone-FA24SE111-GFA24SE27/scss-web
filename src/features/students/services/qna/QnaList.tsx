@@ -1,12 +1,12 @@
 
 
-import { CheckboxField, ContentLoading, FilterTabs, NavLinkAdapter, SearchField, SelectField } from '@/shared/components';
-import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, Close, Edit, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
+import { CheckboxField, ContentLoading, FilterTabs, NavLinkAdapter, Pagination, SearchField, SelectField } from '@/shared/components';
+import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, Close, Delete, Edit, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import { SyntheticEvent, useEffect, useState } from 'react'
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Question, useCloseQuestionStudentMutation, useGetStudentQuestionsQuery, useReadMessageMutation } from './qna-api';
+import { Question, useCloseQuestionStudentMutation, useDeleteQuestionStudentMutation, useGetStudentQuestionsQuery, useReadMessageMutation } from './qna-api';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { statusColor } from '@/shared/constants';
 import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/shared/services';
@@ -42,6 +42,8 @@ const QnaList = () => {
 
   const [isTaken, setIsTaken] = useState(false);
 
+  const [page, setPage] = useState(1);
+
   const account = useAppSelector(selectAccount)
   const navigate = useNavigate()
 
@@ -55,6 +57,10 @@ const QnaList = () => {
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
+  };
+
+  const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   };
 
   const statusTabs = [
@@ -82,7 +88,6 @@ const QnaList = () => {
 
   const { data: academicTopicsData } = useGetAcademicTopicsQuery()
   const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery()
-  console.log(academicTopicsData, nonacademicTopicsData)
   const academicTopics = academicTopicsData?.content
   const nonAcademicTopics = nonacademicTopicsData?.content
 
@@ -117,11 +122,15 @@ const QnaList = () => {
     type: selectedType,
     topicId: selectedTopic,
     isClosed: isClosed || '',
-    isTaken: isTaken || ''
+    isTaken: isTaken || '',
+    page: page,
   })
   const qnaList = qnaData?.content?.data || [] as Question[]
 
   const [readMessage] = useReadMessageMutation()
+
+  const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteQuestionStudentMutation()
+
   const handleSelectChat = (qna: Question) => {
     readMessage(qna.chatSession.id)
     navigate(`conversations/${qna.id}`)
@@ -136,7 +145,7 @@ const QnaList = () => {
     refetch()
   }, []);
 
-  if(isLoading) {
+  if (isLoading) {
     return <ContentLoading />
   }
 
@@ -224,7 +233,7 @@ const QnaList = () => {
                             <Chip label={qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={'info'} size='small' />
                             <Chip label={qna.status} color={statusColor[qna.status as string]} size='small' />
                             <Chip label={qna.topic.name} size='small' />
-                            {qna.taken && <Chip label={'Taken'} variant='outlined' color={'success'} size='small' />}
+                            {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />}
                             {qna.closed && <Chip label={'Closed'} variant='outlined' color={'error'} size='small' />}
                             {countUnreadMessages(qna) ? <Chip label={countUnreadMessages(qna)} size='small' variant='filled' color='secondary' /> : ''}
                           </div>
@@ -273,16 +282,26 @@ const QnaList = () => {
                           <IconButton><ThumbDownOutlined /></IconButton>
                         </div> */}
                         {
-                          qna.status == 'PENDING' && !qna.closed && (
+                          qna.status == 'PENDING' ?
                             <Button
                               variant='outlined'
                               color='secondary'
-                              startIcon={<Close />}
-                              onClick={() => closeQuestion(qna.id)}
+                              startIcon={<Delete />}
+                              disabled={isDeletingQuestion}
+                              onClick={() => deleteQuestion(qna.id)}
                             >
-                              Close
+                              Delete
                             </Button>
-                          )
+                            : qna.status == 'VERIFIED' && !qna?.closed
+                              ? < Button
+                                variant='outlined'
+                                color='secondary'
+                                startIcon={<Close />}
+                                onClick={() => closeQuestion(qna.id)}
+                              >
+                                Close
+                              </Button>
+                              : <></>
                         }
                         {
                           qna.status == 'PENDING' ?
@@ -313,7 +332,13 @@ const QnaList = () => {
               );
             })
         }
+        <Pagination
+          page={page}
+          count={qnaData?.content.totalPages}
+          handleChange={handlePageChange}
+        />
       </div >
+
     </motion.div >
   )
 }

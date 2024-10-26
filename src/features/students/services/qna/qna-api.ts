@@ -99,6 +99,13 @@ export const studentQnasApi = api
         }),
         invalidatesTags: ['qna']
       }),
+      deleteQuestionStudent: build.mutation<void, number>({
+        query: (questionCardId) => ({
+          url: `/api/question-cards/delete/${questionCardId}`,
+          method: 'DELETE'
+        }),
+        invalidatesTags: ['qna']
+      }),
     })
   })
 
@@ -112,6 +119,7 @@ export const {
   useGetMyStudentQuestionsQuery,
   useGetBanInfoQuery,
   useCloseQuestionStudentMutation,
+  useDeleteQuestionStudentMutation
 } = studentQnasApi
 
 export type GetStudentQuestionsApiResponse = ApiResponse<PaginationContent<Question>>

@@ -1,6 +1,7 @@
 import { Account, Counselor, PaginationContent, Student, User } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 import { Role } from '@/shared/constants';
+import { Topic } from '@/shared/services';
 
 
 export const addTagTypes = [
@@ -14,13 +15,30 @@ export const counselorQnaApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getQuestions: build.query<GetQuestionsApiResponse, GetQuestionsApiArg>({
-        query: ({ role }) => ({
-          url: role
+      getCounselorQuestions: build.query<GetQuestionsApiResponse, GetQuestionsApiArg>({
+        query: ({
+          role,
+          keyword = '',
+          // isClosed = '',
+          sortBy = 'createdDate',
+          studentCode = '',
+          sortDirection = 'DESC',
+          page = 1,
+          topicId
+        }) => ({
+          url: role === 'ACADEMIC_COUNSELOR'
             ? `/api/question-cards/library/academic-counselor/filter`
             : `/api/question-cards/library/non-academic-counselor/filter`
           ,
           method: 'GET',
+          params: {
+            keyword,
+            sortBy,
+            // studentCode,
+            sortDirection,
+            page,
+            topicId
+          },
         }),
         providesTags: ['qna']
       }),
@@ -31,10 +49,29 @@ export const counselorQnaApi = api
         }),
         invalidatesTags: ['qna']
       }),
-      getMyQuestions: build.query<GetMyQuestionsApiResponse, GetMyQuestionsApiArg>({
-        query: ({ }) => ({
+      getMyCounselorQuestions: build.query<GetMyQuestionsApiResponse, GetMyQuestionsApiArg>({
+        query: ({
+          keyword = '',
+          isClosed = '',
+          isChatSessionClosed = '',
+          sortBy = 'createdDate',
+          studentCode = '',
+          sortDirection = 'DESC',
+          page = 1,
+          topicId
+        }) => ({
           url: `/api/question-cards/counselor/filter`,
           method: 'GET',
+          params: {
+            keyword,
+            isClosed,
+            isChatSessionClosed,
+            sortBy,
+            // studentCode,
+            sortDirection,
+            page,
+            topicId
+          },
         }),
         providesTags: ['qna']
       }),
@@ -73,34 +110,57 @@ export const counselorQnaApi = api
         }),
         invalidatesTags: ['qna']
       }),
+      closeQuestionCounselor: build.mutation<void, number>({
+        query: (questionCardId) => ({
+          url: `/api/question-cards/counselor/close/${questionCardId}`,
+          method: 'POST',
+        }),
+        invalidatesTags: ['qna']
+      }),
     })
   })
 
 export const {
-  useGetQuestionsQuery,
+  useGetCounselorQuestionsQuery,
   useTakeQuestionMutation,
-  useGetMyQuestionsQuery,
+  useGetMyCounselorQuestionsQuery,
   useAnswerQuestionMutation,
   useGetCounselorQuestionQuery,
   useReadMessageMutation,
   useEditAnswerMutation,
   useSendMessageMutation,
+  useCloseQuestionCounselorMutation
 } = counselorQnaApi
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
 
 export type GetQuestionApiResponse = ApiResponse<Question>
 
-export type GetQuestionsApiArg = {
-  role: Role
-}
+type GetQuestionsApiArg = {
+  role: Role,
+  keyword?: string;
+  isClosed?: boolean | string;
+  isChatSessionClosed?: boolean;
+  sortBy?: string;
+  studentCode?: string;
+  sortDirection?: 'ASC' | 'DESC';
+  page?: number;
+  topicId?: string;
+};
 
 export type TakeQuestionApiResponse = ApiResponse<PaginationContent<Question>>
 
 export type GetMyQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
 
 export type GetMyQuestionsApiArg = {
-
+  keyword?: string;
+  isClosed?: boolean | string;
+  isChatSessionClosed?: boolean;
+  sortBy?: string;
+  studentCode?: string;
+  sortDirection?: 'ASC' | 'DESC';
+  page?: number;
+  topicId?: string;
 }
 
 export type AnswerQuestionApiArg = {
@@ -132,6 +192,7 @@ export type Question = {
   chatSession: ChatSession;
   closed: boolean;
   taken: boolean;
+  topic: Topic
 }
 
 export type ChatSession = {
