@@ -16,11 +16,15 @@ const Pagination = ({ count = 0, page = 1, handleChange, className = `` }: Props
         className
       )
     }>
-      <PaginationMUI
-        count={count}
-        shape="rounded"
-        color='secondary'
-        onChange={handleChange} />
+      {
+        count ?
+          <PaginationMUI
+            count={count}
+            shape="rounded"
+            color='secondary'
+            onChange={handleChange} />
+          : null
+      }
     </div>
   )
 }

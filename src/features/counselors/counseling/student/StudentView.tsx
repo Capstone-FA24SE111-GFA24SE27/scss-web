@@ -49,17 +49,6 @@ function StudentView({ }: StudentViewProps) {
     </div>
   }
 
-  const handleLocalNavigate = (route: string) => {
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-
-    console.log('segment', pathSegments)
-    // Create a new path using the first two segments
-    const newPath = `/${pathSegments[0]}/${pathSegments[1]}/${route}`;
-
-    // Navigate to the new path
-    navigate(newPath);
-  }
-
   return (
     <div className='w-lg'>
       <Box
@@ -171,24 +160,30 @@ function StudentView({ }: StudentViewProps) {
               </Typography>
               <div className='flex flex-col gap-8 mt-8'>
                 {
-                  student?.counselingAppointment?.map(appointment =>
-                    <Paper className='flex justify-between px-8 py-4 rounded shadow' key={appointment.id}>
-                      <div className='flex gap-8'>
-                        <div className='flex items-center gap-8'>
-                          <CalendarMonth fontSize='small' />
-                          <Typography className='' fontSize='small' >2024-10-08</Typography>
+                  !student?.counselingAppointment?.length
+                    ? <Typography color='textSecondary'>No counseling history</Typography>
+                    : student?.counselingAppointment?.map(appointment =>
+                      <Paper className='flex justify-between px-8 py-4 rounded shadow' key={appointment.id}>
+                        <div className='flex gap-8'>
+                          <div className='flex items-center gap-8 '>
+                            <CalendarMonth fontSize='small' />
+                            <Typography className=''>{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
+                          </div>
+                          <div className='flex items-center gap-8'>
+                            <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+                          </div>
                         </div>
-                        <div className='flex items-center gap-8'>
-                          {/* <AccessTime fontSize='small' /> */}
-                          <Typography fontSize='small'>09:15 - 10:15</Typography>
-                        </div>
-                      </div>
-                      <Button size='small' className='flex gap-8 px-8' color='secondary' disabled={!appointment.havingReport}>
-                        {/* <Summarize /> */}
-                        View report
-                      </Button>
-                    </Paper>
-                  )
+                        <Button
+                          size='small'
+                          className='flex gap-8 px-8'
+                          color='secondary'
+                          disabled={!appointment.havingReport}
+                          onClick={() => navigate(`report/${appointment.id}`)}
+                          >
+                          View report
+                        </Button>
+                      </Paper>
+                    )
                 }
 
               </div>
@@ -273,10 +268,10 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Tình trạng tâm lý và sức khỏe</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Giới thiệu:</strong> {student.counselingProfile.introduction}</Typography>
-                      <Typography><strong>Tình trạng sức khỏe hiện tại:</strong> {student.counselingProfile.currentHealthStatus}</Typography>
-                      <Typography><strong>Tình trạng tâm lý:</strong> {student.counselingProfile.psychologicalStatus}</Typography>
-                      <Typography><strong>Các yếu tố gây căng thẳng:</strong> {student.counselingProfile.stressFactors}</Typography>
+                      <Typography><strong>Giới thiệu:</strong> {student.counselingProfile?.introduction}</Typography>
+                      <Typography><strong>Tình trạng sức khỏe hiện tại:</strong> {student.counselingProfile?.currentHealthStatus}</Typography>
+                      <Typography><strong>Tình trạng tâm lý:</strong> {student.counselingProfile?.psychologicalStatus}</Typography>
+                      <Typography><strong>Các yếu tố gây căng thẳng:</strong> {student.counselingProfile?.stressFactors}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -286,8 +281,8 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Thông tin học tập</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Khó khăn học tập:</strong> {student.counselingProfile.academicDifficulties}</Typography>
-                      <Typography><strong>Kế hoạch học tập:</strong> {student.counselingProfile.studyPlan}</Typography>
+                      <Typography><strong>Khó khăn học tập:</strong> {student.counselingProfile?.academicDifficulties}</Typography>
+                      <Typography><strong>Kế hoạch học tập:</strong> {student.counselingProfile?.studyPlan}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -297,9 +292,9 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Thông tin hướng nghiệp</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Mục tiêu nghề nghiệp:</strong> {student.counselingProfile.careerGoals}</Typography>
-                      <Typography><strong>Kinh nghiệm làm việc part-time:</strong> {student.counselingProfile.partTimeExperience}</Typography>
-                      <Typography><strong>Chương trình thực tập:</strong> {student.counselingProfile.internshipProgram}</Typography>
+                      <Typography><strong>Mục tiêu nghề nghiệp:</strong> {student.counselingProfile?.careerGoals}</Typography>
+                      <Typography><strong>Kinh nghiệm làm việc part-time:</strong> {student.counselingProfile?.partTimeExperience}</Typography>
+                      <Typography><strong>Chương trình thực tập:</strong> {student.counselingProfile?.internshipProgram}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -309,9 +304,9 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Hoạt động và đời sống</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Hoạt động ngoại khóa:</strong> {student.counselingProfile.extracurricularActivities}</Typography>
-                      <Typography><strong>Sở thích cá nhân:</strong> {student.counselingProfile.personalInterests}</Typography>
-                      <Typography><strong>Quan hệ xã hội:</strong> {student.counselingProfile.socialRelationships}</Typography>
+                      <Typography><strong>Hoạt động ngoại khóa:</strong> {student.counselingProfile?.extracurricularActivities}</Typography>
+                      <Typography><strong>Sở thích cá nhân:</strong> {student.counselingProfile?.personalInterests}</Typography>
+                      <Typography><strong>Quan hệ xã hội:</strong> {student.counselingProfile?.socialRelationships}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -321,8 +316,8 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Hỗ trợ tài chính</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Tình hình tài chính:</strong> {student.counselingProfile.financialSituation}</Typography>
-                      <Typography><strong>Hỗ trợ tài chính:</strong> {student.counselingProfile.financialSupport}</Typography>
+                      <Typography><strong>Tình hình tài chính:</strong> {student.counselingProfile?.financialSituation}</Typography>
+                      <Typography><strong>Hỗ trợ tài chính:</strong> {student.counselingProfile?.financialSupport}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -332,7 +327,7 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Yêu cầu tư vấn</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Lĩnh vực tư vấn mong muốn:</strong> {student.counselingProfile.desiredCounselingFields}</Typography>
+                      <Typography><strong>Lĩnh vực tư vấn mong muốn:</strong> {student.counselingProfile?.desiredCounselingFields}</Typography>
                     </AccordionDetails>
                   </Accordion>
                 </div>

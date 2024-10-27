@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, MenuItem } from '@mui/material';
+import { TextField, MenuItem, styled } from '@mui/material';
 
 export type SelectOption = {
   label: string;
@@ -12,10 +12,19 @@ interface SelectFieldProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
-  size?: 'small' | 'medium',
+  size?: 'small' | 'medium';
   disabled?: boolean;
-  includeClearOption?: boolean; // Add a prop to include the "Clear" option
+  showClearOptions?: boolean;
 }
+
+// Custom styled component for the "Clear" option
+const ClearMenuItem = styled(MenuItem)(({ theme }) => ({
+  color: theme.palette.error.main,
+  fontWeight: theme.typography.fontWeightBold,
+  '&:hover': {
+    backgroundColor: theme.palette.error.light, // Darker background on hover
+  },
+}));
 
 const SelectField = ({
   label,
@@ -25,7 +34,7 @@ const SelectField = ({
   className = '',
   size = 'medium',
   disabled = false,
-  includeClearOption = false, // Default is false
+  showClearOptions = false,
 }: SelectFieldProps) => {
   return (
     <TextField
@@ -34,11 +43,11 @@ const SelectField = ({
       value={value}
       onChange={onChange}
       className={className}
-      slotProps={{
-        inputLabel: {
-          shrink: true,
-        }
-      }}
+      // slotProps={{
+      //   inputLabel: {
+      //     shrink: true,
+      //   }
+      // }}
       variant="outlined"
       disabled={disabled}
       size={size}
@@ -48,10 +57,10 @@ const SelectField = ({
           {option.label}
         </MenuItem>
       ))}
-      {includeClearOption && ( // Render the clear option conditionally
-        <MenuItem key="clear" value="">
+      {showClearOptions && (
+        <ClearMenuItem key="clear" value="">
           Clear
-        </MenuItem>
+        </ClearMenuItem>
       )}
     </TextField>
   );

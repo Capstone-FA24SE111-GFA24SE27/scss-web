@@ -1,4 +1,4 @@
-import { ThemeOptions } from "@mui/material";
+import { ThemeOptions, alpha } from "@mui/material";
 
 
 const defaultPalette = {
@@ -17,13 +17,17 @@ const defaultPalette = {
 		main: "#1e293b",
 		dark: "#0f172a",
 		contrastDefaultColor: "light",
-		contrastText: "#ffffff" // rgb(255, 255, 255)
+		contrastText: "#ffffff",
+		hover: alpha("#1e293b", 0.1),
+		selected: alpha("#1e293b", 0.2)
 	},
 	secondary: {
 		light: "#fca311",
 		main: "#e67e22",
 		dark: "#c65d14",
-		contrastText: "#ffffff" // rgb(255, 255, 255)
+		contrastText: "#ffffff", // rgb(255, 255, 255)
+		hover: alpha("#e67e22", 0.1),
+		selected: alpha("#e67e22", 0.2)
 	},
 	background: {
 		paper: "#FFFFFF",
@@ -37,6 +41,9 @@ const defaultPalette = {
 	},
 	divider: "#e2e8f0"
 }
+
+const lighterSecondaryHover = alpha(defaultPalette.secondary.main, 0.1);  // 10% opacity
+const lighterSecondarySelected = alpha(defaultPalette.secondary.main, 0.2);  // 20% opacity
 
 export const defaultThemeOptions = {
 	typography: {
@@ -90,7 +97,7 @@ export const defaultThemeOptions = {
 			styleOverrides: {
 				root: {
 					textTransform: 'none',
-					fontWeight: 600, 
+					fontWeight: 600,
 				},
 				sizeMedium: {
 					borderRadius: 20,
@@ -267,6 +274,21 @@ export const defaultThemeOptions = {
 					'&:hover, &:focus': {
 						backgroundColor: 'secondary.light',
 					}
+				},
+			},
+		},
+		MuiMenuItem: {
+			styleOverrides: {
+				root: {
+					'&.Mui-selected': {
+						backgroundColor: defaultPalette.secondary.selected, // Uses lighter selected shade
+						'&:hover': {
+							backgroundColor: defaultPalette.secondary.hover, // Even lighter shade on hover when selected
+						},
+					},
+					'&:hover': {
+						backgroundColor: defaultPalette.secondary.hover, // Lighter shade on hover when not selected
+					},
 				},
 			},
 		},

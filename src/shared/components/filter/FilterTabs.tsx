@@ -12,17 +12,15 @@ const CustomTabs = ({ tabs, tabValue, onChangeTab }: CustomTabsProps) => {
     <Tabs
       value={tabValue}
       onChange={onChangeTab}
-      indicatorColor="secondary"
       textColor="inherit"
       variant="scrollable"
       scrollButtons={false}
       className="min-h-40"
-      classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
+      classes={{ indicator: 'flex justify-center opacity-10 rounded-full w-full h-full' }}
       TabIndicatorProps={{
         children: (
           <Box
-            sx={{ bgcolor: 'primary.light' }}
-            className="w-full h-full rounded-full opacity-10"
+            className="w-full h-full rounded-full !text-secondary-main"
           />
         )
       }}

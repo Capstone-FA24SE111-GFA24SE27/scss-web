@@ -82,7 +82,7 @@ function CounselorBooking() {
     const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId)
     const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
-    const counselor = counselorData.content
+    const counselor = counselorData?.content
 
 
 
@@ -92,8 +92,8 @@ function CounselorBooking() {
             counselorId: Number(counselorId),
             appointmentRequest: formData
         })
-            .unwrap()
-            .then(() => navigate('../'))
+            // .unwrap()
+            // .then(() => navigate('../'))
     }
 
     const handleDateChange = (selectedDate) => {

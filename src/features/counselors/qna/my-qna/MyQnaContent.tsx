@@ -125,11 +125,11 @@ const MyQnaContent = () => {
             className='w-xs'
           />
           <SelectField
-            label="Choose topic"
+            label="Topic"
             options={topicOptions}
             value={selectedTopic}
             onChange={handleSelectTopic}
-            includeClearOption
+            showClearOptions
             className='w-200'
           />
           <SearchField

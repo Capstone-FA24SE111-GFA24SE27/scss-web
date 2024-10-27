@@ -19,9 +19,24 @@ export const activityApi = api
         }),
         providesTags: ['appointments']
       }),
-      getCounselingAppointmentRequests: build.query<GetCounselingAppointmentRequestsApiResponse, GetCounselingAppointmentApiArg>({
-        query: ({ }) => ({
-          url: `/api/booking-counseling/appointment-request?sortBy=requireDate&sortDirection=ASC&page=1`,
+      getCounselingAppointmentRequests: build.query<GetCounselingAppointmentRequestApiResponse, GetCounselingAppointmentRequestApiArg>({
+        query: ({
+          dateFrom = '',
+          dateTo = '',
+          meetingType = '',
+          sortBy = 'id',
+          sortDirection = 'DESC',
+          page = 1
+        }) => ({
+          url: `/api/booking-counseling/appointment-request`,
+          params: {
+            dateFrom,
+            dateTo,
+            meetingType,
+            sortBy,
+            sortDirection,
+            page
+          },
         }),
         providesTags: ['appointments']
       }),
@@ -43,10 +58,15 @@ export const {
 } = activityApi
 
 
-export type GetCounselingAppointmentRequestsApiResponse = ApiResponse<PaginationContent<AppointmentRequest>>
-export type GetCounselingAppointmentRequestsApiArg = {
-}
-
+export type GetCounselingAppointmentRequestApiResponse = ApiResponse<PaginationContent<AppointmentRequest>>;
+export type GetCounselingAppointmentRequestApiArg = {
+  dateFrom?: string;
+  dateTo?: string;
+  meetingType?: 'ONLINE' | 'OFFLINE' | '';
+  sortBy?: string;
+  sortDirection?: 'ASC' | 'DESC' | '';
+  page?: number;
+};
 
 export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>
 export type GetCounselingAppointmentApiArg = {

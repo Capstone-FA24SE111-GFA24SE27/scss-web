@@ -162,7 +162,7 @@ const QnaList = () => {
           className='w-xs'
         />
         <SelectField
-          label="Choose type"
+          label="Type"
           options={typeOptions}
           value={selectedType}
           onChange={handleSelectType}
@@ -170,7 +170,7 @@ const QnaList = () => {
         />
         <SelectField
           disabled={!selectedType}
-          label="Choose topic"
+          label="Topic"
           options={topicOptions}
           value={selectedTopic}
           onChange={handleSelectTopic}

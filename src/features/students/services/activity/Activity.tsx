@@ -48,12 +48,12 @@ function Activity() {
 					<Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
 
-						label="Requests"
+						label="Appointments"
 					/>
 					<Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
 
-						label="Appointments"
+						label="Requests"
 					/>
 					<Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
@@ -71,8 +71,8 @@ function Activity() {
 			content={
 				<div className="w-full">
 					<div className='m-16'>
-						{tabValue === 0 && <RequestsTab />}
-						{tabValue === 1 && <AppointmentsTab />}
+						{tabValue === 0 && <AppointmentsTab />}
+						{tabValue === 1 && <RequestsTab />}
 					</div>
 				</div>
 			}

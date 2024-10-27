@@ -119,12 +119,12 @@ const QuestionBoard = () => {
             className='w-xs'
           />
           <SelectField
-            label="Choose topic"
+            label="Topic"
             options={topicOptions}
             value={selectedTopic}
             onChange={handleSelectTopic}
             className='w-200'
-            includeClearOption
+            showClearOptions
           />
           <SearchField
             onSearch={handleSearchStudentCode}
