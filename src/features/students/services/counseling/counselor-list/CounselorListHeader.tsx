@@ -1,5 +1,5 @@
 import { FilterAltOutlined, Search, Tune } from '@mui/icons-material'
-import { Box, Button, IconButton, Input, InputAdornment, Tab, Tabs, TextField, Tooltip } from '@mui/material'
+import { Box, Button, IconButton, Input, InputAdornment, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '@shared/store'
 import { motion } from 'framer-motion'
 import { useState, ChangeEvent, useEffect } from 'react'
@@ -24,7 +24,7 @@ const CounselorListHeader = () => {
         counselingType = 'ACADEMIC'
         break;
       case 1:
-        counselingType = 'NON-ACADEMIC'
+        counselingType = 'NON_ACADEMIC'
         break;
       default:
         counselingType = 'ACADEMIC'
@@ -35,7 +35,7 @@ const CounselorListHeader = () => {
 
   const debounceSearch = debounce((debouncedSearchTerm: string) => {
     dispatch(setSearchTerm(debouncedSearchTerm))
-  }, 1000);
+  }, 500);
 
   function handleSearch(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     debounceSearch(event.target.value)
@@ -99,7 +99,7 @@ const CounselorListHeader = () => {
             />
           </Tabs>
         </div>
-
+        <Typography variant='h6' color='textSecondary'>Choose your preferred counselor and proceed to book.</Typography>
       </div>
     </div >
   )

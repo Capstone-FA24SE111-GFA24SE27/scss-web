@@ -1,3 +1,5 @@
+import { Appointment } from ".";
+
 export type User = {
 	accessToken: string;
 	account: Account | null;
@@ -21,30 +23,52 @@ export type Profile = {
 };
 
 export type Counselor = {
-	profile: Profile;
-	email: string;
-	rating?: number;
-	expertise?: Expertise;
-	specialization?: Specialization;
-	status: string,
-};
+  id: number,
+  profile: Profile
+  email: string,
+  rating?: number,
+  expertise?: Expertise,
+  specialization?: Specialization,
+  // status: 'AVAILABLE' | 'UNAVAILABLE'
+  status: string,
+  department?: Department
+  major?: Major
+}
 
 export type Student = {
-	profile: Profile;
-	email: string;
-	studentCode: number;
-	specialization: Specialization;
-};
+  id: number,
+  profile: Profile
+  email: string,
+  studentCode: number,
+  specialization: Specialization
+  department: Department
+  major: Major
+}
+
+export type Specialization = {
+  id: number,
+  name: string,
+  code: string;
+}
+
+export type Department = {
+  id: number;
+  name: string;
+  code: string;
+}
+
+export type Major = {
+  id: number;
+  name: string;
+  code: string;
+  departmentId: number;
+}
 
 export type Expertise = {
 	id: number;
 	name: string;
 };
 
-export type Specialization = {
-	id: number;
-	name: string;
-};
 
 export type Role =
 	| 'STUDENT'
@@ -54,4 +78,29 @@ export type Role =
 	| 'ADMIN'
 	| 'NON_ACADEMIC_COUNSELOR';
 
-export type CounselingType = 'ACADEMIC' | 'NON-ACADEMIC';
+export type CounselingType = 'ACADEMIC' | 'NON_ACADEMIC'
+
+
+export type StudentDocument = {
+  studentProfile: Student,
+  counselingProfile: StudentCounselingDocumentInfo
+  counselingAppointment: Appointment[]
+}
+
+export type StudentCounselingDocumentInfo = {
+  introduction: string;
+  currentHealthStatus: string;
+  psychologicalStatus: string;
+  stressFactors: string;
+  academicDifficulties: string;
+  studyPlan: string;
+  careerGoals: string;
+  partTimeExperience: string;
+  internshipProgram: string;
+  extracurricularActivities: string;
+  personalInterests: string;
+  socialRelationships: string;
+  financialSituation: string;
+  financialSupport: string;
+  desiredCounselingFields: string;
+};

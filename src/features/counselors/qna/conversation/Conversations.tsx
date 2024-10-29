@@ -2,7 +2,7 @@ import { Avatar, Chip, Divider, Input, ListItemButton, Paper, Tooltip, Typograph
 import React, { useState } from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { Question, useGetMyQuestionsQuery, useReadMessageMutation } from '../qna-api';
+import { Question, useGetMyCounselorQuestionsQuery, useReadMessageMutation } from '../qna-api';
 import dayjs from 'dayjs';
 import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Search } from '@mui/icons-material';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { useEffect } from 'react'
 import { Scrollbar } from '@/shared/components';
 
 const Conversation = () => {
-  const { data: qnaData, refetch } = useGetMyQuestionsQuery({})
+  const { data: qnaData, refetch } = useGetMyCounselorQuestionsQuery({})
   const qnaList = qnaData?.content?.data || []
   const account = useAppSelector(selectAccount)
 

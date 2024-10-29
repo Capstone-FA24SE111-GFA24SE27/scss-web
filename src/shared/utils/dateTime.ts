@@ -32,7 +32,7 @@ export function dateMsToString(time: number) {
 	return localTime
 }
 
-export const formatChatDate = (inputDate) => {
+export const formatDateTime = (inputDate) => {
 	const today = dayjs();
 	const date = dayjs(inputDate.split('.')[0]);
 

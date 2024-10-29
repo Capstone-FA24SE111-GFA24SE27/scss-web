@@ -14,11 +14,12 @@ function ReusableDialog() {
 	return (
 		<Dialog
 			onClose={() => dispatch(closeDialog())}
-			aria-labelledby="fuse-dialog-title"
+			aria-labelledby="dialog-title"
 			classes={{
 				paper: 'rounded'
 			}}
 			{...options}
+			maxWidth="md"
 		/>
 	);
 }

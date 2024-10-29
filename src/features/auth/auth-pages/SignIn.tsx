@@ -16,7 +16,7 @@ function SignInPage() {
 				<CardContent className="mx-auto w-full max-w-320 sm:mx-0 sm:w-320">
 					<img
 						className="w-[10rem]"
-						src="assets/images/logo/FPT-education.png"
+						src="assets/images/logo/FPT-education.jpeg"
 						alt="logo"
 					/>
 					<Typography className="mt-32 text-4xl font-extrabold leading-tight tracking-tight">
@@ -44,7 +44,7 @@ function SignInPage() {
 							>
 								<img
 									className="w-72"
-									src="assets/images/logo/FPT-education.png"
+									src="assets/images/logo/FPT-education.jpeg"
 									alt="logo"
 								/>
 								Sign in FeID
@@ -69,7 +69,7 @@ function SignInPage() {
 
 			<Box
 				className="relative hidden h-full flex-auto items-center justify-center overflow-hidden p-64 md:flex lg:px-96"
-				// sx={{backgroundImage: "url(/assets/images/fptu-cover.png)", backgroundSize: 'cover', opacity: 0.7}}
+				// sx={{backgroundImage: "url(/assets/images/fptu-cover.jpeg)", backgroundSize: 'cover', opacity: 0.7}}
 				sx={{ backgroundColor: 'primary.main' }}
 			>
 				<svg

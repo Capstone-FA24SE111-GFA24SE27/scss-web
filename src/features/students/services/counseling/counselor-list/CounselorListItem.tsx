@@ -9,6 +9,7 @@ import { NavLinkAdapter } from '@/shared/components';
 import { Box, Chip, Rating } from '@mui/material';
 import { EmailOutlined, LocalPhoneOutlined, Mail, Phone } from '@mui/icons-material';
 import { Counselor } from '@shared/types';
+import { useParams } from 'react-router-dom';
 
 type CounselorListItemPropsType = {
 	counselor: Counselor;
@@ -19,10 +20,12 @@ type CounselorListItemPropsType = {
  */
 function CounselorListItem(props: CounselorListItemPropsType) {
 	const { counselor } = props;
+	const { id } = useParams()
 
 	return (
 		<>
 			<ListItemButton
+				selected={counselor?.id == Number(id)}
 				className="p-8 flex gap-24 items-center"
 				sx={{ bgcolor: 'background.paper' }}
 				component={NavLinkAdapter}

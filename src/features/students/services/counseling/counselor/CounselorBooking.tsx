@@ -15,7 +15,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { isEmpty } from 'lodash';
-import { useSocket } from '@/shared/context/socket';
+import { useSocket } from '@/shared/context';
 import { useEffect } from 'react'
 import { apiService, useAppDispatch, useAppSelector } from '@shared/store'
 import { selectCounselorType } from '../counselor-list/counselor-list-slice';
@@ -94,8 +94,8 @@ function CounselorBooking() {
             counselorId: Number(counselorId),
             appointmentRequest: formData
         })
-            .unwrap()
-            .then(() => navigate('../'))
+            // .unwrap()
+            // .then(() => navigate('../'))
     }
 
     const handleDateChange = (selectedDate) => {
@@ -353,7 +353,8 @@ function CounselorBooking() {
                             variant='contained'
                             color='secondary'
                             className='w-full'
-                            disabled={isEmpty(dirtyFields) || !isValid || isLoading || isBookingCounselor}
+                            disabled={isLoading || isBookingCounselor}
+                            // disabled={ !isValid || isLoading || isBookingCounselor}
                             onClick={handleSubmit(onSubmit)}>
                             Confirm booking
                         </Button>

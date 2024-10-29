@@ -1,11 +1,14 @@
-import { ContentLoading, Heading, NavLinkAdapter } from '@/shared/components';
+import { CheckboxField, ContentLoading, Heading, NavLinkAdapter, Pagination, SearchField, SelectField } from '@/shared/components';
 import { ArrowForward, ArrowRightAlt, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, Search, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, InputAdornment, MenuItem, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useAnswerQuestionMutation, useGetMyQuestionsQuery } from '../qna-api';
+import { useAnswerQuestionMutation, useGetMyCounselorQuestionsQuery } from '../qna-api';
 import MyQnaItem from './MyQnaItem';
+import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/shared/services';
+import { selectAccount, useAppSelector } from '@shared/store';
+import { extractCounselingTypeFromRole } from '@/shared/utils';
 
 
 const container = {
@@ -22,8 +25,9 @@ const item = {
 };
 
 const MyQnaContent = () => {
-  const { data: qnaData, isLoading } = useGetMyQuestionsQuery({})
-  const qnaList = qnaData?.content?.data || []
+
+
+  const account = useAppSelector(selectAccount)
 
   const [openAnswers, setOpenAnswers] = useState(true);
 
@@ -36,87 +40,134 @@ const MyQnaContent = () => {
 
   const [answer, setAnswer] = useState('')
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [searchStudentCode, setSearchStudentCode] = useState('');
+
+  const [selectedTopic, setSelectedTopic] = useState('');
+
+  const [isClosed, setIsClosed] = useState(false);
+
+  const [page, setPage] = useState(1);
+
+    const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+  };
+
+ 
+
+  const { data: qnaData, isLoading } = useGetMyCounselorQuestionsQuery({
+    isClosed: isClosed || '',
+    studentCode: searchStudentCode,
+    keyword: searchTerm,
+    topicId: selectedTopic,
+    page: page
+  })
+  const qnaList = qnaData?.content?.data || []
+
 
   const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
 
-  const handleAnswerQuestion = (questionId: number) => {
-    answerQuestion({
-      questionCardId: questionId,
-      content: answer
-    })
-  }
+
+  const { data: academicTopicsData } = useGetAcademicTopicsQuery()
+  const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery()
+  const academicTopics = academicTopicsData?.content
+  const nonAcademicTopics = nonacademicTopicsData?.content
+  const academicTopicOptions = academicTopics?.map(topic => ({
+    label: topic.name,
+    value: topic.id
+  }))
+
+  const nonAcademicTopicOptions = nonAcademicTopics?.map(topic => ({
+    label: topic.name,
+    value: topic.id
+  }))
+
+  const topicOptions = account?.role ?
+    extractCounselingTypeFromRole(account?.role) === 'ACADEMIC' ? academicTopicOptions : nonAcademicTopicOptions
+    : []
+
+  const handleSelectTopic = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedTopic(event.target.value);
+  };
+
+  const handleCheckboxClose = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsClosed(event.target.checked);
+  };
+
+  const handleSearchStudentCode = (searchStudentCode: string) => {
+    setSearchStudentCode(searchStudentCode);
+  };
+
+  const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   if (isLoading) {
     return <ContentLoading />
   }
 
-  if (!qnaList?.length) {
-    return (
-      <div className='text-center p-32'>
-        <Typography variant='h5' className='text-text-disabled'>No questions found</Typography>
-      </div>
-
-    )
-  }
 
 
   return (
     <div className='w-full'>
-      {
-        qnaList?.length > 0 && (
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className='p-32 w-full space-y-16'
-          >
-            <div className='flex gap-16'>
-              <TextField
-                label="Search for questions"
-                placeholder="Enter a keyword..."
-                className="w-320"
-                variant="outlined"
-                slotProps={{
-                  inputLabel: {
-                    shrink: true,
-                  },
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search />
-                      </InputAdornment>
-                    )
-                  }
-                }}
-              />
-              {/* <TextField
-            select
-            label="Choose type"
-            className="w-200"
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              }
-            }}
-          >
-            <MenuItem value="ALL">All</MenuItem>
-            <MenuItem value="ACADEMIC">Academic</MenuItem>
-            <MenuItem value="NON-ACADEMIC">Non-Academic</MenuItem>
-          </TextField> */}
-            </div>
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className='p-32 w-full space-y-16'
+      >
+        <div className='flex gap-16'>
+          <SearchField
+            label='Question keyword'
+            placeholder='Enter question keyword'
+            onSearch={handleSearch}
+            className='w-xs'
+          />
+          <SelectField
+            label="Topic"
+            options={topicOptions}
+            value={selectedTopic}
+            onChange={handleSelectTopic}
+            showClearOptions
+            className='w-200'
+          />
+          <SearchField
+            onSearch={handleSearchStudentCode}
+            label='Student code'
+            placeholder='SE110000'
+            className='!w-144'
+          />
+          <div className='flex-1 flex justify-end w-full'>
+            <CheckboxField
+              label="Is Close"
+              checked={isClosed}
+              onChange={handleCheckboxClose}
+            />
+          </div>
 
-            <div className='space-y-16'>
-              {qnaList.map((qna) => (
+        </div>
+
+        <div className='space-y-16'>
+          {
+            !qnaList.length
+              ? <div className='text-center p-32'>
+                <Typography variant='h5' className='text-text-disabled'>No questions found</Typography>
+              </div>
+              : qnaList.map((qna) => (
                 <MyQnaItem
                   key={qna.id}
                   qna={qna}
                 />
               ))
-              }
-            </div >
-          </motion.div >
-        )
-      }
+          }
+        </div >
+        <Pagination
+          page={page}
+          count={qnaData?.content.totalPages}
+          handleChange={handlePageChange}
+        />
+      </motion.div >
     </div>
   );
 

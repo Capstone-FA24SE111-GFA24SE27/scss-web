@@ -1,10 +1,10 @@
 import { NavLinkAdapter } from '@/shared/components';
-import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, Edit, EditNote, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
+import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, Close, Edit, EditNote, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import { ChangeEvent, SyntheticEvent, useState } from 'react'
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Question, useAnswerQuestionMutation, useGetMyQuestionsQuery, useReadMessageMutation } from '../qna-api';
+import { Question, useAnswerQuestionMutation, useCloseQuestionCounselorMutation, useGetMyCounselorQuestionsQuery, useReadMessageMutation } from '../qna-api';
 
 
 const container = {
@@ -36,8 +36,10 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
   const [editMode, setEditMode] = useState(false)
 
   const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
+
   const [editAnswer, { isLoading: editingAnswer }] = useAnswerQuestionMutation()
 
+  const [closeQuestion] = useCloseQuestionCounselorMutation()
   const handleAnswerQuestion = (questionId: number) => {
     answerQuestion({
       questionCardId: questionId,
@@ -65,6 +67,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
     readMessage(qna.chatSession.id)
     navigate(`${qna.id}`)
   }
+
   return (
     <motion.div
       variants={item}
@@ -143,7 +146,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
                       </div>
                     </div>
                     : <div>
-                      <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography>
+                      {/* <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
                       <div className='flex items-center'>
                         <Typography className="px-8">{qna.answer}</Typography>
                         <IconButton size='small' onClick={() => setEditMode(true)}>
@@ -155,7 +158,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
                   : <div>
                     <TextField
                       label="My answer"
-                      placeholder="Enter a keyword..."
+                      placeholder="Enter answer for the question..."
                       variant="outlined"
                       value={answer}
                       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -188,21 +191,36 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
           <Box
             className='bg-primary-light/5 w-full py-8 flex justify-end px-16 cursor-pointer gap-16'
           >
-            <Button
-              variant='outlined'
-              color='secondary'
-              onClick={handleSelectChat}
-              endIcon={<ArrowForward />}
-            >
-              Go to conversations
-            </Button>
+            {!qna?.closed && qna?.answer &&
+              <Button
+                variant='outlined'
+                color='secondary'
+                startIcon={<Close />}
+                onClick={() => {
+                  setExpanded(false)
+                  closeQuestion(qna.id)
+                }
+                }
+              >
+                Close
+              </Button>
+            }
             <Button
               variant='contained'
               color='secondary'
               onClick={handleChat}
+              disabled={qna?.closed}
               endIcon={<ChatBubbleOutline />}
             >
               Chat
+            </Button>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={handleSelectChat}
+              endIcon={<ArrowForward />}
+            >
+              Go to conversations
             </Button>
           </Box>
         </Accordion>

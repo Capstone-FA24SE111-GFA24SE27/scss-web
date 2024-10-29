@@ -16,15 +16,23 @@ export const counselingApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getCounselorsAcademic: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
+      getCounselorsAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/academic?search=${search}`,
+          url: `/api/counselors/academic`,
+          params: {
+            search,
+            page
+          }
         }),
         providesTags: ['counselors']
       }),
       getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/non-academic?search=${search}`,
+          url: `/api/counselors/non-academic`,
+          params: {
+            search,
+            page
+          }
         }),
         providesTags: ['counselors']
       }),
@@ -119,7 +127,7 @@ export type GetCounselorsApiArg = {
 }
 
 export type GetCounselorApiResponse = ApiResponse<Counselor>
-export type GetCounselorApiAcademicResponse = Counselor
+export type GetCounselorApiAcademicResponse = ApiResponse<PaginationContent<Counselor>>
 export type GetRandomMatchedCounselorApiResponse = ApiResponse<Counselor>
 
 

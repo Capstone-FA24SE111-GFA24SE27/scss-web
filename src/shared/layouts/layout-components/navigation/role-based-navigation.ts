@@ -54,7 +54,7 @@ const studentNavigation: NavigationOptions = {
                 },
                 {
                     icon: Article,
-                    name: 'Activity',
+                    name: 'Appointments',
                     route: 'activity'
                 },
                 {
@@ -70,29 +70,29 @@ const studentNavigation: NavigationOptions = {
 
             ]
         },
-        {
-            name: 'Resources',
-            description: 'Resources for students',
-            route: 'resources',
-            items: [
-                {
-                    icon: Campaign,
-                    name: 'Events',
-                    route: 'events'
-                },
-                {
-                    icon: Article,
-                    name: 'Articles',
-                    route: 'article'
-                },
-                {
-                    icon: NotStarted,
-                    name: 'Videos',
-                    route: 'videos'
-                },
+        // {
+        //     name: 'Resources',
+        //     description: 'Resources for students',
+        //     route: 'resources',
+        //     items: [
+        //         {
+        //             icon: Campaign,
+        //             name: 'Events',
+        //             route: 'events'
+        //         },
+        //         {
+        //             icon: Article,
+        //             name: 'Articles',
+        //             route: 'article'
+        //         },
+        //         {
+        //             icon: NotStarted,
+        //             name: 'Videos',
+        //             route: 'videos'
+        //         },
 
-            ]
-        }
+        //     ]
+        // }
     ],
     shortcuts: [
         {
@@ -149,11 +149,11 @@ const counselorNavigation: NavigationOptions = {
             description: "Questions and answer",
             route: 'qna',
             items: [
-                {
-                    icon: Assignment,
-                    name: 'Question Board',
-                    route: 'question-board'
-                },
+                // {
+                //     icon: Assignment,
+                //     name: 'Question Board',
+                //     route: 'question-board'
+                // },
                 {
                     icon: Class,
                     name: 'My Q&A',
@@ -166,28 +166,28 @@ const counselorNavigation: NavigationOptions = {
                 },
             ]
         },
-        {
-            name: 'Resources',
-            description: 'Resources for students & couselors',
-            route: 'resources',
-            items: [
-                {
-                    icon: EventSeat,
-                    name: 'Workshops',
-                    route: 'workshops'
-                },
-                {
-                    icon: Article,
-                    name: 'Articles',
-                    route: 'article'
-                },
-                {
-                    icon: NotStarted,
-                    name: 'Videos',
-                    route: 'videos'
-                },
-            ]
-        }
+        // {
+        //     name: 'Resources',
+        //     description: 'Resources for students & couselors',
+        //     route: 'resources',
+        //     items: [
+        //         {
+        //             icon: EventSeat,
+        //             name: 'Workshops',
+        //             route: 'workshops'
+        //         },
+        //         {
+        //             icon: Article,
+        //             name: 'Articles',
+        //             route: 'article'
+        //         },
+        //         {
+        //             icon: NotStarted,
+        //             name: 'Videos',
+        //             route: 'videos'
+        //         },
+        //     ]
+        // }
     ],
     shortcuts: [
         {

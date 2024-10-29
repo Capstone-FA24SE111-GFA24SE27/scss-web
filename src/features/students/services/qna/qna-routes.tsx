@@ -22,6 +22,10 @@ export const qnaRoutes: RouteObject[] = [
         path: 'create',
         element: <QnaForm />,
       },
+      {
+        path: 'edit/:questionId',
+        element: <QnaForm />,
+      },
       ...converastionsRoutes,
     ]
   },

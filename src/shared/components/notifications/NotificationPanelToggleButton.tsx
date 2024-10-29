@@ -11,7 +11,7 @@ import {
 	setNotifications,
 	toggleNotificationPanel,
 } from './notification-slice';
-import { useSocket } from '@/shared/context/socket';
+import { useSocket } from '@/shared/context';
 import { selectAccount } from '@shared/store';
 import { useGetAllNotificationsQuery } from './notification-api';
 import { closeSnackbar, enqueueSnackbar } from 'notistack';

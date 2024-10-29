@@ -2,11 +2,11 @@ import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Send } from '@mui/icon
 import { Avatar, IconButton, Paper, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { Message, useGetQuestionQuery, useReadMessageMutation, useSendMessageMutation } from '../qna-api';
+import { Message, useGetStudentQuestionQuery, useReadMessageMutation, useSendMessageMutation } from '../qna-api';
 import { ContentLoading, Scrollbar } from '@/shared/components';
 import { selectAccount, useAppSelector } from '@shared/store';
-import { useSocket } from '@/shared/context/socket';
-import { formatChatDate } from '@/shared/utils';
+import { useSocket } from '@/shared/context';
+import { formatDateTime } from '@/shared/utils';
 
 const ConversationDetail = () => {
   const routeParams = useParams();
@@ -14,7 +14,7 @@ const ConversationDetail = () => {
   const socket = useSocket()
   const account = useAppSelector(selectAccount)
   const myId = account.id
-  const { data: qnaData, isFetching, refetch } = useGetQuestionQuery(questionCardId)
+  const { data: qnaData, isFetching, refetch } = useGetStudentQuestionQuery(questionCardId)
   const qna = qnaData?.content
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -73,14 +73,14 @@ const ConversationDetail = () => {
           color="text.secondary"
           variant="h5"
         >
-          There are no messages!
+          There are no data!
         </Typography>
       </div>
     );
   }
   return (
-    <div className="flex flex-col w-full relative">
-      <div className='bg-background-paper p-16 space-y-8'>
+    <div className="flex flex-col relative">
+      <div className='bg-background-paper p-16 py-20 space-y-8'>
         <div className='flex gap-16 items-center'>
           <Avatar src={qna?.student.profile.avatarLink} alt='Student image' />
           <Typography variant="h6" className='font-semibold'>{qna?.student.profile.fullName}</Typography>
@@ -95,7 +95,7 @@ const ConversationDetail = () => {
         </div>
       </div>
 
-      <Scrollbar className="p-16 space-y-8 bg-background min-h-0 overflow-y-auto !h-[calc(100vh-265px)]">
+      <Scrollbar className="p-16 m-8 rounded space-y-8 bg-background min-h-0 overflow-y-auto !h-[calc(100vh-265px)]">
         {messages.map((message, index) => (
           <div
             key={message.id}
@@ -112,7 +112,7 @@ const ConversationDetail = () => {
                 {/* {message.sentAt} -
 {message.read? 'read': 'not read'} */}
               </Paper>
-              <Typography color='textSecondary' className={`mt-4 text-sm ${message.sender.id === myId ? 'text-end' : 'text-start'} `}>{formatChatDate(message.sentAt)}</Typography>
+              <Typography color='textSecondary' className={`mt-4 text-sm ${message.sender.id === myId ? 'text-end' : 'text-start'} `}>{formatDateTime(message.sentAt)}</Typography>
             </div>
           </div>
 
@@ -129,6 +129,11 @@ const ConversationDetail = () => {
           placeholder="Type a message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && message) {
+              handleSendMessage();
+            }
+          }}
         />
         <IconButton color="primary" onClick={handleSendMessage} disabled={!message}>
           <Send />

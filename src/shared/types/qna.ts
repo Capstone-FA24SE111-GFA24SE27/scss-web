@@ -30,3 +30,4 @@ export type Question = {
     sender: Account,
     sendAt: string,
   }
+export type QuestionCardStatus = 'VERIFIED' | 'PENDING' | 'FLAGGED' | 'REJECTED'

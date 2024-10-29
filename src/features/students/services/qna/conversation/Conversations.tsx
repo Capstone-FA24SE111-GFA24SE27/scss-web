@@ -1,8 +1,8 @@
-import { Avatar, Chip, Divider, Input, ListItemButton, Paper, Tooltip, Typography } from '@mui/material';
+import { Avatar, Chip, Divider, Input, InputAdornment, ListItemButton, Paper, Tooltip, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { Question, useGetMyQuestionsQuery, useReadMessageMutation } from '../qna-api';
+import { Question, useGetMyStudentQuestionsQuery, useReadMessageMutation } from '../qna-api';
 import dayjs from 'dayjs';
 import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Search } from '@mui/icons-material';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { selectAccount, useAppSelector } from '@shared/store';
 import { useEffect } from 'react'
 
 const Conversation = () => {
-  const { data: qnaData, refetch } = useGetMyQuestionsQuery({})
+  const { data: qnaData, refetch } = useGetMyStudentQuestionsQuery({})
   const qnaList = qnaData?.content?.data.filter(item => item.counselor) || []
   const account = useAppSelector(selectAccount)
 
@@ -37,21 +37,24 @@ const Conversation = () => {
   }, []);
 
   return (
-    <div className='flex h-full'>
-      <Scrollbar className=' p-16 space-y-16 border-r !h-[calc(100vh-65px)]'>
+    <div className='flex h-full w-full'>
+      <Scrollbar className='p-16 space-y-16 w-full !h-[calc(100vh-65px)]'>
         <Typography className='text-3xl font-extrabold'>Conversations</Typography>
-        <Paper className="flex p-4 items-center w-full px-16 py-4 border-1 h-40 rounded-full shadow-none">
-          <Search />
-          <Input
-            placeholder="Search or start new chat"
-            className="flex flex-1 px-8"
-            disableUnderline
-            fullWidth
-            inputProps={{
-              'aria-label': 'Search'
-            }}
-          />
-        </Paper>
+        <TextField 
+          variant="outlined"
+          label="Search conversations"
+          placeholder="Name"
+          value={input}
+          fullWidth
+          onChange={(e) => setInput(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+        />
         <div className="space-y-8 ">
           {qnaList.map((qnaItem) => (
             <ListItemButton key={qnaItem.id} className='flex-col items-start rounded p-4' selected={Number(id) == qnaItem.id}
@@ -84,12 +87,9 @@ const Conversation = () => {
               <Divider />
             </ListItemButton>
           ))}
-
         </div>
       </Scrollbar>
-      <Outlet />
     </div>
-
   );
 };
 

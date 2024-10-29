@@ -48,7 +48,7 @@ export const counselorListSlice = createSlice({
     setSearchTerm: (state, action: PayloadAction<string>) => {
       state.searchTerm = action.payload
     },
-    setCounselorType: (state, action: PayloadAction<'ACADEMIC' | 'NON-ACADEMIC'>) => {
+    setCounselorType: (state, action: PayloadAction<'ACADEMIC' | 'NON_ACADEMIC'>) => {
       state.counselorType = action.payload
     }
   },
