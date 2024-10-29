@@ -18,7 +18,6 @@ const Root = styled(PageSimple)(({ theme }) => ({
  * The ContactsApp page.
  */
 function Appointments() {
-	const pageLayout = useRef(null);
 	const routeParams = useParams();
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
 	// const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
@@ -34,7 +33,6 @@ function Appointments() {
 		<Root
 			header={<AppointmentsHeader />}
 			content={<AppointmentsContent />}
-			ref={pageLayout}
 			rightSidebarContent={<AppointmentsSidebarContent />}
 			rightSidebarOpen={rightSidebarOpen}
 			rightSidebarOnClose={() => setRightSidebarOpen(false)}

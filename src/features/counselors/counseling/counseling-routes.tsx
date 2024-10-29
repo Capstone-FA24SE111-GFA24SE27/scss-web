@@ -11,7 +11,6 @@ export const counselingRoutes: RouteObject[] = [
             ...requestsRoutes,
             ...appointmentsRoutes,
             ...calendarRoutes
-
         ]
     },
 ];

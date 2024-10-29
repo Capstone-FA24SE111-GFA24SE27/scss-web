@@ -34,11 +34,20 @@ export const appointmentsApi = api
         }),
         providesTags: ['appointments']
       }),
+      cancelCounselingAppointmentCounselor: build.mutation<void, CancelCounselingAppointmentArg>({
+        query: ({ appointmentId, reason }) => ({
+          method: 'POST',
+          url: `/api/booking-counseling/counselor/cancel/${appointmentId}`,
+          body: { reason }
+        }),
+        invalidatesTags: ['appointments'],
+      }),
     })
   });
 
 export const {
   useGetCounselorCounselingAppointmentQuery,
+  useCancelCounselingAppointmentCounselorMutation
 } = appointmentsApi;
 
 export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
@@ -50,4 +59,9 @@ export type GetCounselingAppointmentApiArg = {
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC';
   page?: number;
+};
+
+export type CancelCounselingAppointmentArg = {
+  appointmentId: number;
+  reason: string
 };
