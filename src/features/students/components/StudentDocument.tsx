@@ -30,12 +30,12 @@ const schema = z.object({
 type FormData = Required<z.infer<typeof schema>>;
 
 const steps = [
-  'Tình trạng tâm lý và sức khỏe',
-  'Thông tin học tập',
-  'Thông tin hướng nghiệp',
-  'Hoạt động và đời sống',
-  'Hỗ trợ tài chính',
-  'Yêu cầu tư vấn'
+  'Psychological and Health Status',
+  'Academic Information',
+  'Career Information',
+  'Activities and Lifestyle',
+  'Financial Support',
+  'Counseling Requests'
 ];
 
 const FormStepper = () => {

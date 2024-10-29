@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselorAppointmentRequestsQuery } from './requests-api'
-import { AppLoading, DateRangePicker, NavLinkAdapter, Pagination, SelectField, SortingToggle, closeDialog, openDialog } from '@/shared/components'
+import { AppLoading, DateRangePicker, NavLinkAdapter, Pagination, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
 import { ChangeEvent, Fragment, useState } from 'react';
@@ -76,7 +76,7 @@ const RequestsContent = () => {
   }
 
   return (
-    <div className='container mx-auto p-16'>
+    <div className='container mx-auto p-32'>
       <Box className='flex gap-32 justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker
@@ -160,16 +160,12 @@ const RequestsContent = () => {
                       to={`student/${appointment.student.profile.id}`}
                       className='w-full rounded shadow bg-primary-light/5'
                     >
-                      <div className='flex w-full'>
-                        <Avatar
-                          alt={appointment.student.profile.fullName}
-                          src={appointment.student.profile.avatarLink}
-                        />
-                        <div className='ml-16'>
-                          <Typography className='font-semibold text-primary-main'>{appointment.student.profile.fullName}</Typography>
-                          <Typography color='text.secondary'>{appointment.student.email || 'counselor@fpt.edu.vn'}</Typography>
-                        </div>
-                      </div>
+                      <UserListItem
+                        fullName={appointment?.student.profile.fullName}
+                        avatarLink={appointment?.student.profile.avatarLink}
+                        phoneNumber={appointment?.student.profile.phoneNumber}
+                        email={appointment?.student.email}
+                      />
                       <ChevronRight />
                     </ListItemButton>
                   </Tooltip>

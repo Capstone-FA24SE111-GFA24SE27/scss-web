@@ -99,7 +99,7 @@ function StudentView({ }: StudentViewProps) {
 
           <Typography className="mt-12 text-4xl font-bold truncate">{student?.studentProfile.profile.fullName}</Typography>
 
-          {/* <div className='flex items-end gap-8 text-lg text-gray-500'>
+          {/* <div className='flex items-end gap-8 text-lg text-text-disabled'>
                     <Rating
                         name="simple-controlled"
                         value={4.6}
@@ -109,7 +109,7 @@ function StudentView({ }: StudentViewProps) {
                     <div>(116)</div>
                 </div> */}
 
-          <div className="flex items-center gap-8 mt-16 ">
+          <div className="flex items-center gap-8 mt-8 ">
             <Chip
               label={student?.studentProfile.studentCode}
               size="medium"
@@ -179,7 +179,7 @@ function StudentView({ }: StudentViewProps) {
                           color='secondary'
                           disabled={!appointment.havingReport}
                           onClick={() => navigate(`report/${appointment.id}`)}
-                          >
+                        >
                           View report
                         </Button>
                       </Paper>
@@ -192,148 +192,119 @@ function StudentView({ }: StudentViewProps) {
             <Divider />
             <div>
               <Typography className='font-semibold'>
-                More infomation
+                Academic details
+              </Typography>
+              <Paper className="rounded p-8 shadow mt-8">
+
+                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                  <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
+                  <div className="col-span-2">{student.studentProfile.specialization.name}</div>
+                </div>
+
+                {/* Department Section */}
+                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                  <div className="col-span-1 font-medium text-text-secondary">Department:</div>
+                  <div className="col-span-2">
+                    <span>{student.studentProfile.department.name}</span>
+                    {student.studentProfile.department.code && (
+                      <span className="ml-2 text-text-disabled"> ({student.studentProfile.department.code})</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Major Section */}
+                <div className="grid grid-cols-3 gap-y-2">
+                  <div className="col-span-1 font-medium text-text-secondary">Major:</div>
+                  <div className="col-span-2">
+                    <span>{student.studentProfile.major.name}</span>
+                    {student.studentProfile.major.code && (
+                      <span className="ml-2 text-text-disabled"> ({student.studentProfile.major.code})</span>
+                    )}
+                  </div>
+                </div>
+              </Paper>
+            </div>
+
+
+            <Divider />
+            <div>
+              <Typography className='font-semibold'>
+                Counseling infomation
               </Typography>
               <div className='flex flex-col gap-8 mt-8'>
-                {/* <div className="flex flex-col gap-8 mt-8">
-                  {student?.counselingProfile && (
-                    <>
-                      <div className="flex flex-col">
-                        <Typography>Introduction:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.introduction}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Current Health Status:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.currentHealthStatus}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Psychological Status:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.psychologicalStatus}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Stress Factors:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.stressFactors}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Academic Difficulties:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.academicDifficulties}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Study Plan:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.studyPlan}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Career Goals:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.careerGoals}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Part-Time Experience:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.partTimeExperience}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Internship Program:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.internshipProgram}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Extracurricular Activities:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.extracurricularActivities}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Personal Interests:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.personalInterests}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Social Relationships:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.socialRelationships}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Financial Situation:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.financialSituation}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Financial Support:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.financialSupport}</Typography>
-                      </div>
-                      <div className="flex flex-col">
-                        <Typography>Desired Counseling Fields:</Typography>
-                        <Typography color='textSecondary' className="">{student.counselingProfile.desiredCounselingFields}</Typography>
-                      </div>
-                    </>
-                  )}
-                </div> */}
                 <div>
-                  {/* Tình trạng tâm lý và sức khỏe */}
+                  {/* Psychological and Health Status */}
                   <Accordion className='shadow'>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Tình trạng tâm lý và sức khỏe</Typography>
+                      <Typography>Psychological and Health Status</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Giới thiệu:</strong> {student.counselingProfile?.introduction}</Typography>
-                      <Typography><strong>Tình trạng sức khỏe hiện tại:</strong> {student.counselingProfile?.currentHealthStatus}</Typography>
-                      <Typography><strong>Tình trạng tâm lý:</strong> {student.counselingProfile?.psychologicalStatus}</Typography>
-                      <Typography><strong>Các yếu tố gây căng thẳng:</strong> {student.counselingProfile?.stressFactors}</Typography>
+                      <Typography><strong>Introduction:</strong> {student.counselingProfile?.introduction}</Typography>
+                      <Typography><strong>Current Health Status:</strong> {student.counselingProfile?.currentHealthStatus}</Typography>
+                      <Typography><strong>Psychological Status:</strong> {student.counselingProfile?.psychologicalStatus}</Typography>
+                      <Typography><strong>Stress Factors:</strong> {student.counselingProfile?.stressFactors}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
-                  {/* Thông tin học tập */}
+                  {/* Academic Information */}
                   <Accordion className='shadow'>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Thông tin học tập</Typography>
+                      <Typography>Academic Information</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Khó khăn học tập:</strong> {student.counselingProfile?.academicDifficulties}</Typography>
-                      <Typography><strong>Kế hoạch học tập:</strong> {student.counselingProfile?.studyPlan}</Typography>
+                      <Typography><strong>Academic Difficulties:</strong> {student.counselingProfile?.academicDifficulties}</Typography>
+                      <Typography><strong>Study Plan:</strong> {student.counselingProfile?.studyPlan}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
-                  {/* Thông tin hướng nghiệp */}
+                  {/* Career Information */}
                   <Accordion className='shadow'>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Thông tin hướng nghiệp</Typography>
+                      <Typography>Career Information</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Mục tiêu nghề nghiệp:</strong> {student.counselingProfile?.careerGoals}</Typography>
-                      <Typography><strong>Kinh nghiệm làm việc part-time:</strong> {student.counselingProfile?.partTimeExperience}</Typography>
-                      <Typography><strong>Chương trình thực tập:</strong> {student.counselingProfile?.internshipProgram}</Typography>
+                      <Typography><strong>Career Goals:</strong> {student.counselingProfile?.careerGoals}</Typography>
+                      <Typography><strong>Part-Time Experience:</strong> {student.counselingProfile?.partTimeExperience}</Typography>
+                      <Typography><strong>Internship Program:</strong> {student.counselingProfile?.internshipProgram}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
-                  {/* Hoạt động và đời sống */}
+                  {/* Activities and Lifestyle */}
                   <Accordion className='shadow'>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Hoạt động và đời sống</Typography>
+                      <Typography>Activities and Lifestyle</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Hoạt động ngoại khóa:</strong> {student.counselingProfile?.extracurricularActivities}</Typography>
-                      <Typography><strong>Sở thích cá nhân:</strong> {student.counselingProfile?.personalInterests}</Typography>
-                      <Typography><strong>Quan hệ xã hội:</strong> {student.counselingProfile?.socialRelationships}</Typography>
+                      <Typography><strong>Extracurricular Activities:</strong> {student.counselingProfile?.extracurricularActivities}</Typography>
+                      <Typography><strong>Personal Interests:</strong> {student.counselingProfile?.personalInterests}</Typography>
+                      <Typography><strong>Social Relationships:</strong> {student.counselingProfile?.socialRelationships}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
-                  {/* Hỗ trợ tài chính */}
-                  <Accordion >
+                  {/* Financial Support */}
+                  <Accordion className='shadow'>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Hỗ trợ tài chính</Typography>
+                      <Typography>Financial Support</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Tình hình tài chính:</strong> {student.counselingProfile?.financialSituation}</Typography>
-                      <Typography><strong>Hỗ trợ tài chính:</strong> {student.counselingProfile?.financialSupport}</Typography>
+                      <Typography><strong>Financial Situation:</strong> {student.counselingProfile?.financialSituation}</Typography>
+                      <Typography><strong>Financial Support:</strong> {student.counselingProfile?.financialSupport}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
-                  {/* Yêu cầu tư vấn */}
+                  {/* Counseling Requests */}
                   <Accordion className='shadow'>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Yêu cầu tư vấn</Typography>
+                      <Typography>Counseling Requests</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Lĩnh vực tư vấn mong muốn:</strong> {student.counselingProfile?.desiredCounselingFields}</Typography>
+                      <Typography><strong>Desired Counseling Fields:</strong> {student.counselingProfile?.desiredCounselingFields}</Typography>
                     </AccordionDetails>
                   </Accordion>
                 </div>
               </div>
-            </div>
 
+            </div>
           </div>
         </div>
       </div>

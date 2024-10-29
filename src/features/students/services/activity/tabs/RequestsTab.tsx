@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { AppointmentRequest, useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation } from '../activity-api'
-import { AppLoading, DateRangePicker, ExpandableText, NavLinkAdapter, Pagination, SelectField, SortingToggle, closeDialog, openDialog } from '@/shared/components'
+import { AppLoading, DateRangePicker, ExpandableText, NavLinkAdapter, Pagination, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -130,16 +130,12 @@ const RequestsTab = () => {
                       to={`counselor/${appointment.counselor.profile.id}`}
                       className='bg-primary-light/5 w-full rounded shadow'
                     >
-                      <div className='w-full flex'>
-                        <Avatar
-                          alt={appointment.counselor.profile.fullName}
-                          src={appointment.counselor.profile.avatarLink}
-                        />
-                        <div className='ml-16'>
-                          <Typography className='font-semibold text-primary-main'>{appointment.counselor.profile.fullName}</Typography>
-                          <Typography color='text.secondary'>{appointment.counselor?.expertise?.name || appointment.counselor?.specialization?.name}</Typography>
-                        </div>
-                      </div>
+                      <UserListItem
+                        fullName={appointment.counselor.profile.fullName}
+                        avatarLink={appointment.counselor.profile.avatarLink}
+                        phoneNumber={appointment.counselor.profile.phoneNumber}
+                        email={appointment.counselor.email}
+                      />
                       <ChevronRight />
                     </ListItemButton>
                   </Tooltip>

@@ -28,9 +28,11 @@ export type Counselor = {
   email: string,
   rating?: number,
   expertise?: Expertise,
-  specialization?: Specialization
+  specialization?: Specialization,
   // status: 'AVAILABLE' | 'UNAVAILABLE'
   status: string,
+  department?: Department
+  major?: Major
 }
 
 export type Student = {
@@ -38,6 +40,28 @@ export type Student = {
   profile: Profile
   email: string,
   studentCode: number,
+  specialization: Specialization
+  department: Department
+  major: Major
+}
+
+export type Specialization = {
+  id: number,
+  name: string,
+  code: string;
+}
+
+export type Department = {
+  id: number;
+  name: string;
+  code: string;
+}
+
+export type Major = {
+  id: number;
+  name: string;
+  code: string;
+  departmentId: number;
 }
 
 export type Expertise = {
@@ -45,10 +69,6 @@ export type Expertise = {
   name: string
 }
 
-export type Specialization = {
-  id: number,
-  name: string
-}
 
 export type Role = "STUDENT" | "ACADEMIC_COUNSELOR" | "SUPPORT_STAFF" | "MANAGER" | "ADMIN" | "NON_ACADEMIC_COUNSELOR"
 

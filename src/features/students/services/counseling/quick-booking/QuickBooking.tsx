@@ -258,7 +258,7 @@ function QuickBooking() {
                             <Typography variant="h6" sx={{ marginLeft: 1 }}>Non-academic</Typography>
                           </Box>
                           <Typography variant="body2" color="text.secondary">
-                            This conveys that non-academic counseling focuses on personal growth, social skills, and overall well-being.
+                            Receive support for mental well-being, personal growth, relationship issues, and stress management.
                           </Typography>
                         </Box>
                       }
@@ -545,7 +545,6 @@ function QuickBooking() {
 
 
                         <div className='px-16'>
-                          <Divider className="mt-16 " />
                           <Controller
                             control={control}
                             name="reason"

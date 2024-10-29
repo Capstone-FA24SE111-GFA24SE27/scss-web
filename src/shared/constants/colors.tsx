@@ -7,6 +7,7 @@ export const statusColor = {
   'VERIFIED': 'success',
   'PENDING': 'warning',
   'FLAGGED': 'error',
+  'CANCELED': 'error',
 }
 
 export const meetingTypeColor = {

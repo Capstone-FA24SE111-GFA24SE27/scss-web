@@ -45,6 +45,9 @@ const DateRangePicker = ({
           actionBar: {
             actions: ['clear'],
           },
+          textField:{
+            fullWidth: true,
+          }
         }}
       />
       <DatePicker
@@ -56,6 +59,9 @@ const DateRangePicker = ({
           actionBar: {
             actions: ['clear'],
           },
+          textField:{
+            fullWidth: true,
+          }
         }}
       />
       {showClearButton && (

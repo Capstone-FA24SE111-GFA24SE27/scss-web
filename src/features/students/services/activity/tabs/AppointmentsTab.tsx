@@ -1,185 +1,241 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
-import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment } from '../activity-api'
-import { AppLoading, NavLinkAdapter, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
+import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment, useCancelCounselingAppointmentMutation } from '../activity-api'
+import { AppLoading, DateRangePicker, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
+import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import { useSocket } from '@/shared/context';
+import { statusColor } from '@/shared/constants';
 const AppointmentsTab = () => {
-  const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({})
-  const appointmentRequests = data?.content.data
+
   const socket = useSocket();
   const account = useAppSelector(selectAccount)
 
-  const statusColor = {
-    'REJECTED': 'error',
-    'ABSENT': 'error',
-    'WAITING': 'warning',
-    'APPROVED': 'success',
-    'ATTEND': 'success'
-  }
+
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+
+  const [searchStudentCode, setSearchStudentCode] = useState('');
+
+  const [tabValue, setTabValue] = useState(0);
+
+  const [page, setPage] = useState(1);
+
+  const [sortDirection, setSortDirection] = useState<'ASC' | 'DESC'>('DESC');
+
+
+  const handleStartDateChange = (date: string) => setStartDate(date);
+  const handleEndDateChange = (date: string) => setEndDate(date);
+
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+
+  const handleSortChange = (newSortDirection: 'ASC' | 'DESC') => {
+    setSortDirection(newSortDirection);
+  };
+
+  const statusTabs = [
+    { label: 'All', value: '' },
+    { label: 'Canceled', value: 'CANCELED' },
+    { label: 'Waiting', value: 'WAITING' },
+    { label: 'Attend', value: 'ATTEND' },
+    { label: 'Absent', value: 'ABSENT' },
+    { label: 'Expired', value: 'EXPIRED' },
+  ];
+
+  const { data, isLoading, refetch } = useGetCounselingAppointmentQuery({
+    fromDate: startDate,
+    toDate: endDate,
+    sortDirection: sortDirection,
+    page: page,
+    status: statusTabs[tabValue].value,
+  });
+  const appointments = data?.content?.data;
 
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const cb = (data: unknown) => {
-      if (data) {
-        refetch()
-      }
+  //   const cb = (data: unknown) => {
+  //     if (data) {
+  //       refetch()
+  //     }
 
-    };
+  //   };
 
-    if (socket && account) {
-      socket.on(`/user/${account.profile.id}/appointment`, cb);
-    }
+  //   if (socket && account) {
+  //     socket.on(`/user/${account.profile.id}/appointment`, cb);
+  //   }
 
-    return () => {
-      if (socket && account) {
-        socket.off(`/user/${account.profile.id}/appointment`, cb);
-      }
-    };
-  }, [socket]);
+  //   return () => {
+  //     if (socket && account) {
+  //       socket.off(`/user/${account.profile.id}/appointment`, cb);
+  //     }
+  //   };
+  // }, [socket]);
 
   if (isLoading) {
     return <AppLoading />
   }
-  if (!appointmentRequests?.length) {
-    return <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
-  }
 
   return (
-    <>
+    <div className='p-16 w-full flex flex-col gap-16'>
+      <Box className='flex gap-32 justify-between'>
+        <DateRangePicker
+          startDate={startDate ? dayjs(startDate) : null}
+          endDate={endDate ? dayjs(endDate) : null}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+        />
+        <SortingToggle
+          onSortChange={handleSortChange}
+          initialSort='DESC'
+        />
+      </Box>
+      <FilterTabs tabs={statusTabs} tabValue={tabValue} onChangeTab={handleChangeTab} />
       <List className='flex flex-col gap-16'>
         {
-          appointmentRequests.map(appointment =>
-            <Paper
-              key={appointment.id}
-              className="p-16 flex gap-16 shadow"
-              sx={{ bgcolor: 'background.paper' }}
-            // component={NavLinkAdapter}
-            // to={`appointment/${appointment.id}`}
-            >
-              <div className='flex flex-col gap-16 w-full'>
-                <div className='flex gap-24'>
-                  <div className='flex gap-8 items-center '>
-                    <CalendarMonth />
-                    <Typography className='' >{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
-                  </div>
-                  <div className='flex gap-8 items-center'>
-                    <AccessTime />
-                    <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-                  </div>
-                  <Chip
-                    label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
-                    icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
-                    className='font-semibold items-center'
-                    size='small'
-                  />
-                  {
-                    appointment.meetingType === 'ONLINE' && <div className='flex gap-24  items-center'>
-                      {appointment.meetUrl && (
-                        <div>
-                          <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
-                            Meet URL
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  }
-
-                </div>
-
-                {
-                  appointment.meetingType === 'OFFLINE' && appointment.address && (<div className='flex gap-16 items-center'>
-                    <Typography className='w-68' color='textSecondary'>Address:</Typography>
-                    <Typography className='font-semibold'>{appointment.address || ''}</Typography>
-                  </div>)
-                }
-
-                <div className='flex gap-16'>
-                  <Typography className='w-68' color='textSecondary'>Attendance:</Typography>
-                  <Typography
-                    className='font-semibold'
-                    color={statusColor[appointment.status]}
-                  >
-                    {appointment.status}
-                  </Typography>
-                </div>
-
-                {/* <div className='flex gap-8'>
-                  <Typography className='w-52'>Reason: </Typography>
-                  <Typography
-                  >
-                    {appointment.reason}
-                  </Typography>
-                </div> */}
-                <Tooltip title={`View ${appointment.counselorInfo.profile.fullName}'s profile`}>
-                  <ListItemButton
-                    component={NavLinkAdapter}
-                    to={`counselor/${appointment.counselorInfo.profile.id}`}
-                    className='bg-primary-light/5 w-full rounded shadow'
-                  >
-                    <div className='w-full flex'>
-                      <Avatar
-                        alt={appointment.counselorInfo.profile.fullName}
-                        src={appointment.counselorInfo.profile.avatarLink}
+          !appointments?.length
+            ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
+            : appointments.map(appointment =>
+              <Paper
+                key={appointment.id}
+                className="p-16 flex gap-16 shadow"
+                sx={{ bgcolor: 'background.paper' }}
+              >
+                <div className='flex flex-col gap-16 w-full'>
+                  <ListItem className='flex gap-24 p-0'
+                    secondaryAction={
+                      <ItemMenu
+                        menuItems={[
+                          {
+                            label: 'Cancel',
+                            onClick: () => {
+                              dispatch(
+                                openDialog({
+                                  children: <CancelAppointmentDialog appointment={appointment} />
+                                })
+                              )
+                            },
+                            icon: <Clear fontSize='small' />,
+                            disabled: ![`WAITING`].includes(appointment.status)
+                          },
+                        ]}
                       />
-                      <div className='ml-16'>
-                        <Typography className='font-semibold text-primary-main'>{appointment.counselorInfo.profile.fullName}</Typography>
-                        <Typography color='text.secondary'>{appointment.counselorInfo?.expertise?.name || appointment.counselorInfo?.specialization?.name}</Typography>
-                      </div>
+                    }
+                  >
+                    <div className='flex gap-8 items-center '>
+                      <CalendarMonth />
+                      <Typography className='' >{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
                     </div>
-                    <ChevronRight />
-                  </ListItemButton>
-                </Tooltip>
-                {appointment.appointmentFeedback ?
-                  <div className='w-full'>
-                    <Divider className='border' />
-                    <div className='flex items-start gap-16 mt-16'>
-                      <Typography className='w-96'>Your feedback:</Typography>
-                      <div>
-                        <div>
-                          <div className='flex items-center gap-8'>
-                            <Rating
-                              size='medium'
-                              value={appointment.appointmentFeedback.rating}
-                              readOnly
-                            />
-                            <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+                    <div className='flex gap-8 items-center'>
+                      <AccessTime />
+                      <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+                    </div>
+                    <Chip
+                      label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+                      icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+                      className='font-semibold items-center'
+                      size='small'
+                    />
+                    {
+                      appointment.meetingType === 'ONLINE' && <div className='flex gap-24  items-center'>
+                        {appointment.meetUrl && (
+                          <div>
+                            <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
+                              Meet URL
+                            </Link>
                           </div>
-                        </div>
-                        <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
+                        )}
                       </div>
-                    </div>
-                  </div>
-                  : appointment.status === 'ATTEND' && <>
-                    <div className='flex flex-col w-full  gap-8 text-secondary-main '>
-                      <Divider />
-                      {/* <Typography className='font-semibold'>Send feedback about the appointment!</Typography> */}
-                      <div className='flex '>
-                        <Button
-                          // variant='outlined'
-                          onClick={() => dispatch(openDialog({
-                            children: (
-                              <SendFeedbackDialog appointment={appointment} />
-                            )
-                          }))}
-                        >
-                          Leave a review
-                        </Button>
-                      </div>
-                    </div>
+                    }
+                    <Chip
+                      label={appointment.status}
+                      variant='filled'
+                      color={statusColor[appointment.status]}
+                      size='small'
+                    />
+                  </ListItem>
 
-                  </>
-                }
-              </div>
-            </Paper>
-          )}
+                  {
+                    appointment.meetingType === 'OFFLINE' && appointment.address && (<div className='flex gap-16 items-center'>
+                      <Typography className='w-68' color='textSecondary'>Address:</Typography>
+                      <Typography className='font-semibold'>{appointment.address || ''}</Typography>
+                    </div>)
+                  }
+                  <Tooltip title={`View ${appointment.counselorInfo.profile.fullName}'s profile`}>
+                    <ListItemButton
+                      component={NavLinkAdapter}
+                      to={`counselor/${appointment.counselorInfo.profile.id}`}
+                      className='bg-primary-light/5 flex-1 rounded shadow'
+                    >
+                      <UserListItem
+                        fullName={appointment.counselorInfo.profile.fullName}
+                        avatarLink={appointment.counselorInfo.profile.avatarLink}
+                        phoneNumber={appointment.counselorInfo.profile.phoneNumber}
+                        email={appointment.counselorInfo.email}
+                      />
+                      <ChevronRight />
+                    </ListItemButton>
+                  </Tooltip>
+                  {appointment.appointmentFeedback ?
+                    <div className='w-full'>
+                      <Divider className='border' />
+                      <div className='flex items-start gap-16 mt-16'>
+                        <Typography className='w-96'>Your feedback:</Typography>
+                        <div>
+                          <div>
+                            <div className='flex items-center gap-8'>
+                              <Rating
+                                size='medium'
+                                value={appointment.appointmentFeedback.rating}
+                                readOnly
+                              />
+                              <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+                            </div>
+                          </div>
+                          <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
+                        </div>
+                      </div>
+                    </div>
+                    : appointment.status === 'ATTEND' && <>
+                      <div className='flex flex-col w-full  gap-8 text-secondary-main '>
+                        <Divider />
+                        {/* <Typography className='font-semibold'>Send feedback about the appointment!</Typography> */}
+                        <div className='flex '>
+                          <Button
+                            // variant='outlined'
+                            onClick={() => dispatch(openDialog({
+                              children: (
+                                <SendFeedbackDialog appointment={appointment} />
+                              )
+                            }))}
+                          >
+                            Leave a review
+                          </Button>
+                        </div>
+                      </div>
+
+                    </>
+                  }
+                </div>
+              </Paper>
+            )}
       </List >
-    </>
+      <Pagination
+        page={page}
+        count={data?.content?.totalPages}
+        handleChange={handlePageChange}
+      />
+    </div >
   )
 }
 
@@ -250,4 +306,59 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
     </div>
   )
 }
+
 export default AppointmentsTab
+
+const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+  const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentMutation();
+  const [cancelReason, setCancelReasonl] = useState(``);
+  const dispatch = useAppDispatch();
+  const handleCancelAppointment = () => {
+    cancelAppointment({
+      appointmentId: appointment.id,
+      reason: cancelReason
+    }).unwrap()
+      .then(() => {
+        dispatch(closeDialog())
+      })
+
+  }
+  return (
+    <div className='w-[40rem]'>
+      <DialogTitle id="alert-dialog-title">Confirm cancelling appointment?</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          <div>
+            Give the reason for cancelling
+          </div>
+          <div>
+            <TextField
+              autoFocus
+              margin="dense"
+              name={'Cancel reason'}
+              label={'Cancel reason'}
+              fullWidth
+              value={cancelReason}
+              variant="standard"
+              className='mt-16'
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setCancelReasonl(event.target.value);
+              }} />
+          </div>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => dispatch(closeDialog())} color="primary">
+          Cancel
+        </Button>
+        <Button
+          onClick={handleCancelAppointment}
+          color="secondary" variant='contained'
+          disabled={!cancelReason || isLoading}
+        >
+          Confirm
+        </Button>
+      </DialogActions>
+    </div>
+  );
+}

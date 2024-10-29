@@ -1,11 +1,9 @@
 import { Account, Appointment, AppointmentDetails, AppointmentFeedback, PaginationContent, TakeAppointmentAttendance } from '@shared/types';
-import { ApiResponse, apiService as api } from '@shared/store'
-
+import { ApiResponse, apiService as api } from '@shared/store';
 
 export const addTagTypes = [
   'appointments'
 ] as const;
-
 
 export const appointmentsApi = api
   .enhanceEndpoints({
@@ -14,44 +12,42 @@ export const appointmentsApi = api
   .injectEndpoints({
     endpoints: (build) => ({
       getCounselorCounselingAppointment: build.query<GetCounselingAppointmentApiResponse, GetCounselingAppointmentApiArg>({
-        query: ({ }) => ({
+        query: ({
+          // studentCode = '',
+          fromDate = '',
+          toDate = '',
+          status = '',
+          sortBy = 'id',
+          sortDirection = 'DESC',
+          page = 1
+        }) => ({
           url: `/api/appointments/counselor`,
+          params: {
+            // studentCode,
+            fromDate,
+            toDate,
+            status,
+            sortBy,
+            sortDirection,
+            page,
+          },
         }),
         providesTags: ['appointments']
       }),
     })
-  })
+  });
 
 export const {
   useGetCounselorCounselingAppointmentQuery,
-} = appointmentsApi
+} = appointmentsApi;
 
-
-export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>
+export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
 export type GetCounselingAppointmentApiArg = {
-
-}
-
-// export type GetCounselorApiResponse = ApiResponse<Appointment>
-
-
-
-// export type ApproveCounselingAppointmentRequestOnlineArg = {
-//   requestId: number,
-//   meetingDetails: {
-//     meetUrl?: string,
-//   }
-// }
-
-// export type ApproveCounselingAppointmentRequestOfflineArg = {
-//   requestId: number,
-//   meetingDetails: {
-//     address?: string,
-//   }
-// }
-
-// export type UpdateAppointmentDetailsArg = {
-//   requestId: number,
-//   meetingDetails: Partial<AppointmentDetails>
-// }
-
+  studentCode?: string;
+  fromDate?: string;
+  toDate?: string;
+  status?: string;
+  sortBy?: string;
+  sortDirection?: 'ASC' | 'DESC';
+  page?: number;
+};

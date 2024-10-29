@@ -18,13 +18,21 @@ export const counselingApi = api
     endpoints: (build) => ({
       getCounselorsAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/academic?search=${search}`,
+          url: `/api/counselors/academic`,
+          params: {
+            search,
+            page
+          }
         }),
         providesTags: ['counselors']
       }),
       getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/non-academic?search=${search}`,
+          url: `/api/counselors/non-academic`,
+          params: {
+            search,
+            page
+          }
         }),
         providesTags: ['counselors']
       }),

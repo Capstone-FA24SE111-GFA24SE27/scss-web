@@ -350,7 +350,8 @@ function CounselorBooking() {
                             variant='contained'
                             color='secondary'
                             className='w-full'
-                            disabled={ !isValid || isLoading || isBookingCounselor}
+                            disabled={isLoading || isBookingCounselor}
+                            // disabled={ !isValid || isLoading || isBookingCounselor}
                             onClick={handleSubmit(onSubmit)}>
                             Confirm booking
                         </Button>

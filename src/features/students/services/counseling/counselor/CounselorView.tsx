@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetCounselorQuery } from '../counseling-api';
+import { Paper } from '@mui/material';
 /**
  * The contact view.
  */
@@ -72,8 +73,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         >
                             {counselor?.profile.fullName?.charAt(0)}
                         </Avatar>
-                        <Gender gender={counselor.profile.gender} />
-
+                        <Gender gender={counselor?.profile.gender} />
                         {
                             shouldShowBooking && (
                                 <div className="flex items-center ml-auto mb-4">
@@ -92,7 +92,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         }
                     </div>
 
-                    <Typography className="mt-12 text-4xl font-bold truncate">{counselor.profile.fullName}</Typography>
+                    <Typography className="mt-12 text-4xl font-bold truncate">{counselor?.profile.fullName}</Typography>
 
                     {/* <div className='flex items-end gap-8 text-lg text-gray-500'>
                         <Rating
@@ -104,9 +104,9 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         <div>(116)</div>
                     </div> */}
 
-                    <div className="flex items-center mt-16 gap-8 ">
+                    <div className="flex items-center mt-8 gap-8 ">
                         <Chip
-                            label={counselor.expertise?.name || counselor.specialization?.name}
+                            label={counselor?.expertise?.name || counselor?.specialization?.name}
                             size="medium"
                             className='text-lg px-16'
                         />
@@ -115,7 +115,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
 
                     <Divider className="mt-16 mb-24" />
 
-                    <div className="flex flex-col space-y-32">
+                    <div className="flex flex-col space-y-16">
                         {counselor.email && (
                             <div className="flex items-center">
                                 <EmailOutlined />
@@ -150,8 +150,49 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                         )}
 
                     </div>
+
+                    {
+
+                        counselor?.specialization && <div>
+                            <Divider className="mt-16 mb-24" />
+                            <Typography className='font-semibold'>
+                                Academic details
+                            </Typography>
+                            <Paper className="rounded p-8 shadow mt-8">
+
+                                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                                    <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
+                                    <div className="col-span-2">{counselor?.specialization.name}</div>
+                                </div>
+
+                                {/* Department Section */}
+                                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                                    <div className="col-span-1 font-medium text-text-secondary">Department:</div>
+                                    <div className="col-span-2">
+                                        <span>{counselor?.department.name}</span>
+                                        {counselor?.department.code && (
+                                            <span className="ml-2 text-text-disabled"> ({counselor?.department.code})</span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Major Section */}
+                                <div className="grid grid-cols-3 gap-y-2">
+                                    <div className="col-span-1 font-medium text-text-secondary">Major:</div>
+                                    <div className="col-span-2">
+                                        <span>{counselor?.major.name}</span>
+                                        {counselor?.major.code && (
+                                            <span className="ml-2 text-text-disabled"> ({counselor?.major.code})</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </Paper>
+                        </div>
+                    }
+
+
                 </div>
-            </div>
+            </div >
         </>
     );
 }
