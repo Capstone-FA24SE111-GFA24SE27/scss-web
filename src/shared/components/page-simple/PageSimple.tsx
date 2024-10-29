@@ -8,7 +8,6 @@ import { Theme } from '@mui/system';
 import PageSimpleHeader from './PageSimpleHeader';
 import PageSimpleSidebar from './PageSimpleSidebar';
 import { Scrollbar } from '@shared/components';
-import Dialog from '../dialog';
 
 const headerHeight = 72;
 const toolbarHeight = 64;

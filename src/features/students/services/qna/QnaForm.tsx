@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,44 +7,100 @@ import _ from 'lodash';
 import TextField from '@mui/material/TextField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowBack, ArrowLeft } from '@mui/icons-material';
+import { ArrowBack, ArrowLeft, HelpOutlineOutlined, Warning } from '@mui/icons-material';
 import { NavLinkAdapter } from '@/shared/components';
-import { FormControl, FormControlLabel, FormHelperText, Radio, RadioGroup } from '@mui/material';
-import { useState } from 'react';
-import { usePostQuestionMutation } from './qna-api';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, FormControl, FormControlLabel, FormHelperText, MenuItem, Radio, RadioGroup } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { useEditQuestionMutation, useGetBanInfoQuery, useGetStudentQuestionQuery, usePostQuestionMutation } from './qna-api';
+import { formatDateTime } from '@/shared/utils';
+import dayjs from 'dayjs';
+import { statusColor } from '@/shared/constants';
+import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/shared/services';
 
 
 const formSchema = z.object({
 	content: z.string().min(1, 'You must enter content'),
-	questionType: z.enum(['ACADEMIC', 'NON-ACADEMIC'], {
+	questionType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
 		errorMap: () => ({ message: 'Please select a question type' }),
 	}),
+	topicId: z.string().min(1, 'You must select a topic'),
+
 });
 
-type FormValues = z.infer<typeof formSchema>;
-const defaultValues = { questionType: undefined, content: '' };
+type FormValues = {
+	questionType: "ACADEMIC" | "NON_ACADEMIC"; // Specify the correct types
+	content: string;
+	topicId: string;
+};
 
 
 /**
  * The help center support.
  */
 function QnaForm() {
-	const { control, handleSubmit, watch, formState } = useForm({
+	const { questionId } = useParams()
+	const editMode = Boolean(questionId)
+
+	const defaultValues = { questionType: 'ACADEMIC', content: '', topicId: '' };
+
+	const { data: questionData } = useGetStudentQuestionQuery(questionId)
+	const question = questionData?.content
+
+	const { control, handleSubmit, watch, formState, reset } = useForm({
 		mode: 'onChange',
 		defaultValues,
 		resolver: zodResolver(formSchema)
 	});
 	const { isValid, dirtyFields, errors } = formState;
-
 	const [postQuestion, { isLoading, isSuccess }] = usePostQuestionMutation()
+	const [editQuestion, { isLoading: isEditting, isSuccess: isEdittingSuccess }] = useEditQuestionMutation()
+	const { data: banInfoData } = useGetBanInfoQuery()
+	const banInfo = banInfoData
+
 
 	const form = watch();
 	const navigate = useNavigate()
 
+
+	const { data: academicTopicsData } = useGetAcademicTopicsQuery();
+	const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
+	const academicTopics = academicTopicsData?.content;
+	const nonAcademicTopics = nonacademicTopicsData?.content;
+
+	const academicTopicOptions = academicTopics?.map((topic) => ({
+		label: topic.name,
+		value: topic.id,
+	}));
+
+	const nonAcademicTopicOptions = nonAcademicTopics?.map((topic) => ({
+		label: topic.name,
+		value: topic.id,
+	}));
+
+	const selectedType = watch('questionType');
+	const topicOptions = selectedType === 'ACADEMIC' ? academicTopicOptions : nonAcademicTopicOptions || [];
+
+
 	function onSubmit(data: FormValues) {
+		if (editMode) {
+			editQuestion({
+				questionCardId: Number(questionId),
+				question: {
+					content: data.content,
+					questionType: data.questionType,
+					topicId: data.topicId,
+				}
+			})
+				.unwrap()
+				.then(() => {
+					navigate('.')
+				})
+			return;
+		}
 		postQuestion({
-			content: data.content, 
+			content: data.content,
 			questionType: data.questionType,
+			topicId: data.topicId,
 		})
 			.unwrap()
 			.then(() => {
@@ -52,8 +108,93 @@ function QnaForm() {
 			})
 	}
 
+	useEffect(() => {
+		if (editMode && question) {
+			reset({
+				questionType: question?.questionType || 'ACADEMIC',
+				content: question?.content || '',
+				topicId: question?.topic.id.toString(),
+			});
+		}
+	}, [editMode, question, reset]);
+
 	if (_.isEmpty(form)) {
 		return null;
+	}
+
+	if (banInfo?.ban) {
+		return (
+			<div className="flex flex-col items-center p-32 container">
+				<div className="flex flex-col w-full max-w-4xl gap-16">
+					<div className="">
+						<Button
+							component={NavLinkAdapter}
+							to="."
+							startIcon={<ArrowBack />}
+						>
+							Back to QnA
+						</Button>
+					</div>
+					<Paper className="p-16 shadow flex gap-16 bg-red-400 text-white items-center">
+						<Warning />
+						<Typography className='text-xl font-semibold'>Your account has been banned from posting questions</Typography>
+					</Paper>
+					<div className='flex gap-16'>
+						<Typography className='text-lg font-semibold text-text-secondary'>Time:</Typography>
+						<div className='flex gap-16'>
+							<Typography className='text-lg font-semibold'>{dayjs(banInfo.banStartDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+							<Typography className='text-lg font-semibold'>-</Typography>
+							<Typography className='text-lg font-semibold'>{dayjs(banInfo.banEndDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+						</div>
+					</div>
+
+					<Typography className='text-lg font-semibold text-text-secondary'>Reasons:</Typography>
+					<div>
+						{
+							banInfo?.questionFlags.map(qna => (
+								<Accordion
+									className='shadow rounded-lg'
+									expanded={true}
+								>
+									<AccordionSummary >
+										<div className='flex flex-col gap-8 w-full'>
+											<div className='flex gap-8'>
+												<Chip label={qna.questionCard.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={'info'} size='small' />
+												<Chip label={qna.questionCard.topic?.name} variant='outlined' size='small' />
+												{qna.questionCard.closed && <Chip label={'Closed'} color={'warning'} size='small' />}
+											</div>
+											<div className="flex flex-1 items-center gap-8">
+												<HelpOutlineOutlined color='disabled' />
+												<Typography className="pr-8 font-semibold w-full">{qna.questionCard.content}</Typography>
+											</div>
+											<div className='flex'>
+												<Typography className="pr-8 text-text-secondary">Flagged date:</Typography>
+												<Typography className="pr-8 font-semibold">{dayjs(qna.flagDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+											</div>
+											<div className='flex'>
+												<Typography className="pr-8 text-text-secondary">Flagged Reason:</Typography>
+												<Typography className="pr-8 font-semibold">{qna.reason}</Typography>
+											</div>
+
+										</div>
+
+									</AccordionSummary>
+
+									<AccordionDetails className='flex'>
+
+									</AccordionDetails>
+									<Box
+										className='bg-primary-light/5 w-full py-8 flex justify-between px-16 '
+									>
+
+									</Box>
+								</Accordion>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
@@ -69,7 +210,7 @@ function QnaForm() {
 					</Button>
 				</div>
 				<div className="mt-8 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight">
-					Ask a question
+					{editMode ? 'Edit your question' : 'Ask a question'}
 				</div>
 
 				<Paper className="mt-32 sm:mt-48 p-24 pb-28 sm:p-40 sm:pb-28 rounded-2xl shadow">
@@ -80,7 +221,7 @@ function QnaForm() {
 						<div className="mb-24">
 							<Typography className="text-2xl font-bold tracking-tight">Submit your question</Typography>
 							<Typography color="text.secondary">
-								Your request will be processed and our counselor will get back to you in 24 hours.
+								Your request will be processed and our support staff will verify for you.
 							</Typography>
 						</div>
 						<div className="space-y-32">
@@ -104,7 +245,7 @@ function QnaForm() {
 									render={({ field }) => (
 										<RadioGroup {...field}>
 											<FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
-											<FormControlLabel value="NON-ACADEMIC" control={<Radio />} label="Non-academic" />
+											<FormControlLabel value="NON_ACADEMIC" control={<Radio />} label="Non-academic" />
 										</RadioGroup>
 									)}
 								/>
@@ -112,6 +253,30 @@ function QnaForm() {
 									<FormHelperText error>{errors.questionType?.message as string}</FormHelperText>
 								)}
 							</div>
+
+
+							<Controller
+								name="topicId"
+								control={control}
+								render={({ field }) => (
+									<TextField
+										{...field}
+										select
+										label="Counseling Topic"
+										className="mt-16 w-full"
+										margin="normal"
+										variant="outlined"
+										error={!!errors.topicId}
+										helperText={errors?.topicId?.message}
+									>
+										{(topicOptions || []).map((option) => (
+											<MenuItem key={option.value} value={option.value.toString()}>
+												{option.label}
+											</MenuItem>
+										))}
+									</TextField>
+								)}
+							/>
 
 							<Controller
 								name="content"

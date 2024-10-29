@@ -1,5 +1,6 @@
-import { Heading } from '@/shared/components';
-import { darken } from '@mui/material';
+import { Heading, NavLinkAdapter } from '@/shared/components';
+import { CalendarMonth } from '@mui/icons-material';
+import { Button, darken } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,7 +12,7 @@ import { useState } from 'react';
 /**
  * The ProjectDashboardAppHeader page.
  */
-function ProjectDashboardAppHeader() {
+function ActivityHeader() {
   const user = useAppSelector(selectAccount)?.profile
   return (
     <div className="flex flex-col w-full px-24 sm:px-32 bg-background-paper">
@@ -29,16 +30,24 @@ function ProjectDashboardAppHeader() {
             {user?.fullName}
           </Avatar>
           <div className="flex flex-col min-w-0 mx-16">
-            <Heading 
+            <Heading
               title={user?.fullName}
               description={'Activies throughout FPTU school life'}
             />
           </div>
         </div>
-
+        <Button
+          component={NavLinkAdapter}
+          to="../calendar"
+          variant='contained'
+          color='secondary'
+          startIcon={<CalendarMonth/>}
+        >
+          View chedule
+        </Button>
       </div>
     </div>
   );
 }
 
-export default ProjectDashboardAppHeader;
+export default ActivityHeader;

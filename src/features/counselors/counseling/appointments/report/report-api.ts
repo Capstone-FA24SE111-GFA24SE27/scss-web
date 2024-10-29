@@ -1,4 +1,4 @@
-import { Account, AppointmentReport, Counselor, PaginationContent, Student } from '@shared/types';
+import { Account, AppointmentReport, Counselor, PaginationContent, Report, Student } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -42,16 +42,3 @@ type CreateReportApiArg = {
 
 
 type AppointmentReportApiResponse = ApiResponse<AppointmentReport>
-
-
-type Appointment = {
-  id: number,
-  requireDate: string,
-  startDateTime: string,
-  endDateTime: string,
-  status: string,
-  meetingType: 'ONLINE' | 'OFFLINE',
-  reason: string,
-  meetUrl?: string,
-  address?: string,
-}

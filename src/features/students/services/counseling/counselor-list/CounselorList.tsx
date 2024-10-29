@@ -40,7 +40,7 @@ function CounselingList() {
         rightSidebarOnClose={() => dispatch(filterClose())}
         rightSidebarVariant="permanent"
         scroll={isMobile ? 'normal' : 'content'}
-        rightSidebarWidth={320}
+        rightSidebarWidth={440}
       />
     </div>
 

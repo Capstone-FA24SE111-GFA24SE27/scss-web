@@ -1,8 +1,9 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Typography } from '@mui/material';
 import { Breadcrumbs, ContentLoading, Heading } from '@shared/components';
-import { useParams } from 'react-router-dom';
-import { useGetStudentQuery } from './student-api';
+import { useLocation, useParams } from 'react-router-dom';
+import { useGetStudentViewQuery } from './student-api';
+import { navigateUp } from '@/shared/utils';
 
 interface Subject {
   no: number;
@@ -51,8 +52,11 @@ const subjects: Subject[] = [
 const AcademicTranscript = () => {
   const routeParams = useParams();
   const { id: studentId } = routeParams as { id: string };
-  const { data, isLoading } = useGetStudentQuery(studentId);
+  const { data, isLoading } = useGetStudentViewQuery(studentId);
   const student = data?.content
+
+  const location = useLocation()
+  const studentUrl = navigateUp(location, 1)
 
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
@@ -69,16 +73,16 @@ const AcademicTranscript = () => {
     </div>
   }
   return (
-    <div className='p-32 mt-32'>
+    <div className='p-32'>
       <Breadcrumbs
         className=''
         parents={[
           {
             label: "Student",
-            url: `/counseling/appointments/student/2`
+            url: studentUrl
           }
         ]}
-        currentPage={"Booking"}
+        currentPage={"Academic Transcript"}
       />
       <Heading
         title='Academic Transcript of Student'

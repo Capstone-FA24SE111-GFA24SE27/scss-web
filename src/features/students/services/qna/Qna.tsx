@@ -27,7 +27,9 @@ const Qna = () => {
             description='List of questions and answers you have started'
           />
           <div className='flex gap-8'>
-            <Button variant='contained' color='primary' component={NavLinkAdapter} to='conversations' startIcon={<Forum />}>Chat</Button>
+            {
+              !location?.pathname.includes('conversations') && <Button variant='contained' color='primary' component={NavLinkAdapter} to='conversations' startIcon={<Forum />}>Conversations</Button>
+            }
             <Button variant='contained' color='secondary' component={NavLinkAdapter} to='create' startIcon={<Add />}>Ask a question</Button>
           </div>
         </div>
@@ -36,8 +38,8 @@ const Qna = () => {
       rightSidebarOnClose={() => setRightSidebarOpen(false)}
       rightSidebarVariant="permanent"
       scroll={isMobile ? 'normal' : 'content'}
-      rightSidebarWidth={640}
-      content={location.pathname.includes('create') ? <QnaForm /> : <QnaList />}
+      rightSidebarWidth={480}
+      content={location.pathname.includes('create') || location.pathname.includes('edit') ? <QnaForm /> : <QnaList />}
     />
   )
 }

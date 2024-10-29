@@ -7,14 +7,44 @@ export const addTagTypes = [
 ] as const;
 
 
-export const usersApi = api
+export const studentQnasApi = api
   .enhanceEndpoints({
     addTagTypes
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getQuestions: build.query<GetQuestionsApiResponse, void>({
-        query: () => ({
+      getStudentQuestions: build.query<GetStudentQuestionsApiResponse, GetStudentQuestionsApiArg>({
+        query: ({
+          keyword = '',
+          status = '',
+          isTaken = '',
+          isClosed = '',
+          isChatSessionClosed = '',
+          type = '',
+          sortBy = 'createdDate',
+          sortDirection = 'DESC',
+          page = 1,
+          topicId = ''
+        }) => ({
+          url: `/api/question-cards/student/filter`,
+          method: 'GET',
+          params: {
+            keyword,
+            status,
+            isTaken,
+            isClosed,
+            isChatSessionClosed,
+            type,
+            sortBy,
+            sortDirection,
+            page,
+            topicId
+          },
+        }),
+        providesTags: ['qna']
+      }),
+      getMyStudentQuestions: build.query<GetStudentQuestionsApiResponse, GetStudentQuestionsApiArg>({
+        query: ({ }) => ({
           url: `/api/question-cards/student/filter`,
           method: 'GET',
         }),
@@ -28,6 +58,14 @@ export const usersApi = api
         }),
         invalidatesTags: ['qna']
       }),
+      editQuestion: build.mutation<void, EditQuestionApiArg>({
+        query: (arg) => ({
+          url: `/api/question-cards/edit/${arg.questionCardId}`,
+          method: 'PUT',
+          body: arg.question
+        }),
+        invalidatesTags: ['qna']
+      }),
       sendMessage: build.mutation<void, SendMessageApiArg>({
         query: ({ sessionId, content }) => ({
           url: `/api/question-cards/send/${sessionId}/messages`,
@@ -35,14 +73,7 @@ export const usersApi = api
           body: { content }
         }),
       }),
-      getMyQuestions: build.query<GetMyQuestionsApiResponse, GetMyQuestionsApiArg>({
-        query: ({ }) => ({
-          url: `/api/question-cards/student/filter`,
-          method: 'GET',
-        }),
-        providesTags: ['qna']
-      }),
-      getQuestion: build.query<GetQuestionApiResponse, string>({
+      getStudentQuestion: build.query<GetQuestionApiResponse, string>({
         query: (questionCardId) => ({
           url: `/api/question-cards/student/${questionCardId}`,
         }),
@@ -54,31 +85,73 @@ export const usersApi = api
           method: 'PUT',
         }),
       }),
+      getBanInfo: build.query<GetBanInfoApiResponse, void>({
+        query: () => ({
+          url: `/api/question-cards/student/ban-info`,
+          method: 'GET',
+        }),
+        providesTags: ['qna']
+      }),
+      closeQuestionStudent: build.mutation<void, number>({
+        query: (questionCardId) => ({
+          url: `/api/question-cards/student/close/${questionCardId}`,
+          method: 'POST'
+        }),
+        invalidatesTags: ['qna']
+      }),
+      deleteQuestionStudent: build.mutation<void, number>({
+        query: (questionCardId) => ({
+          url: `/api/question-cards/delete/${questionCardId}`,
+          method: 'DELETE'
+        }),
+        invalidatesTags: ['qna']
+      }),
     })
   })
 
 export const {
-  useGetQuestionsQuery,
+  useGetStudentQuestionsQuery,
   usePostQuestionMutation,
-  useGetMyQuestionsQuery,
-  useGetQuestionQuery,
+  useEditQuestionMutation,
+  useGetStudentQuestionQuery,
   useSendMessageMutation,
-  useReadMessageMutation
-} = usersApi
+  useReadMessageMutation,
+  useGetMyStudentQuestionsQuery,
+  useGetBanInfoQuery,
+  useCloseQuestionStudentMutation,
+  useDeleteQuestionStudentMutation
+} = studentQnasApi
 
-export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
+export type GetStudentQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
 
 export type GetQuestionApiResponse = ApiResponse<Question>
 
-export type GetMyQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
-
-export type GetMyQuestionsApiArg = {
-
-}
+type GetStudentQuestionsApiArg = {
+  keyword?: string;
+  status?: string;
+  isTaken?: boolean | string;
+  isClosed?: boolean | string;
+  isChatSessionClosed?: boolean;
+  type?: string;
+  sortBy?: string;
+  sortDirection?: 'ASC' | 'DESC';
+  page?: number;
+  topicId: string
+};
 
 export type PostQuestionApiArg = {
   content: string,
-  questionType: 'ACADEMIC' | 'NON-ACADEMIC';
+  questionType: 'ACADEMIC' | 'NON_ACADEMIC',
+  topicId: string,
+}
+
+export type EditQuestionApiArg = {
+  questionCardId: number,
+  question: {
+    content: string,
+    questionType: 'ACADEMIC' | 'NON_ACADEMIC',
+    topicId: string,
+  }
 }
 
 export type SendMessageApiArg = {
@@ -94,13 +167,18 @@ export type Question = {
   title: string;
   content: string;
   answer: string | null,
-  questionType: 'ACADEMIC' | 'NON-ACADEMIC';
+  questionType: 'ACADEMIC' | 'NON_ACADEMIC';
   status: 'VERIFIED' | 'PENDING' | 'REJECTED';
   student: Student;
   counselor: Counselor | null;
   chatSession: ChatSession
   closed: boolean;
   taken: boolean;
+  topic: {
+    id: number;
+    name: string;
+    type: string;
+  };
 }
 
 
@@ -119,3 +197,15 @@ export type Message = {
   sender: Account,
   sentAt: string,
 }
+export type GetBanInfoApiResponse = BanInfo
+export type BanInfo = {
+  banStartDate: string;
+  banEndDate: string;
+  questionFlags: {
+    id: number;
+    reason: string;
+    flagDate: string;
+    questionCard: Question;
+  }[]
+  ban: boolean;
+};
