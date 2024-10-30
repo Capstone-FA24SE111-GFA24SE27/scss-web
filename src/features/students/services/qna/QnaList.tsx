@@ -223,7 +223,7 @@ const QnaList = () => {
                   <Paper className='overflow-hidden shadow'>
                     <Accordion
                       className='shadow'
-                      expanded={!qna.closed && (expanded === qna.id || openAnswers)}
+                      expanded={expanded === qna.id || openAnswers}
                       onChange={toggleAccordion(qna.id)}
                     >
                       <AccordionSummary expandIcon={<ExpandMore />}>

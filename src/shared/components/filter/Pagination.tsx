@@ -6,9 +6,10 @@ type Props = {
   page: number,
   handleChange: (event: React.ChangeEvent<unknown>, value: number) => void
   className?: string,
+  pageSize?: number
 }
 
-const Pagination = ({ count = 0, page = 1, handleChange, className = `` }: Props) => {
+const Pagination = ({ count = 0, page = 1, handleChange, className = ``, pageSize = 10 }: Props) => {
   return (
     <div className={
       clsx(
@@ -17,7 +18,7 @@ const Pagination = ({ count = 0, page = 1, handleChange, className = `` }: Props
       )
     }>
       {
-        count ?
+        count > pageSize ?
           <PaginationMUI
             count={count}
             shape="rounded"

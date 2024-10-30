@@ -4,7 +4,7 @@ import { AppLayout } from '@shared/layouts'
 import { useAppDispatch } from '@shared/store'
 import { openDialog } from '@/shared/components'
 import { useGetStudentDocumentQuery } from './students-api'
-import { StudentDocument } from './components'
+import { StudentDocument } from './shared-components'
 const StudentLayout = () => {
   const dispatch = useAppDispatch()
   const { data: studentDocumentData } = useGetStudentDocumentQuery()

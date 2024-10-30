@@ -1,24 +1,17 @@
-import Button from '@mui/material/Button';
-import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
-import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { CakeOutlined, CalendarMonth, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/system/Box';
-import _ from 'lodash';
-import { AccessTime, CakeOutlined, CalendarMonth, EmailOutlined, LocalPhoneOutlined, NotesOutlined, Summarize, SchoolOutlined } from '@mui/icons-material';
-import { ListItemButton, Paper, Rating } from '@mui/material';
+import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
 import dayjs from 'dayjs';
-import { useGetStudentDocumentViewQuery, useGetStudentViewQuery } from './student-api';
-import { useEffect } from 'react';
-import { appointmentsApi } from '../appointments/appointments-api';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useGetStudentDocumentViewQuery } from './student-api';
+import StudentAppointmentList from './StudentAppointmentList';
 /**
  * The contact view.
  */
@@ -50,7 +43,7 @@ function StudentView({ }: StudentViewProps) {
   }
 
   return (
-    <div className='w-lg'>
+    <div className='w-md'>
       <Box
         className="relative w-full px-32 h-160 sm:h-192 sm:px-48"
         sx={{
@@ -153,41 +146,6 @@ function StudentView({ }: StudentViewProps) {
                 </div>
               </div>
             )}
-            <Divider />
-            <div>
-              <Typography className='font-semibold'>
-                History of couseling
-              </Typography>
-              <div className='flex flex-col gap-8 mt-8'>
-                {
-                  !student?.counselingAppointment?.length
-                    ? <Typography color='textSecondary'>No counseling history</Typography>
-                    : student?.counselingAppointment?.map(appointment =>
-                      <Paper className='flex justify-between px-8 py-4 rounded shadow' key={appointment.id}>
-                        <div className='flex gap-8'>
-                          <div className='flex items-center gap-8 '>
-                            <CalendarMonth fontSize='small' />
-                            <Typography className=''>{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
-                          </div>
-                          <div className='flex items-center gap-8'>
-                            <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-                          </div>
-                        </div>
-                        <Button
-                          size='small'
-                          className='flex gap-8 px-8'
-                          color='secondary'
-                          disabled={!appointment.havingReport}
-                          onClick={() => navigate(`report/${appointment.id}`)}
-                        >
-                          View report
-                        </Button>
-                      </Paper>
-                    )
-                }
-
-              </div>
-            </div>
 
             <Divider />
             <div>
@@ -225,7 +183,6 @@ function StudentView({ }: StudentViewProps) {
               </Paper>
             </div>
 
-
             <Divider />
             <div>
               <Typography className='font-semibold'>
@@ -239,10 +196,10 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Psychological and Health Status</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Introduction:</strong> {student.counselingProfile?.introduction}</Typography>
-                      <Typography><strong>Current Health Status:</strong> {student.counselingProfile?.currentHealthStatus}</Typography>
-                      <Typography><strong>Psychological Status:</strong> {student.counselingProfile?.psychologicalStatus}</Typography>
-                      <Typography><strong>Stress Factors:</strong> {student.counselingProfile?.stressFactors}</Typography>
+                      <Typography><strong>Introduction:</strong> {student.counselingProfile?.introduction || `N/A`}</Typography>
+                      <Typography><strong>Current Health Status:</strong> {student.counselingProfile?.currentHealthStatus || `N/A`}</Typography>
+                      <Typography><strong>Psychological Status:</strong> {student.counselingProfile?.psychologicalStatus || `N/A`}</Typography>
+                      <Typography><strong>Stress Factors:</strong> {student.counselingProfile?.stressFactors || `N/A`}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -252,8 +209,8 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Academic Information</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Academic Difficulties:</strong> {student.counselingProfile?.academicDifficulties}</Typography>
-                      <Typography><strong>Study Plan:</strong> {student.counselingProfile?.studyPlan}</Typography>
+                      <Typography><strong>Academic Difficulties:</strong> {student.counselingProfile?.academicDifficulties || `N/A`}</Typography>
+                      <Typography><strong>Study Plan:</strong> {student.counselingProfile?.studyPlan || `N/A`}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -263,9 +220,9 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Career Information</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Career Goals:</strong> {student.counselingProfile?.careerGoals}</Typography>
-                      <Typography><strong>Part-Time Experience:</strong> {student.counselingProfile?.partTimeExperience}</Typography>
-                      <Typography><strong>Internship Program:</strong> {student.counselingProfile?.internshipProgram}</Typography>
+                      <Typography><strong>Career Goals:</strong> {student.counselingProfile?.careerGoals || `N/A`}</Typography>
+                      <Typography><strong>Part-Time Experience:</strong> {student.counselingProfile?.partTimeExperience || `N/A`}</Typography>
+                      <Typography><strong>Internship Program:</strong> {student.counselingProfile?.internshipProgram || `N/A`}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -275,9 +232,9 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Activities and Lifestyle</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Extracurricular Activities:</strong> {student.counselingProfile?.extracurricularActivities}</Typography>
-                      <Typography><strong>Personal Interests:</strong> {student.counselingProfile?.personalInterests}</Typography>
-                      <Typography><strong>Social Relationships:</strong> {student.counselingProfile?.socialRelationships}</Typography>
+                      <Typography><strong>Extracurricular Activities:</strong> {student.counselingProfile?.extracurricularActivities || `N/A`}</Typography>
+                      <Typography><strong>Personal Interests:</strong> {student.counselingProfile?.personalInterests || `N/A`}</Typography>
+                      <Typography><strong>Social Relationships:</strong> {student.counselingProfile?.socialRelationships || `N/A`}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -287,8 +244,8 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Financial Support</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Financial Situation:</strong> {student.counselingProfile?.financialSituation}</Typography>
-                      <Typography><strong>Financial Support:</strong> {student.counselingProfile?.financialSupport}</Typography>
+                      <Typography><strong>Financial Situation:</strong> {student.counselingProfile?.financialSituation || `N/A`}</Typography>
+                      <Typography><strong>Financial Support:</strong> {student.counselingProfile?.financialSupport || `N/A`}</Typography>
                     </AccordionDetails>
                   </Accordion>
 
@@ -298,12 +255,22 @@ function StudentView({ }: StudentViewProps) {
                       <Typography>Counseling Requests</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <Typography><strong>Desired Counseling Fields:</strong> {student.counselingProfile?.desiredCounselingFields}</Typography>
+                      <Typography><strong>Desired Counseling Fields:</strong> {student.counselingProfile?.desiredCounselingFields || `N/A`}</Typography>
                     </AccordionDetails>
                   </Accordion>
                 </div>
               </div>
 
+            </div>
+
+            <Divider />
+            <div>
+              <Box>
+                <Typography className='font-semibold'>
+                  History of couseling
+                </Typography>
+              </Box>
+              <StudentAppointmentList student={student} />
             </div>
           </div>
         </div>

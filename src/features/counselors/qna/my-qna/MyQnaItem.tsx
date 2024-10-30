@@ -98,6 +98,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
                   : <HelpOutlineOutlined color='disabled' />
               }
               <Typography className="pr-8">{qna.content}</Typography>
+              {qna.closed && <Chip label={'Closed'} variant='outlined' color={'error'} size='small' />}
             </div>
           </AccordionSummary>
 
@@ -191,7 +192,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
           <Box
             className='bg-primary-light/5 w-full py-8 flex justify-end px-16 cursor-pointer gap-16'
           >
-            {!qna?.closed && qna?.answer &&
+            {!qna?.closed &&
               <Button
                 variant='outlined'
                 color='secondary'
@@ -209,7 +210,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
               variant='contained'
               color='secondary'
               onClick={handleChat}
-              disabled={qna?.closed}
+              disabled={!qna?.answer}
               endIcon={<ChatBubbleOutline />}
             >
               Chat
@@ -219,6 +220,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
               color='primary'
               onClick={handleSelectChat}
               endIcon={<ArrowForward />}
+              disabled={qna?.closed}
             >
               Go to conversations
             </Button>

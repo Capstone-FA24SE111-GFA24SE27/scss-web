@@ -122,26 +122,31 @@ const MyQnaChat = () => {
       </div>
 
 
+      {
 
-      <div className="flex items-center w-full bg-background-paper p-16 bottom-0">
-        <TextField
-          fullWidth
-          variant="outlined"
-          label="Message"
-          size='small'
-          placeholder="Type a message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && message) {
-              handleSendMessage();
-            }
-          }}
-        />
-        <IconButton color="primary" onClick={handleSendMessage} disabled={!message}>
-          <Send />
-        </IconButton>
-      </div>
+        qna.closed
+          ? <div className=' p-16 bg-secondary-main/10 text-secondary-main font-semibold text-center'>Question has been closed</div>
+          : <div className="flex items-center w-full bg-background-paper p-16 bottom-0">
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Message"
+              size='small'
+              placeholder="Type a message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && message) {
+                  handleSendMessage();
+                }
+              }}
+            />
+            <IconButton color="primary" onClick={handleSendMessage} disabled={!message}>
+              <Send />
+            </IconButton>
+          </div>
+      }
+
     </div>
   )
 }

@@ -10,6 +10,7 @@ import { AppointmentsTab, RequestsTab } from './tabs';
 import { useParams } from 'react-router-dom';
 import ActivitySidebarContent from './ActivitySidebarContent';
 import { useAppDispatch } from '@shared/store';
+import { Typography } from '@mui/material';
 const Root = styled(PageSimple)(({ theme }) => ({
 
 }));
@@ -48,12 +49,12 @@ function Activity() {
 					<Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
 
-						label="Requests"
+						label="Appointments"
 					/>
 					<Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
 
-						label="Appointments"
+						label="Requests"
 					/>
 					<Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
@@ -71,8 +72,9 @@ function Activity() {
 			content={
 				<div className="w-full">
 					<div className='m-16'>
-						{tabValue === 0 && <RequestsTab />}
-						{tabValue === 1 && <AppointmentsTab />}
+						{tabValue === 0 && <AppointmentsTab />}
+						{tabValue === 1 && <RequestsTab />}
+						{tabValue === 2 && <Typography color='textDisabled' className='px-20'>Feature is under development</Typography>}
 					</div>
 				</div>
 			}

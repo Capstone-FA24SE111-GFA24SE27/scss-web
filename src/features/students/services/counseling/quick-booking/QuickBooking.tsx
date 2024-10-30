@@ -16,6 +16,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { useBookCounselorMutation, useGetCounselorExpertisesQuery, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
+import { counselingTypeDescription } from '@/shared/constants';
 
 /**
  * The contact view.
@@ -242,7 +243,7 @@ function QuickBooking() {
                             <Typography variant="h6" sx={{ marginLeft: 1 }}>Academic</Typography>
                           </Box>
                           <Typography variant="body2" color="text.secondary">
-                            Get guidance on your educational path, course selection, study strategies, and career planning.
+                          {counselingTypeDescription.ACADEMIC}
                           </Typography>
                         </Box>
                       }
@@ -258,7 +259,7 @@ function QuickBooking() {
                             <Typography variant="h6" sx={{ marginLeft: 1 }}>Non-academic</Typography>
                           </Box>
                           <Typography variant="body2" color="text.secondary">
-                            Receive support for mental well-being, personal growth, relationship issues, and stress management.
+                            {counselingTypeDescription.NONE_ACADEMIC}
                           </Typography>
                         </Box>
                       }

@@ -38,7 +38,7 @@ const CounselorReport = () => {
       <div className="flex gap-24 pb-8 mt-4">
         <div className='flex items-center gap-8 '>
           <CalendarMonth />
-          <Typography className='' >{dayjs(report.appointment.requireDate).format('YYYY-MM-DD')}</Typography>
+          <Typography className='' >{dayjs(report.appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
         </div>
         <div className='flex items-center gap-8'>
           <AccessTime />
