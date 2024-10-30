@@ -56,7 +56,7 @@ function StudentAppointmentList() {
     <div className='flex flex-col gap-16 mt-8'>
       <Box className='flex justify-between items-center'>
         <DateRangePicker
-          className='text-xs h-36 mt-8 w-136'
+          className='text-xs h-36 mt-8 w-144'
           initialLabelShrink={true}
           startDate={startDate ? dayjs(startDate) : null}
           endDate={endDate ? dayjs(endDate) : null}

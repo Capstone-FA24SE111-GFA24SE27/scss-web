@@ -326,7 +326,7 @@ const AppointmentsContent = () => {
                       {
                         appointment.status === 'WAITING' && (
                           <div className='mt-16'>
-                            <Typography className='font-semibold' color='secondary'>Do the student attend the session?</Typography>
+                            {/* <Typography className='font-semibold' color='secondary'>Do the student attend the session?</Typography> */}
                             <Button className='mt-4' variant='contained' color='secondary'
                               onClick={() => dispatch(openDialog({
                                 children: <CheckAttendanceDialog appointment={appointment} />
