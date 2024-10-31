@@ -74,7 +74,7 @@ const ConversationDetail = () => {
 			console.log('QnA Message: ', data);
 			setMessages((prevMessages) => [...prevMessages, data]);
       
-			if (data.sender.id !== account.id && !data.read) {
+  			if (data.sender.id !== account.id && !data.read) {
 				readMessage(qna?.chatSession.id);
 			}
 		};

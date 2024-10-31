@@ -1,87 +1,187 @@
-import { Account } from '@/shared/types';
-import { apiService, ApiResponse } from '@shared/store';
+import { Appointment, AppointmentFeedback, AppointmentReport, AppointmentRequest, Counselor, PaginationContent, Profile, Student } from '@/shared/types';
+import { ApiResponse, apiService as api } from '@shared/store'
 
-const addTagTypes = ['a-counselors', 'na-counselors', 'a-counselor', 'na-counselor'] as const;
 
-export const adminApi = apiService
-	.enhanceEndpoints({
-		addTagTypes,
-	})
-	.injectEndpoints({
-		endpoints: (build) => ({
-			getAcademicCounselorsAccounts: build.query<
-				getAcademicCounselorsAccountsResponse,
-				getAcademicCounselorsAccountsArgs
-			>({
-				query: (args) => ({
-					url: `/api/counselors/academic?search=${args.search}&ratingFrom=${args.ratingFrom}&ratingTo=${args.ratingTo}&availableFrom=${args.availableFrom}&availableTo=${args.availableTo}&specializationId=${args.specializationId}&SortDirection=${args.sortDirection}&sortBy=${args.sortBy}&page=${args.page}`
-				}),
-                providesTags: ['a-counselors']
-			}),
-            getOneAcademicCounselorAccount: build.query<
-				getOneAcademicCounselorAccountResponse,
-				getOneAcademicCounselorAccountArgs
-			>({
-				query: (args) => ({
-                    url: `/api/counselor/academic/id=${args.id}`
-				}),
-                providesTags: ['a-counselor']
-			}),
-            getNonAcademicCounselorsAccounts: build.query<
-				getNonAcademicCounselorsAccountsResponse,
-				getNonAcademicCounselorsAccountsArgs
-			>({
-				query: (args) => ({
-					url: `/api/counselors/non-academic?search=${args.search}&ratingFrom=${args.ratingFrom}&ratingTo=${args.ratingTo}&availableFrom=${args.availableFrom}&availableTo=${args.availableTo}&specializationId=${args.specializationId}&SortDirection=${args.sortDirection}&sortBy=${args.sortBy}&page=${args.page}`
-				}),
-                providesTags: ['na-counselors']
-			}),
-            getOneNonAcademicCounselorsAccounts: build.query<
-				getOneNonAcademicCounselorAccountResponse,
-				getOneNonAcademicCounselorAccountArgs
-			>({
-				query: (args) => ({
-                    url: `/api/counselor/non-academic/id=${args.id}`
-				}),
-                providesTags: ['na-counselor']
-			}),
-		}),
-	});
+export const addTagTypes = [
+  'counselors',
+  'counselingSlots',
+  'appointments',
+] as const;
 
-export const {} = adminApi;
 
-type getAcademicCounselorsAccountsResponse = ApiResponse<Account[]>;
-type getAcademicCounselorsAccountsArgs = {
-	search?: string;
-	ratingFrom?: number;
-	ratingTo?: number;
-	availableFrom?: string;
-	availableTo?: string;
-	specializationId?: number;
-	sortBy?: 'fullName' | 'id';
-	page?: number;
-	sortDirection: 'ASC' | 'DESC';
+export const counselorsMangementApi = api
+  .enhanceEndpoints({
+    addTagTypes
+  })
+  .injectEndpoints({
+    endpoints: (build) => ({
+      getCounselorsAcademicAdmin: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
+        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
+          url: `/api/manage/counselors/academic?page=${page}`,
+        }),
+        providesTags: ['counselors']
+      }),
+      getCounselorsNonAcademicAdmin: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
+        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
+          url: `/api/manage/counselors/non-academic`,
+        }),
+        providesTags: ['counselors']
+      }),
+      getCounselorAdmin: build.query<GetCounselorApiResponse, number>({
+        query: (counselorId) => ({
+          url: `/api/manage/counselors/${counselorId}`,
+        }),
+        providesTags: ['counselors']
+      }),
+      updateCounselorStatus: build.mutation<void, UpdateCounselorStatusArg>({
+        query: ({ counselorId, status }) => ({
+          url: `/api/manage/counselors/${counselorId}/status?status=${status}`,
+          method: 'PUT',
+        }),
+        invalidatesTags: ['counselors']
+      }),
+      getCounselingSlots: build.query<GetCounselingSlotsResponse, void>({
+        query: () => ({
+          url: `/api/manage/counselors/counselling-slots`,
+        }),
+        providesTags: ['counselingSlots']
+      }),
+      updateCounselorCounselingSlots: build.mutation<void, UpdateCounselorCounselingSlotArg>({
+        query: ({ counselorId, slotId }) => ({
+          url: `/api/manage/counselors/${counselorId}/assign-slot?slotId=${slotId}`,
+          method: 'PUT',
+        }),
+        invalidatesTags: ['counselors']
+      }),
+      deleteCounselorCounselingSlots: build.mutation<void, UpdateCounselorCounselingSlotArg>({
+        query: ({ counselorId, slotId }) => ({
+          url: `/api/manage/counselors/${counselorId}/unassign-slot?slotId=${slotId}`,
+          method: 'DELETE',
+        }),
+        invalidatesTags: ['counselors']
+      }),
+      updateCounselorAvailableDateRange: build.mutation<void, UpdateCounselorAvailableDateRange>({
+        query: ({ counselorId, startDate, endDate, }) => ({
+          url: `/api/manage/counselors/${counselorId}/available-date-range?startDate=${startDate}&endDate=${endDate}`,
+          method: 'PUT',
+        }),
+        invalidatesTags: ['counselors']
+      }),
+      getCounselorAppointmentsManagement: build.query<GetCounselorAppointmentsApiResponse, GetCounselorAppointmentsApiArg>({
+        query: ({ counselorId }) => ({
+          url: `/api/manage/counselors/appointment/filter/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments']
+      }),
+      getAppointmentReportManagement: build.query<AppointmentReportApiResponse, AppointmentReportApiArg>({
+        query: ({ appointmentId, counselorId }) => ({
+          url: `/api/manage/counselors/report/${appointmentId}/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments']
+      }),
+      getCounselorAppointmentRequestsManagement: build.query<GetCounselingAppointmentApiResponse, number>({
+        query: (counselorId) => ({
+          url: `/api/manage/counselors/appointment-request/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments',]
+      }),
+      getCounselorFeedbacks: build.query<GetCounselorFeedbacksApResponse, GetCounselorFeedbacksApiArg>({
+        query: ({ counselorId }) => ({
+          url: `/api/manage/counselors/feedback/filter/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'appointments',]
+      }),
+    })
+  })
+
+export const {
+  useGetCounselorsAcademicAdminQuery,
+  useGetCounselorsNonAcademicAdminQuery,
+  useGetCounselorAdminQuery,
+  useUpdateCounselorStatusMutation,
+
+  useGetCounselorAppointmentsManagementQuery,
+  useGetAppointmentReportManagementQuery,
+  useGetCounselorAppointmentRequestsManagementQuery,
+  useGetCounselorFeedbacksQuery,
+} = counselorsMangementApi
+
+
+export type GetCounselorsApiResponse = ApiResponse<PaginationContent<ManagementCounselor>>
+export type GetCounselorsApiArg = {
+  search?: string,
+  sortDirection?: 'ASC' | 'DESC',
+  sortBy?: string,
+  page?: number,
+  ratingFrom?: number,
+  ratingTo?: number
+}
+
+export type GetCounselorApiResponse = ApiResponse<ManagementCounselor>
+
+
+export type ManagementCounselor = {
+  profile?: Counselor
+  availableDateRange: AvailableDateRange;
+  counselingSlot: CounselingSlot[];
+}
+
+type AvailableDateRange = {
+  startDate: string;
+  endDate: string;
 };
 
-type getOneAcademicCounselorAccountResponse = ApiResponse<Account>;
-type getOneAcademicCounselorAccountArgs = {
-	id: number
+export type CounselingSlot = {
+  id: number;
+  slotCode: string;
+  startTime: string;
+  endTime: string;
 };
 
-type getNonAcademicCounselorsAccountsResponse = ApiResponse<Account[]>;
-type getNonAcademicCounselorsAccountsArgs = {
-	search?: string;
-	ratingFrom?: number;
-	ratingTo?: number;
-	availableFrom?: string;
-	availableTo?: string;
-	specializationId?: number;
-	sortBy?: 'fullName' | 'id';
-	page?: number;
-	sortDirection: 'ASC' | 'DESC';
-};
+type UpdateCounselorStatusArg = {
+  status: 'AVAILABLE' | 'UNAVAILABLE',
+  counselorId: number,
+}
 
-type getOneNonAcademicCounselorAccountResponse = ApiResponse<Account>;
-type getOneNonAcademicCounselorAccountArgs = {
-	id: string
-};
+type UpdateCounselorCounselingSlotArg = {
+  slotId: number,
+  counselorId: number,
+}
+
+type UpdateCounselorAvailableDateRange = {
+  counselorId: number,
+  startDate: string,
+  endDate: string,
+}
+
+
+type GetCounselingSlotsResponse = ApiResponse<CounselingSlot[]>
+
+export type GetCounselorAppointmentsApiArg = {
+  sortDirection?: 'ASC' | 'DESC',
+  sortBy?: string,
+  page?: number,
+  counselorId: number,
+}
+
+export type GetCounselorAppointmentsApiResponse = ApiResponse<PaginationContent<Appointment>>
+
+export type AppointmentReportApiArg = {
+  counselorId: number,
+  appointmentId: number,
+}
+export type AppointmentReportApiResponse = ApiResponse<AppointmentReport>
+
+export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<AppointmentRequest>>
+
+
+export type GetCounselorFeedbacksApResponse = ApiResponse<PaginationContent<AppointmentFeedbacksApManagement>>
+
+export type AppointmentFeedbacksApManagement = AppointmentFeedback & {
+  appointment: Appointment
+}
+
+
+export type GetCounselorFeedbacksApiArg = {
+  counselorId: number
+}

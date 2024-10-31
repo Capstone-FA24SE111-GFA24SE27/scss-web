@@ -275,27 +275,27 @@ const adminNavigation: NavigationOptions = {
         {
             name: "Accounts",
             description: "Manage users' accounts",
-            route: 'account',
+            route: 'accounts',
             items: [
                 {
                     icon: SupervisedUserCircle,
                     name: 'Manager',
-                    route: 'manager'
+                    route: 'managers'
                 },
                 {
                     icon: AccountBox,
                     name: 'Counselor',
-                    route: 'counselor'
+                    route: 'counselors'
                 },
                 {
                     icon: EmojiPeople,
                     name: 'Support Staff',
-                    route: 'staff'
+                    route: 'staffs'
                 },
                 {
                     icon: BadgeIcon,
                     name: 'Student',
-                    route: 'student'
+                    route: 'students'
                 },
             ]
         },
@@ -307,12 +307,12 @@ const adminNavigation: NavigationOptions = {
                 {
                     icon: Event,
                     name: 'Holiday',
-                    route: 'holiday'
+                    route: 'holidays'
                 },
                 {
                     icon: LocalOffer,
                     name: 'Problem Tag',
-                    route: 'tag'
+                    route: 'tags'
                 },
                 
             ]
