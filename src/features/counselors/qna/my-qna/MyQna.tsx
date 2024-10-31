@@ -15,6 +15,8 @@ function MyQna() {
   const routeParams = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const isMobile = false
+  const isOpenStudent = Boolean(location?.pathname.includes('student'))
+
   useEffect(() => {
     setRightSidebarOpen(Boolean(routeParams.id));
   }, [routeParams]);
@@ -30,7 +32,7 @@ function MyQna() {
       rightSidebarContent={<MyQnaSidebarContent />}
       rightSidebarOpen={rightSidebarOpen}
       rightSidebarOnClose={() => setRightSidebarOpen(false)}
-      rightSidebarVariant="permanent"
+      rightSidebarVariant={isOpenStudent ? "temporary" : "permanent"}
       rightSidebarWidth={520}
       scroll={isMobile ? 'normal' : 'content'}
     />

@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react'
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Paper, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
-import { useGetCounselorCounselingAppointmentQuery } from './appointments-api';
+import { useCancelCounselingAppointmentCounselorMutation, useGetCounselorCounselingAppointmentQuery } from './appointments-api';
 import { AppLoading, DateRangePicker, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@shared/components';
 import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, EmailOutlined, LocalPhoneOutlined, MoreVert, Summarize } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -151,20 +151,28 @@ const AppointmentsContent = () => {
                         menuItems={[
                           {
                             label: 'Cancel',
-                            onClick: () => { },
+                            onClick: () => {
+                              dispatch(
+                                openDialog({
+                                  children: <CancelAppointmentDialog appointment={appointment} />
+                                })
+                              )
+                            },
                             icon: <Clear fontSize='small' />
                           },
-                          appointment?.havingReport ?
-                            {
-                              label: 'View Report',
-                              onClick: () => { navigate(`${appointment?.id}/report`) },
-                              icon: <Add fontSize='small' />
-                            } :
-                            {
-                              label: 'Create Report',
-                              onClick: () => { navigate(`${appointment?.id}/report/create`) },
-                              icon: <Summarize fontSize='small' />
-                            },
+                          ...(['ATTEND'].includes(appointment?.status) ? [
+                            appointment?.havingReport
+                              ? {
+                                label: 'View Report',
+                                onClick: () => { navigate(`${appointment?.id}/report`) },
+                                icon: <Summarize fontSize='small' />
+                              }
+                              : {
+                                label: 'Create Report',
+                                onClick: () => { navigate(`${appointment?.id}/report/create`) },
+                                icon: <Add fontSize='small' />
+                              }
+                          ] : [])
                         ]}
                       />
                     }
@@ -172,7 +180,7 @@ const AppointmentsContent = () => {
                     <div className='flex gap-24 items-center'>
                       <div className='flex items-center gap-8 '>
                         <CalendarMonth />
-                        <Typography className=''>{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
+                        <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
                       </div>
                       <div className='flex items-center gap-8'>
                         <AccessTime />
@@ -257,32 +265,13 @@ const AppointmentsContent = () => {
                     </Tooltip>
                   </div>
 
-                  <div className='pl-16 pr-32 border-l-2'>
+                  <div className='pl-16 border-l-2'>
                     <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
                       <ListItemButton
                         component={NavLinkAdapter}
                         to={`student/${appointment.studentInfo.profile.id}`}
                         className='w-full rounded shadow bg-primary-light/5'
                       >
-                        {/* <div className='flex items-start w-full gap-16'>
-                          <Avatar
-                            alt={appointment.studentInfo.profile.fullName}
-                            src={appointment.studentInfo.profile.avatarLink}
-                          />
-                          <div>
-                            <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
-                            <div className="flex items-center gap-16">
-                              <div className="flex items-center w-120">
-                                <LocalPhoneOutlined fontSize='small' className='size-16' />
-                                <div className="ml-8 text-text-secondary leading-6">{appointment.studentInfo.profile.phoneNumber}</div>
-                              </div>
-                              <div className="flex items-center">
-                                <EmailOutlined fontSize='small' className='size-16' />
-                                <div className="ml-8 text-text-secondary leading-6">{appointment.studentInfo.email}</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div> */}
                         <UserListItem
                           fullName={appointment.studentInfo.profile.fullName}
                           avatarLink={appointment.studentInfo.profile.avatarLink}
@@ -337,7 +326,7 @@ const AppointmentsContent = () => {
                       {
                         appointment.status === 'WAITING' && (
                           <div className='mt-16'>
-                            <Typography className='font-semibold' color='secondary'>Do the student attend the session?</Typography>
+                            {/* <Typography className='font-semibold' color='secondary'>Do the student attend the session?</Typography> */}
                             <Button className='mt-4' variant='contained' color='secondary'
                               onClick={() => dispatch(openDialog({
                                 children: <CheckAttendanceDialog appointment={appointment} />
@@ -505,6 +494,60 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
           Cancel
         </Button>
         <Button onClick={handleTakeAttendance} color="secondary" variant='contained'>
+          Confirm
+        </Button>
+      </DialogActions>
+    </div>
+  );
+}
+
+const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+  const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentCounselorMutation();
+  const [cancelReason, setCancelReasonl] = useState(``);
+  const dispatch = useAppDispatch();
+  const handleCancelAppointment = () => {
+    cancelAppointment({
+      appointmentId: appointment.id,
+      reason: cancelReason
+    }).unwrap()
+      .then(() => {
+        dispatch(closeDialog())
+      })
+
+  }
+  return (
+    <div className='w-[40rem]'>
+      <DialogTitle id="alert-dialog-title">Confirm cancelling appointment?</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          <div>
+            Give the reason for cancelling
+          </div>
+          <div>
+            <TextField
+              autoFocus
+              margin="dense"
+              name={'Cancel reason'}
+              label={'Cancel reason'}
+              fullWidth
+              value={cancelReason}
+              variant="standard"
+              className='mt-16'
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setCancelReasonl(event.target.value);
+              }} />
+          </div>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => dispatch(closeDialog())} color="primary">
+          Cancel
+        </Button>
+        <Button
+          onClick={handleCancelAppointment}
+          color="secondary" variant='contained'
+          disabled={!cancelReason || isLoading}
+        >
           Confirm
         </Button>
       </DialogActions>

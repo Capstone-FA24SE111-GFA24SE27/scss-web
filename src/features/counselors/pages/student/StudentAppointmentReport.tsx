@@ -5,7 +5,7 @@ import { AppointmentReport, Breadcrumbs, ContentLoading } from '@/shared/compone
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import { renderHTML } from '@/shared/components';
-import { useGetAppointmentReportQuery } from '../appointments/report/report-api';
+import { useGetAppointmentReportQuery } from '../../counseling/appointments/report/report-api';
 import { navigateUp } from '@/shared/utils';
 
 // Helper function to render HTML
@@ -27,11 +27,11 @@ const StudentAppointmentReport = () => {
         className='pb-16'
         parents={[
           {
-            label: "Student",
+            label: report?.student?.profile?.fullName,
             url: `${studentUrl}`
           }
         ]}
-        currentPage={"Academic Transcript"}
+        currentPage={"Appointmnet Report"}
       />
       <AppointmentReport report={report} />
     </div>

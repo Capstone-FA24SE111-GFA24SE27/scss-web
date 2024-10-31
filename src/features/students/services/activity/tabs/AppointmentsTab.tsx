@@ -134,7 +134,7 @@ const AppointmentsTab = () => {
                   >
                     <div className='flex gap-8 items-center '>
                       <CalendarMonth />
-                      <Typography className='' >{dayjs(appointment.requireDate).format('YYYY-MM-DD')}</Typography>
+                      <Typography className='' >{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
                     </div>
                     <div className='flex gap-8 items-center'>
                       <AccessTime />

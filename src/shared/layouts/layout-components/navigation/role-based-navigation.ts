@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 
 interface SubList {
@@ -53,6 +53,11 @@ const studentNavigation: NavigationOptions = {
                     route: 'counseling'
                 },
                 {
+                    icon: CalendarMonth,
+                    name: 'Calendar',
+                    route: 'calendar',
+                },
+                {
                     icon: Article,
                     name: 'Appointments',
                     route: 'activity'
@@ -61,11 +66,6 @@ const studentNavigation: NavigationOptions = {
                     icon: QuestionAnswer,
                     name: 'Q&A',
                     route: 'qna',
-                },
-                {
-                    icon: CalendarMonth,
-                    name: 'Calendar',
-                    route: 'calendar',
                 },
 
             ]
@@ -149,11 +149,11 @@ const counselorNavigation: NavigationOptions = {
             description: "Questions and answer",
             route: 'qna',
             items: [
-                // {
-                //     icon: Assignment,
-                //     name: 'Question Board',
-                //     route: 'question-board'
-                // },
+                {
+                    icon: Assignment,
+                    name: 'Question Board',
+                    route: 'question-board'
+                },
                 {
                     icon: Class,
                     name: 'My Q&A',
@@ -163,6 +163,23 @@ const counselorNavigation: NavigationOptions = {
                     icon: Forum,
                     name: 'Conversations',
                     route: 'conversations'
+                },
+            ]
+        },
+        {
+            name: "Students",
+            description: "Student documents",
+            route: 'students',
+            items: [
+                {
+                    icon: Groups2,
+                    name: 'Student List',
+                    route: 'student-list'
+                },
+                {
+                    icon: PeopleAlt,
+                    name: 'My Students',
+                    route: 'my-students'
                 },
             ]
         },

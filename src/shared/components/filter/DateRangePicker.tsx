@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, TextField, Button, IconButton, Tooltip } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
@@ -12,7 +12,9 @@ interface DateRangePickerProps {
   onEndDateChange: (date: string) => void;
   labelStart?: string;
   labelEnd?: string;
-  showClearButton?: boolean; // New prop to control clear button visibility
+  showClearButton?: boolean;
+  className?: string;
+  initialLabelShrink?: boolean; // New prop to control label shrink behavior
 }
 
 const DateRangePicker = ({
@@ -23,6 +25,8 @@ const DateRangePicker = ({
   labelStart = "Start Date",
   labelEnd = "End Date",
   showClearButton = false,
+  className = "",
+  initialLabelShrink = false, // Default to false
 }: DateRangePickerProps) => {
   const handleDateChange = (date: Dayjs | null, callback: (formattedDate: string) => void) => {
     const formattedDate = date ? date.format('YYYY-MM-DD') : '';
@@ -37,6 +41,7 @@ const DateRangePicker = ({
   return (
     <Box display="flex" gap={2} alignItems="center">
       <DatePicker
+        className={className}
         label={labelStart}
         value={startDate}
         onChange={(date) => handleDateChange(date, onStartDateChange)}
@@ -45,12 +50,19 @@ const DateRangePicker = ({
           actionBar: {
             actions: ['clear'],
           },
-          textField:{
+          textField: {
             fullWidth: true,
-          }
+            className: className,
+            ...(initialLabelShrink && {
+              InputLabelProps: {
+                shrink: true,
+              },
+            }),
+          },
         }}
       />
       <DatePicker
+        className={className}
         label={labelEnd}
         value={endDate}
         onChange={(date) => handleDateChange(date, onEndDateChange)}
@@ -59,9 +71,15 @@ const DateRangePicker = ({
           actionBar: {
             actions: ['clear'],
           },
-          textField:{
+          textField: {
             fullWidth: true,
-          }
+            className: className,
+            ...(initialLabelShrink && {
+              InputLabelProps: {
+                shrink: true,
+              },
+            }),
+          },
         }}
       />
       {showClearButton && (
@@ -70,7 +88,6 @@ const DateRangePicker = ({
             <FilterAltOff />
           </IconButton>
         </Tooltip>
-
       )}
     </Box>
   );

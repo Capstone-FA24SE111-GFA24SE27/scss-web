@@ -43,7 +43,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
     }
 
     return (
-        <>
+        <div className='w-md'>
             <Box
                 className="relative w-full h-160 sm:h-192 px-32 sm:px-48"
                 sx={{
@@ -193,7 +193,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
 
                 </div>
             </div >
-        </>
+        </div>
     );
 }
 

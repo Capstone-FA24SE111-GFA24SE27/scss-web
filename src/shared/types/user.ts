@@ -104,3 +104,13 @@ export type StudentCounselingDocumentInfo = {
   financialSupport: string;
   desiredCounselingFields: string;
 };
+
+
+export type Subject = {
+  subjectCode: string;
+  subjectName: string;
+  term: number;
+  grade: number | null;
+  status: string;
+  semester: string;
+}
