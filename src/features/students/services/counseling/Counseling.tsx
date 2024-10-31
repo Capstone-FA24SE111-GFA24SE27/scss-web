@@ -74,7 +74,6 @@ function Counseling() {
 			rightSidebarContent={<CounselingSidebarContent />}
 			rightSidebarOpen={rightSidebarOpen}
 			rightSidebarOnClose={() => setRightSidebarOpen(false)}
-			rightSidebarWidth={640}
 			rightSidebarVariant="temporary"
 			scroll={isMobile ? 'normal' : 'content'}
 		/>

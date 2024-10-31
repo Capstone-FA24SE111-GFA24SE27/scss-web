@@ -2,6 +2,7 @@ import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import Conversation from './conversation/Conversations';
 import { converastionsRoutes } from './conversation';
+import { counselorRoutes } from '../counseling/counselor';
 
 const Qna = lazy(() => import('./Qna'))
 const QnaList = lazy(() => import('./QnaList'))
@@ -13,10 +14,7 @@ export const qnaRoutes: RouteObject[] = [
     element: <Qna />,
     children: [
       {
-        path: '',
         element: <QnaList />,
-        children: [
-        ]
       },
       {
         path: 'create',
@@ -25,6 +23,12 @@ export const qnaRoutes: RouteObject[] = [
       {
         path: 'edit/:questionId',
         element: <QnaForm />,
+      },
+      {
+        path: 'counselor',
+        children: [
+          ...counselorRoutes,
+        ]
       },
       ...converastionsRoutes,
     ]

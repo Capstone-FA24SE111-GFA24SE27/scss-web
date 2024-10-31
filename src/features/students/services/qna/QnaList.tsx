@@ -233,7 +233,7 @@ const QnaList = () => {
                             <Chip label={qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={'info'} size='small' />
                             <Chip label={qna.status} color={statusColor[qna.status as string]} size='small' />
                             <Chip label={qna.topic.name} size='small' />
-                            {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />}
+                            {/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
                             {qna.closed && <Chip label={'Closed'} variant='outlined' color={'error'} size='small' />}
                             {countUnreadMessages(qna) ? <Chip label={countUnreadMessages(qna)} size='small' variant='filled' color='secondary' /> : ''}
                           </div>
@@ -251,17 +251,33 @@ const QnaList = () => {
 
                       <AccordionDetails className='flex'>
                         <div className='flex flex-col gap-8'>
-                          {qna.counselor &&
-                            <Button className='flex gap-16 items-center justify-start w-fit px-16'>
+                          {qna.counselor && <div className='flex items-center px-32 text-sm'>
+                            Answered by
+                            <Button className='flex gap-8 items-center ml-4'
+                              component={NavLinkAdapter}
+                              to={`counselor/${qna?.counselor?.profile?.id}`}
+                            >
                               <Avatar
-                                className='size-32'
+                                className='size-24'
                                 alt={qna.counselor?.profile.fullName}
-                                src={qna.counselor?.profile.avatarLink} />
+                                src={qna.counselor?.profile.avatarLink}
+                              />
                               <div>
-                                <Typography className='font-semibold text-sm'>{qna.counselor?.profile.fullName}</Typography>
-                                <Typography className='text-sm text-start' color='textSecondary'>{qna.counselor?.expertise?.name || qna.counselor?.specialization?.name}</Typography>
+                                <Typography className='font-semibold'>{qna.counselor?.profile.fullName}</Typography>
                               </div>
-                            </Button>}
+                            </Button>
+                          </div>
+                            // <Button className='flex gap-16 items-center justify-start w-fit px-16'>
+                            //   <Avatar
+                            //     className='size-32'
+                            //     alt={qna.counselor?.profile.fullName}
+                            //     src={qna.counselor?.profile.avatarLink} />
+                            //   <div>
+                            //     <Typography className='font-semibold text-sm'>{qna.counselor?.profile.fullName}</Typography>
+                            //     <Typography className='text-sm text-start' color='textSecondary'>{qna.counselor?.expertise?.name || qna.counselor?.specialization?.name}</Typography>
+                            //   </div>
+                            // </Button>
+                          }
                           {!qna.counselor
                             ? <Typography className="px-8 italic" color='textDisabled'>{'No counselor has taken this question'}</Typography>
                             : qna.answer ?
