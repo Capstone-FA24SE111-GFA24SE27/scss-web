@@ -10,8 +10,9 @@ const Qna = () => {
   const routeParams = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const location = useLocation()
+  const isOpenConversations = Boolean(location?.pathname.includes('conversations'))
   useEffect(() => {
-    setRightSidebarOpen(Boolean(location?.pathname.includes('conversations')));
+    setRightSidebarOpen(Boolean(routeParams.id) || isOpenConversations);
   }, [routeParams]);
   const isMobile = false
 
@@ -36,7 +37,7 @@ const Qna = () => {
       }
       rightSidebarOpen={rightSidebarOpen}
       rightSidebarOnClose={() => setRightSidebarOpen(false)}
-      rightSidebarVariant="permanent"
+      rightSidebarVariant={isOpenConversations ? "permanent" : "temporary"}
       scroll={isMobile ? 'normal' : 'content'}
       rightSidebarWidth={480}
       content={location.pathname.includes('create') || location.pathname.includes('edit') ? <QnaForm /> : <QnaList />}

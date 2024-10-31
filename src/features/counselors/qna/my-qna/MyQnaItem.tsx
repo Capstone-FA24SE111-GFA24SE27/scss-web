@@ -82,16 +82,6 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
             <div className="flex items-center gap-8">
               {/* <Chip label={qna.type === 'Non-academic' ? 'Non-Academic' : 'Academic'} color={qna.type === 'Non-academic' ? 'info' : 'success'} className='w-112'/> */}
               {/* <Typography className='w-112 font-semibold' color={qna.questionType === 'ACADEMIC' ? 'info' : 'warning'}>{qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'}</Typography> */}
-              <Button className='flex gap-16 items-center'>
-                <Avatar
-                  className='size-32  '
-                  alt={qna.student?.profile.fullName}
-                  src={qna.student?.profile.avatarLink}
-                />
-                <div>
-                  <Typography className='font-semibold'>{qna.student?.profile.fullName}</Typography>
-                </div>
-              </Button>
               {
                 qna.answer
                   ? <CheckCircleOutlineOutlined color='success' />
@@ -102,7 +92,23 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
             </div>
           </AccordionSummary>
 
-          <AccordionDetails className='flex'>
+          <AccordionDetails className='flex flex-col gap-16 justify-start'>
+            <div className='flex items-center px-32 text-sm'>
+              Answered by
+              <Button className='flex gap-8 items-center ml-4'
+                component={NavLinkAdapter}
+                to={`student/${qna?.student?.profile?.id}`}
+              >
+                <Avatar
+                  className='size-24'
+                  alt={qna.student?.profile.fullName}
+                  src={qna.student?.profile.avatarLink}
+                />
+                <div>
+                  <Typography className='font-semibold'>{qna.student?.profile.fullName}</Typography>
+                </div>
+              </Button>
+            </div>
             <div className='flex flex-col gap-8 w-full px-16'>
               {
                 qna.answer ?
