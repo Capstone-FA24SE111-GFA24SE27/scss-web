@@ -78,6 +78,7 @@ const QnaList = () => {
 
 	const { data: qnaData } = useGetQuestionsQuery({
 		keyword: debounceSearchKeyword,
+		sortDirection: 'ASC'	,	
 		page: page,
 		type: debounceType,
 	});
