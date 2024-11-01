@@ -5,7 +5,7 @@ import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-mate
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useAppDispatch } from '@shared/store';
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 const RequestsTab = () => {
   const [page, setPage] = useState(1);
 
@@ -39,7 +39,7 @@ const RequestsTab = () => {
     setSortDirection(newSortDirection);
   };
 
-  const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({
+  const { data, isLoading, refetch } = useGetCounselingAppointmentRequestsQuery({
     dateFrom: startDate,
     dateTo: endDate,
     meetingType: selectedMeetingType as `ONLINE` | `OFFLINE` | ``,
@@ -54,6 +54,10 @@ const RequestsTab = () => {
     'WAITING': 'warning',
     'APPROVED': 'success'
   }
+
+  // useEffect(() => {
+  //   refetch()
+  // }, []);
 
   if (isLoading) {
     return <AppLoading />

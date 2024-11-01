@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { AppLoading, Breadcrumbs, Heading, PageSimple } from '@shared/components';
+import { AppLoading, Breadcrumbs, Gender, Heading, PageSimple } from '@shared/components';
 import { Autocomplete, MenuItem, Paper, Rating, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
 import CounselorSidebarContent from '../CounselorSidebarContent';
 import { Feedback, Mail, Phone, Star } from '@mui/icons-material';
@@ -119,9 +119,12 @@ function Counseling() {
               ]}
               currentPage={"Nguyễn Văn A4 4"}
             />
-            <div className='flex'>
+            <div className='flex relative'>
               <div className='flex gap-16 min-w-xs max-w-sm'>
                 <img src={counselorData?.profile.profile.avatarLink} className='size-144 border rounded-full' />
+                <div className='absolute bottom-8 bg-white rounded-full border left-112'>
+                  <Gender gender={counselorData?.profile.profile.gender} />
+                </div>
                 <div className='flex flex-col gap-8 w-full'>
                   <Heading
                     title={counselorData?.profile.profile.fullName}

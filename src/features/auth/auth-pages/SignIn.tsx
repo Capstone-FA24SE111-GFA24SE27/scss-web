@@ -88,21 +88,20 @@ function SignInPage() {
 						stroke="currentColor"
 						strokeWidth="100"
 					>
-						<circle
-							r="234"
-							cx="196"
-							cy="23"
+						<path
+							d="M 200 150 L 200 400 M 200 150 L 300 150 M 200 275 L 275 275" // F shape, keeping proportions
 						/>
-						<circle
-							r="234"
-							cx="790"
-							cy="491"
+						<path
+							d="M 420 250 C 420 150, 570 150, 570 250 S 420 350, 420 250 M 420 150 L 420 400" // P shape, moved left
+						/>
+						<path
+							d="M 700 150 L 850 150 M 775 150 L 775 400" // T shape, with extra spacing
 						/>
 					</Box>
 				</svg>
 				<Box
 					component="svg"
-					className="absolute -right-64 -top-64 opacity-20"
+					className="absolute right-64 top-64 opacity-20"
 					sx={{ color: 'secondary.dark' }}
 					viewBox="0 0 220 192"
 					width="220px"
@@ -142,10 +141,10 @@ function SignInPage() {
 						The Student Counseling and Support System (SCSS) is designed to offer comprehensive support services to students at FPT University HCM Campus, including academic counseling service and easy to access event.
 					</div>
 					<div className='flex justify-between mt-32'>
-						<SupportAgent className='size-96 rounded-full p-8 text-primary-light'/>
-						<CalendarMonth className='size-96 rounded-full p-8 text-primary-light'/>
-						<Summarize className='size-96 rounded-full p-8 text-primary-light'/>
-						<SentimentSatisfied className='size-96 rounded-full p-8 text-primary-light'/>
+						<SupportAgent className='size-96 rounded-full p-8 text-primary-light' />
+						<CalendarMonth className='size-96 rounded-full p-8 text-primary-light' />
+						<Summarize className='size-96 rounded-full p-8 text-primary-light' />
+						<SentimentSatisfied className='size-96 rounded-full p-8 text-primary-light' />
 					</div>
 				</div>
 			</Box>

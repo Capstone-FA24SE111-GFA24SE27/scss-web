@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, Face, Groups, PeopleAlt, Groups2 } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, Face, Groups, PeopleAlt, Groups2, Chat, ChatBubble, AccountBox, Settings } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -18,9 +18,11 @@ interface MenuItem {
 interface Shortcut {
     icon: SvgIconComponent;
     name: string;
+    route?: string;
 }
 
 interface UserMenu {
+    icon?: SvgIconComponent;
     name: string;
     route: string;
 }
@@ -53,7 +55,7 @@ const studentNavigation: NavigationOptions = {
                 },
                 {
                     icon: CalendarMonth,
-                    name: 'Calendar',
+                    name: 'Schedule',
                     route: 'calendar',
                 },
                 {
@@ -96,23 +98,28 @@ const studentNavigation: NavigationOptions = {
     shortcuts: [
         {
             icon: CalendarMonth,
-            name: 'Calendar',
+            name: 'Schedule',
+            route: 'services/calendar',
         },
         {
-            icon: Mail,
-            name: 'Mail',
+            icon: Forum,
+            name: 'Messages',
+            route: 'services/qna/conversations',
         },
     ],
     userMenu: [
         {
+            icon: AccountBox,
             name: 'Profile',
             route: 'profile'
         },
+        // {
+        //     icon: Settings,
+        //     name: 'Activity',
+        //     route: 'activity'
+        // },
         {
-            name: 'Activity',
-            route: 'activity'
-        },
-        {
+            icon: Settings,
             name: 'Settings',
             route: 'settings'
         },
@@ -138,7 +145,7 @@ const counselorNavigation: NavigationOptions = {
                 },
                 {
                     icon: CalendarMonth,
-                    name: 'Calendar',
+                    name: 'Schedule',
                     route: 'calendar',
                 },
             ]
@@ -208,19 +215,23 @@ const counselorNavigation: NavigationOptions = {
     shortcuts: [
         {
             icon: CalendarMonth,
-            name: 'Calendar',
-        },
-        {
-            icon: Mail,
-            name: 'Mail',
+            name: 'Schedule',
+            route: 'counseling/calendar',
         },
     ],
     userMenu: [
         {
+            icon: AccountBox,
             name: 'Profile',
             route: 'profile'
         },
+        // {
+        //     icon: Settings,
+        //     name: 'Activity',
+        //     route: 'activity'
+        // },
         {
+            icon: Settings,
             name: 'Settings',
             route: 'settings'
         },
@@ -267,7 +278,7 @@ const managerNavigation: NavigationOptions = {
     shortcuts: [
         {
             icon: CalendarMonth,
-            name: 'Calendar',
+            name: 'Schedule',
         },
         {
             icon: Mail,

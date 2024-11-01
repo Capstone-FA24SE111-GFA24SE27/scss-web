@@ -10,8 +10,9 @@ import Box from '@mui/system/Box';
 import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useGetStudentDocumentViewQuery } from './student-api';
+import { useGetStudentDocumentViewQuery, useGetStudentStudyViewQuery } from './student-api';
 import StudentAppointmentList from './StudentAppointmentList';
+import { calculateGPA } from '@/shared/utils';
 /**
  * The contact view.
  */
@@ -22,10 +23,13 @@ function StudentView({ }: StudentViewProps) {
   const routeParams = useParams();
   const { id: studentId } = routeParams as { id: string };
   const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
-  // const { data, isLoading } = useGetStudentQuery(studentId);
+  const { data: academicTranscriptData } = useGetStudentStudyViewQuery(studentId);
+
   const student = data?.content
   const navigate = useNavigate();
   const location = useLocation()
+
+  const studentGpa = calculateGPA(academicTranscriptData?.content)
 
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
@@ -41,6 +45,7 @@ function StudentView({ }: StudentViewProps) {
       </Typography>
     </div>
   }
+  console.log(JSON.stringify(academicTranscriptData?.content));
 
   return (
     <div className='w-md'>
@@ -141,7 +146,7 @@ function StudentView({ }: StudentViewProps) {
                 {/* <SchoolOutlined /> */}
                 <span className='font-semibold'>GPA</span>
                 <div className="flex items-center justify-between w-full ml-24 leading-6">
-                  6.9/10
+                  {studentGpa}
                   <Button variant='outlined' color='secondary' onClick={() => navigate('academic-transcript')}>View academic transcript</Button>
                 </div>
               </div>
@@ -156,7 +161,7 @@ function StudentView({ }: StudentViewProps) {
 
                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                   <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
-                  <div className="col-span-2">{student.studentProfile.specialization.name}</div>
+                  <div className="col-span-2">{student.studentProfile?.specialization?.name}</div>
                 </div>
 
                 {/* Department Section */}
@@ -270,7 +275,7 @@ function StudentView({ }: StudentViewProps) {
                   History of couseling
                 </Typography>
               </Box>
-              <StudentAppointmentList student={student} />
+              <StudentAppointmentList />
             </div>
           </div>
         </div>

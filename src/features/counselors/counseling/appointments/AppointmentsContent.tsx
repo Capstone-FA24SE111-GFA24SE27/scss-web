@@ -87,6 +87,10 @@ const AppointmentsContent = () => {
 
 
   // useEffect(() => {
+  //   refetch()
+  // }, []);
+
+  // useEffect(() => {
   //   const cb = (data: unknown) => {
   //     if (data) {
   //       refetch()

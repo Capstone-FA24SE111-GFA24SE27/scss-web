@@ -3,7 +3,7 @@ import { useGetCounselorAppointmentRequestsQuery } from './requests-api'
 import { AppLoading, DateRangePicker, NavLinkAdapter, Pagination, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
-import { ChangeEvent, Fragment, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
 import { Dialog } from '@shared/components';
 import dayjs, { Dayjs } from 'dayjs';
@@ -44,7 +44,7 @@ const RequestsContent = () => {
     setSortDirection(newSortDirection);
   };
 
-  const { data, isLoading } = useGetCounselorAppointmentRequestsQuery({
+  const { data, isLoading, refetch } = useGetCounselorAppointmentRequestsQuery({
     dateFrom: startDate,
     dateTo: endDate,
     meetingType: selectedMeetingType,
@@ -56,9 +56,7 @@ const RequestsContent = () => {
   const appointmentRequests = data?.content.data
   const dispatch = useAppDispatch()
 
-  if (isLoading) {
-    return <AppLoading />
-  }
+
 
   const statusColor = {
     'REJECTED': 'error',
@@ -67,13 +65,21 @@ const RequestsContent = () => {
   }
 
 
-
-
   const handleDenyRequest = (appointment: AppointmentRequest) => {
     console.log(appointment)
     denyAppointmentRequest(appointment.id)
     dispatch(() => closeDialog())
   }
+
+  // useEffect(() => {
+  //   refetch()
+  // }, []);
+
+
+  if (isLoading) {
+    return <AppLoading />
+  }
+
 
   return (
     <div className='container mx-auto p-32'>

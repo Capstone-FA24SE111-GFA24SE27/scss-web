@@ -162,7 +162,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
 
                                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                                     <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
-                                    <div className="col-span-2">{counselor?.specialization.name}</div>
+                                    <div className="col-span-2">{counselor?.specialization?.name}</div>
                                 </div>
 
                                 {/* Department Section */}
