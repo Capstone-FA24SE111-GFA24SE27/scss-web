@@ -12,6 +12,7 @@ import { logout, selectAccount, setAccount } from '@shared/store/user-slice';
 import { NavLinkAdapter } from '@shared/components';
 import { roleBasedNavigation } from '../navigation';
 import { useLogoutMutation } from '@/features/auth/auth-api';
+import { AccountBox, ContentCut, ImportContactsSharp, Logout } from '@mui/icons-material';
 
 /**
  * The user menu.
@@ -30,7 +31,6 @@ function UserMenu() {
 	};
 
 	const navigationUserMenu = roleBasedNavigation[account.role].userMenu;
-
 	const navigate = useNavigate();
 
 	if (!user) {
@@ -97,7 +97,7 @@ function UserMenu() {
 					horizontal: 'center',
 				}}
 				classes={{
-					paper: 'py-8 w-96',
+					paper: 'py-8',
 				}}
 			>
 				{navigationUserMenu.map(
@@ -109,7 +109,14 @@ function UserMenu() {
 							to={menuItem.route}
 							role='button'
 						>
-							<ListItemText primary={menuItem.name} />
+							<ListItemIcon>
+								{
+									menuItem.icon ? <menuItem.icon fontSize='small'/> : <ImportContactsSharp />
+								}
+							</ListItemIcon>
+							<ListItemText>
+								{menuItem.name}
+							</ListItemText>
 						</MenuItem>
 					)
 
@@ -133,6 +140,9 @@ function UserMenu() {
 						handleLogout()
 					}}
 				>
+					<ListItemIcon>
+						<Logout fontSize="small" />
+					</ListItemIcon>
 					<ListItemText primary='Sign out' />
 				</MenuItem>
 			</Popover>
