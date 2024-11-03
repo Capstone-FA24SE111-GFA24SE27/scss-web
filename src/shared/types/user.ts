@@ -45,6 +45,12 @@ export type Student = {
   major: Major
 }
 
+export type SupportStaff = {
+  id: number,
+  profile: Profile
+  status: string,
+}
+
 export type Specialization = {
   id: number,
   name: string,

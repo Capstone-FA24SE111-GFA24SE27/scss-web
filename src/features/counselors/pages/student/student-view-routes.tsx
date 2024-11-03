@@ -5,14 +5,10 @@ import StudentView from './StudentView';
 import AcademicTranscript from './AcademicTranscript';
 import StudentAppointmentReport from './StudentAppointmentReport';
 import StudentBooking from './StudentBooking';
-export const studentRoutes: RouteObject[] = [
+export const studentViewRoutes: RouteObject[] = [
   {
     path: 'student/:id',
-    element: <StudentView />,
-  },
-  {
-    path: 'student/:id/booking',
-    element: <StudentBooking />,
+    element: <StudentView shouldShowBooking={false} />,
   },
   {
     path: 'student/:id/academic-transcript',

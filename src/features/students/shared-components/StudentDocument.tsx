@@ -10,21 +10,21 @@ import { useCreateStudentDocumentMutation } from '../students-api';
 
 // Zod Schema Validation
 const schema = z.object({
-  introduction: z.string().min(1, 'Introduction is required'),
-  currentHealthStatus: z.string().min(1, 'Current Health Status is required'),
-  psychologicalStatus: z.string().min(1, 'Psychological Status is required'),
-  stressFactors: z.string().min(1, 'Stress Factors are required'),
-  academicDifficulties: z.string().min(1, 'Academic Difficulties are required'),
-  studyPlan: z.string().min(1, 'Study Plan is required'),
-  careerGoals: z.string().min(1, 'Career Goals are required'),
-  partTimeExperience: z.string().min(1, 'Part-Time Experience is required'),
-  internshipProgram: z.string().min(1, 'Internship Program is required'),
-  extracurricularActivities: z.string().min(1, 'Extracurricular Activities are required'),
-  personalInterests: z.string().min(1, 'Personal Interests are required'),
-  socialRelationships: z.string().min(1, 'Social Relationships are required'),
-  financialSituation: z.string().min(1, 'Financial Situation is required'),
-  financialSupport: z.string().min(1, 'Financial Support is required'),
-  desiredCounselingFields: z.string().min(1, 'Desired Counseling Fields are required'),
+  introduction: z.string().optional(),
+  currentHealthStatus: z.string().optional(),
+  psychologicalStatus: z.string().optional(),
+  stressFactors: z.string().optional(),
+  academicDifficulties: z.string().optional(),
+  studyPlan: z.string().optional(),
+  careerGoals: z.string().optional(),
+  partTimeExperience: z.string().optional(),
+  internshipProgram: z.string().optional(),
+  extracurricularActivities: z.string().optional(),
+  personalInterests: z.string().optional(),
+  socialRelationships: z.string().optional(),
+  financialSituation: z.string().optional(),
+  financialSupport: z.string().optional(),
+  desiredCounselingFields: z.string().optional(),
 });
 
 type FormData = Required<z.infer<typeof schema>>;
