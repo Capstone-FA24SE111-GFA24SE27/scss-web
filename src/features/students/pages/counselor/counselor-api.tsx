@@ -1,4 +1,4 @@
-import { AppointmentSlotStatus, Counselor, DailySlot, PaginationContent, Profile, Slot } from '@/shared/types';
+import { Counselor, PaginationContent, Profile } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -16,23 +16,9 @@ export const counselingApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getCounselorsAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
-        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/academic`,
-          params: {
-            search,
-            page
-          }
-        }),
-        providesTags: ['counselors']
-      }),
-      getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
-        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/non-academic`,
-          params: {
-            search,
-            page
-          }
+      getCounselorView: build.query<GetCounselorApiResponse, string>({
+        query: (counselorId) => ({
+          url: `/api/counselors/${counselorId}`,
         }),
         providesTags: ['counselors']
       }),
@@ -42,12 +28,7 @@ export const counselingApi = api
         }),
         providesTags: ['counselors']
       }),
-      getCounselor: build.query<GetCounselorApiResponse, string>({
-        query: (counselorId) => ({
-          url: `/api/counselors/${counselorId}`,
-        }),
-        providesTags: ['counselors']
-      }),
+
       getCounselorNonAcademic: build.query<GetCounselorApiResponse, string>({
         query: (counselorId) => ({
           url: `/api/counselors/non-academic/${counselorId}`,
@@ -85,25 +66,11 @@ export const counselingApi = api
           url: `/api/counselors/counseling-slot?date=${date}`,
         }),
       }),
-      getRandomMatchedCousenlorAcademic: build.mutation<GetRandomMatchedCounselorApiResponse, GetCounselorRandomMatchApiArg>({
-        query: ({ slotId, date, gender = '', expertiseId = '' }) => ({
-          method: 'GET',
-          url: `/api/counselors/academic/random/match?slotId=${slotId}&date=${date}&gender=${gender}&expertiseId=${expertiseId}&`,
-        }),
-      }),
-      getRandomMatchedCousenlorNonAcademic: build.mutation<GetRandomMatchedCounselorApiResponse, GetCounselorRandomMatchApiArg>({
-        query: ({ slotId, date, gender = '', expertiseId = '' }) => ({
-          method: 'GET',
-          url: `/api/counselors/non-academic/random/match?slotId=${slotId}&date=${date}&gender=${gender}&expertiseId=${expertiseId}&`,
-        }),
-      }),
     })
   })
 
 export const {
-  useGetCounselorsAcademicQuery,
-  useGetCounselorsNonAcademicQuery,
-  useGetCounselorQuery,
+  useGetCounselorViewQuery,
   useGetCounselorAcademicQuery,
   useGetCounselorNonAcademicQuery,
   useGetCounselorDailySlotsQuery,
@@ -111,8 +78,6 @@ export const {
   useGetCounselorExpertisesQuery,
   useGetCounselorSpecializationsQuery,
   useGetCounselorSlotsQuery,
-  useGetRandomMatchedCousenlorAcademicMutation,
-  useGetRandomMatchedCousenlorNonAcademicMutation,
 } = counselingApi
 
 
@@ -138,6 +103,19 @@ export type GetCounselorsDailySlotsArg = {
   to: string,
 }
 
+export type DailySlot = {
+  [date: string]: Slot[]
+}
+
+export type Slot = {
+  slotId: number,
+  slotCode: string,
+  startTime: string,
+  endTime: string,
+  status: AppointmentStatus,
+  myAppointment: boolean
+}
+
 
 export type Expertise = {
   id: number,
@@ -150,6 +128,7 @@ export type Specialization = {
 }
 
 
+export type AppointmentStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'
 
 export type BookCounselorArg = {
   counselorId: number,
@@ -177,10 +156,3 @@ export type GetCounselorRandomMatchApiArg = {
   expertiseId?: number,
   specializationId?: number,
 }
-
-
-
-
-
-
-

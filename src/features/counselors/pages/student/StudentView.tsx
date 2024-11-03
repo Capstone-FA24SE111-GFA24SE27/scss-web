@@ -18,8 +18,9 @@ import { calculateGPA } from '@/shared/utils';
  */
 
 interface StudentViewProps {
+  shouldShowBooking?: boolean
 }
-function StudentView({ }: StudentViewProps) {
+function StudentView({ shouldShowBooking = true }: StudentViewProps) {
   const routeParams = useParams();
   const { id: studentId } = routeParams as { id: string };
   const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
@@ -80,17 +81,21 @@ function StudentView({ }: StudentViewProps) {
             </Avatar>
             <Gender gender={student?.studentProfile.profile.gender} />
 
-            <div className="flex items-center mb-4 ml-auto">
-              <Button
-                variant="contained"
-                color="secondary"
-                sx={{ color: 'white' }}
-                component={NavLinkAdapter}
-                to="booking"
-              >
-                <span className="mx-8">Create an appointment</span>
-              </Button>
-            </div>
+            {
+              shouldShowBooking && (
+                <div className="flex items-center mb-4 ml-auto">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ color: 'white' }}
+                    component={NavLinkAdapter}
+                    to="booking"
+                  >
+                    <span className="mx-8">Create an appointment</span>
+                  </Button>
+                </div>
+              )
+            }
 
 
           </div>

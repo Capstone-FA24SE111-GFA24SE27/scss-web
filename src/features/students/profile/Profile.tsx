@@ -87,7 +87,7 @@ function StudentProfile({ }: StudentProfileProps) {
               <Typography className='font-semibold'>
                 General Infomation
               </Typography>
-              <Paper className="shadow p-16 rounded mt-8">
+              <Paper className="shadow p-16 mt-8">
                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                   <div className="col-span-1 font-medium text-text-secondary">Gender:</div>
                   <div className="col-span-2 capitalize">{student?.studentProfile.profile.gender.toLocaleLowerCase()}</div>
@@ -124,7 +124,7 @@ function StudentProfile({ }: StudentProfileProps) {
               <Typography className='font-semibold'>
                 Academic details
               </Typography>
-              <Paper className="shadow p-16 rounded mt-8">
+              <Paper className="shadow p-16 mt-8">
 
                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                   <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
@@ -161,7 +161,7 @@ function StudentProfile({ }: StudentProfileProps) {
                 Counseling infomation
               </Typography>
 
-              <Paper className='shadow rounded p-8 flex flex-col gap-8 mt-8'>
+              <Paper className='shadow p-8 flex flex-col gap-8 mt-8'>
 
                 {/* Psychological and Health Status */}
                 <div className="p-8 rounded">

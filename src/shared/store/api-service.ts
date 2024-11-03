@@ -8,8 +8,8 @@ import { RootState } from '../store'
 import { logout, setAccessToken, setAccount } from './user-slice'
 
 
-// const BASE_URL = 'http://localhost:8080'
-const BASE_URL = 'http://102.37.21.11:8080'
+const BASE_URL = 'http://localhost:8080'
+// const BASE_URL = 'http://102.37.21.11:8080'
 // const BASE_URL = 'http://scss-server.southafricanorth.cloudapp.azure.com:8080'
 
 const baseQuery = fetchBaseQuery({
@@ -44,7 +44,7 @@ const baseQueryWithReauth: BaseQueryFn<
 			result = await baseQuery(args, api, extraOptions);
 		} else {
 				api.dispatch(logout());
-				window.location.href = '/';
+				// window.location.href = '/';
 		}
 	}
 	return result
@@ -54,7 +54,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
 export const apiService = createApi({
 	baseQuery: baseQueryWithReauth,
-	refetchOnMountOrArgChange: true, // Set globally to refetch on mount or argument change
+	refetchOnMountOrArgChange: true,
 	endpoints: () => ({}),
 	reducerPath: 'apiService',
 });

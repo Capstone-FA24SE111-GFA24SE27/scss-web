@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { PageSimple } from '@shared/components';
 import AppointmentsHeader from './AppointmentsHeader';
 import AppointmentsContent from './AppointmentsContent';
 import AppointmentsSidebarContent from './AppointmentsSidebarContent';
+import AppointmentCreate from './AppointmentCreate';
 
 
 
@@ -20,6 +21,7 @@ const Root = styled(PageSimple)(({ theme }) => ({
 function Appointments() {
 	const routeParams = useParams();
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
+	const { pathname } = useLocation()
 	// const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
 	// useGetContactsListQuery();
 	// useGetContactsCountriesQuery();
@@ -29,10 +31,12 @@ function Appointments() {
 		setRightSidebarOpen(Boolean(routeParams.id));
 	}, [routeParams]);
 
+	const isShowingForm = pathname.includes('create');
+
 	return (
 		<Root
 			header={<AppointmentsHeader />}
-			content={<AppointmentsContent />}
+			content={isShowingForm ? <AppointmentCreate /> : <AppointmentsContent />}
 			rightSidebarContent={<AppointmentsSidebarContent />}
 			rightSidebarOpen={rightSidebarOpen}
 			rightSidebarOnClose={() => setRightSidebarOpen(false)}

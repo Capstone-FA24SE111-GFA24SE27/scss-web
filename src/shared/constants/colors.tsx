@@ -1,11 +1,12 @@
 export const statusColor = {
-  'REJECTED': 'error',
-  'ABSENT': 'error',
-  'WAITING': 'warning',
   'APPROVED': 'success',
+  'SOLVE': 'success',
   'ATTEND': 'success',
   'VERIFIED': 'success',
+  'WAITING': 'warning',
   'PENDING': 'warning',
+  'ABSENT': 'error',
+  'REJECTED': 'error',
   'FLAGGED': 'error',
   'CANCELED': 'error',
 }

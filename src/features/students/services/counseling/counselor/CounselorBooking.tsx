@@ -1,24 +1,20 @@
-import Button from '@mui/material/Button';
-import { Breadcrumbs, ContentLoading, NavLinkAdapter } from '@shared/components';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useSocket } from '@/shared/context';
+import { AppointmentSlotStatus, DailySlot } from '@/shared/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormControl, FormControlLabel, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
-import { CakeOutlined, EmailOutlined, LocalPhoneOutlined, NotesOutlined } from '@mui/icons-material';
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Rating, TextField, Tooltip } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
-import { Slot, useGetCounselorAcademicQuery, useGetCounselorNonAcademicQuery, useGetCounselorDailySlotsQuery, AppointmentRequest, useBookCounselorMutation, GetCounselorsDailySlotsResponse, GetCounselorsDailySlotsArg, DailySlot, AppointmentStatus, useGetCounselorQuery } from '../counseling-api';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Breadcrumbs, ContentLoading } from '@shared/components';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { isEmpty } from 'lodash';
-import { useSocket } from '@/shared/context';
-import { useEffect } from 'react'
-import { apiService, useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType } from '../counselor-list/counselor-list-slice';
+import { useParams } from 'react-router-dom';
+import { z } from 'zod';
+import { AppointmentRequest, useBookCounselorMutation, useGetCounselorDailySlotsQuery, useGetCounselorQuery } from '../counseling-api';
 
 /**
  * The contact view.
@@ -36,7 +32,7 @@ const schema = z.object({
 type SlotsMessage = {
     counselorId: string,
     dateChange: string,
-    newStatus: AppointmentStatus,
+    newStatus: AppointmentSlotStatus,
     slotId: number,
     studentId: number
 }
@@ -73,11 +69,6 @@ function CounselorBooking() {
     const { isValid, dirtyFields, errors } = formState;
 
 
-
-
-
-    const navigate = useNavigate()
-    const counselorType = useAppSelector(selectCounselorType)
 
     const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId)
     const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });

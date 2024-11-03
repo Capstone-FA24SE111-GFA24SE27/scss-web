@@ -2,7 +2,7 @@ import { ApiResponse, apiService as api } from '@shared/store';
 import { Appointment, Counselor, PaginationContent, Student, StudentDocument, Subject } from '@shared/types';
 
 export const addTagTypes = [
-  'students'
+  'students', 'appointments'
 ] as const;
 
 export const studentViewApi = api
@@ -49,18 +49,33 @@ export const studentViewApi = api
         }),
         providesTags: ['students']
       }),
+      createAppointment: build.mutation<ApiResponse<Appointment>, { studentId: string, body: AppointmentRequestBody }>({
+        query: ({ studentId, body }) => ({
+          url: `/api/appointments/create/${studentId}`,
+          method: 'POST',
+          body,
+        }),
+        invalidatesTags: ['students', 'appointments']
+      }),
+      getStudentByCode: build.query<StudentApiResponse, string>({
+        query: (code) => ({
+          url: `/api/students/code/${code}`,
+        }),
+        providesTags: ['students']
+      })
     })
-  })
+  });
 
 export const {
   useGetStudentViewQuery,
   useGetStudentDocumentViewQuery,
   useGetStudentStudyViewQuery,
-  useGetStudentAppointmentsQuery
-} = studentViewApi
+  useGetStudentAppointmentsQuery,
+  useCreateAppointmentMutation,
+  useGetStudentByCodeQuery 
+} = studentViewApi;
 
-type StudentAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>; // Adjust according to your API response type
-
+type StudentAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
 type StudentApiResponse = ApiResponse<Student>;
 type StudentDocumentApiResponse = ApiResponse<StudentDocument>;
 type StudentStudyApiResponse = ApiResponse<Subject[]>;
@@ -71,4 +86,13 @@ type StudentAppointmentApiArg = {
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC';
   page?: number | string;
+};
+
+type AppointmentRequestBody = {
+  slotCode: string;
+  address?: string;
+  meetURL?: string;
+  date: string;
+  isOnline: boolean;
+  reason: string;
 };

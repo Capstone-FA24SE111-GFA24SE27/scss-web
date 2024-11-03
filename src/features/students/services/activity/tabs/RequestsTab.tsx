@@ -95,8 +95,6 @@ const RequestsTab = () => {
                 key={appointment.id}
                 className="p-16 flex gap-16 shadow"
                 sx={{ bgcolor: 'background.paper' }}
-              // component={NavLinkAdapter}
-              // to={`appointment/${appointment.id}`}
               >
                 <div className='flex flex-col gap-16 w-full justify-center'>
                   <div className='flex gap-24'>

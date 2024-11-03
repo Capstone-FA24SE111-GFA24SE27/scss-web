@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, Face, Groups, PeopleAlt, Groups2, Chat, ChatBubble, AccountBox, Settings } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, Face, Groups, PeopleAlt, Groups2, Chat, ChatBubble, AccountBox, Settings, AssignmentLate } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -178,14 +178,14 @@ const counselorNavigation: NavigationOptions = {
             route: 'students',
             items: [
                 {
-                    icon: Groups2,
+                    icon: PeopleAlt,
                     name: 'Student List',
                     route: 'student-list'
                 },
                 {
-                    icon: PeopleAlt,
-                    name: 'My Students',
-                    route: 'my-students'
+                    icon: AssignmentLate,
+                    name: 'Student Demands',
+                    route: 'student-demands'
                 },
             ]
         },

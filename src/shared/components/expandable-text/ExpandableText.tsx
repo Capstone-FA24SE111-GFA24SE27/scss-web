@@ -13,7 +13,7 @@ const ExpandableText = ({ text, limit = 300, className = "" }: Props) => {
     return <div className={className}>{text}</div>
   }
   return (
-    <div className={className}>
+    <div className={clsx(`flex-1`, className)}>
       {showMore ? text : `${text.substring(0, limit)}...`}{' '}
       <span
         className={clsx("text-secondary-main hover:text-secondary-light font-semibold cursor-pointer")}
