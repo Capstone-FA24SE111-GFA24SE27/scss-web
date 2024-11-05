@@ -6,7 +6,7 @@ import { AppLoading, ContentLoading, Pagination } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import CounselorListItem from './CounselorListItem';
 import { useGetCounselorsAcademicQuery, useGetCounselorsNonAcademicQuery } from '../counseling-api';
-import { selectCounselorType, selectSearchTerm } from './counselor-list-slice';
+import { selectCounselorType, selectFilter, selectSearchTerm } from './counselor-list-slice';
 import { useState, ChangeEvent } from 'react'
 
 function CounselorListContent() {
@@ -14,13 +14,20 @@ function CounselorListContent() {
 
     const search = useAppSelector(selectSearchTerm)
     const counselorType = useAppSelector(selectCounselorType)
+    const availableFrom = useAppSelector(selectFilter).availableFrom
+    const availableTo = useAppSelector(selectFilter).availableTo
+    console.log(availableFrom, availableTo)
     const { data: academicCounselors, isLoading: isFetchingAcademicCounselors } = useGetCounselorsAcademicQuery({
         search,
-        page
+        page,
+        availableFrom,
+        availableTo
     })
     const { data: nonAcademicCounselors, isLoading: isFetchingNonAcademicCounselors } = useGetCounselorsNonAcademicQuery({
         search,
-        page
+        page,
+        availableFrom,
+        availableTo
     })
 
     const counselors = (counselorType === 'ACADEMIC' ? academicCounselors?.content?.data : nonAcademicCounselors?.content?.data) || []

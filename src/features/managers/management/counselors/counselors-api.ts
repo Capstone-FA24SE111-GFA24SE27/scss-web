@@ -17,13 +17,30 @@ export const counselorsMangementApi = api
     endpoints: (build) => ({
       getCounselorsAcademicManagement: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/manage/counselors/academic?page=${page}`,
+          url: `/api/manage/counselors/academic`,
+          params: {
+            page
+          }
         }),
         providesTags: ['counselors']
       }),
       getCounselorsNonAcademicManagement: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
         query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
           url: `/api/manage/counselors/non-academic`,
+          params: {
+            page
+          }
+        }),
+        providesTags: ['counselors']
+      }),
+      getCounselorsManagement: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
+        query: ({ type, page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
+          url: type === 'ACADEMIC'
+            ? `/api/manage/counselors/academic`
+            : `/api/manage/counselors/non-academic`,
+          params: {
+            page
+          }
         }),
         providesTags: ['counselors']
       }),
@@ -97,6 +114,7 @@ export const counselorsMangementApi = api
 export const {
   useGetCounselorsAcademicManagementQuery,
   useGetCounselorsNonAcademicManagementQuery,
+  useGetCounselorsManagementQuery,
   useGetCounselorManagementQuery,
   useUpdateCounselorStatusMutation,
   useGetCounselingSlotsQuery,
@@ -112,6 +130,7 @@ export const {
 
 export type GetCounselorsApiResponse = ApiResponse<PaginationContent<ManagementCounselor>>
 export type GetCounselorsApiArg = {
+  type?: 'ACADEMIC' | 'NON_ACADEMIC',
   search?: string,
   sortDirection?: 'ASC' | 'DESC',
   sortBy?: string,

@@ -1,4 +1,4 @@
-import { CakeOutlined, CalendarMonth, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
+import { CakeOutlined, CalendarMonth, Edit, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -7,10 +7,12 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/system/Box';
-import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
+import { ContentLoading, Gender, NavLinkAdapter, openDialog } from '@shared/components';
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useGetStudentDocumentQuery } from '../students-api';
+import { useAppDispatch } from '@shared/store';
+import { StudentDocument } from '../components/student-document';
 /**
  * The contact view.
  */
@@ -25,6 +27,8 @@ function StudentProfile({ }: StudentProfileProps) {
   const student = data?.content
   const navigate = useNavigate();
   const location = useLocation()
+
+  const dispatch = useAppDispatch();
 
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
@@ -157,9 +161,21 @@ function StudentProfile({ }: StudentProfileProps) {
 
             <Divider />
             <div>
-              <Typography className='font-semibold'>
-                Counseling infomation
-              </Typography>
+              <div className='flex items-center justify-between'>
+                <Typography className='font-semibold'>
+                  Counseling infomation
+                </Typography>
+                <Button
+                  startIcon={<Edit />}
+                  onClick={() => {
+                    dispatch(openDialog({
+                      children: <StudentDocument editMode={true}/>
+                    }))
+                  }}
+                >
+                  Edit
+                </Button>
+              </div>
 
               <Paper className='shadow p-8 flex flex-col gap-8 mt-8'>
 

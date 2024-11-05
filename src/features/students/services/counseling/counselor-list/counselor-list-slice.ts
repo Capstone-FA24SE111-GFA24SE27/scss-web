@@ -9,7 +9,9 @@ const initialState = {
   // mobileOpen: false,
   // foldedOpen: false
   searchTerm: '',
-  counselorType: 'ACADEMIC'
+  counselorType: 'ACADEMIC',
+  availableFrom: ``,
+  availableTo: ``,
 };
 /**
  * The filter slice.
@@ -50,6 +52,12 @@ export const counselorListSlice = createSlice({
     },
     setCounselorType: (state, action: PayloadAction<'ACADEMIC' | 'NON_ACADEMIC'>) => {
       state.counselorType = action.payload
+    },
+    setAvailableFrom: (state, action: PayloadAction<string>) => {
+      state.availableFrom = action.payload
+    },
+    setAvailableTo: (state, action: PayloadAction<string>) => {
+      state.availableTo = action.payload
     }
   },
   selectors: {
@@ -69,6 +77,8 @@ export const {
   filterToggle,
   setSearchTerm,
   setCounselorType,
+  setAvailableFrom,
+  setAvailableTo,
 } = counselorListSlice.actions;
 export const {
   selectFilter,

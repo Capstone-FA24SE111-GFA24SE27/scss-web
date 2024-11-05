@@ -44,11 +44,6 @@ const studentNavigation: NavigationOptions = {
             route: 'services',
             items: [
                 {
-                    icon: Home,
-                    name: 'Home',
-                    route: 'home'
-                },
-                {
                     icon: SupportAgent,
                     name: 'Counseling',
                     route: 'counseling'
@@ -96,6 +91,11 @@ const studentNavigation: NavigationOptions = {
         // }
     ],
     shortcuts: [
+        {
+            icon: Home,
+            name: 'Home',
+            route: ''
+        },
         {
             icon: CalendarMonth,
             name: 'Schedule',
@@ -213,6 +213,11 @@ const counselorNavigation: NavigationOptions = {
         // }
     ],
     shortcuts: [
+        {
+            icon: Home,
+            name: 'Home',
+            route: ''
+        },
         {
             icon: CalendarMonth,
             name: 'Schedule',

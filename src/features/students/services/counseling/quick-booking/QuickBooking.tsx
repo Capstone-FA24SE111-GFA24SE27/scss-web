@@ -193,8 +193,6 @@ function QuickBooking() {
 
   const [progress, setProgress] = useState(20);
 
-  console.log(formData.expertise, formData.specialization)
-
   useEffect(() => {
     if (isGettingRandomMatchedCounselor) {
       const timer = setInterval(() => {

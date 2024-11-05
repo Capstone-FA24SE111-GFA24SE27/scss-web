@@ -21,6 +21,14 @@ export const studentsApi = api
         }),
         invalidatesTags: ['students']
       }),
+      editStudentDocument: build.mutation<void, CreateStudentCounselingDocumentApiArg>({
+        query: (arg) => ({
+          url: `/api/students/document/info`,
+          method: 'PUT',
+          body: arg
+        }),
+        invalidatesTags: ['students']
+      }),
       getStudentDocument: build.query<GetStudentDocumentApiResponse, void>({
         query: () => ({
           url: `/api/students/document/info`,
@@ -32,7 +40,8 @@ export const studentsApi = api
 
 export const {
   useCreateStudentDocumentMutation,
-  useGetStudentDocumentQuery
+  useEditStudentDocumentMutation,
+  useGetStudentDocumentQuery,
 } = studentsApi
 
 
