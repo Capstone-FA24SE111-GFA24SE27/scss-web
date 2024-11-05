@@ -4,6 +4,8 @@ import { memo } from 'react';
 import NavbarToggleButton from './NavbarToggleButton';
 import UserNavbarHeader from './UserNavbarHeader';
 import { NavigationList } from '../navigation';
+import { Box } from '@mui/material';
+import { NavLinkAdapter } from '@/shared/components';
 const Root = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.background.default,
 	color: theme.palette.text.primary,
@@ -40,9 +42,13 @@ function NavbarContent(props: NavbarContentProps) {
 	return (
 		<Root className={clsx('flex h-full flex-auto flex-col overflow-hidden bg-background-paper', className)}>
 			<div className="flex flex-row items-center h-48 px-20 shrink-0 md:h-64">
-				<div className="flex flex-1 mx-4">
-					<img alt='logo' src='/assets/images/logo/FPT-education.jpeg'/>
-				</div>
+				<Box
+					component={NavLinkAdapter}
+					to={``}
+					className="flex flex-1 mx-4"
+				>
+					<img alt='logo' src='/assets/images/logo/FPT-education.jpeg' />
+				</Box>
 
 				<NavbarToggleButton />
 
@@ -50,7 +56,7 @@ function NavbarContent(props: NavbarContentProps) {
 
 			<StyledContent
 				className="flex min-h-0 flex-1 flex-col bg-background-paper"
-				// option={{ suppressScrollX: true, wheelPropagation: false }}
+			// option={{ suppressScrollX: true, wheelPropagation: false }}
 			>
 				{/* <UserNavbarHeader /> */}
 

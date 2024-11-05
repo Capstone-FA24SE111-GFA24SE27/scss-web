@@ -1,8 +1,8 @@
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
-export const addTagTypes = [
-  'topic'
+const addTagTypes = [
+  'topics'
 ] as const;
 
 
@@ -17,14 +17,14 @@ export const topicApi = api
           url: `/api/topics/academic`,
           method: 'GET',
         }),
-        providesTags: ['topic']
+        providesTags: ['topics']
       }),
       getNonAcademicTopics: build.query<GetNonAcademicTopicApiResponse, void>({
         query: () => ({
           url: `/api/topics/non-academic`,
           method: 'GET',
         }),
-        providesTags: ['topic']
+        providesTags: ['topics']
       }),
     })
   })

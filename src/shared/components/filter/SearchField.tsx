@@ -1,9 +1,8 @@
-import React, { ChangeEvent, useCallback } from 'react';
-import { TextField, InputAdornment } from '@mui/material';
-import { Search } from '@mui/icons-material';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { Search, Clear } from '@mui/icons-material';
 import { debounce } from 'lodash';
 import clsx from 'clsx';
-
 
 interface SearchFieldProps {
   label?: string;
@@ -11,7 +10,7 @@ interface SearchFieldProps {
   debounceDelay?: number;
   className?: string;
   onSearch: (searchTerm: string) => void;
-  size?: 'small' | 'medium'
+  size?: 'small' | 'medium';
 }
 
 const SearchField = ({
@@ -19,9 +18,11 @@ const SearchField = ({
   placeholder = 'Enter a keyword...',
   debounceDelay = 500,
   className = '',
-  size ='medium',
+  size = 'medium',
   onSearch
 }: SearchFieldProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   // Debounce the search input
   const debounceSearch = useCallback(
     debounce((debouncedSearchTerm: string) => {
@@ -31,13 +32,21 @@ const SearchField = ({
   );
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    debounceSearch(event.target.value);
+    const value = event.target.value;
+    setSearchTerm(value);
+    debounceSearch(value);
+  };
+
+  const handleClear = (): void => {
+    setSearchTerm(''); // Clear the input value
+    onSearch(''); // Notify parent component with empty search term
   };
 
   return (
     <TextField
       label={label}
       placeholder={placeholder}
+      value={searchTerm}
       className={clsx("flex w-full", className)}
       variant="outlined"
       slotProps={{
@@ -48,6 +57,13 @@ const SearchField = ({
           startAdornment: (
             <InputAdornment position="start">
               <Search />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={handleClear} aria-label="clear search">
+                <Clear />
+              </IconButton>
             </InputAdornment>
           )
         }

@@ -62,6 +62,13 @@ export const studentViewApi = api
           url: `/api/students/code/${code}`,
         }),
         providesTags: ['students']
+      }),
+      getStudentSemesterDetails: build.query<GetStudentSemesterDetailsApiResponse, GetStudentSemesterDetailsApiArg>({
+        query: ({ studentId, semesterName }) => ({
+          url: `/api/students/${studentId}/semester/${semesterName}`,
+          method: 'GET',
+        }),
+        providesTags: ['students']
       })
     })
   });
@@ -72,7 +79,8 @@ export const {
   useGetStudentStudyViewQuery,
   useGetStudentAppointmentsQuery,
   useCreateAppointmentMutation,
-  useGetStudentByCodeQuery 
+  useGetStudentByCodeQuery,
+  useGetStudentSemesterDetailsQuery,
 } = studentViewApi;
 
 type StudentAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
@@ -96,3 +104,31 @@ type AppointmentRequestBody = {
   isOnline: boolean;
   reason: string;
 };
+
+export type StudentSemesterDetail = {
+  id: number;
+  startDate: string;
+  totalSlot: number;
+  studentCode: string;
+  subjectName: string;
+  semesterName: string;
+  detais: AttendanceDetail[];
+}
+
+export type AttendanceDetail = {
+  date: string;
+  slot: string;
+  room: string;
+  lecturer: string;
+  groupName: string;
+  status: string;
+  lecturerComment: string | null;
+}
+
+// Parameters for API query
+export type GetStudentSemesterDetailsApiArg = {
+  studentId: string;
+  semesterName: string;
+}
+
+type GetStudentSemesterDetailsApiResponse = ApiResponse<StudentSemesterDetail[]>

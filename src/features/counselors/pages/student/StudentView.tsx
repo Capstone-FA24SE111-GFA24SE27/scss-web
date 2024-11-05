@@ -1,4 +1,4 @@
-import { CakeOutlined, CalendarMonth, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
+import { Add, CakeOutlined, CalendarMonth, Checklist, Description, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -90,8 +90,9 @@ function StudentView({ shouldShowBooking = true }: StudentViewProps) {
                     sx={{ color: 'white' }}
                     component={NavLinkAdapter}
                     to="booking"
+                    startIcon={<Add />}
                   >
-                    <span className="mx-8">Create an appointment</span>
+                    Create an appointment
                   </Button>
                 </div>
               )
@@ -146,13 +147,25 @@ function StudentView({ shouldShowBooking = true }: StudentViewProps) {
               </div>
             )}
 
-            {student?.studentProfile.profile.phoneNumber && (
+            {academicTranscriptData && (
               <div className="flex items-center">
                 {/* <SchoolOutlined /> */}
                 <span className='font-semibold'>GPA</span>
                 <div className="flex items-center justify-between w-full ml-24 leading-6">
                   {studentGpa}
-                  <Button variant='outlined' color='secondary' onClick={() => navigate('academic-transcript')}>View academic transcript</Button>
+                  <Button
+                    startIcon={<Description />}
+                    variant='outlined' color='secondary' size='small'  className={`w-216`} onClick={() => navigate('academic-transcript')}>View academic transcript</Button>
+                </div>
+              </div>
+            )}
+
+            {student?.studentProfile && (
+              <div className="flex items-center">
+                <div className="flex items-center justify-end w-full ml-24 leading-6">
+                  <Button
+                    startIcon={<Checklist />}
+                    variant='outlined' color='secondary' size='small'  className={`w-216`} onClick={() => navigate('attendance-report')}>View attendance report</Button>
                 </div>
               </div>
             )}

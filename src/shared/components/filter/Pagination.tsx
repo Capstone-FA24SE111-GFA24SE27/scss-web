@@ -18,7 +18,7 @@ const Pagination = ({ count = 0, page = 1, handleChange, className = ``, pageSiz
       )
     }>
       {
-        count > pageSize ?
+        count > 1 ?
           <PaginationMUI
             count={count}
             shape="rounded"

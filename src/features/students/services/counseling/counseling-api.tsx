@@ -17,23 +17,29 @@ export const counselingApi = api
   .injectEndpoints({
     endpoints: (build) => ({
       getCounselorsAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
-        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/academic`,
-          params: {
-            search,
-            page
-          }
-        }),
+        query: ({
+          page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '', availableFrom = '', availableTo = '' }) => ({
+            url: `/api/counselors/academic`,
+            params: {
+              search,
+              page,
+              availableFrom,
+              availableTo,
+            }
+          }),
         providesTags: ['counselors']
       }),
       getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
-        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/non-academic`,
-          params: {
-            search,
-            page
-          }
-        }),
+        query: ({
+          page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '', availableFrom = '', availableTo = '' }) => ({
+            url: `/api/counselors/non-academic`,
+            params: {
+              search,
+              page,
+              availableFrom,
+              availableTo,
+            }
+          }),
         providesTags: ['counselors']
       }),
       getCounselorAcademic: build.query<GetCounselorApiAcademicResponse, string>({
@@ -123,7 +129,9 @@ export type GetCounselorsApiArg = {
   sortBy?: string,
   page?: number,
   ratingFrom?: number,
-  ratingTo?: number
+  ratingTo?: number,
+  availableFrom?: string,
+  availableTo?: string,
 }
 
 export type GetCounselorApiResponse = ApiResponse<Counselor>
