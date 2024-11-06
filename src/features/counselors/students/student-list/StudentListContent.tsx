@@ -16,6 +16,7 @@ function StudentListContent() {
         setPage(value);
     };
     const { data } = useGetStudentsFilterQuery({
+        page
     })
     const students = data?.data
     return (
@@ -47,7 +48,7 @@ function StudentListContent() {
 
             <Pagination
                 page={page}
-                count={data?.totalElements}
+                count={data?.totalPages}
                 handleChange={handlePageChange}
             />
         </div>

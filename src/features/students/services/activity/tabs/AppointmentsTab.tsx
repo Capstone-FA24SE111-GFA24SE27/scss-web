@@ -62,6 +62,10 @@ const AppointmentsTab = () => {
 
   const dispatch = useAppDispatch()
 
+
+  // useEffect(() => {
+  //   refetch()
+  // }, []);
   // useEffect(() => {
 
   //   const cb = (data: unknown) => {

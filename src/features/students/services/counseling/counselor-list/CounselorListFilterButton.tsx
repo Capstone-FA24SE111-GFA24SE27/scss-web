@@ -16,7 +16,7 @@ const CounselorListFilterButton = (props: { className?: string, children?: React
   const dispatch = useAppDispatch();
 
   return (
-    <div className={clsx('flex flex-1 ', className)}>
+    <div className={clsx('flex ', className)}>
       <div className='flex'>
         <Tooltip title={'Toggle Filter'}
         >

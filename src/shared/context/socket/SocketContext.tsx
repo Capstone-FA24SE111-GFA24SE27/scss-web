@@ -13,6 +13,7 @@ export const SocketProvider = ({ children }) => {
 	console.log("Socket context: ", socketRef?.current)
 	useEffect(() => {
 		if (account) {
+			// socketRef.current = io('http://102.37.21.11:4000');
 			socketRef.current = io('http://localhost:4000');
 		} else {
 			socketRef.current?.disconnect();

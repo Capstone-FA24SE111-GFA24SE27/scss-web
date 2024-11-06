@@ -8,17 +8,18 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { ManagementCounselor, useGetCounselorsAcademicManagementQuery } from './counselors-api';
-function CounselorsTable() {
-
+import { ManagementCounselor, useGetCounselorsAcademicManagementQuery, useGetCounselorsManagementQuery } from './counselors-api';
+import { CounselingType } from '@/shared/types';
+function CounselorsTable({ type }: { type: CounselingType }) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
-  console.log(pagination)
+  console.log(type);
+  
 
-
-  const { data, isLoading } = useGetCounselorsAcademicManagementQuery({
+  const { data, isLoading } = useGetCounselorsManagementQuery({
+    type,
     page: pagination.pageIndex + 1
   })
   console.log(data)

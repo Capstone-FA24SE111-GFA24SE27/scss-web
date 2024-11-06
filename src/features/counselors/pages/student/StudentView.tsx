@@ -1,4 +1,4 @@
-import { CakeOutlined, CalendarMonth, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
+import { Add, CakeOutlined, CalendarMonth, Checklist, Description, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -10,24 +10,27 @@ import Box from '@mui/system/Box';
 import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useGetStudentDocumentViewQuery } from './student-api';
+import { useGetStudentDocumentViewQuery, useGetStudentStudyViewQuery } from './student-api';
 import StudentAppointmentList from './StudentAppointmentList';
+import { calculateGPA } from '@/shared/utils';
 /**
  * The contact view.
  */
 
 interface StudentViewProps {
+  shouldShowBooking?: boolean
 }
-function StudentView({ }: StudentViewProps) {
+function StudentView({ shouldShowBooking = true }: StudentViewProps) {
   const routeParams = useParams();
   const { id: studentId } = routeParams as { id: string };
   const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
-  // const { data, isLoading } = useGetStudentQuery(studentId);
+  const { data: academicTranscriptData } = useGetStudentStudyViewQuery(studentId);
+
   const student = data?.content
   const navigate = useNavigate();
   const location = useLocation()
 
-  console.log(student)
+  const studentGpa = calculateGPA(academicTranscriptData?.content)
 
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
@@ -43,6 +46,7 @@ function StudentView({ }: StudentViewProps) {
       </Typography>
     </div>
   }
+  console.log(JSON.stringify(academicTranscriptData?.content));
 
   return (
     <div className='w-md'>
@@ -77,17 +81,22 @@ function StudentView({ }: StudentViewProps) {
             </Avatar>
             <Gender gender={student?.studentProfile.profile.gender} />
 
-            <div className="flex items-center mb-4 ml-auto">
-              <Button
-                variant="contained"
-                color="secondary"
-                sx={{ color: 'white' }}
-                component={NavLinkAdapter}
-                to="booking"
-              >
-                <span className="mx-8">Create an appointment</span>
-              </Button>
-            </div>
+            {
+              shouldShowBooking && (
+                <div className="flex items-center mb-4 ml-auto">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ color: 'white' }}
+                    component={NavLinkAdapter}
+                    to="booking"
+                    startIcon={<Add />}
+                  >
+                    Create an appointment
+                  </Button>
+                </div>
+              )
+            }
 
 
           </div>
@@ -138,13 +147,25 @@ function StudentView({ }: StudentViewProps) {
               </div>
             )}
 
-            {student?.studentProfile.profile.phoneNumber && (
+            {academicTranscriptData && (
               <div className="flex items-center">
                 {/* <SchoolOutlined /> */}
                 <span className='font-semibold'>GPA</span>
                 <div className="flex items-center justify-between w-full ml-24 leading-6">
-                  6.9/10
-                  <Button variant='outlined' color='secondary' onClick={() => navigate('academic-transcript')}>View academic transcript</Button>
+                  {studentGpa}
+                  <Button
+                    startIcon={<Description />}
+                    variant='outlined' color='secondary' size='small'  className={`w-216`} onClick={() => navigate('academic-transcript')}>View academic transcript</Button>
+                </div>
+              </div>
+            )}
+
+            {student?.studentProfile && (
+              <div className="flex items-center">
+                <div className="flex items-center justify-end w-full ml-24 leading-6">
+                  <Button
+                    startIcon={<Checklist />}
+                    variant='outlined' color='secondary' size='small'  className={`w-216`} onClick={() => navigate('attendance-report')}>View attendance report</Button>
                 </div>
               </div>
             )}
@@ -158,7 +179,7 @@ function StudentView({ }: StudentViewProps) {
 
                 <div className="grid grid-cols-3 mb-4 gap-y-2">
                   <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
-                  <div className="col-span-2">{student.studentProfile.specialization.name}</div>
+                  <div className="col-span-2">{student.studentProfile?.specialization?.name}</div>
                 </div>
 
                 {/* Department Section */}
@@ -272,7 +293,7 @@ function StudentView({ }: StudentViewProps) {
                   History of couseling
                 </Typography>
               </Box>
-              <StudentAppointmentList student={student} />
+              <StudentAppointmentList />
             </div>
           </div>
         </div>

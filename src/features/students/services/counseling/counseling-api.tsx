@@ -1,4 +1,4 @@
-import { Counselor, PaginationContent, Profile } from '@/shared/types';
+import { AppointmentSlotStatus, Counselor, DailySlot, PaginationContent, Profile, Slot } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -17,23 +17,29 @@ export const counselingApi = api
   .injectEndpoints({
     endpoints: (build) => ({
       getCounselorsAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
-        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/academic`,
-          params: {
-            search,
-            page
-          }
-        }),
+        query: ({
+          page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '', availableFrom = '', availableTo = '' }) => ({
+            url: `/api/counselors/academic`,
+            params: {
+              search,
+              page,
+              availableFrom,
+              availableTo,
+            }
+          }),
         providesTags: ['counselors']
       }),
       getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
-        query: ({ page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
-          url: `/api/counselors/non-academic`,
-          params: {
-            search,
-            page
-          }
-        }),
+        query: ({
+          page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '', availableFrom = '', availableTo = '' }) => ({
+            url: `/api/counselors/non-academic`,
+            params: {
+              search,
+              page,
+              availableFrom,
+              availableTo,
+            }
+          }),
         providesTags: ['counselors']
       }),
       getCounselorAcademic: build.query<GetCounselorApiAcademicResponse, string>({
@@ -123,7 +129,9 @@ export type GetCounselorsApiArg = {
   sortBy?: string,
   page?: number,
   ratingFrom?: number,
-  ratingTo?: number
+  ratingTo?: number,
+  availableFrom?: string,
+  availableTo?: string,
 }
 
 export type GetCounselorApiResponse = ApiResponse<Counselor>
@@ -138,19 +146,6 @@ export type GetCounselorsDailySlotsArg = {
   to: string,
 }
 
-export type DailySlot = {
-  [date: string]: Slot[]
-}
-
-export type Slot = {
-  slotId: number,
-  slotCode: string,
-  startTime: string,
-  endTime: string,
-  status: AppointmentStatus,
-  myAppointment: boolean
-}
-
 
 export type Expertise = {
   id: number,
@@ -163,7 +158,6 @@ export type Specialization = {
 }
 
 
-export type AppointmentStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'
 
 export type BookCounselorArg = {
   counselorId: number,

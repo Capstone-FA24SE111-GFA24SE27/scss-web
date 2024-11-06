@@ -8,6 +8,7 @@ import CounselorListFilterButton from './CounselorListFilterButton'
 import { debounce } from 'lodash'
 import { CounselingType } from '@/shared/types'
 import { useSearchParams } from 'react-router-dom'
+import { SearchField } from '@/shared/components'
 
 const CounselorListHeader = () => {
   const filter = useAppSelector(selectFilter)
@@ -33,19 +34,19 @@ const CounselorListHeader = () => {
     dispatch(setCounselorType(counselingType))
   }
 
-  const debounceSearch = debounce((debouncedSearchTerm: string) => {
-    dispatch(setSearchTerm(debouncedSearchTerm))
-  }, 500);
 
-  function handleSearch(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-    debounceSearch(event.target.value)
+  const handleSearch = (searchTerm: string) => {
+    dispatch(setSearchTerm(searchTerm))
   }
 
   return (
     <div className="flex flex-1 items-center bg-background">
       <div className="w-full p-24 flex flex-col gap-16">
         <div className='flex'>
-          <TextField
+          <SearchField
+            onSearch={handleSearch}
+          />
+          {/* <TextField
             label="Search for counselors"
             placeholder="Enter a keyword..."
             className="flex w-full"
@@ -63,7 +64,7 @@ const CounselorListHeader = () => {
               }
             }}
             onChange={handleSearch}
-          />
+          /> */}
           <div className='pl-16'>
             {!filter.open && <CounselorListFilterButton />}
           </div>

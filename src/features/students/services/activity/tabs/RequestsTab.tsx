@@ -5,7 +5,7 @@ import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-mate
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useAppDispatch } from '@shared/store';
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 const RequestsTab = () => {
   const [page, setPage] = useState(1);
 
@@ -39,7 +39,7 @@ const RequestsTab = () => {
     setSortDirection(newSortDirection);
   };
 
-  const { data, isLoading } = useGetCounselingAppointmentRequestsQuery({
+  const { data, isLoading, refetch } = useGetCounselingAppointmentRequestsQuery({
     dateFrom: startDate,
     dateTo: endDate,
     meetingType: selectedMeetingType as `ONLINE` | `OFFLINE` | ``,
@@ -54,6 +54,10 @@ const RequestsTab = () => {
     'WAITING': 'warning',
     'APPROVED': 'success'
   }
+
+  // useEffect(() => {
+  //   refetch()
+  // }, []);
 
   if (isLoading) {
     return <AppLoading />
@@ -91,8 +95,6 @@ const RequestsTab = () => {
                 key={appointment.id}
                 className="p-16 flex gap-16 shadow"
                 sx={{ bgcolor: 'background.paper' }}
-              // component={NavLinkAdapter}
-              // to={`appointment/${appointment.id}`}
               >
                 <div className='flex flex-col gap-16 w-full justify-center'>
                   <div className='flex gap-24'>

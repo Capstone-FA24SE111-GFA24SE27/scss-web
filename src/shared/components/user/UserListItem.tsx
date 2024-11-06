@@ -23,7 +23,7 @@ const UserListItem: React.FC<UserListItemProps> = ({ fullName, avatarLink, phone
           </div>
           <div className="flex items-center">
             <EmailOutlined fontSize='small' className='size-16' />
-            <div className="ml-8 text-text-secondary leading-6">{email || 'emailisnull.edu.vn'}</div>
+            <div className="ml-8 text-text-secondary leading-6">{email || 'emailisnull@fpt.edu.vn'}</div>
           </div>
         </div>
       </div>

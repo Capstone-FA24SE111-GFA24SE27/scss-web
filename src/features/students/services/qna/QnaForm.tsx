@@ -43,7 +43,11 @@ function QnaForm() {
 
 	const defaultValues = { questionType: 'ACADEMIC', content: '', topicId: '' };
 
-	const { data: questionData } = useGetStudentQuestionQuery(questionId)
+	const { data: questionData } = useGetStudentQuestionQuery(questionId || `0`,
+		{
+			skip: !editMode,
+		}
+	)
 	const question = questionData?.content
 
 	const { control, handleSubmit, watch, formState, reset } = useForm({
@@ -297,7 +301,7 @@ function QnaForm() {
 							/>
 						</div>
 						<div className="flex items-center justify-end mt-32">
-							<Button className="mx-8">Cancel</Button>
+							<Button className="mx-8" component={NavLinkAdapter} to="." >Cancel</Button>
 							<Button
 								className="mx-8"
 								variant="contained"

@@ -1,4 +1,4 @@
-import { Account, Counselor, Profile, Student } from './user';
+import { Account, Counselor, Profile, Student, SupportStaff } from './user';
 
 export type AppointmentScheduleType = {
 	id: string;
@@ -140,3 +140,32 @@ export type Report = {
 		description?: string;
 	};
 };
+
+
+export type DailySlot = {
+	[date: string]: Slot[]
+}
+
+export type Slot = {
+	slotId: number,
+	slotCode: string,
+	startTime: string,
+	endTime: string,
+	status: AppointmentSlotStatus,
+	myAppointment: boolean
+}
+
+
+export type CounselingDemand = {
+	id: number;
+	status: string;
+	student: Student
+	supportStaff: SupportStaff;
+	contactNote: string;
+	summarizeNote: string;
+	counselor: Counselor
+	startDateTime: string;
+	endDateTime: string;
+};
+
+export type AppointmentSlotStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'

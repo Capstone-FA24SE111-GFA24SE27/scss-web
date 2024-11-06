@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Button from '@mui/material/Button';
 import { Heading, NavLinkAdapter } from '@shared/components';
 import Box from '@mui/material/Box';
-import { CalendarMonth, Search } from '@mui/icons-material';
+import { Add, CalendarMonth, Search } from '@mui/icons-material';
 import { FilterAltOutlined } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
@@ -33,15 +33,26 @@ function AppointmentsHeader() {
                 title='My Appointments'
                 description='Counseling appointments that forwarded to the user'
             />
-            <Button
-                component={NavLinkAdapter}
-                to="../calendar"
-                variant='contained'
-                color='secondary'
-                startIcon={<CalendarMonth />}
-            >
-                View chedule
-            </Button>
+            <div className='flex gap-16'>
+                <Button
+                    component={NavLinkAdapter}
+                    to="../calendar"
+                    variant='contained'
+                    color='primary'
+                    startIcon={<CalendarMonth />}
+                >
+                    View chedule
+                </Button>
+                <Button
+                    component={NavLinkAdapter}
+                    to="create"
+                    variant='contained'
+                    color='secondary'
+                    startIcon={<Add />}
+                >
+                    Create an appointment
+                </Button>
+            </div>
         </div>
     );
 }
