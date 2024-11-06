@@ -15,12 +15,12 @@ export const SocketProvider = ({ children }) => {
 		if (account) {
 			socketRef.current = io('http://localhost:4000');
 		} else {
-			// socketRef.current?.disconnect();
+			socketRef.current?.disconnect();
 			socketRef.current = null;
 		}
 
 		return () => {
-			// socketRef.current?.disconnect();
+			socketRef.current?.disconnect();
 			socketRef.current = null;
 		};
 	}, [account]);

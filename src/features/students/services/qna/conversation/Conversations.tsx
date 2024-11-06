@@ -2,7 +2,7 @@ import { Avatar, Chip, Divider, Input, InputAdornment, ListItemButton, Paper, To
 import React, { useState } from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import {  useGetMyStudentQuestionsQuery, useReadMessageMutation } from '../qna-api';
+import {  useGetMyStudentQuestionsQuery} from '../qna-api';
 import dayjs from 'dayjs';
 import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Search } from '@mui/icons-material';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
@@ -18,10 +18,8 @@ const Conversation = () => {
 
   const { id } = useParams()
 
-  const [messages, setMessages] = useState([{ sender: 'them', text: 'What is the Capital of France!' }]);
   const [input, setInput] = useState('');
   const navigate = useNavigate();
-  const [readMessage] = useReadMessageMutation()
 
   const countUnreadMessages = (qnaItem: Question) => {
     const readMessages = qnaItem?.chatSession?.messages.filter((message) => message.sender.id !== account.id && !message.read)
@@ -29,7 +27,6 @@ const Conversation = () => {
   }
 
   const handleSelectChat = (qnaItem: Question) => {
-    readMessage(qnaItem.chatSession.id)
     navigate(`${qnaItem.id}`)
   }
 

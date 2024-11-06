@@ -1,4 +1,5 @@
 export * from './useTimeout'
-export * from './useDebounce'
+export * from './useDebounceValue'
 export * from './form/useConfirmDialog'
 export * from './form/useAlertDialog'
+export * from './useThrottle'

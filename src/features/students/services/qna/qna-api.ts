@@ -3,7 +3,7 @@ import { ApiResponse, apiService as api } from '@shared/store'
 
 
 export const addTagTypes = [
-  'qna'
+  'qna', 'one-qna'
 ] as const;
 
 
@@ -66,25 +66,11 @@ export const studentQnasApi = api
         }),
         invalidatesTags: ['qna']
       }),
-      sendMessage: build.mutation<void, SendMessageApiArg>({
-        query: ({ sessionId, content }) => ({
-          url: `/api/question-cards/send/${sessionId}/messages`,
-          method: 'POST',
-          body: { content }
-        }),
-      }),
       getStudentQuestion: build.query<GetQuestionApiResponse, string>({
         query: (questionCardId) => ({
           url: `/api/question-cards/student/${questionCardId}`,
         }),
-        providesTags: (result, error, arg) => [{ type: 'qna', id: arg }]
-      }),
-      readMessage: build.mutation<void, number>({
-        query: (chatSessionId) => ({
-          url: `/api/question-cards/read/${chatSessionId}/messages`,
-          method: 'PUT',
-        }),
-        invalidatesTags: ['qna']
+        providesTags: ['one-qna']
       }),
       getBanInfo: build.query<GetBanInfoApiResponse, void>({
         query: () => ({
@@ -115,8 +101,6 @@ export const {
   usePostQuestionMutation,
   useEditQuestionMutation,
   useGetStudentQuestionQuery,
-  useSendMessageMutation,
-  useReadMessageMutation,
   useGetMyStudentQuestionsQuery,
   useGetBanInfoQuery,
   useCloseQuestionStudentMutation,
@@ -154,13 +138,6 @@ export type EditQuestionApiArg = {
     topicId: string,
   }
 }
-
-export type SendMessageApiArg = {
-  content: string,
-  sessionId: number,
-}
-
-
 
 export type GetBanInfoApiResponse = BanInfo
 export type BanInfo = {

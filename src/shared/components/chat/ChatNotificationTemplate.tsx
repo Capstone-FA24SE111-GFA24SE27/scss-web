@@ -1,7 +1,7 @@
 import { ForwardedRef, forwardRef, MouseEvent } from 'react';
 import { SnackbarContent } from 'notistack';
 import { Message, Question } from '@/shared/types';
-import { useTheme } from '@mui/material';
+import { CardActionArea, useTheme } from '@mui/material';
 import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -30,8 +30,6 @@ const ChatNotificationTemplate = forwardRef(
 		const navigate = useNavigate();
 		const account = useAppSelector(selectAccount);
 
-		console.log(item);
-
 		const defaultBgColor = theme.palette.background.paper;
 
 		let bgColor: string = defaultBgColor;
@@ -47,12 +45,13 @@ const ChatNotificationTemplate = forwardRef(
 
 		const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
 			if (account?.role === roles.STUDENT) {
-				navigate(`services/qna/conversations/${qna.id}`, { replace: true });
+				navigate(`services/qna/conversations/${qna.id}`, {
+					replace: true,
+				});
 			} else if (
 				account?.role === roles.ACADEMIC_COUNSELOR ||
 				account?.role === roles.NON_ACADEMIC_COUNSELOR
 			) {
-
 				navigate(`/qna/conversations/${qna.id}`, { replace: true });
 			}
 			handleClose(ev);
@@ -61,11 +60,11 @@ const ChatNotificationTemplate = forwardRef(
 		return (
 			<SnackbarContent
 				ref={ref}
-				className='relative w-full py-4 mx-auto pointer-events-auto max-w-320 z-999' 
+				className='relative w-full mx-auto pointer-events-auto max-w-320 z-999'
 			>
 				<Card
 					className={clsx(
-						'relative flex min-h-96 w-full items-center space-x-8 rounded-16 py-12 px-20 shadow',
+						'relative flex min-h-96 w-full items-center rounded-16  shadow',
 						className
 					)}
 					sx={{
@@ -73,36 +72,39 @@ const ChatNotificationTemplate = forwardRef(
 						color: '#000',
 					}}
 					elevation={0}
-					component={'button'}
-					role={'button'}
-					onClick={handleClick}
+					component={'div'}
 				>
-					<div className='flex flex-col flex-auto pr-24 '>
-						<Typography className='font-semibold line-clamp-1'>
-							{item.sender.profile.fullName} sent you a message
-						</Typography>
-
-						{item.content && (
-							<div
-								className='flex justify-start line-clamp-2'
-								dangerouslySetInnerHTML={{
-									__html: item.content,
-								}}
-							/>
-						)}
-
-						{item.sentAt && (
-							<Typography
-								className='flex justify-start mt-8 text-sm leading-none'
-								color='text.secondary'
-							>
-								{formatDistanceToNow(new Date(item.sentAt), {
-									addSuffix: true,
-								})}
+					<CardActionArea onClick={handleClick} className='w-full h-full px-20 py-12'>
+						<div className='flex flex-col flex-auto pr-24 '>
+							<Typography className='font-semibold line-clamp-1'>
+								{item.sender.profile.fullName} sent you a
+								message
 							</Typography>
-						)}
-					</div>
 
+							{item.content && (
+								<div
+									className='flex justify-start line-clamp-2'
+									dangerouslySetInnerHTML={{
+										__html: item.content,
+									}}
+								/>
+							)}
+
+							{item.sentAt && (
+								<Typography
+									className='flex justify-start mt-8 text-sm leading-none'
+									color='text.secondary'
+								>
+									{formatDistanceToNow(
+										new Date(item.sentAt),
+										{
+											addSuffix: true,
+										}
+									)}
+								</Typography>
+							)}
+						</div>
+					</CardActionArea>
 					<IconButton
 						disableRipple
 						className='absolute top-0 p-8 right-2'

@@ -1,3 +1,4 @@
+import { Topic } from "../services";
 import { Account, Counselor, Student } from "./user";
 
 export type Question = {
@@ -9,16 +10,11 @@ export type Question = {
   status: 'VERIFIED' | 'PENDING' | 'REJECTED';
   student: Student;
   counselor: Counselor | null;
-  chatSession: ChatSession
+  chatSession: ChatSession;
   closed: boolean;
   taken: boolean;
-  topic: {
-    id: number;
-    name: string;
-    type: string;
-  };
+  topic: Topic
 }
-
 
 export type ChatSession = {
   id: number,
@@ -29,7 +25,7 @@ export type ChatSession = {
 
 export type Message = {
   id: number,
-  chatSession: string,
+  chatSessionId: number,
   content: string,
   read: boolean,
   sender: Account,

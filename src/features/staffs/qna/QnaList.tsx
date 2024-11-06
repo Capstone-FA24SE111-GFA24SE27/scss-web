@@ -41,7 +41,7 @@ import {
 	ThumbUpOutlined,
 	Visibility,
 } from '@mui/icons-material';
-import useDebounce from '@/shared/hooks/useDebounce';
+import useDebounceValue from '@/shared/hooks/useDebounceValue';
 import { Question } from '@/shared/types';
 import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
@@ -64,10 +64,10 @@ const item = {
 
 const QnaList = () => {
 	const [searchKeyword, setSearchKeyword] = useState('');
-	const debounceSearchKeyword = useDebounce(searchKeyword, 500);
+	const debounceSearchKeyword = useDebounceValue(searchKeyword, 500);
 	const [page, setPage] = useState<number>(1);
 	const [type, setType] = useState<TypeOfQuestionType>('');
-	const debounceType = useDebounce(type, 300);
+	const debounceType = useDebounceValue(type, 300);
 
 	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
 	const [flagQuestion] = usePostFlagQuestionStatusMutation();

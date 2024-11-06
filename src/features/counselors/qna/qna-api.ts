@@ -1,4 +1,4 @@
-import { Account, Counselor, PaginationContent, Student, User } from '@shared/types';
+import { Account, Counselor, PaginationContent, Question, Student, User } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 import { Role } from '@/shared/constants';
 import { Topic } from '@/shared/services';
@@ -94,21 +94,7 @@ export const counselorQnaApi = api
         query: (questionCardId) => ({
           url: `/api/question-cards/counselor/${questionCardId}`,
         }),
-        providesTags: ['qna']
-      }),
-      sendMessage: build.mutation<void, SendMessageApiArg>({
-        query: ({ sessionId, content }) => ({
-          url: `/api/question-cards/send/${sessionId}/messages`,
-          method: 'POST',
-          body: { content }
-        }),
-      }),
-      readMessage: build.mutation<void, number>({
-        query: (chatSessionId) => ({
-          url: `/api/question-cards/read/${chatSessionId}/messages`,
-          method: 'PUT',
-        }),
-        invalidatesTags: ['qna']
+        providesTags: (result, error, arg) => [{type: 'qna', id: arg}]
       }),
       closeQuestionCounselor: build.mutation<void, number>({
         query: (questionCardId) => ({
@@ -126,9 +112,7 @@ export const {
   useGetMyCounselorQuestionsQuery,
   useAnswerQuestionMutation,
   useGetCounselorQuestionQuery,
-  useReadMessageMutation,
   useEditAnswerMutation,
-  useSendMessageMutation,
   useCloseQuestionCounselorMutation
 } = counselorQnaApi
 
@@ -166,47 +150,4 @@ export type GetMyQuestionsApiArg = {
 export type AnswerQuestionApiArg = {
   questionCardId: number,
   content: string
-}
-
-
-export type SendMessageApiArg = {
-  content: string,
-  sessionId: number,
-}
-
-export type ReadMessageApiArg = {
-  content: string,
-  chatSessionId: number,
-}
-
-
-export type Question = {
-  id: number;
-  title: string;
-  content: string;
-  answer: string | null,
-  questionType: 'ACADEMIC' | 'NON_ACADEMIC';
-  status: 'VERIFIED' | 'PENDING' | 'REJECTED';
-  student: Student;
-  counselor: Counselor | null;
-  chatSession: ChatSession;
-  closed: boolean;
-  taken: boolean;
-  topic: Topic
-}
-
-export type ChatSession = {
-  id: number,
-  closed: boolean,
-  lastInteractionDate: string,
-  messages: Message[]
-}
-
-export type Message = {
-  id: number,
-  chatSession: string,
-  content: string,
-  read: boolean,
-  sender: Account,
-  sentAt: string,
 }

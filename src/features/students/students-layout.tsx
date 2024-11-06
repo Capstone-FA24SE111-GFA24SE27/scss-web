@@ -21,10 +21,8 @@ const StudentLayout = () => {
 
 	const qnaList = qnaData?.content?.data || ([] as Question[]);
 
-
 	const studentCounselingDocument =
 		studentDocumentData?.content?.counselingProfile;
-	console.log(studentDocumentData?.content);
 
 	useChatNotification(qnaList);
 

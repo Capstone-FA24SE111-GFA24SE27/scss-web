@@ -27,6 +27,8 @@ function StudentView({ }: StudentViewProps) {
   const navigate = useNavigate();
   const location = useLocation()
 
+  console.log(student)
+
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
   }
@@ -152,15 +154,15 @@ function StudentView({ }: StudentViewProps) {
               <Typography className='font-semibold'>
                 Academic details
               </Typography>
-              <Paper className="rounded p-8 shadow mt-8">
+              <Paper className="p-8 mt-8 rounded shadow">
 
-                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                <div className="grid grid-cols-3 mb-4 gap-y-2">
                   <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
                   <div className="col-span-2">{student.studentProfile.specialization.name}</div>
                 </div>
 
                 {/* Department Section */}
-                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                <div className="grid grid-cols-3 mb-4 gap-y-2">
                   <div className="col-span-1 font-medium text-text-secondary">Department:</div>
                   <div className="col-span-2">
                     <span>{student.studentProfile.department.name}</span>
