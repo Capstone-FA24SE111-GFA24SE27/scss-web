@@ -1,287 +1,292 @@
-import Button from '@mui/material/Button';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
+import React, { useState, useEffect } from 'react';
+import {
+	Button,
+	Paper,
+	Typography,
+	TextField,
+	MenuItem,
+	RadioGroup,
+	FormControlLabel,
+	Radio,
+	CircularProgress,
+} from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
-import _ from 'lodash';
-import TextField from '@mui/material/TextField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowBack, ArrowLeft, HelpOutlineOutlined, Warning } from '@mui/icons-material';
-import { NavLinkAdapter } from '@/shared/components';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, FormControl, FormControlLabel, FormHelperText, MenuItem, Radio, RadioGroup } from '@mui/material';
-import { useState, useEffect } from 'react';
-import { useEditQuestionMutation, useGetBanInfoQuery, useGetStudentQuestionQuery, usePostQuestionMutation } from './qna-api';
-import { formatDateTime } from '@/shared/utils';
-import dayjs from 'dayjs';
-import { statusColor } from '@/shared/constants';
-import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/shared/services';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+	useGetDepartmentsQuery,
+	useGetMajorsByDepartmentQuery,
+	useGetSpecializationsByMajorQuery,
+} from '@shared/services';
+import { useGetCounselorExpertisesQuery } from '@shared/services';
+import { usePostQuestionMutation, useEditQuestionMutation, useGetStudentQuestionQuery, useGetBanInfoQuery } from './qna-api';
+import _ from 'lodash';
+import BanInfo from './BanInfo';
 
-
+// Define schema with validation
 const formSchema = z.object({
 	content: z.string().min(1, 'You must enter content'),
 	questionType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
 		errorMap: () => ({ message: 'Please select a question type' }),
 	}),
-	topicId: z.string().min(1, 'You must select a topic'),
-
+	departmentId: z.string().optional(),
+	majorId: z.string().optional(),
+	specializationId: z.string().optional(),
+	expertiseId: z.string().optional(),
 });
 
 type FormValues = {
-	questionType: "ACADEMIC" | "NON_ACADEMIC"; // Specify the correct types
+	questionType: 'ACADEMIC' | 'NON_ACADEMIC';
 	content: string;
-	topicId: string;
+	departmentId?: string;
+	majorId?: string;
+	specializationId?: string;
+	expertiseId?: string;
 };
 
-
-/**
- * The help center support.
- */
 function QnaForm() {
-	const { questionId } = useParams()
-	const editMode = Boolean(questionId)
-
-	const defaultValues = { questionType: 'ACADEMIC', content: '', topicId: '' };
+	const { questionId } = useParams();
+	const navigate = useNavigate();
+	const editMode = Boolean(questionId);
 
 	const { data: questionData } = useGetStudentQuestionQuery(questionId || `0`,
 		{
 			skip: !editMode,
 		}
 	)
-	const question = questionData?.content
 
-	const { control, handleSubmit, watch, formState, reset } = useForm({
-		mode: 'onChange',
-		defaultValues,
-		resolver: zodResolver(formSchema)
-	});
-	const { isValid, dirtyFields, errors } = formState;
-	const [postQuestion, { isLoading, isSuccess }] = usePostQuestionMutation()
-	const [editQuestion, { isLoading: isEditting, isSuccess: isEdittingSuccess }] = useEditQuestionMutation()
 	const { data: banInfoData } = useGetBanInfoQuery()
 	const banInfo = banInfoData
 
 
-	const form = watch();
-	const navigate = useNavigate()
+	const question = questionData?.content
+	const defaultValues: FormValues = { questionType: 'ACADEMIC', content: '' };
 
+	const { control, handleSubmit, watch, formState, reset } = useForm<FormValues>({
+		mode: 'onChange',
+		defaultValues,
+		resolver: zodResolver(formSchema),
+	});
 
-	const { data: academicTopicsData } = useGetAcademicTopicsQuery();
-	const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
-	const academicTopics = academicTopicsData?.content;
-	const nonAcademicTopics = nonacademicTopicsData?.content;
+	const { errors, isValid, dirtyFields } = formState;
 
-	const academicTopicOptions = academicTopics?.map((topic) => ({
-		label: topic.name,
-		value: topic.id,
-	}));
-
-	const nonAcademicTopicOptions = nonAcademicTopics?.map((topic) => ({
-		label: topic.name,
-		value: topic.id,
-	}));
-
+	// Watch the selected type and dynamically render fields
 	const selectedType = watch('questionType');
-	const topicOptions = selectedType === 'ACADEMIC' ? academicTopicOptions : nonAcademicTopicOptions || [];
 
+	// Conditional fields data
+	const { data: departments, isLoading: loadingDepartments } = useGetDepartmentsQuery();
+	const { data: majors, isLoading: loadingMajors } = useGetMajorsByDepartmentQuery(watch('departmentId'), {
+		skip: !watch('departmentId'),
+	});
+	const { data: specializations, isLoading: loadingSpecializations } = useGetSpecializationsByMajorQuery(
+		watch('majorId'),
+		{
+			skip: !watch('majorId'),
+		}
+	);
+	const { data: counselorExpertisesData, isLoading: loadingExpertises } = useGetCounselorExpertisesQuery();
+	const counselorExpertises = counselorExpertisesData?.content;
 
-	function onSubmit(data: FormValues) {
-		if (editMode) {
-			editQuestion({
-				questionCardId: Number(questionId),
-				question: {
+	// Mutations for posting and editing questions
+	const [postQuestion, { isLoading: isPosting }] = usePostQuestionMutation();
+	const [editQuestion, { isLoading: isEditing }] = useEditQuestionMutation();
+
+	// Form submission handler
+	const onSubmit = async (data: FormValues) => {
+		try {
+			if (editMode && questionId) {
+				// Edit existing question
+				await editQuestion({
+					questionCardId: Number(questionId),
+					question: {
+						content: data.content,
+						questionType: data.questionType,
+						departmentId: data.departmentId,
+						majorId: data.majorId,
+						specializationId: data.specializationId,
+					}
+				}).unwrap();
+				navigate('.');
+			} else {
+				// Post a new question
+				await postQuestion({
 					content: data.content,
 					questionType: data.questionType,
-					topicId: data.topicId,
-				}
-			})
-				.unwrap()
-				.then(() => {
-					navigate('.')
-				})
-			return;
+					departmentId: data.departmentId,
+					majorId: data.majorId,
+					specializationId: data.specializationId,
+				}).unwrap();
+				navigate('.');
+			}
+		} catch (error) {
+			console.error("Failed to submit question:", error);
 		}
-		postQuestion({
-			content: data.content,
-			questionType: data.questionType,
-			topicId: data.topicId,
-		})
-			.unwrap()
-			.then(() => {
-				navigate('.')
-			})
-	}
+	};
 
 	useEffect(() => {
-		if (editMode && question) {
+		if (editMode && questionId) {
+			// Assume fetching question data is done here and set question data
 			reset({
 				questionType: question?.questionType || 'ACADEMIC',
 				content: question?.content || '',
-				topicId: question?.topic.id.toString(),
 			});
 		}
-	}, [editMode, question, reset]);
-
-	if (_.isEmpty(form)) {
-		return null;
-	}
+	}, [editMode, questionId, reset]);
 
 	if (banInfo?.ban) {
-		return (
-			<div className="flex flex-col items-center p-32 container">
-				<div className="flex flex-col w-full max-w-4xl gap-16">
-					<div className="">
-						<Button
-							component={NavLinkAdapter}
-							to="."
-							startIcon={<ArrowBack />}
-						>
-							Back to QnA
-						</Button>
-					</div>
-					<Paper className="p-16 shadow flex gap-16 bg-red-400 text-white items-center">
-						<Warning />
-						<Typography className='text-xl font-semibold'>Your account has been banned from posting questions</Typography>
-					</Paper>
-					<div className='flex gap-16'>
-						<Typography className='text-lg font-semibold text-text-secondary'>Time:</Typography>
-						<div className='flex gap-16'>
-							<Typography className='text-lg font-semibold'>{dayjs(banInfo.banStartDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-							<Typography className='text-lg font-semibold'>-</Typography>
-							<Typography className='text-lg font-semibold'>{dayjs(banInfo.banEndDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-						</div>
-					</div>
-
-					<Typography className='text-lg font-semibold text-text-secondary'>Reasons:</Typography>
-					<div>
-						{
-							banInfo?.questionFlags.map(qna => (
-								<Accordion
-									className='shadow rounded-lg'
-									expanded={true}
-								>
-									<AccordionSummary >
-										<div className='flex flex-col gap-8 w-full'>
-											<div className='flex gap-8'>
-												<Chip label={qna.questionCard.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={'info'} size='small' />
-												<Chip label={qna.questionCard.topic?.name} variant='outlined' size='small' />
-												{qna.questionCard.closed && <Chip label={'Closed'} color={'warning'} size='small' />}
-											</div>
-											<div className="flex flex-1 items-center gap-8">
-												<HelpOutlineOutlined color='disabled' />
-												<Typography className="pr-8 font-semibold w-full">{qna.questionCard.content}</Typography>
-											</div>
-											<div className='flex'>
-												<Typography className="pr-8 text-text-secondary">Flagged date:</Typography>
-												<Typography className="pr-8 font-semibold">{dayjs(qna.flagDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-											</div>
-											<div className='flex'>
-												<Typography className="pr-8 text-text-secondary">Flagged Reason:</Typography>
-												<Typography className="pr-8 font-semibold">{qna.reason}</Typography>
-											</div>
-
-										</div>
-
-									</AccordionSummary>
-
-									<AccordionDetails className='flex'>
-
-									</AccordionDetails>
-									<Box
-										className='bg-primary-light/5 w-full py-8 flex justify-between px-16 '
-									>
-
-									</Box>
-								</Accordion>
-							))
-						}
-					</div>
-				</div>
-			</div>
-		);
+		return <BanInfo banInfo={banInfo} />
 	}
-
 	return (
 		<div className="flex flex-col items-center p-32 container">
 			<div className="flex flex-col w-full max-w-4xl">
-				<div className="">
-					<Button
-						component={NavLinkAdapter}
-						to="."
-						startIcon={<ArrowBack />}
-					>
-						Back to QnA
-					</Button>
-				</div>
-				<div className="mt-8 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight">
-					{editMode ? 'Edit your question' : 'Ask a question'}
-				</div>
-
-				<Paper className="mt-32 sm:mt-48 p-24 pb-28 sm:p-40 sm:pb-28 rounded-2xl shadow">
-					<form
-						onSubmit={handleSubmit(onSubmit)}
-						className="px-0 sm:px-24"
-					>
+				<Typography variant="h4">{editMode ? 'Edit your question' : 'Ask a question'}</Typography>
+				<Paper className="mt-32 p-24 rounded-2xl shadow">
+					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						<div className="mb-24">
-							<Typography className="text-2xl font-bold tracking-tight">Submit your question</Typography>
-							<Typography color="text.secondary">
-								Your request will be processed and our support staff will verify for you.
-							</Typography>
+							<Typography variant="h6">Submit your question</Typography>
 						</div>
 						<div className="space-y-32">
-							<div>
-								<Typography className='font-semibold text-primary text-lg'>Select question type</Typography>
-								{/* <FormControl>
-									<RadioGroup
-										aria-labelledby="counselorType"
-										name="controlled-radio-buttons-group"
-
-										className='w-full flex'
-									>
-										<FormControlLabel value="academic" control={<Radio />} label="Academic" />
-										<FormControlLabel value="non-academic" control={<Radio />} label="Non-academic" />
-									</RadioGroup>
-									
-								</FormControl> */}
-								<Controller
-									name="questionType"
-									control={control}
-									render={({ field }) => (
-										<RadioGroup {...field}>
-											<FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
-											<FormControlLabel value="NON_ACADEMIC" control={<Radio />} label="Non-academic" />
-										</RadioGroup>
-									)}
-								/>
-								{errors.questionType && (
-									<FormHelperText error>{errors.questionType?.message as string}</FormHelperText>
-								)}
-							</div>
-
-
+							{/* Question Type Radio Group */}
 							<Controller
-								name="topicId"
+								name="questionType"
 								control={control}
 								render={({ field }) => (
-									<TextField
-										{...field}
-										select
-										label="Counseling Topic"
-										className="mt-16 w-full"
-										margin="normal"
-										variant="outlined"
-										error={!!errors.topicId}
-										helperText={errors?.topicId?.message}
-									>
-										{(topicOptions || []).map((option) => (
-											<MenuItem key={option.value} value={option.value.toString()}>
-												{option.label}
-											</MenuItem>
-										))}
-									</TextField>
+									<RadioGroup {...field} row>
+										<FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
+										<FormControlLabel value="NON_ACADEMIC" control={<Radio />} label="Non-academic" />
+									</RadioGroup>
 								)}
 							/>
+							{errors.questionType && <Typography color="error">{errors.questionType.message}</Typography>}
+							{!editMode && <>
+								{selectedType === 'ACADEMIC' ? (
+									<div className='flex gap-16'>
+										{/* Department Dropdown */}
+										<Controller
+											name="departmentId"
+											control={control}
+											render={({ field }) => (
+												<TextField
+													{...field}
+													select
+													label="Department"
+													fullWidth
+													variant="outlined"
+													disabled={loadingDepartments}
+													error={!!errors.departmentId}
+													helperText={errors.departmentId?.message}
+												>
+													{loadingDepartments ? (
+														<MenuItem disabled>
+															<CircularProgress size={24} />
+														</MenuItem>
+													) : (
+														departments?.map((department) => (
+															<MenuItem key={department.id} value={department.id.toString()}>
+																{department.name}
+															</MenuItem>
+														))
+													)}
+												</TextField>
+											)}
+										/>
 
+										{/* Major Dropdown */}
+										<Controller
+											name="majorId"
+											control={control}
+											render={({ field }) => (
+												<TextField
+													{...field}
+													select
+													label="Major"
+													fullWidth
+													variant="outlined"
+													disabled={!watch('departmentId') || loadingMajors}
+													error={!!errors.majorId}
+													helperText={errors.majorId?.message}
+												>
+													{loadingMajors ? (
+														<MenuItem disabled>
+															<CircularProgress size={24} />
+														</MenuItem>
+													) : (
+														majors?.map((major) => (
+															<MenuItem key={major.id} value={major.id.toString()}>
+																{major.name}
+															</MenuItem>
+														))
+													)}
+												</TextField>
+											)}
+										/>
+
+										{/* Specialization Dropdown */}
+										<Controller
+											name="specializationId"
+											control={control}
+											render={({ field }) => (
+												<TextField
+													{...field}
+													select
+													label="Specialization"
+													fullWidth
+													variant="outlined"
+													disabled={!watch('majorId') || loadingSpecializations}
+													error={!!errors.specializationId}
+													helperText={errors.specializationId?.message}
+												>
+													{loadingSpecializations ? (
+														<MenuItem disabled>
+															<CircularProgress size={24} />
+														</MenuItem>
+													) : (
+														specializations?.map((specialization) => (
+															<MenuItem key={specialization.id} value={specialization.id.toString()}>
+																{specialization.name}
+															</MenuItem>
+														))
+													)}
+												</TextField>
+											)}
+										/>
+									</div>
+								) : (
+									<Controller
+										name="expertiseId"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												select
+												label="Expertise"
+												fullWidth
+												variant="outlined"
+												disabled={loadingExpertises}
+												error={!!errors.expertiseId}
+												helperText={errors.expertiseId?.message}
+											>
+
+												{loadingExpertises ? (
+													<MenuItem disabled>
+														<CircularProgress size={24} />
+													</MenuItem>
+												) : (
+													counselorExpertises?.map((expertise) => (
+														<MenuItem key={expertise.id} value={expertise.id.toString()}>
+															{expertise.name}
+														</MenuItem>
+													))
+												)}
+											</TextField>
+										)}
+									/>
+								)}
+							</>
+							}
+
+							{/* Content Field */}
 							<Controller
 								name="content"
 								control={control}
@@ -289,27 +294,28 @@ function QnaForm() {
 									<TextField
 										{...field}
 										label="Content"
-										className="mt-16 w-full"
-										margin="normal"
-										multiline
-										minRows={6}
+										fullWidth
 										variant="outlined"
+										multiline
+										minRows={4}
 										error={!!errors.content}
-										helperText={errors?.content?.message}
+										helperText={errors.content?.message}
 									/>
 								)}
 							/>
 						</div>
+
 						<div className="flex items-center justify-end mt-32">
-							<Button className="mx-8" component={NavLinkAdapter} to="." >Cancel</Button>
+							<Button onClick={() => navigate('.')} color="primary">
+								Cancel
+							</Button>
 							<Button
-								className="mx-8"
+								type="submit"
 								variant="contained"
 								color="secondary"
-								disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}
-								type="submit"
+								disabled={!isValid || isPosting || isEditing || _.isEmpty(dirtyFields)}
 							>
-								Save
+								{editMode ? 'Save Changes' : 'Submit'}
 							</Button>
 						</div>
 					</form>
