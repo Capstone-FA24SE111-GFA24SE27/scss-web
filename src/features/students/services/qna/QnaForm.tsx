@@ -20,8 +20,9 @@ import {
 	useGetSpecializationsByMajorQuery,
 } from '@shared/services';
 import { useGetCounselorExpertisesQuery } from '@shared/services';
-import { usePostQuestionMutation, useEditQuestionMutation } from './qna-api';
+import { usePostQuestionMutation, useEditQuestionMutation, useGetStudentQuestionQuery, useGetBanInfoQuery } from './qna-api';
 import _ from 'lodash';
+import BanInfo from './BanInfo';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -49,6 +50,17 @@ function QnaForm() {
 	const navigate = useNavigate();
 	const editMode = Boolean(questionId);
 
+	const { data: questionData } = useGetStudentQuestionQuery(questionId || `0`,
+		{
+			skip: !editMode,
+		}
+	)
+
+	const { data: banInfoData } = useGetBanInfoQuery()
+	const banInfo = banInfoData
+
+
+	const question = questionData?.content
 	const defaultValues: FormValues = { questionType: 'ACADEMIC', content: '' };
 
 	const { control, handleSubmit, watch, formState, reset } = useForm<FormValues>({
@@ -116,12 +128,15 @@ function QnaForm() {
 		if (editMode && questionId) {
 			// Assume fetching question data is done here and set question data
 			reset({
-				questionType: 'ACADEMIC' as 'ACADEMIC' | 'NON_ACADEMIC', // Example, replace with actual data
-				content: '',
+				questionType: question?.questionType || 'ACADEMIC',
+				content: question?.content || '',
 			});
 		}
 	}, [editMode, questionId, reset]);
 
+	if (banInfo?.ban) {
+		return <BanInfo banInfo={banInfo} />
+	}
 	return (
 		<div className="flex flex-col items-center p-32 container">
 			<div className="flex flex-col w-full max-w-4xl">
@@ -144,131 +159,132 @@ function QnaForm() {
 								)}
 							/>
 							{errors.questionType && <Typography color="error">{errors.questionType.message}</Typography>}
-
-							{/* Conditional Fields */}
-							{selectedType === 'ACADEMIC' ? (
-								<div className='flex gap-16'>
-									{/* Department Dropdown */}
-									<Controller
-										name="departmentId"
-										control={control}
-										render={({ field }) => (
-											<TextField
-												{...field}
-												select
-												label="Department"
-												fullWidth
-												variant="outlined"
-												disabled={loadingDepartments}
-												error={!!errors.departmentId}
-												helperText={errors.departmentId?.message}
-											>
-												{loadingDepartments ? (
-													<MenuItem disabled>
-														<CircularProgress size={24} />
-													</MenuItem>
-												) : (
-													departments?.map((department) => (
-														<MenuItem key={department.id} value={department.id.toString()}>
-															{department.name}
+							{!editMode && <>
+								{selectedType === 'ACADEMIC' ? (
+									<div className='flex gap-16'>
+										{/* Department Dropdown */}
+										<Controller
+											name="departmentId"
+											control={control}
+											render={({ field }) => (
+												<TextField
+													{...field}
+													select
+													label="Department"
+													fullWidth
+													variant="outlined"
+													disabled={loadingDepartments}
+													error={!!errors.departmentId}
+													helperText={errors.departmentId?.message}
+												>
+													{loadingDepartments ? (
+														<MenuItem disabled>
+															<CircularProgress size={24} />
 														</MenuItem>
-													))
-												)}
-											</TextField>
-										)}
-									/>
-
-									{/* Major Dropdown */}
-									<Controller
-										name="majorId"
-										control={control}
-										render={({ field }) => (
-											<TextField
-												{...field}
-												select
-												label="Major"
-												fullWidth
-												variant="outlined"
-												disabled={!watch('departmentId') || loadingMajors}
-												error={!!errors.majorId}
-												helperText={errors.majorId?.message}
-											>
-												{loadingMajors ? (
-													<MenuItem disabled>
-														<CircularProgress size={24} />
-													</MenuItem>
-												) : (
-													majors?.map((major) => (
-														<MenuItem key={major.id} value={major.id.toString()}>
-															{major.name}
-														</MenuItem>
-													))
-												)}
-											</TextField>
-										)}
-									/>
-
-									{/* Specialization Dropdown */}
-									<Controller
-										name="specializationId"
-										control={control}
-										render={({ field }) => (
-											<TextField
-												{...field}
-												select
-												label="Specialization"
-												fullWidth
-												variant="outlined"
-												disabled={!watch('majorId') || loadingSpecializations}
-												error={!!errors.specializationId}
-												helperText={errors.specializationId?.message}
-											>
-												{loadingSpecializations ? (
-													<MenuItem disabled>
-														<CircularProgress size={24} />
-													</MenuItem>
-												) : (
-													specializations?.map((specialization) => (
-														<MenuItem key={specialization.id} value={specialization.id.toString()}>
-															{specialization.name}
-														</MenuItem>
-													))
-												)}
-											</TextField>
-										)}
-									/>
-								</div>
-							) : (
-								<Controller
-									name="expertiseId"
-									control={control}
-									render={({ field }) => (
-										<TextField
-											{...field}
-											select
-											label="Expertise"
-											fullWidth
-											variant="outlined"
-											disabled={loadingExpertises}
-											error={!!errors.expertiseId}
-											helperText={errors.expertiseId?.message}
-										>
-
-											{loadingExpertises ? (
-												<MenuItem disabled>
-													<CircularProgress size={24} />
-												</MenuItem>
-											) : (
-												counselorExpertises?.map((expertise) => (
-													<MenuItem key={expertise.id} value={expertise.id.toString()}>
-														{expertise.name}
-													</MenuItem>
-												))
+													) : (
+														departments?.map((department) => (
+															<MenuItem key={department.id} value={department.id.toString()}>
+																{department.name}
+															</MenuItem>
+														))
+													)}
+												</TextField>
 											)}
-										</TextField>
-									)}
-								/>
-							)}
+										/>
+
+										{/* Major Dropdown */}
+										<Controller
+											name="majorId"
+											control={control}
+											render={({ field }) => (
+												<TextField
+													{...field}
+													select
+													label="Major"
+													fullWidth
+													variant="outlined"
+													disabled={!watch('departmentId') || loadingMajors}
+													error={!!errors.majorId}
+													helperText={errors.majorId?.message}
+												>
+													{loadingMajors ? (
+														<MenuItem disabled>
+															<CircularProgress size={24} />
+														</MenuItem>
+													) : (
+														majors?.map((major) => (
+															<MenuItem key={major.id} value={major.id.toString()}>
+																{major.name}
+															</MenuItem>
+														))
+													)}
+												</TextField>
+											)}
+										/>
+
+										{/* Specialization Dropdown */}
+										<Controller
+											name="specializationId"
+											control={control}
+											render={({ field }) => (
+												<TextField
+													{...field}
+													select
+													label="Specialization"
+													fullWidth
+													variant="outlined"
+													disabled={!watch('majorId') || loadingSpecializations}
+													error={!!errors.specializationId}
+													helperText={errors.specializationId?.message}
+												>
+													{loadingSpecializations ? (
+														<MenuItem disabled>
+															<CircularProgress size={24} />
+														</MenuItem>
+													) : (
+														specializations?.map((specialization) => (
+															<MenuItem key={specialization.id} value={specialization.id.toString()}>
+																{specialization.name}
+															</MenuItem>
+														))
+													)}
+												</TextField>
+											)}
+										/>
+									</div>
+								) : (
+									<Controller
+										name="expertiseId"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												select
+												label="Expertise"
+												fullWidth
+												variant="outlined"
+												disabled={loadingExpertises}
+												error={!!errors.expertiseId}
+												helperText={errors.expertiseId?.message}
+											>
+
+												{loadingExpertises ? (
+													<MenuItem disabled>
+														<CircularProgress size={24} />
+													</MenuItem>
+												) : (
+													counselorExpertises?.map((expertise) => (
+														<MenuItem key={expertise.id} value={expertise.id.toString()}>
+															{expertise.name}
+														</MenuItem>
+													))
+												)}
+											</TextField>
+										)}
+									/>
+								)}
+							</>
+							}
 
 							{/* Content Field */}
 							<Controller
