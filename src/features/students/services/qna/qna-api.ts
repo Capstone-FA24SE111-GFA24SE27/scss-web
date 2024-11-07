@@ -139,21 +139,21 @@ type GetStudentQuestionsApiArg = {
   topicId: string
 };
 
-export type PostQuestionApiArg = {
-  content: string,
-  questionType: 'ACADEMIC' | 'NON_ACADEMIC',
-  topicId: string,
-}
+export type PostQuestionApiArg = QuestionPayload
 
 export type EditQuestionApiArg = {
   questionCardId: number,
-  question: {
-    content: string,
-    questionType: 'ACADEMIC' | 'NON_ACADEMIC',
-    topicId: string,
-  }
+  question: QuestionPayload
 }
 
+export type QuestionPayload = {
+  content: string,
+  questionType: 'ACADEMIC' | 'NON_ACADEMIC',
+  specializationId?: string,
+  departmentId?: string,
+  majorId?: string,
+  expertiseId?: string,
+}
 export type SendMessageApiArg = {
   content: string,
   sessionId: number,

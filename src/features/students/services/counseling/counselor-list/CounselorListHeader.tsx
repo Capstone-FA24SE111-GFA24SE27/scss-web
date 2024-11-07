@@ -100,7 +100,7 @@ const CounselorListHeader = () => {
             />
           </Tabs>
         </div>
-        <Typography variant='h6' color='textSecondary'>Choose your preferred counselor and proceed to book.</Typography>
+        {/* <Typography variant='h6' color='textSecondary'>Choose your preferred counselor and proceed to book.</Typography> */}
       </div>
     </div >
   )
