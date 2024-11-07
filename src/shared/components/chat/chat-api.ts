@@ -1,13 +1,4 @@
-import {
-	Account,
-	ChatSession,
-	Counselor,
-	Message,
-	PaginationContent,
-	Question,
-	Student,
-	User,
-} from '@shared/types';
+import { ChatSession } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store';
 import { Role } from '@/shared/constants';
 import { Topic } from '@/shared/services';
@@ -34,22 +25,21 @@ export const chatApi = api
 				}),
 				invalidatesTags: ['chat'],
 			}),
-			getCounselorMessages: build.query<ApiResponse<ChatSession>, number>({
-				query: (arg) => ({
-					url: `/api/question-cards/counselor/message/${arg}`,
-				}),
-				providesTags: ['chat'],
-			}),
-      getStudentMessages: build.query<ApiResponse<ChatSession>, number>({
-				query: (arg) => ({
-					url: `/api/question-cards/student/message/${arg}`,
-				}),
-				providesTags: ['chat'],
-			}),
+			getMessages: build.query<ApiResponse<ChatSession>, number>(
+				{
+					query: (arg) => ({
+						url: `/api/question-cards/message/${arg}`,
+					}),
+					providesTags: ['chat'],
+				}
+			),
 		}),
 	});
-
-export const { useReadMessageMutation, useSendMessageMutation, useGetCounselorMessagesQuery, useGetStudentMessagesQuery } = chatApi;
+export const {
+	useReadMessageMutation,
+	useSendMessageMutation,
+	useGetMessagesQuery,
+} = chatApi;
 
 export type SendMessageApiArg = {
 	content: string;

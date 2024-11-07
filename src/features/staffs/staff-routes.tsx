@@ -1,7 +1,8 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 import { specialRoutes } from '@shared/configs';
-import { qnaRoutes } from './qna/qna-routes';
+import { demandRoutes } from './demands';
+import { staffStudentRoutes } from './students/staff-student-routes';
 
 const StaffLayout = lazy(() => import('./staff-layout'));
 
@@ -11,8 +12,8 @@ export const supportStaffRoutes: RouteObject[] = [
 		element: <StaffLayout />,
 		children: [
 			...specialRoutes,
-			...qnaRoutes,
-			
+			...demandRoutes,
+			...staffStudentRoutes
 		],
 	},
 ];

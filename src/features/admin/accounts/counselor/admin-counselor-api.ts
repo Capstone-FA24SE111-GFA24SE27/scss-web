@@ -1,4 +1,4 @@
-import { Appointment, AppointmentFeedback, AppointmentReport, AppointmentRequest, Counselor, PaginationContent, Profile, Student } from '@/shared/types';
+import { Appointment, AppointmentFeedback, AppointmentReportType, AppointmentRequest, Counselor, PaginationContent, Profile, Student } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -170,7 +170,7 @@ export type AppointmentReportApiArg = {
   counselorId: number,
   appointmentId: number,
 }
-export type AppointmentReportApiResponse = ApiResponse<AppointmentReport>
+export type AppointmentReportApiResponse = ApiResponse<AppointmentReportType>
 
 export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<AppointmentRequest>>
 

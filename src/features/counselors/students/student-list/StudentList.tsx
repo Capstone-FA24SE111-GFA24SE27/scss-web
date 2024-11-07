@@ -42,10 +42,10 @@ function CounselorList() {
   return (
     <PageSimple
       header={
-        <div className='p-32 bg-background-paper border-b'>
+        <div className='p-32 border-b bg-background-paper'>
           <Heading
             title='Student List'
-            description='Students fro FPTU HCM'
+            description='Students in FPTU HCM'
           />
         </div>
       }

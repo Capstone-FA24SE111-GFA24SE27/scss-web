@@ -29,7 +29,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { statusColor } from '@/shared/constants';
-import {  useGetStudentMessagesQuery } from '@/shared/components/chat/chat-api';
+import {  useGetMessagesQuery} from '@/shared/components/chat/chat-api';
 
 type Props = {
 	expanded: number | boolean;
@@ -47,9 +47,9 @@ const item = {
 const QnaItem = (props: Props) => {
 	const { expanded, toggleAccordion, qna, openAnswers } = props;
 
-    const {data, isLoading} = useGetStudentMessagesQuery(qna.id)
+    const {data, isLoading} = useGetMessagesQuery(qna.id)
 
-
+	console.log(qna)
     const chatSession = data?.content
 
 	const navigate = useNavigate();
@@ -96,7 +96,7 @@ const QnaItem = (props: Props) => {
 									color={statusColor[qna.status as string]}
 									size='small'
 								/>
-								<Chip label={qna.topic.name} size='small' />
+								<Chip label={qna.topic?.name} size='small' />
 								{/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
 								{qna.closed && (
 									<Chip

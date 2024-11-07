@@ -1,4 +1,4 @@
-import { Account, AppointmentReport, Counselor, PaginationContent, Report, Student } from '@shared/types';
+import { Account, AppointmentReportType, Counselor, PaginationContent, Report, Student } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -41,4 +41,4 @@ type CreateReportApiArg = {
 }
 
 
-type AppointmentReportApiResponse = ApiResponse<AppointmentReport>
+type AppointmentReportApiResponse = ApiResponse<AppointmentReportType>

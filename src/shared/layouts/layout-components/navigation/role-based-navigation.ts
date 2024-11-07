@@ -1,6 +1,7 @@
 import { roles } from "@/shared/constants";
-import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
+import FmdBadIcon from '@mui/icons-material/FmdBad';
 
 interface SubList {
     name: string,
@@ -369,14 +370,19 @@ const adminNavigation: NavigationOptions = {
 const supportStaffNavigation: NavigationOptions = {
     list: [
         {
-            name: "Q&A",
-            description: "Questions and answer",
-            route: 'qna',
+            name: "Demand",
+            description: "Manage demands",
+            route: '',
             items: [
                 {
-                    icon: QuestionAnswer,
-                    name: 'Q&A',
-                    route: '',
+                    icon: FmdBadIcon,
+                    name: 'Demand',
+                    route: 'demand',
+                },
+                {
+                    icon: PeopleAlt,
+                    name: 'Student List',
+                    route: 'student-list'
                 },
             ]
         },

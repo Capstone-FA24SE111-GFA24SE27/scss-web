@@ -1,12 +1,9 @@
+import { roles } from '@/shared/constants';
+import { roleBasedNavigation } from '@/shared/layouts/layout-components/navigation';
 import { Account, Role } from '@/shared/types';
 import { apiService, ApiResponse } from '@shared/store';
 
-const addTagTypes = [
-	'a-counselors',
-	'na-counselors',
-	'a-counselor',
-	'na-counselor',
-] as const;
+const addTagTypes = ['accounts'] as const;
 
 export const adminApi = apiService
 	.enhanceEndpoints({
@@ -21,7 +18,9 @@ export const adminApi = apiService
 				query: (args) => ({
 					url: `/api/account?SortDirection=${args.sortDirection}&sortBy=${args.sortBy}&page=${args.page}&role=${args.role}`,
 				}),
-				providesTags: ['a-counselors'],
+				providesTags: (result, error, arg) => [
+					{ type: 'accounts', id: roles.ACADEMIC_COUNSELOR },
+				],
 			}),
 			getOneAcademicCounselorAccount: build.query<
 				getOneAcademicCounselorAccountResponse,
@@ -30,12 +29,76 @@ export const adminApi = apiService
 				query: (args) => ({
 					url: `/api/account/${args.id}`,
 				}),
-				providesTags: ['a-counselor'],
+				providesTags: ['accounts'],
 			}),
+			putBlockAccount: build.mutation<
+				putUpdateAccountStatusResponse,
+				putUpdateAccountStatusArg
+			>({
+				query: ({ id, role }) => ({
+					url: `/api/account/${id}/block`,
+					method: 'PUT',
+				}),
+				invalidatesTags: (result, error, arg) => [
+					{ type: 'accounts', id: arg.role },
+				],
+			}),
+			putUnblockAccount: build.mutation<
+				putUpdateAccountStatusResponse,
+				putUpdateAccountStatusArg
+			>({
+				query: ({id, role}) => ({
+					url: `/api/account/${id}/unblock`,
+					method: 'PUT',
+				}),
+				invalidatesTags: (result, error, arg) => [
+					{ type: 'accounts', id: arg.role },
+				],
+			}),
+			postCreateAccount: build.mutation<
+			postCreateAccountRepsonse,
+			postCreateAccountArgs
+		>({
+			query: (args) => ({
+				url: `/api/account/create`,
+				method: 'POST',
+				body: args 
+			}),
+			invalidatesTags: (result, error, arg) => [
+				{ type: 'accounts', id: arg.role },
+			],
+		}),
 		}),
 	});
 
 export const {} = adminApi;
+
+type postCreateAccountArgs = {
+	email: string,
+  login: {
+    method: 'DEFAULT' | "",
+    password: string
+  },
+  profile: {
+    id: number,
+    fullName: string,
+    phoneNumber: string,
+    dateOfBirth: number,
+    avatarLink: string,
+    gender: "MALE" | "FEMALE"
+  },
+  role: Role
+}
+
+type postCreateAccountRepsonse = {
+
+}
+
+type putUpdateAccountStatusArg = {
+	id: number | string;
+	role: string;
+};
+type putUpdateAccountStatusResponse = {};
 
 type getAcademicCounselorsAccountsResponse = ApiResponse<Account[]>;
 type getAccountsArgs = {

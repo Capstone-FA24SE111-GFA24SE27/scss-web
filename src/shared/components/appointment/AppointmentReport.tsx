@@ -1,18 +1,18 @@
 import { renderHTML } from '@/shared/components';
-import { AppointmentReport } from '@/shared/types';
+import { AppointmentReportType } from '@/shared/types';
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { Avatar, Divider, Paper, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
 // Helper function to render HTML
 
-const AppointmentReport = ({ report }: { report: AppointmentReport }) => {
+const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
   if (!report) {
     return <Typography className=''>No report found </Typography>
   }
 
   return (
-    <Paper className="flex flex-col gap-16 p-32 bg-white shadow-lg w-lg rounded">
+    <Paper className="flex flex-col gap-16 p-32 bg-white rounded shadow-lg w-lg">
       {/* Page Title */}
       <Typography className="font-extrabold leading-none tracking-tight text-20 md:text-24">
         Counseling Report

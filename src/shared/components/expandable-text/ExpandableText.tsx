@@ -9,6 +9,9 @@ type Props = {
 
 const ExpandableText = ({ text, limit = 300, className = "" }: Props) => {
   const [showMore, setShowMore] = useState(false);
+  if(!text || text.length === 0) {
+    return text
+  }
   if (text.length < limit) {
     return <div className={className}>{text}</div>
   }
