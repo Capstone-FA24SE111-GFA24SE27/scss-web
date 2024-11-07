@@ -11,7 +11,7 @@ import { ApiResponse, apiService as api } from '@shared/store';
 
 export const addTagTypes = ['demands', 'counselor'] as const;
 
-export const usersApi = api
+export const demandApi = api
 	.enhanceEndpoints({
 		addTagTypes,
 	})
@@ -77,6 +77,27 @@ export const usersApi = api
 					{ type: 'counselor', id: arg },
 				],
 			}),
+			getCounselors: build.query<getCounselorsReponse, getCounselorsArg>({
+				query: ({
+					search = '',
+					SortDirection = 'ASC',
+					sortBy = 'id',
+					page = 1,
+					ratingFrom,
+					ratingTo,
+				}) => ({
+					url: `/api/counselors`,
+					params: {
+						search,
+						SortDirection,
+						sortBy,
+						page,
+						ratingFrom,
+						ratingTo,
+					},
+				}),
+				providesTags: ['counselor'],
+			}),
 		}),
 	});
 
@@ -84,8 +105,8 @@ export const {
 	useGetCounselingDemandFilterQuery,
 	usePostCreateDemandByStudentIdMutation,
 	usePutAssignDemandByDemandIdMutation,
-	useGetCounselorByIdQuery
-} = usersApi;
+	useGetCounselorByIdQuery,
+} = demandApi;
 
 export type GetCounselingDemandFilterApiResponse = ApiResponse<
 	PaginationContent<CounselingDemand>
@@ -105,7 +126,7 @@ type PutAssignDemandByDemandIdArgs = {
 	counselingDemandId: number | string;
 	body: {
 		counselorId: number | string;
-		summarizeNote: string;
+		// summarizeNote: string;
 		contactNote: string;
 	};
 };
@@ -113,3 +134,13 @@ type PutAssignDemandByDemandIdResponse = ApiResponse<CounselingDemand>;
 
 type getCounselorByIdArg = number | string;
 type getCounselorByIdReponse = ApiResponse<Counselor>;
+
+type getCounselorsArg = {
+	search: string;
+	SortDirection: string;
+	sortBy: 'id' | '';
+	page: number;
+	ratingFrom?: number;
+	ratingTo?: number;
+};
+type getCounselorsReponse = ApiResponse<PaginationContent<Counselor>>;

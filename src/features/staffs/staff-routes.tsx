@@ -3,6 +3,7 @@ import { RouteObject } from 'react-router-dom';
 import { specialRoutes } from '@shared/configs';
 import { demandRoutes } from './demands';
 import { staffStudentRoutes } from './students/staff-student-routes';
+import { recommendedStudentsRoutes } from './recommends';
 
 const StaffLayout = lazy(() => import('./staff-layout'));
 
@@ -13,7 +14,8 @@ export const supportStaffRoutes: RouteObject[] = [
 		children: [
 			...specialRoutes,
 			...demandRoutes,
-			...staffStudentRoutes
+			...staffStudentRoutes,
+			// ...recommendedStudentsRoutes
 		],
 	},
 ];

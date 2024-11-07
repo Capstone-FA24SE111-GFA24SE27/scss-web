@@ -7,7 +7,8 @@ import {
 	StudentAppointmentReport,
 	StudentDetailView,
 } from '@/shared/components';
-import CreateDemandButton from './CreateDemandButton';
+import CreateDemandButton from '../CreateDemandButton';
+import StudentList from '@/shared/pages/student-list/StudentList';
 
 
 const Student = lazy(() => import('./Student'));
@@ -15,7 +16,7 @@ const Student = lazy(() => import('./Student'));
 export const staffStudentRoutes: RouteObject[] = [
 	{
 		path: 'student-list',
-		element: <Student />,
+		element: <StudentList isShowingTab={true} />,
 		children: [{
 			path: 'student/:id',
 			element: <StudentDetailView  ><CreateDemandButton /> </StudentDetailView>,

@@ -379,6 +379,18 @@ const supportStaffNavigation: NavigationOptions = {
                     name: 'Demand',
                     route: 'demand',
                 },
+            ]
+        },
+        {
+            name: "Student",
+            description: "Find students",
+            route: '',
+            items: [
+                // {
+                //     icon: FmdBadIcon,
+                //     name: 'Recommended Students',
+                //     route: 'recommended',
+                // },
                 {
                     icon: PeopleAlt,
                     name: 'Student List',

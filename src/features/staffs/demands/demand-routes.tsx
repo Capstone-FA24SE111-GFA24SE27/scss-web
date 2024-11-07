@@ -7,7 +7,7 @@ import {
 	StudentAppointmentReport,
 	StudentDetailView,
 } from '@/shared/components';
-import CreateDemandButton from '../students/CreateDemandButton';
+import CreateDemandButton from '../CreateDemandButton';
 import AssignDemandForm from './AssignDemandForm';
 const Demand = lazy(() => import('./Demand'));
 

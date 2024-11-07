@@ -96,7 +96,7 @@ const QnaItem = (props: Props) => {
 									color={statusColor[qna.status as string]}
 									size='small'
 								/>
-								<Chip label={qna.topic?.name} size='small' />
+								{/* <Chip label={qna.topic?.name} size='small' /> */}
 								{/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
 								{qna.closed && (
 									<Chip

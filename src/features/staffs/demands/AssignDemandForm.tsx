@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 const schema = z.object({
     counselorId: z.string().min(1, "Counselor ID is required"),
     contactNote: z.string().min(1, "Please enter contact note"),
-    summarizeNote: z.string().min(2, "Please enter summarize note"),
+    // summarizeNote: z.string().min(2, "Please enter summarize note"),
   });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -24,9 +24,11 @@ const AssignDemandForm = () => {
     const {id: demandId} = useParams()
     const navigate = useNavigate()
 
+    const [showCounselorsList, setShowCounselorsList] = useState(false)
+
     const defaultValues = {
         counselorId: "",
-        summarizeNote: "",
+        // summarizeNote: "",
         contactNote: ""
       }
 
@@ -62,7 +64,9 @@ const AssignDemandForm = () => {
           .then(() => navigate(-1))
       }
 
-
+      const toggleShowCounselorsList = () => {
+        setShowCounselorsList(prev => !prev)
+      }
 
     
 
@@ -74,12 +78,21 @@ const AssignDemandForm = () => {
       );
 
   return (
-    <div className="container flex flex-col items-center p-32">
+    <div className="container flex items-center p-32">
+      { showCounselorsList ? (
+          <div onClick={toggleShowCounselorsList}>
+          asdawdasdwdasdawdad
+          </div>
+      ) :
+
       <div className="flex flex-col w-full max-w-4xl">
        
         <div className="mt-32 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
           Assign a Counselor to a Demand
         </div>
+        <div onClick={toggleShowCounselorsList}>
+          asdawdasdwdasdawdad
+          </div>
         <Paper className="container flex flex-col flex-auto gap-32 p-32 mt-32">
           <div className="">
             <Typography className="text-2xl font-bold tracking-tight">Submit your appointment</Typography>
@@ -125,7 +138,7 @@ const AssignDemandForm = () => {
             </div>
 
 
-            <div className=''>
+            {/* <div className=''>
               <Controller
                 name="summarizeNote"
                 control={control}
@@ -151,7 +164,7 @@ const AssignDemandForm = () => {
                 )}
               />
              
-            </div>
+            </div> */}
 
             <div className=''>
               <Controller
@@ -187,6 +200,8 @@ const AssignDemandForm = () => {
           </div>
         </Paper>
       </div >
+      }
+
     </div >
   )
 }
