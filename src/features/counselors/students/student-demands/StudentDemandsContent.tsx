@@ -6,7 +6,6 @@ import { AppLoading, ContentLoading, FilterTabs, Pagination, SearchField, Sortin
 import { useAppSelector } from '@shared/store';
 import StudentDemandsItem from './StudentDemandsItem';
 import { useState, ChangeEvent } from 'react'
-import { useGetStudentsFilterQuery } from '../student-list/student-list-api';
 import { Box } from '@mui/material';
 import { useGetCounselingDemandFilterQuery } from './student-demands-api';
 import { useNavigate } from 'react-router-dom';

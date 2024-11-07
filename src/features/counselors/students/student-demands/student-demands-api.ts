@@ -46,6 +46,16 @@ export const studentDemandsApi = api
         }),
         providesTags: ['counselingDemand'],
       }),
+      solveCounselingDemand: build.mutation<ApiResponse<CounselingDemand>, SolveCounselingDemandArg>({
+        query: ({ counselingDemandId, summarizeNote }) => ({
+          url: `/api/counseling-demand/${counselingDemandId}/solve`,
+          method: 'PUT',
+          body: {
+            summarizeNote,
+          },
+        }),
+        invalidatesTags: ['counselingDemand'],
+      }),
     }),
   });
 
@@ -53,6 +63,7 @@ export const {
   useGetCounselingDemandFilterQuery,
   useCreateAppointmentByDemandMutation,
   useGetCounselingDemandByIdQuery,
+  useSolveCounselingDemandMutation,
 } = studentDemandsApi;
 
 // Define types for the new API response and arguments
@@ -90,4 +101,9 @@ export type AppointmentRequestBody = {
   reason: string;
 };
 
-export type GetCounselingDemandByIdApiResponse = CounselingDemand; // Response type for getCounselingDemandById
+export type GetCounselingDemandByIdApiResponse = CounselingDemand;
+
+export type SolveCounselingDemandArg = {
+  counselingDemandId: string;
+  summarizeNote: string;
+};

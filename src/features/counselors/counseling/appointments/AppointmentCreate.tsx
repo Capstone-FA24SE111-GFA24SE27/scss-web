@@ -9,7 +9,7 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { Breadcrumbs, ContentLoading, NavLinkAdapter, UserLabel } from '@shared/components';
-import { selectAccount, useAppSelector } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { useEffect, useState, useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -20,6 +20,7 @@ import { useGetCounselorDailySlotsQuery } from '@/features/students/services/cou
 import { navigateUp } from '@/shared/utils';
 import { ArrowBack } from '@mui/icons-material';
 import { debounce } from 'lodash';
+import { openStudentView } from '../../counselors-layout-slice';
 
 /**
  * The contact view.
@@ -61,7 +62,7 @@ function AppointmentCreate() {
   const [address, setAddress] = useState('')
   const [debouncedStudentCode, setDebouncedStudentCode] = useState("");
   const navigate = useNavigate()
-
+  const dispatch = useAppDispatch()
   const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useCreateAppointmentMutation()
   const defaultValues = {
     studentCode: "",
@@ -236,8 +237,10 @@ function AppointmentCreate() {
                     : student && formData.studentCode && !isErrorGetStudentByCode
                       ? <UserLabel
                         label='Found student:  '
-                        avatarLink={student?.profile.avatarLink}
-                        fullName={student?.profile.fullName}
+                        profile={student.profile}
+                        onClick={() => dispatch(
+                          openStudentView(student.id.toString())
+                        )}
                       />
                       : <Typography color='textSecondary' className='text-sm'>Student not found</Typography>
                 }
