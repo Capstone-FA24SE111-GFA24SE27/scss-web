@@ -19,7 +19,7 @@ const Root = styled(PageSimple)(({ theme }) => ({
 /**
  * The ContactsApp page.
  */
-function StudentList() {
+function StudentList({isShowingTab = false}) {
   const pageLayout = useRef(null);
   const dispatch = useAppDispatch();
   const filter = useAppSelector(selectFilter)
@@ -32,10 +32,10 @@ function StudentList() {
   return (
     <PageSimple
       header={
-        <div className='p-32 bg-background-paper border-b'>
+        <div className='p-32 border-b bg-background-paper'>
           <Heading
             title='Student List'
-            description='Students fro FPTU HCM'
+            description='Students in FPTU HCM'
           />
         </div>
       }
@@ -47,7 +47,7 @@ function StudentList() {
       content={
         <Root
           className='!min-h-screen'
-          header={<StudentListHeader />}
+          header={<StudentListHeader isShowingTab={isShowingTab}  />}
           content={<StudentListContent />}
           ref={pageLayout}
           rightSidebarContent={<StudentListSidebarContent />}

@@ -110,7 +110,7 @@ export type UpdateAppointmentDetailsArg = {
 };
 
 
-export type AppointmentReport = {
+export type AppointmentReportType = {
 	id: number,
 	student: Student,
 	counselor: Counselor,

@@ -1,13 +1,18 @@
-import React, { ReactNode } from 'react'
+import React, { forwardRef, ReactNode } from 'react'
 import './scrollbar.css'
 import clsx from 'clsx';
 
-const Scrollbar = ({ children, className }: { children: ReactNode, className?: string }) => {
+type Props = {
+  children: ReactNode, className?: string 
+}
+
+const Scrollbar = forwardRef<HTMLDivElement, Props>((props , ref) => {
+  const {children, className} = props
   return (
-    <div className={clsx(className, 'custom-scrollbar')}>
+    <div ref={ref} className={clsx(className, 'custom-scrollbar')}>
       {children}
     </div>
   )
-}
+})
 
 export default Scrollbar

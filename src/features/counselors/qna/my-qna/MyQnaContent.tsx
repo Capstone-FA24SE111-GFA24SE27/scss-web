@@ -1,6 +1,4 @@
 import { CheckboxField, ContentLoading, Heading, NavLinkAdapter, Pagination, SearchField, SelectField } from '@/shared/components';
-import { ArrowForward, ArrowRightAlt, CheckCircleOutlineOutlined, ExpandMore, HelpOutlineOutlined, Search, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, InputAdornment, MenuItem, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +7,7 @@ import MyQnaItem from './MyQnaItem';
 import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/shared/services';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { extractCounselingTypeFromRole } from '@/shared/utils';
+import { Typography } from '@mui/material';
 
 
 const container = {
@@ -110,12 +109,12 @@ const MyQnaContent = () => {
 
 
   return (
-    <div className='w-full'>
+    <div className='w-full h-full'>
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className='p-32 w-full space-y-16'
+        className='w-full p-32 space-y-16'
       >
         <div className='flex gap-16'>
           <SearchField
@@ -138,7 +137,7 @@ const MyQnaContent = () => {
             placeholder='SE110000'
             className='!w-144'
           />
-          <div className='flex-1 flex justify-end w-full'>
+          <div className='flex justify-end flex-1 w-full'>
             <CheckboxField
               label="Is Close"
               checked={isClosed}
@@ -151,7 +150,7 @@ const MyQnaContent = () => {
         <div className='space-y-16'>
           {
             !qnaList.length
-              ? <div className='text-center p-32'>
+              ? <div className='p-32 text-center'>
                 <Typography variant='h5' className='text-text-disabled'>No questions found</Typography>
               </div>
               : qnaList.map((qna) => (

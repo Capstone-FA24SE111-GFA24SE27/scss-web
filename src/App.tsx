@@ -14,6 +14,8 @@ import { useRoutes } from 'react-router-dom';
 import { counselorsRoutes } from '@features/counselors';
 import { Dialog } from '@shared/components';
 import { SnackbarProvider } from 'notistack';
+import { adminRoutes } from './features/admin';
+import { supportStaffRoutes } from './features/staffs';
 import { SocketProvider } from '@shared/context';
 
 const App = () => {
@@ -31,6 +33,12 @@ const App = () => {
 			break;
 		case roles.MANAGER:
 			roleBasedRoutes = managersRoutes;
+			break;
+		case roles.ADMIN:
+			roleBasedRoutes = adminRoutes;
+			break;
+		case roles.SUPPORT_STAFF:
+			roleBasedRoutes = supportStaffRoutes;
 			break;
 		default:
 			roleBasedRoutes = authRoutes;

@@ -18,6 +18,7 @@ interface StudentListState {
   sortBy: string;
   sortDirection: 'ASC' | 'DESC';
   page: number | '';
+  tab: '' | 'RECOMMENDED'
 }
 
 const initialState: StudentListState = {
@@ -37,6 +38,7 @@ const initialState: StudentListState = {
   sortBy: 'createdDate',
   sortDirection: 'ASC',
   page: '',
+  tab: '',
 };
 
 /**
@@ -100,6 +102,12 @@ export const studentListSlice = createSlice({
     setPage: (state, action: PayloadAction<number | ''>) => {
       state.page = action.payload;
     },
+    setTab: (state, action: PayloadAction<'' | 'RECOMMENDED'>) => {
+      state.tab = action.payload
+    },
+    resetFilter: (state) => {
+      state = initialState
+    }
   },
   selectors: {
     selectFilter: (filter: StudentListState) => filter,
@@ -132,6 +140,8 @@ export const {
   setSortBy,
   setSortDirection,
   setPage,
+  setTab,
+  resetFilter
 } = studentListSlice.actions;
 
 export const {

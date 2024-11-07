@@ -77,6 +77,8 @@ function CounselorBooking() {
 
 
 
+    
+
 
     const onSubmit = () => {
         bookCounselor({
@@ -158,9 +160,10 @@ function CounselorBooking() {
         </div>
     }
 
+
     return (
         <>
-            <div className="relative flex flex-col flex-auto items-center p-24 sm:p-48">
+            <div className="relative flex flex-col items-center flex-auto p-24 sm:p-48">
                 <div className="w-full max-w-3xl">
                     <Breadcrumbs
                         parents={[
@@ -171,7 +174,7 @@ function CounselorBooking() {
                         ]}
                         currentPage={"Booking"}
                     />
-                    <div className="flex flex-auto items-end gap-32">
+                    <div className="flex items-end flex-auto gap-32">
                         <Avatar
                             sx={{
                                 borderWidth: 4,
@@ -180,7 +183,7 @@ function CounselorBooking() {
                                 backgroundColor: 'background.default',
                                 color: 'text.secondary'
                             }}
-                            className="w-128 h-128 text-64 font-bold"
+                            className="font-bold w-128 h-128 text-64"
                             src={counselor.profile.avatarLink}
                             alt={counselor.profile.fullName}
                         >
@@ -201,7 +204,7 @@ function CounselorBooking() {
                             <div className="flex flex-wrap items-center mt-16">
                                 <Chip
                                     label={counselor.expertise?.name || counselor.specialization?.name}
-                                    className="mr-12 mb-12"
+                                    className="mb-12 mr-12"
                                     size="medium"
                                 />
                             </div>
@@ -213,7 +216,7 @@ function CounselorBooking() {
                     <Divider className="mt-16 mb-24" />
 
                     <div>
-                        <Typography className='font-semibold text-primary px-24 text-lg'>Counseling Date</Typography>
+                        <Typography className='px-24 text-lg font-semibold text-primary'>Counseling Date</Typography>
 
                         <DateCalendar
                             views={['day']}
@@ -233,7 +236,7 @@ function CounselorBooking() {
                     <Divider className="mb-24" />
 
                     <div className='px-32'>
-                        <Typography className='font-semibold text-primary text-lg'>Available slots</Typography>
+                        <Typography className='text-lg font-semibold text-primary'>Available slots</Typography>
                         <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography>
                         <div className='flex flex-wrap gap-16 mt-16'>
                             {
@@ -265,7 +268,7 @@ function CounselorBooking() {
                     <Divider className="mt-16 mb-24" />
 
                     <div className='px-32'>
-                        <Typography className='font-semibold text-primary text-lg'>Meeting Type</Typography>
+                        <Typography className='text-lg font-semibold text-primary'>Meeting Type</Typography>
                         {/* <FormControl>
                             <RadioGroup
                                 aria-labelledby="demo-radio-buttons-group-label"
@@ -313,7 +316,7 @@ function CounselorBooking() {
                             multiline
                             rows={4}
                             defaultValue=""
-                            className='mt-16 w-full'
+                            className='w-full mt-16'
                         /> */}
                         <Controller
                             control={control}
@@ -336,7 +339,7 @@ function CounselorBooking() {
                         />
                     </div>
 
-                    <div className='flex justify-center mt-24 px-32'>
+                    <div className='flex justify-center px-32 mt-24'>
                         <Button
                             variant='contained'
                             color='secondary'

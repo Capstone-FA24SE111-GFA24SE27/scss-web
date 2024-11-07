@@ -1,5 +1,7 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, Face, Groups, PeopleAlt, Groups2, Chat, ChatBubble, AccountBox, Settings, AssignmentLate, Description } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description } from '@mui/icons-material';
+import BadgeIcon from '@mui/icons-material/Badge';
+import FmdBadIcon from '@mui/icons-material/FmdBad';
 
 interface SubList {
     name: string,
@@ -302,10 +304,130 @@ const managerNavigation: NavigationOptions = {
     ]
 }
 
+const adminNavigation: NavigationOptions = {
+    list: [
+        {
+            name: "Accounts",
+            description: "Manage users' accounts",
+            route: 'accounts',
+            items: [
+                {
+                    icon: SupervisedUserCircle,
+                    name: 'Manager',
+                    route: 'managers'
+                },
+                {
+                    icon: AccountBox,
+                    name: 'Counselor',
+                    route: 'counselors'
+                },
+                {
+                    icon: EmojiPeople,
+                    name: 'Support Staff',
+                    route: 'staffs'
+                },
+                {
+                    icon: BadgeIcon,
+                    name: 'Student',
+                    route: 'students'
+                },
+            ]
+        },
+        {
+            name: "Resources",
+            description: "Manage system's resources",
+            route: 'resources',
+            items: [
+                {
+                    icon: Event,
+                    name: 'Holiday',
+                    route: 'holidays'
+                },
+                {
+                    icon: LocalOffer,
+                    name: 'Problem Tag',
+                    route: 'tags'
+                },
+                
+            ]
+        },
+    ],
+    shortcuts: [
+       
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+    ]
+}
+
+const supportStaffNavigation: NavigationOptions = {
+    list: [
+        {
+            name: "Demand",
+            description: "Manage demands",
+            route: '',
+            items: [
+                {
+                    icon: FmdBadIcon,
+                    name: 'Demand',
+                    route: 'demand',
+                },
+            ]
+        },
+        {
+            name: "Student",
+            description: "Find students",
+            route: '',
+            items: [
+                // {
+                //     icon: FmdBadIcon,
+                //     name: 'Recommended Students',
+                //     route: 'recommended',
+                // },
+                {
+                    icon: PeopleAlt,
+                    name: 'Student List',
+                    route: 'student-list'
+                },
+            ]
+        },
+    ],
+    shortcuts: [
+        {
+            icon: CalendarMonth,
+            name: 'Calendar',
+        },
+        {
+            icon: Mail,
+            name: 'Mail',
+        },
+    ],
+    userMenu: [
+        {
+            name: 'Profile',
+            route: 'profile'
+        },
+        {
+            name: 'Settings',
+            route: 'settings'
+        },
+    ]
+}
+
 
 export const roleBasedNavigation: RoleBasedNavigation = {
     [roles.STUDENT]: studentNavigation,
     [roles.ACADEMIC_COUNSELOR]: counselorNavigation,
     [roles.NON_ACADEMIC_COUNSELOR]: counselorNavigation,
     [roles.MANAGER]: managerNavigation,
+    [roles.ADMIN]: adminNavigation,
+    [roles.SUPPORT_STAFF]: supportStaffNavigation,
+
 }

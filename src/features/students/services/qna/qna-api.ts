@@ -1,9 +1,9 @@
-import { Account, Counselor, PaginationContent, Student, User } from '@shared/types';
+import { Account, Counselor, PaginationContent, Question, Student, User } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
 export const addTagTypes = [
-  'qna'
+  'qna', 'one-qna'
 ] as const;
 
 
@@ -66,24 +66,11 @@ export const studentQnasApi = api
         }),
         invalidatesTags: ['qna']
       }),
-      sendMessage: build.mutation<void, SendMessageApiArg>({
-        query: ({ sessionId, content }) => ({
-          url: `/api/question-cards/send/${sessionId}/messages`,
-          method: 'POST',
-          body: { content }
-        }),
-      }),
       getStudentQuestion: build.query<GetQuestionApiResponse, string>({
         query: (questionCardId) => ({
           url: `/api/question-cards/student/${questionCardId}`,
         }),
-        providesTags: ['qna']
-      }),
-      readMessage: build.mutation<void, number>({
-        query: (chatSessionId) => ({
-          url: `/api/question-cards/read/${chatSessionId}/messages`,
-          method: 'PUT',
-        }),
+        providesTags: ['one-qna']
       }),
       getBanInfo: build.query<GetBanInfoApiResponse, void>({
         query: () => ({
@@ -114,8 +101,6 @@ export const {
   usePostQuestionMutation,
   useEditQuestionMutation,
   useGetStudentQuestionQuery,
-  useSendMessageMutation,
-  useReadMessageMutation,
   useGetMyStudentQuestionsQuery,
   useGetBanInfoQuery,
   useCloseQuestionStudentMutation,
@@ -126,7 +111,7 @@ export type GetStudentQuestionsApiResponse = ApiResponse<PaginationContent<Quest
 
 export type GetQuestionApiResponse = ApiResponse<Question>
 
-type GetStudentQuestionsApiArg = {
+export type GetStudentQuestionsApiArg = {
   keyword?: string;
   status?: string;
   isTaken?: boolean | string;
@@ -136,7 +121,7 @@ type GetStudentQuestionsApiArg = {
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC';
   page?: number;
-  topicId: string
+  topicId?: string
 };
 
 export type PostQuestionApiArg = QuestionPayload

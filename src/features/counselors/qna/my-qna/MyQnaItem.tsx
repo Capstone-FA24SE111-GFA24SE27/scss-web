@@ -4,7 +4,8 @@ import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chi
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Question, useAnswerQuestionMutation, useCloseQuestionCounselorMutation, useGetMyCounselorQuestionsQuery, useReadMessageMutation } from '../qna-api';
+import {  useAnswerQuestionMutation, useCloseQuestionCounselorMutation} from '../qna-api';
+import { Question } from '@/shared/types';
 
 
 const container = {
@@ -57,14 +58,11 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
     setEditMode(false)
   }
 
-  const [readMessage] = useReadMessageMutation()
   const handleSelectChat = () => {
-    readMessage(qna.chatSession.id)
     navigate(`/qna/conversations/${qna.id}`)
   }
 
   const handleChat = () => {
-    readMessage(qna.chatSession.id)
     navigate(`${qna.id}`)
   }
 
@@ -81,7 +79,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
           <AccordionSummary expandIcon={<ExpandMore />} className=''>
             <div className="flex items-center gap-8">
               {/* <Chip label={qna.type === 'Non-academic' ? 'Non-Academic' : 'Academic'} color={qna.type === 'Non-academic' ? 'info' : 'success'} className='w-112'/> */}
-              {/* <Typography className='w-112 font-semibold' color={qna.questionType === 'ACADEMIC' ? 'info' : 'warning'}>{qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'}</Typography> */}
+              {/* <Typography className='font-semibold w-112' color={qna.questionType === 'ACADEMIC' ? 'info' : 'warning'}>{qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'}</Typography> */}
               {
                 qna.answer
                   ? <CheckCircleOutlineOutlined color='success' />
@@ -92,10 +90,10 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
             </div>
           </AccordionSummary>
 
-          <AccordionDetails className='flex flex-col gap-16 justify-start'>
+          <AccordionDetails className='flex flex-col justify-start gap-16'>
             <div className='flex items-center px-32 text-sm'>
-              Answered by
-              <Button className='flex gap-8 items-center ml-4'
+              Asked by
+              <Button className='flex items-center gap-8 ml-4'
                 component={NavLinkAdapter}
                 to={`student/${qna?.student?.profile?.id}`}
               >
@@ -109,7 +107,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
                 </div>
               </Button>
             </div>
-            <div className='flex flex-col gap-8 w-full px-16'>
+            <div className='flex flex-col w-full gap-8 px-16'>
               {
                 qna.answer ?
                   editMode ?
@@ -131,7 +129,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
                           }
                         }}
                       />
-                      <div className='w-full flex justify-end gap-8'>
+                      <div className='flex justify-end w-full gap-8'>
                         <Button
                           variant='outlined'
                           className='mt-8'
@@ -153,7 +151,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
                       </div>
                     </div>
                     : <div>
-                      {/* <Typography className='text-sm italic px-8' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
+                      {/* <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
                       <div className='flex items-center'>
                         <Typography className="px-8">{qna.answer}</Typography>
                         <IconButton size='small' onClick={() => setEditMode(true)}>
@@ -180,7 +178,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
                         }
                       }}
                     />
-                    <div className='w-full flex justify-end'>
+                    <div className='flex justify-end w-full'>
                       <Button
                         variant='contained'
                         color='secondary'
@@ -196,7 +194,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
             </div>
           </AccordionDetails>
           <Box
-            className='bg-primary-light/5 w-full py-8 flex justify-end px-16 cursor-pointer gap-16'
+            className='flex justify-end w-full gap-16 px-16 py-8 cursor-pointer bg-primary-light/5'
           >
             {!qna?.closed &&
               <Button

@@ -1,14 +1,12 @@
 import { Avatar, Chip, Divider, Input, ListItemButton, Paper, Tooltip, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { IconButton, TextField } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import { Question, useGetMyCounselorQuestionsQuery, useReadMessageMutation } from '../qna-api';
-import dayjs from 'dayjs';
+import {useGetMyCounselorQuestionsQuery } from '../qna-api';
 import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Search } from '@mui/icons-material';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { useEffect } from 'react'
 import { Scrollbar } from '@/shared/components';
+import { Question } from '@/shared/types';
 
 const Conversation = () => {
   const { data: qnaData, refetch } = useGetMyCounselorQuestionsQuery({})
@@ -17,16 +15,12 @@ const Conversation = () => {
 
   const { id } = useParams()
 
-  const [input, setInput] = useState('');
   const navigate = useNavigate();
   const countUnreadMessages = (qnaItem: Question) => {
     const readMessages = qnaItem?.chatSession?.messages.filter((message) => message.sender.id !== account.id && !message.read)
     return readMessages?.length
   }
-
-  const [readMessage] = useReadMessageMutation()
   const handleSelectChat = (qnaItem: Question) => {
-    readMessage(qnaItem.chatSession.id)
     navigate(`${qnaItem.id}`)
   }
 
@@ -36,9 +30,9 @@ const Conversation = () => {
 
   return (
     <div className='flex h-full'>
-      <div className='border-r min-w-xs bg-background-paper p-16 space-y-16'>
+      <div className='p-16 space-y-16 border-r min-w-xs bg-background-paper'>
         <Typography className='text-3xl font-extrabold'>Conversations</Typography>
-        <Paper className="flex p-4 items-center w-full px-16 py-4 border-1 h-40 rounded-full shadow-none">
+        <Paper className="flex items-center w-full h-40 p-4 px-16 py-4 rounded-full shadow-none border-1">
           <Search />
           <Input
             placeholder="Search or start new chat"
@@ -56,25 +50,25 @@ const Conversation = () => {
               onClick={() => handleSelectChat(qnaItem)}
             >
               <Tooltip title={qnaItem.content}>
-                <div className="flex flex-1 items-center gap-8">
+                <div className="flex items-center flex-1 gap-8">
                   {/* <Divider orientation='vertical' /> */}
                   {
                     qnaItem.answer
                       ? <CheckCircleOutlineOutlined color='success' />
                       : <HelpOutlineOutlined color='disabled' />
                   }
-                  <Typography className="pr-8 w-full">{qnaItem?.content}</Typography>
+                  <Typography className="w-full pr-8">{qnaItem?.content}</Typography>
                 </div>
               </Tooltip>
-              <div className="flex items-center gap-8 p-8 w-full">
+              <div className="flex items-center w-full gap-8 p-8">
                 <Avatar src={qnaItem.student.profile.avatarLink} alt='Student image' />
-                <div className="ml-4 w-full">
-                  <div className='flex justify-between items-center'>
+                <div className="w-full ml-4">
+                  <div className='flex items-center justify-between'>
                     <Typography className="text-lg font-semibold">{qnaItem.student.profile.fullName}</Typography>
                     {/* <Typography className="text-sm text-text-disabled">{dayjs(qnaItem?.chatSession?.lastInteractionDate).format('YYYY-MM-DD')}</Typography> */}
                   </div>
-                  <div className='flex justify-between items-center w-full flex-1'>
-                    <div className="text-sm text-primary-light line-clamp-1 flex-1">{qnaItem.chatSession?.messages?.at(-1)?.content || qnaItem.content}</div>
+                  <div className='flex items-center justify-between flex-1 w-full'>
+                    <div className="flex-1 text-sm text-primary-light line-clamp-1">{qnaItem.chatSession?.messages?.at(-1)?.content || qnaItem.content}</div>
                     {countUnreadMessages(qnaItem) ? <Chip label={countUnreadMessages(qnaItem)} size='small' color='secondary' /> : ''}
                   </div>
                 </div>

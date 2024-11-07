@@ -63,6 +63,7 @@ function SignInForm() {
 				const { account, accessToken } = response.content
 				dispatch(setAccount(account))
 				dispatch(setAccessToken(accessToken))
+				console.log(response)
 			})
 	}
 
@@ -70,7 +71,7 @@ function SignInForm() {
 		<form
 			name="loginForm"
 			noValidate
-			className="mt-32 flex w-full flex-col justify-center"
+			className="flex flex-col justify-center w-full mt-32"
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<Controller
@@ -130,7 +131,7 @@ function SignInForm() {
 				/>
 
 				<Link
-					className="text-md font-medium"
+					className="font-medium text-md"
 					to="/pages/auth/forgot-password"
 				>
 					Forgot password?
@@ -139,7 +140,7 @@ function SignInForm() {
 
 			<Button
 				variant="contained"
-				className=" mt-16 w-full "
+				className="w-full mt-16 "
 				color='secondary'
 				aria-label="Sign in"
 				disabled={_.isEmpty(dirtyFields) || !isValid || isLoading}
