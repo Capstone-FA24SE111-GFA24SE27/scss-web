@@ -5,6 +5,7 @@ import CheckboxField from "./CheckboxField";
 import Pagination from "./Pagination";
 import DateRangePicker from "./DateRangePicker";
 import SortingToggle from "./SortingToggle";
+import AcademicFilter from "./AcademicFilter";
 export {
   FilterTabs,
   SearchField,
@@ -12,5 +13,6 @@ export {
   CheckboxField,
   Pagination,
   DateRangePicker,
-  SortingToggle
+  SortingToggle,
+  AcademicFilter
 }

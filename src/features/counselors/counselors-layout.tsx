@@ -1,12 +1,12 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import { AppLayout } from '@shared/layouts'
+import { AppLayout } from '@shared/layouts';
+import { useState } from 'react';
+import Counselors from './Counselors';
 const CounselorsLayout = () => {
   return (
     <AppLayout>
-        <Outlet />
+      <Counselors />
     </AppLayout>
-  )
+  );
 }
 
 export default CounselorsLayout

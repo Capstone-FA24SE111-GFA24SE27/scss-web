@@ -15,7 +15,7 @@ export const appointmentsRoutes: RouteObject[] = [
         path: 'create',
         element: <AppointmentCreate />
       },
-      ...studentRoutes,
+      // ...studentRoutes,
         ...reportRoutes
     ]
   },

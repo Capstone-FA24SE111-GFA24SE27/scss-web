@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, Face, Groups, PeopleAlt, Groups2, Chat, ChatBubble, AccountBox, Settings, AssignmentLate } from '@mui/icons-material';
+import { Article, BackupTable, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, Face, Groups, PeopleAlt, Groups2, Chat, ChatBubble, AccountBox, Settings, AssignmentLate, Description } from '@mui/icons-material';
 
 interface SubList {
     name: string,
@@ -139,7 +139,7 @@ const counselorNavigation: NavigationOptions = {
                     route: 'requests'
                 },
                 {
-                    icon: TagFaces,
+                    icon: Description,
                     name: 'Appointments',
                     route: 'appointments'
                 },
@@ -155,11 +155,11 @@ const counselorNavigation: NavigationOptions = {
             description: "Questions and answer",
             route: 'qna',
             items: [
-                {
-                    icon: Assignment,
-                    name: 'Question Board',
-                    route: 'question-board'
-                },
+                // {
+                //     icon: Assignment,
+                //     name: 'Question Board',
+                //     route: 'question-board'
+                // },
                 {
                     icon: Class,
                     name: 'My Q&A',
@@ -252,11 +252,11 @@ const managerNavigation: NavigationOptions = {
             items: [
                 {
                     icon: Archive,
-                    name: 'Home',
-                    route: 'home'
+                    name: 'Overview',
+                    route: 'overview'
                 },
                 {
-                    icon: TagFaces,
+                    icon: Description,
                     name: 'Analytics',
                     route: 'analytics'
                 },

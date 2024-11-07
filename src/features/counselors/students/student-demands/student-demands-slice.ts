@@ -14,8 +14,8 @@ const initialState = {
 /**
  * The filter slice.
  */
-export const studentListSlice = createSlice({
-  name: 'studentList',
+export const studentDemandsSlice = createSlice({
+  name: 'studenDemands',
   initialState,
   reducers: {
     // filterToggleFolded: (state) => {
@@ -61,22 +61,22 @@ export const studentListSlice = createSlice({
 /**
  * Lazy loading
  */
-rootReducer.inject(studentListSlice);
-const injectedSlice = studentListSlice.injectInto(rootReducer);
+rootReducer.inject(studentDemandsSlice);
+const injectedSlice = studentDemandsSlice.injectInto(rootReducer);
 export const {
   filterOpen,
   filterClose,
   filterToggle,
   setSearchTerm,
   setStudentType,
-} = studentListSlice.actions;
+} = studentDemandsSlice.actions;
 export const {
   selectFilter,
   selectSearchTerm,
   selectStudentType
 } = injectedSlice.selectors;
-export default studentListSlice.reducer;
+export default studentDemandsSlice.reducer;
 
 declare module '@shared/store' {
-  export interface LazyLoadedSlices extends WithSlice<typeof studentListSlice> { }
+  export interface LazyLoadedSlices extends WithSlice<typeof studentDemandsSlice> { }
 }

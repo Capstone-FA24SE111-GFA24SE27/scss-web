@@ -10,6 +10,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation } from '../counseling-api';
 import { Appointment, AppointmentRequest } from '@/shared/types';
 import { ExpandableText } from '@shared/components'
+import { openStudentView } from '../../counselors-layout-slice';
 
 const RequestsContent = () => {
   const [page, setPage] = useState(1);
@@ -162,9 +163,10 @@ const RequestsContent = () => {
                 </ListItem> */}
                   <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
                     <ListItemButton
-                      component={NavLinkAdapter}
-                      to={`student/${appointment.student.profile.id}`}
+                      // component={NavLinkAdapter}
+                      // to={`student/${appointment.student.profile.id}`}
                       className='w-full rounded shadow bg-primary-light/5'
+                      onClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
                     >
                       <UserListItem
                         fullName={appointment?.student.profile.fullName}
@@ -172,7 +174,7 @@ const RequestsContent = () => {
                         phoneNumber={appointment?.student.profile.phoneNumber}
                         email={appointment?.student.email}
                       />
-                      <ChevronRight />
+                      {/* <ChevronRight /> */}
                     </ListItemButton>
                   </Tooltip>
                   {

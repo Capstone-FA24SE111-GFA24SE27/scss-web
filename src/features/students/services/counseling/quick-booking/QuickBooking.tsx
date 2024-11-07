@@ -1,7 +1,7 @@
 import { useSocket } from '@/shared/context';
 import { CounselingType, Counselor } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronRight, Close, ContactSupport, Female, Male, People, PersonPin, School } from '@mui/icons-material';
+import { ChevronRight, Close, ContactSupport, Female, Handshake, Male, People, PersonPin, School } from '@mui/icons-material';
 import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, IconButton, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -253,7 +253,7 @@ function QuickBooking() {
                       label={
                         <Box display="flex" flexDirection="column" alignItems="flex-start" className="p-8 flex-1 w-full">
                           <Box display="flex" alignItems="center">
-                            <People fontSize="large" /> {/* Large Icon */}
+                            <Handshake fontSize="large" /> {/* Large Icon */}
                             <Typography variant="h6" sx={{ marginLeft: 1 }}>Non-academic</Typography>
                           </Box>
                           <Typography variant="body2" color="text.secondary">

@@ -32,7 +32,7 @@ export type Counselor = {
   // status: 'AVAILABLE' | 'UNAVAILABLE'
   status: string,
   department?: Department
-  major?: Major
+  major?: Major,
 }
 
 export type Student = {
@@ -43,6 +43,7 @@ export type Student = {
   specialization: Specialization
   department: Department
   major: Major
+  behaviorTagList: BehaviorTagList
 }
 
 export type SupportStaff = {
@@ -114,3 +115,14 @@ export type Subject = {
   status: string;
   semester: string;
 }
+
+
+type BehaviorTag = {
+  id: number | null;
+  studentCode: string | null;
+  source: string | null;
+  problemTagName: string; number: number;
+  semesterName: string | null;
+  contained: boolean;
+};
+type BehaviorTagList = BehaviorTag[];

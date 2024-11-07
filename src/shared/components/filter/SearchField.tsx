@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState, ReactNode } from 'react';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 import { debounce } from 'lodash';
@@ -11,6 +11,10 @@ interface SearchFieldProps {
   className?: string;
   onSearch: (searchTerm: string) => void;
   size?: 'small' | 'medium';
+  startIcon?: ReactNode; // Optional prop to replace the default Search icon
+  disabled?: boolean; // Optional prop to disable the search field
+  type?: 'text' | 'number' | 'search' | 'password'; // Added type prop
+  showClearButton?: boolean; // New prop to toggle the clear button
 }
 
 const SearchField = ({
@@ -19,7 +23,11 @@ const SearchField = ({
   debounceDelay = 500,
   className = '',
   size = 'medium',
-  onSearch
+  onSearch,
+  startIcon = <Search />,
+  disabled = false, // Default to false (enabled)
+  type = 'text', // Default type to text
+  showClearButton = true, // Default to showing the clear button
 }: SearchFieldProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -49,27 +57,26 @@ const SearchField = ({
       value={searchTerm}
       className={clsx("flex w-full", className)}
       variant="outlined"
+      type={type} // Pass the type prop to TextField
       slotProps={{
-        inputLabel: {
-          shrink: true,
-        },
         input: {
           startAdornment: (
             <InputAdornment position="start">
-              <Search />
+              {startIcon}
             </InputAdornment>
           ),
-          endAdornment: (
+          endAdornment: showClearButton ? (
             <InputAdornment position="end">
-              <IconButton onClick={handleClear} aria-label="clear search">
+              <IconButton onClick={handleClear} aria-label="clear search" disabled={disabled}>
                 <Clear />
               </IconButton>
             </InputAdornment>
-          )
-        }
+          ) : null, // Conditionally render endAdornment based on showClearButton
+        },
       }}
       onChange={handleSearch}
       size={size}
+      disabled={disabled} // Apply disabled prop to TextField
     />
   );
 };

@@ -6,9 +6,9 @@ import { useGetStudentDocumentViewQuery, useGetStudentStudyViewQuery, useGetStud
 import { navigateUp } from '@/shared/utils';
 import { Subject } from '@/shared/types';
 
-const AcademicTranscript = () => {
-  const routeParams = useParams();
-  const { id: studentId } = routeParams as { id: string };
+const AcademicTranscript = ({ id }: { id?: string }) => {
+  const { id: studentRouteId } = useParams();
+  const studentId = id || studentRouteId
   const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentViewQuery(studentId);
   const { data: academicTranscriptData, isLoading } = useGetStudentStudyViewQuery(studentId);
 
@@ -35,7 +35,7 @@ const AcademicTranscript = () => {
 
   return (
     <div className='p-32'>
-      <Breadcrumbs
+      {studentRouteId && <Breadcrumbs
         className=''
         parents={[
           {
@@ -45,8 +45,9 @@ const AcademicTranscript = () => {
         ]}
         currentPage={"Academic Transcript"}
       />
+      }
       <Heading title='Academic Transcript'
-        description={`View grade report of ${student?.studentProfile.profile.fullName} (${student?.studentProfile.studentCode})`}
+        description={`Grade report of ${student?.studentProfile.profile.fullName} (${student?.studentProfile.studentCode})`}
         className='mt-8'
       />
       <TableContainer component={Paper} className='mt-16 shadow'>

@@ -29,9 +29,9 @@ export interface CourseData {
 }
 
 
-const AttendanceReport = () => {
-  const routeParams = useParams();
-  const { id: studentId } = routeParams as { id: string };
+const AttendanceReport = ({ id }: { id?: string }) => {
+  const { id: studentRouteId } = useParams();
+  const studentId = id || studentRouteId
   const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentViewQuery(studentId);
 
   const { data: semesterData, isLoading: isLoadingSemesterData } = useGetSemestersQuery();
@@ -105,7 +105,7 @@ const AttendanceReport = () => {
 
   return (
     <div className='p-32'>
-      <Breadcrumbs
+      {studentRouteId && <Breadcrumbs
         className=''
         parents={[
           {
@@ -115,8 +115,9 @@ const AttendanceReport = () => {
         ]}
         currentPage={"Attendance Report"}
       />
+      }
       <Heading title='Attendance Report'
-        description={`View attendence report of ${student?.studentProfile.profile.fullName} (${student?.studentProfile.studentCode})`}
+        description={`Attendence report of ${student?.studentProfile.profile.fullName} (${student?.studentProfile.studentCode})`}
         className='mt-8'
       />
 
