@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
-import { studentListRoutes } from './student-list';
 import { studentDemandsRoutes } from './student-demands';
+import { studentListRoutes } from '@/shared/pages';
 
 export const counselorStudentsRoutes: RouteObject[] = [
   {

@@ -12,6 +12,13 @@ export const academicApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
+      getDepartments: build.query<GetDepartmentsApiResponse, void>({
+        query: () => ({
+          url: `/api/academic/departments`,
+          method: 'GET',
+        }),
+        providesTags: ['departments']
+      }),
       getMajorsByDepartment: build.query<GetMajorsByDepartmentApiResponse, string>({
         query: (departmentId) => ({
           url: `/api/academic/departments/${departmentId}/majors`,
@@ -28,13 +35,6 @@ export const academicApi = api
         providesTags: ['specialization']
       }),
 
-      getAllSpecializations: build.query<GetAllSpecializationsApiResponse, void>({
-        query: () => ({
-          url: `/api/academic/majors/{majorId}/specializations`,
-          method: 'GET',
-        }),
-        providesTags: ['specialization']
-      }),
     })
   });
 
@@ -42,7 +42,7 @@ export const academicApi = api
 export const {
   useGetMajorsByDepartmentQuery,
   useGetSpecializationsByMajorQuery,
-  useGetAllSpecializationsQuery,
+  useGetDepartmentsQuery,
 } = academicApi;
 
 // Types for API responses
@@ -52,7 +52,7 @@ export type Major = {
   id: number;
   name: string;
   code: string;
-  departmentId: number | null; // assuming departmentId can be null
+  departmentId: number;
 };
 
 type GetSpecializationsByMajorApiResponse = Specialization[];
@@ -60,8 +60,14 @@ type GetSpecializationsByMajorApiResponse = Specialization[];
 export type Specialization = {
   id: number;
   name: string;
-  majorId: number | null; // assuming majorId can be null
+  majorId: number;
   code: string;
 };
 
-type GetAllSpecializationsApiResponse = Specialization[];
+export type Department = {
+  id: number;
+  name: string;
+  code: string;
+};
+
+type GetDepartmentsApiResponse = Department[];

@@ -232,7 +232,7 @@ const QnaList = () => {
                             <div>Id: {qna.id}</div>
                             <Chip label={qna.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={'info'} size='small' />
                             <Chip label={qna.status} color={statusColor[qna.status as string]} size='small' />
-                            <Chip label={qna.topic.name} size='small' />
+                            {/* <Chip label={qna.topic?.name} size='small' /> */}
                             {/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
                             {qna.closed && <Chip label={'Closed'} variant='outlined' color={'error'} size='small' />}
                             {countUnreadMessages(qna) ? <Chip label={countUnreadMessages(qna)} size='small' variant='filled' color='secondary' /> : ''}

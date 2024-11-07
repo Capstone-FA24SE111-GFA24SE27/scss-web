@@ -138,16 +138,6 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                             </div>
                         )}
 
-                        {counselor.profile.dateOfBirth && (
-                            <div className="flex items-center">
-                                <NotesOutlined />
-                                <div className="ml-24 leading-6">
-                                    Adipisicing exercitation dolor nisi ipsum nostrud anim dolore sint veniam consequat lorem sit ex commodo nostrud occaecat elit magna magna commodo incididunt laborum ad irure pariatur et sit ullamco adipisicing.
-
-                                    Ullamco in dolore amet est quis consectetur fugiat non nisi incididunt id laborum adipisicing dolor proident velit ut quis aliquip dolore id anim sit adipisicing nisi incididunt enim amet pariatur.
-                                </div>
-                            </div>
-                        )}
 
                     </div>
 

@@ -10,7 +10,7 @@ export const requestsRoutes: RouteObject[] = [
     path: 'requests',
     element: <Requests />,
     children: [
-      ...studentRoutes,
+      // ...studentRoutes,
       ...reportRoutes
     ]
   },

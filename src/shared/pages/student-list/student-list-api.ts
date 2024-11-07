@@ -1,11 +1,11 @@
 import { ApiResponse, apiService as api } from '@shared/store';
 import {
-  HolidayScheduleType, PaginationContent, Student
+  PaginationContent, Student
 } from '@shared/types';
 
 const addTagTypes = ['students'] as const;
 
-export const counselorStudentsApi = api
+export const studentListApi = api
   .enhanceEndpoints({
     addTagTypes,
   })
@@ -15,6 +15,15 @@ export const counselorStudentsApi = api
         query: ({
           studentCode = '',
           specializationId = '',
+          departmentId = '',
+          majorId = '',
+          currentTerm = '',
+          semesterIdForGPA = '',
+          minGPA = '',
+          maxGPA = '',
+          isIncludeBehavior = false,
+          semesterIdForBehavior = '',
+          promptForBehavior = '',
           keyword = '',
           sortBy = 'createdDate',
           sortDirection = 'ASC',
@@ -24,8 +33,17 @@ export const counselorStudentsApi = api
           params: {
             studentCode,
             specializationId,
-            sortBy,
+            departmentId,
+            majorId,
+            currentTerm,
+            semesterIdForGPA,
+            minGPA,
+            maxGPA,
+            isIncludeBehavior,
+            semesterIdForBehavior,
+            promptForBehavior,
             keyword,
+            sortBy,
             sortDirection,
             page,
           },
@@ -37,15 +55,24 @@ export const counselorStudentsApi = api
 
 export const {
   useGetStudentsFilterQuery,
-} = counselorStudentsApi;
+} = studentListApi;
 
-// Define types for the new API response and arguments
+// Define types for the updated API response and arguments
 export type GetStudentsFilterApiResponse = PaginationContent<Student>;
 export type GetStudentsFilterApiArg = {
   studentCode?: string;
-  specializationId?: number;
-  sortBy?: string;
+  specializationId?: number | '';
+  departmentId?: number | '';
+  majorId?: number | '';
+  currentTerm?: number;
+  semesterIdForGPA?: number | '';
+  minGPA?: number | '';
+  maxGPA?: number | '';
+  isIncludeBehavior?: boolean;
+  semesterIdForBehavior?: number | '';
+  promptForBehavior?: string;
   keyword?: string;
+  sortBy?: string;
   sortDirection?: 'ASC' | 'DESC';
   page?: number;
 };
