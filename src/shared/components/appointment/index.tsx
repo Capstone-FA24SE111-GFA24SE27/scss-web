@@ -1,4 +1,9 @@
-import AppointmentReportType from "./AppointmentReport";
+
+import AppointmentReport from "./AppointmentReport";
+import RequestItem from "./RequestItem";
+import AppointmentItem from "./AppointmentItem";
 export {
-  AppointmentReportType as AppointmentReport
+  AppointmentReport,
+  RequestItem,
+  AppointmentItem
 }

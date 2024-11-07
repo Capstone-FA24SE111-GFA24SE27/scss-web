@@ -43,11 +43,6 @@ const SelectField = ({
       value={value}
       onChange={onChange}
       className={className}
-      // slotProps={{
-      //   inputLabel: {
-      //     shrink: true,
-      //   }
-      // }}
       variant="outlined"
       disabled={disabled}
       size={size}

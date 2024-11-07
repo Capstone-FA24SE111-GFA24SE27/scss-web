@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FmdBadIcon from '@mui/icons-material/FmdBad';
 
@@ -141,7 +141,7 @@ const counselorNavigation: NavigationOptions = {
                     route: 'requests'
                 },
                 {
-                    icon: TagFaces,
+                    icon: Description,
                     name: 'Appointments',
                     route: 'appointments'
                 },
@@ -157,11 +157,11 @@ const counselorNavigation: NavigationOptions = {
             description: "Questions and answer",
             route: 'qna',
             items: [
-                {
-                    icon: Assignment,
-                    name: 'Question Board',
-                    route: 'question-board'
-                },
+                // {
+                //     icon: Assignment,
+                //     name: 'Question Board',
+                //     route: 'question-board'
+                // },
                 {
                     icon: Class,
                     name: 'My Q&A',
@@ -254,11 +254,11 @@ const managerNavigation: NavigationOptions = {
             items: [
                 {
                     icon: Archive,
-                    name: 'Home',
-                    route: 'home'
+                    name: 'Overview',
+                    route: 'overview'
                 },
                 {
-                    icon: TagFaces,
+                    icon: Description,
                     name: 'Analytics',
                     route: 'analytics'
                 },

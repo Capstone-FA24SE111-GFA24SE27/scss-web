@@ -6,16 +6,42 @@ import { AppLoading, ContentLoading, Pagination } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import StudentListItem from './StudentListItem';
 import { useState, ChangeEvent } from 'react'
-import { useGetStudentsFilterQuery } from '../counselor-students-api';
+import { useGetStudentsFilterQuery } from './student-list-api';
 import { Box } from '@mui/material';
+import { selectFilter } from './student-list-slice';
 
 
 function StudentListContent() {
     const [page, setPage] = useState(1);
+    const filter = useAppSelector(selectFilter)
     const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
+
+    const {
+        searchTerm,
+        isIncludeBehavior,
+        promptForBehavior,
+        semesterIdForBehavior,
+        departmentId,
+        majorId,
+        specializationId,
+        minGPA,
+        maxGPA,
+        semesterIdForGPA
+    } = filter
+
     const { data } = useGetStudentsFilterQuery({
+        keyword: searchTerm,
+        isIncludeBehavior,
+        promptForBehavior,
+        semesterIdForBehavior,
+        departmentId,
+        majorId,
+        specializationId,
+        minGPA,
+        maxGPA,
+        semesterIdForGPA,
         page
     })
     const students = data?.data

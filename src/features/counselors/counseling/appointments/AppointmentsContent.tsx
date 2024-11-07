@@ -11,6 +11,7 @@ import { useSocket } from '@/shared/context';
 import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
 import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '../counseling-api';
 import { statusColor } from '@/shared/constants';
+import { openStudentView } from '../../counselors-layout-slice';
 
 const AppointmentsContent = () => {
 
@@ -37,7 +38,6 @@ const AppointmentsContent = () => {
   const statusTabs = [
     { label: 'All', value: '' },
     { label: 'Canceled', value: 'CANCELED' },
-    // { label: 'Waiting', value: 'WAITING' },
     { label: 'Attend', value: 'ATTEND' },
     { label: 'Absent', value: 'ABSENT' },
     { label: 'Expired', value: 'EXPIRED' },
@@ -272,8 +272,9 @@ const AppointmentsContent = () => {
                   <div className='pl-16 border-l-2'>
                     <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
                       <ListItemButton
-                        component={NavLinkAdapter}
-                        to={`student/${appointment.studentInfo.profile.id}`}
+                        // component={NavLinkAdapter}
+                        // to={`student/${appointment.studentInfo.profile.id}`}
+                        onClick={() => dispatch(openStudentView(appointment.studentInfo.id.toString()))}
                         className='w-full rounded shadow bg-primary-light/5'
                       >
                         <UserListItem
@@ -282,7 +283,7 @@ const AppointmentsContent = () => {
                           phoneNumber={appointment.studentInfo.profile.phoneNumber}
                           email={appointment.studentInfo.email}
                         />
-                        <ChevronRight />
+                        {/* <ChevronRight /> */}
                       </ListItemButton>
                     </Tooltip>
 

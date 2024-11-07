@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Heading, PageSimple } from '@shared/components';
-import StudentList from './StudentListContent';
+import StudentListContent from './StudentListContent';
 import StudentListHeader from './StudentListHeader';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { filterClose, selectFilter } from './student-list-slice';
@@ -19,23 +19,13 @@ const Root = styled(PageSimple)(({ theme }) => ({
 /**
  * The ContactsApp page.
  */
-function CounselorList() {
+function StudentList() {
   const pageLayout = useRef(null);
   const dispatch = useAppDispatch();
   const filter = useAppSelector(selectFilter)
   const routeParams = useParams();
-
-  // const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
-  // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
-  // useGetContactsListQuery();
-  // useGetContactsCountriesQuery();
-  // useGetContactsTagsQuery();
   const isMobile = false
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
-  // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
-  // useGetContactsListQuery();
-  // useGetContactsCountriesQuery();
-  // useGetContactsTagsQuery();
   useEffect(() => {
     setRightSidebarOpen(Boolean(routeParams.id));
   }, [routeParams]);
@@ -58,7 +48,7 @@ function CounselorList() {
         <Root
           className='!min-h-screen'
           header={<StudentListHeader />}
-          content={<StudentList />}
+          content={<StudentListContent />}
           ref={pageLayout}
           rightSidebarContent={<StudentListSidebarContent />}
           rightSidebarOpen={filter.open}
@@ -71,4 +61,4 @@ function CounselorList() {
   );
 }
 
-export default CounselorList;
+export default StudentList;

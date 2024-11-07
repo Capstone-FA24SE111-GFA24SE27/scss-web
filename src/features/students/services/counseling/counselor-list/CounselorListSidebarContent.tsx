@@ -24,7 +24,7 @@ const CounselorListSidebarContent = () => {
 
   return (
     <div className='p-24 flex flex-col gap-16'>
-      <div className='flex justify-start items-center gap-8'>
+      <div className='flex justify-start items-center gap-16'>
         <CounselorListFilterButton />
         <Typography className='text-xl'>
           Filter Counselors
