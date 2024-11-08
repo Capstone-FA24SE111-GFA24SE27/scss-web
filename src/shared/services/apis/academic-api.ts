@@ -48,6 +48,11 @@ export const {
 // Types for API responses
 type GetMajorsByDepartmentApiResponse = Major[];
 
+type GetSpecializationsByMajorApiResponse = Specialization[];
+
+type GetDepartmentsApiResponse = Department[];
+
+
 export type Major = {
   id: number;
   name: string;
@@ -55,7 +60,6 @@ export type Major = {
   departmentId: number;
 };
 
-type GetSpecializationsByMajorApiResponse = Specialization[];
 
 export type Specialization = {
   id: number;
@@ -70,4 +74,3 @@ export type Department = {
   code: string;
 };
 
-type GetDepartmentsApiResponse = Department[];

@@ -15,7 +15,7 @@ const initialState = {
  * The filter slice.
  */
 export const studentListSlice = createSlice({
-  name: 'studentListStaff',
+  name: 'staffStudentList',
   initialState,
   reducers: {
     // filterToggleFolded: (state) => {

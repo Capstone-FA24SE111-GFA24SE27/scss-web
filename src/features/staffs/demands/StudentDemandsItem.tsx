@@ -105,7 +105,7 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							</>
 						)}
 						<UserLabel
-							profile={demand.supportStaff.profile}
+							profile={demand.supportStaff?.profile}
 							label='Assigned by'
 						/>
 

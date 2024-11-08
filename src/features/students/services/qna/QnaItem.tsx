@@ -206,7 +206,7 @@ const QnaItem = (props: Props) => {
 							<IconButton><ThumbUpOutlined /></IconButton>
 							<IconButton><ThumbDownOutlined /></IconButton>
 						  </div> */}
-						{qna.status == 'PENDING' ? (
+						{qna.status == 'PENDING' && !qna.answer ? (
 							<Button
 								variant='outlined'
 								color='secondary'
@@ -228,7 +228,7 @@ const QnaItem = (props: Props) => {
 						) : (
 							<></>
 						)}
-						{qna.status == 'PENDING' ? (
+						{qna.status == 'PENDING' && !qna.answer ? (
 							<Button
 								variant='contained'
 								color='secondary'

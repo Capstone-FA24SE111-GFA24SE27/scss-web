@@ -3,7 +3,7 @@ import { Close } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { StudentView } from './pages';
+import { StudentView } from './counselors-pages';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { closeStudentView, selectStudentView } from './counselors-layout-slice';
 const Counselors = () => {

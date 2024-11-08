@@ -7,7 +7,7 @@ import { useGetStudentDocumentQuery } from './students-api';
 import { useGetMyStudentQuestionsQuery } from './services/qna/qna-api';
 import { Question } from '@/shared/types';
 import useChatNotification from '@/shared/components/chat/useChatNotification';
-import { StudentDocument } from './components';
+import { StudentDocument } from './students-components';
 
 const StudentLayout = () => {
 	const dispatch = useAppDispatch();

@@ -23,6 +23,8 @@ import { useGetCounselorExpertisesQuery } from '@shared/services';
 import { usePostQuestionMutation, useEditQuestionMutation, useGetStudentQuestionQuery, useGetBanInfoQuery } from './qna-api';
 import _ from 'lodash';
 import BanInfo from './BanInfo';
+import { NavLinkAdapter } from '@/shared/components';
+import { ArrowBack } from '@mui/icons-material';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -125,14 +127,13 @@ function QnaForm() {
 	};
 
 	useEffect(() => {
-		if (editMode && questionId) {
-			// Assume fetching question data is done here and set question data
+		if (editMode && questionData) {
 			reset({
 				questionType: question?.questionType || 'ACADEMIC',
 				content: question?.content || '',
 			});
 		}
-	}, [editMode, questionId, reset]);
+	}, [editMode, questionData, reset]);
 
 	if (banInfo?.ban) {
 		return <BanInfo banInfo={banInfo} />
@@ -140,7 +141,19 @@ function QnaForm() {
 	return (
 		<div className="flex flex-col items-center p-32 container">
 			<div className="flex flex-col w-full max-w-4xl">
-				<Typography variant="h4">{editMode ? 'Edit your question' : 'Ask a question'}</Typography>
+				<Typography variant="h4"></Typography>
+				<div className="">
+					<Button
+						component={NavLinkAdapter}
+						to="."
+						startIcon={<ArrowBack />}
+					>
+						Back to QnA
+					</Button>
+				</div>
+				<div className="mt-8 text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+					{editMode ? 'Edit your question' : 'Ask a question'}
+				</div>
 				<Paper className="mt-32 p-24 rounded-2xl shadow">
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						<div className="mb-24">
@@ -315,7 +328,7 @@ function QnaForm() {
 								color="secondary"
 								disabled={!isValid || isPosting || isEditing || _.isEmpty(dirtyFields)}
 							>
-								{editMode ? 'Save Changes' : 'Submit'}
+								{editMode ? 'Save' : 'Submit'}
 							</Button>
 						</div>
 					</form>
