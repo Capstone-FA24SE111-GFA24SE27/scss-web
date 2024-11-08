@@ -1,4 +1,3 @@
-import { studentRoutes } from '@/features/counselors';
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 import {
@@ -7,8 +6,8 @@ import {
 	StudentAppointmentReport,
 	StudentDetailView,
 } from '@/shared/components';
-import CreateDemandButton from '../CreateDemandButton';
 import AssignDemandForm from './AssignDemandForm';
+import CounselorView from './counselors/CounselorView';
 const Demand = lazy(() => import('./Demand'));
 
 export const demandRoutes: RouteObject[] = [
@@ -16,6 +15,10 @@ export const demandRoutes: RouteObject[] = [
 		path: 'demand',
 		element: <Demand />,
 		children: [
+			{
+				path: 'counselor/:id',
+				element: <CounselorView />,
+			},
 			{
 				path: 'student/:id',
 				element: <StudentDetailView  > </StudentDetailView>,

@@ -105,9 +105,8 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							</>
 						)}
 						<UserLabel
-							avatarLink={demand.supportStaff?.profile.avatarLink}
+							profile={demand.supportStaff.profile}
 							label='Assigned by'
-							fullName={demand.supportStaff?.profile.fullName}
 						/>
 
 						<Chip

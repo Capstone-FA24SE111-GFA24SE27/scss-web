@@ -92,7 +92,7 @@ const DemandList = (props: Props) => {
 
             <Pagination
                 page={page}
-                count={data?.content?.totalElements}
+                count={data?.content?.totalPages}
                 handleChange={handlePageChange}
             />
         </div>

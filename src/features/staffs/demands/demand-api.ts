@@ -9,7 +9,7 @@ import {
 } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store';
 
-export const addTagTypes = ['demands', 'counselor'] as const;
+export const addTagTypes = ['demands', 'counselors'] as const;
 
 export const demandApi = api
 	.enhanceEndpoints({
@@ -74,7 +74,7 @@ export const demandApi = api
 					url: `/api/counselors/${arg}`,
 				}),
 				providesTags: (result, error, arg) => [
-					{ type: 'counselor', id: arg },
+					{ type: 'counselors', id: arg },
 				],
 			}),
 			getCounselors: build.query<getCounselorsReponse, getCounselorsArg>({
@@ -96,7 +96,55 @@ export const demandApi = api
 						ratingTo,
 					},
 				}),
-				providesTags: ['counselor'],
+				providesTags: ['counselors'],
+			}),
+			getCounselorsAcademic: build.query<
+				GetCounselorApiAcademicResponse,
+				GetCounselorsApiArg
+			>({
+				query: ({
+					page = 1,
+					ratingFrom = '',
+					ratingTo = '',
+					search = '',
+					sortBy = '',
+					sortDirection = '',
+					availableFrom = '',
+					availableTo = '',
+				}) => ({
+					url: `/api/counselors/academic`,
+					params: {
+						search,
+						page,
+						availableFrom,
+						availableTo,
+					},
+				}),
+				providesTags: ['counselors'],
+			}),
+			getCounselorsNonAcademic: build.query<
+				GetCounselorApiAcademicResponse,
+				GetCounselorsApiArg
+			>({
+				query: ({
+					page = 1,
+					ratingFrom = '',
+					ratingTo = '',
+					search = '',
+					sortBy = '',
+					sortDirection = '',
+					availableFrom = '',
+					availableTo = '',
+				}) => ({
+					url: `/api/counselors/non-academic`,
+					params: {
+						search,
+						page,
+						availableFrom,
+						availableTo,
+					},
+				}),
+				providesTags: ['counselors'],
 			}),
 		}),
 	});
@@ -106,6 +154,8 @@ export const {
 	usePostCreateDemandByStudentIdMutation,
 	usePutAssignDemandByDemandIdMutation,
 	useGetCounselorByIdQuery,
+	useGetCounselorsAcademicQuery,
+	useGetCounselorsNonAcademicQuery
 } = demandApi;
 
 export type GetCounselingDemandFilterApiResponse = ApiResponse<
@@ -144,3 +194,18 @@ type getCounselorsArg = {
 	ratingTo?: number;
 };
 type getCounselorsReponse = ApiResponse<PaginationContent<Counselor>>;
+
+type GetCounselorsApiArg = {
+	search?: string;
+	sortDirection?: 'ASC' | 'DESC';
+	sortBy?: string;
+	page?: number;
+	ratingFrom?: number;
+	ratingTo?: number;
+	availableFrom?: string;
+	availableTo?: string;
+};
+
+type GetCounselorApiAcademicResponse = ApiResponse<
+	PaginationContent<Counselor>
+>;
