@@ -1,11 +1,9 @@
 import { User } from '@shared/types';
-import { ApiResponse, apiService as api } from '@shared/store'
-
+import { ApiResponse, apiService as api } from '@shared/store';
 
 export const addTagTypes = [
   'user'
 ] as const;
-
 
 export const usersApi = api
   .enhanceEndpoints({
@@ -20,6 +18,12 @@ export const usersApi = api
           body: data
         }),
       }),
+      loginWithGoogle: build.mutation<LoginGoogleApiResponse, LoginGoogleApiArg>({
+        query: (accessToken) => ({
+          url: `/api/auth/login/oauth/google/${accessToken}`,
+          method: 'POST',
+        }),
+      }),
       logout: build.mutation<void, void>({
         query: () => ({
           url: `/api/auth/logout`,
@@ -27,16 +31,21 @@ export const usersApi = api
         }),
       }),
     })
-  })
+  });
 
 export const {
   useLoginDefaultMutation,
+  useLoginWithGoogleMutation,
   useLogoutMutation
-} = usersApi
+} = usersApi;
 
-export type LoginDefaultApiResponse = ApiResponse<User>
-
+// Types for Default Login
+export type LoginDefaultApiResponse = ApiResponse<User>;
 export type LoginDefaultApiArg = {
-  email: string,
-  password: string
-}
+  email: string;
+  password: string;
+};
+
+// Types for Google OAuth Login
+export type LoginGoogleApiResponse = ApiResponse<User>;
+export type LoginGoogleApiArg = string;

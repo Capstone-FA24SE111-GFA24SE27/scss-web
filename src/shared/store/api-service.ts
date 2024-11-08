@@ -6,6 +6,7 @@ import type {
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 import { RootState } from '../store'
 import { logout, setAccessToken, setAccount } from './user-slice'
+import { SerializedError } from '@reduxjs/toolkit'
 
 
 const BASE_URL = 'http://localhost:8080'
@@ -43,8 +44,8 @@ const baseQueryWithReauth: BaseQueryFn<
 
 			result = await baseQuery(args, api, extraOptions);
 		} else {
-				api.dispatch(logout());
-				// window.location.href = '/';
+			api.dispatch(logout());
+			// window.location.href = '/';
 		}
 	}
 	return result
@@ -70,4 +71,29 @@ export type ApiResponse<T> = {
 	status: number;
 }
 
+export type ApiError = {
+	message: string;
+	status: number;
+}
+
+
 export default apiService
+
+export const getApiErrorMessage = (error: FetchBaseQueryError | SerializedError): string => {
+	if (!error) return '';
+
+	// Handle FetchBaseQueryError
+	if ('status' in error) {
+		const statusMessages: Record<number, string> = {
+			401: (error.data as ApiError)?.message || 'Invalid credentials.',
+			404: (error.data as ApiError)?.message || 'Resource not found.',
+			500: 'Server error. Please try again later.',
+		};
+
+		// Return specific message or a default one for other statuses
+		return statusMessages[error.status] || 'An error occurred. Please try again.';
+	}
+
+	// Handle SerializedError
+	return 'Unexpected error. Please try again.';
+};

@@ -7,8 +7,30 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { SignInForm } from '../auth-components';
 import { CalendarMonth, SentimentSatisfied, Summarize, SupportAgent } from '@mui/icons-material';
+import { useLoginWithGoogleMutation } from '../auth-api';
+import { googleAuth } from '@/shared/services';
+import { setAccessToken, setAccount, useAppDispatch } from '@shared/store';
 
 function SignInPage() {
+
+	const [loginWithGoogle] = useLoginWithGoogleMutation();
+	const dispatch = useAppDispatch()
+	const handleGoogleLogin = async () => {
+		try {
+			const accessToken = await googleAuth();
+			confirm(accessToken)
+			loginWithGoogle(accessToken)
+				.unwrap()
+				.then(response => {
+					const { account, accessToken } = response.content
+					dispatch(setAccount(account))
+					dispatch(setAccessToken(accessToken))
+				})
+		} catch (error) {
+			console.error("Login failed:", error);
+		}
+	};
+
 
 	return (
 		<div className="flex min-w-0 flex-1 flex-col items-center sm:flex-row sm:justify-center md:items-start md:justify-start">
@@ -29,6 +51,7 @@ function SignInPage() {
 								variant="outlined"
 								color='primary'
 								className="w-full flex items-center text-base font-semibold gap-16"
+								onClick={handleGoogleLogin}
 							>
 								<img
 									className="w-24"

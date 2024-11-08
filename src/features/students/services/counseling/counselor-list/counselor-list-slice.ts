@@ -4,15 +4,29 @@ import { rootReducer } from '@shared/store';
  * The initial state of the filter slice.
  */
 
-const initialState = {
+interface CounselorListState {
+  open: boolean;
+  counselorType: 'ACADEMIC' | 'NON_ACADEMIC';
+  availableFrom: string,
+  availableTo: string,
+  searchTerm: string;
+  specializationId: number | '';
+  departmentId: number | '';
+  majorId: number | '';
+  expertiseId: number | '';
+}
+
+const initialState: CounselorListState = {
   open: true,
-  // mobileOpen: false,
-  // foldedOpen: false
   searchTerm: '',
   counselorType: 'ACADEMIC',
   availableFrom: ``,
   availableTo: ``,
-};
+  specializationId: '',
+  expertiseId: '',
+  departmentId: '',
+  majorId: '',
+}
 /**
  * The filter slice.
  */
@@ -58,7 +72,19 @@ export const counselorListSlice = createSlice({
     },
     setAvailableTo: (state, action: PayloadAction<string>) => {
       state.availableTo = action.payload
-    }
+    },
+    setSpecializationId: (state, action: PayloadAction<number | ''>) => {
+      state.specializationId = action.payload;
+    },
+    setDepartmentId: (state, action: PayloadAction<number | ''>) => {
+      state.departmentId = action.payload;
+    },
+    setMajorId: (state, action: PayloadAction<number | ''>) => {
+      state.majorId = action.payload;
+    },
+    setExpertiseId: (state, action: PayloadAction<number | ''>) => {
+      state.expertiseId = action.payload;
+    },
   },
   selectors: {
     selectFilter: (filter) => filter,
@@ -79,6 +105,10 @@ export const {
   setCounselorType,
   setAvailableFrom,
   setAvailableTo,
+  setSpecializationId,
+  setDepartmentId,
+  setMajorId,
+  setExpertiseId
 } = counselorListSlice.actions;
 export const {
   selectFilter,

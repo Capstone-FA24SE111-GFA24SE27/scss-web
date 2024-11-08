@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
-import { studentRoutes } from '@features/counselors/pages';
+import { studentRoutes } from '@features/counselors/counselors-pages';
 
 const StudentList = lazy(() => import('./StudentList'))
 

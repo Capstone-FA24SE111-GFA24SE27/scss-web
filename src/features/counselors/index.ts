@@ -1,2 +1,2 @@
 export { counselorsRoutes } from './counselors-routes'
-export * from './pages/student'
+export * from './counselors-pages/student'

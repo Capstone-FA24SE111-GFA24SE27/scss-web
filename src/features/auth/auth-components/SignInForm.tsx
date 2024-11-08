@@ -10,17 +10,18 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import { setAccessToken, setAccount, useAppDispatch, useAppSelector } from '@shared/store';
+import { getApiErrorMessage, setAccessToken, setAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useLoginDefaultMutation } from '../auth-api'
+import { Typography } from '@mui/material';
 /**
  * Form Validation Schema
  */
 const schema = z.object({
 	email: z.string(),
-		// .email('You must enter a valid email').min(1, 'You must enter an email'),
+	// .email('You must enter a valid email').min(1, 'You must enter an email'),
 	password: z
 		.string()
-		// .min(1, 'Password is too short - must be at least 4 chars.')
+	// .min(1, 'Password is too short - must be at least 4 chars.')
 });
 
 type FormType = {
@@ -44,8 +45,9 @@ function SignInForm() {
 		resolver: zodResolver(schema)
 	});
 
-	const [loginDefault, { isLoading }] = useLoginDefaultMutation()
+	const [loginDefault, { isLoading, error }] = useLoginDefaultMutation()
 
+	const serverError = getApiErrorMessage(error)
 
 	const { isValid, dirtyFields, errors } = formState;
 
@@ -63,7 +65,9 @@ function SignInForm() {
 				const { account, accessToken } = response.content
 				dispatch(setAccount(account))
 				dispatch(setAccessToken(accessToken))
-				console.log(response)
+			})
+			.catch((error) => {
+				console.error(`E:`, error)
 			})
 	}
 
@@ -111,7 +115,7 @@ function SignInForm() {
 				)}
 			/>
 
-			<div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between">
+			{/* <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between">
 				<Controller
 					name="remember"
 					control={control}
@@ -136,7 +140,9 @@ function SignInForm() {
 				>
 					Forgot password?
 				</Link>
-			</div>
+			</div> */}
+
+			{serverError && <Typography color='error'>{serverError}</Typography>}
 
 			<Button
 				variant="contained"
