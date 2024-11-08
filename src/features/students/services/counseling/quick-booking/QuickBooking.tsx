@@ -15,8 +15,9 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { useBookCounselorMutation, useGetCounselorExpertisesQuery, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
+import { useBookCounselorMutation, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
 import { counselingTypeDescription } from '@/shared/constants';
+import { useGetCounselorExpertisesQuery, useGetDepartmentsQuery, useGetMajorsByDepartmentQuery, useGetSpecializationsByMajorQuery } from '@/shared/services';
 
 /**
  * The contact view.
@@ -28,14 +29,22 @@ const schema = z.object({
   date: z.string().min(1, "Counseling date is required"),
   isOnline: z.coerce.boolean().optional(),
   reason: z.string().min(2, "Please enter a valid reason").optional(),
-  expertise: z.object({
+  department: z.object({
     id: z.number(),
     name: z.string(),
-  }).optional().nullable(),
+  }).nullable().optional(),
+  major: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).nullable().optional(),
   specialization: z.object({
     id: z.number(),
     name: z.string(),
-  }).optional().nullable(),
+  }).nullable().optional(),
+  expertise: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).nullable().optional(),
   gender: z.enum(['MALE', 'FEMALE', '']).optional()
 });
 
@@ -88,12 +97,18 @@ function QuickBooking() {
   const { data: counselorSlotsData, isLoading: isFetchingCounselorSlots } = useGetCounselorSlotsQuery(formData.date)
   const counselorSlots = counselorSlotsData?.content
 
+  const { data: departmentsData, isFetching: isFetchingDepartments } = useGetDepartmentsQuery();
+  const departments = departmentsData || [];
+
+  const { data: majorsData, isFetching: isFetchingMajors } = useGetMajorsByDepartmentQuery(watch("department")?.id.toString());
+  const majors = majorsData || [];
+
+  const { data: specializationsData, isFetching: isFetchingSpecializations } = useGetSpecializationsByMajorQuery(watch("major")?.id.toString());
+  const specializations = specializationsData || [];
 
   const { data: counselorExpertisesData, isFetching: isFetchingCounselorExpertises } = useGetCounselorExpertisesQuery()
-  const counselingExpertises = counselorExpertisesData?.content || []
+  const expertises = counselorExpertisesData?.content || []
 
-  const { data: counselorSpecializationsData, isFetching: isFetchingCounselorSpecializations } = useGetCounselorSpecializationsQuery()
-  const counselingSpecializations = counselorSpecializationsData?.content || []
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -107,6 +122,7 @@ function QuickBooking() {
   // const { data: counserDailySlotsData, isFetching: isFetchingCounselorSlots } = useGetCounselorDailyQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
   const onSubmitMatching = () => {
+    console.log("------", formData)
     const element = document.getElementById('found_counselor');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -148,23 +164,6 @@ function QuickBooking() {
   const handleDateChange = (selectedDate) => {
     const previousDate = formData.date
     const currentDate = dayjs(selectedDate).format('YYYY-MM-DD')
-    // socket?.off(`/user/${previousDate}/${counselorId}/slot`);
-
-    // socket?.on(`/user/${currentDate}/${counselorId}/slot`, (slotsMessage: SlotsMessage) => {
-    //   console.log("Slots Message", slotsMessage)
-    //   if (!slotsMessage) {
-    //     return
-    //   }
-    //   setCounselorSlots(previousSlots => ({
-    //     ...previousSlots,
-    //     [slotsMessage.dateChange]: (previousSlots[slotsMessage.dateChange]).map((slot) =>
-    //       slot.slotId === slotsMessage.slotId
-    //         ? { ...slot, status: slotsMessage.newStatus }
-    //         : slot
-    //     )
-    //   }));
-    // })
-
     setValue("date", currentDate)
     setValue("slotId", 0)
     setValue("slotCode", '')
@@ -176,7 +175,7 @@ function QuickBooking() {
     setStartOfMonth(newMonth.startOf('month').format('YYYY-MM-DD'));
     setEndOfMonth(newMonth.endOf('month').format('YYYY-MM-DD'));
   };
-
+  console.log(formData)
 
   const [getRandomMatchedCounselor,
     {
@@ -241,7 +240,7 @@ function QuickBooking() {
                             <Typography variant="h6" sx={{ marginLeft: 1 }}>Academic</Typography>
                           </Box>
                           <Typography variant="body2" color="text.secondary">
-                          {counselingTypeDescription.ACADEMIC}
+                            {counselingTypeDescription.ACADEMIC}
                           </Typography>
                         </Box>
                       }
@@ -328,22 +327,80 @@ function QuickBooking() {
                 {
                   counselingType === 'ACADEMIC'
                     ? < div className=''>
-                      <Typography className='font-semibold text-primary text-lg'>Select counselor's speicalization (optional)</Typography>
+                      <Typography className='font-semibold text-primary text-lg'>Select Department (optional)</Typography>
+                      <Controller
+                        name="department"
+                        control={control}
+                        render={({ field }) => (
+                          <Autocomplete
+                            className="mt-16"
+                            {...field}
+                            options={departments}
+                            getOptionLabel={(option) => option.name}
+                            onChange={(_, value) => {
+                              field.onChange(value); // Update department selection in the form
+                              setValue('major', null); // Reset major and specialization
+                              setValue('specialization', null);
+                            }}
+                            value={field.value || null}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Department"
+                                variant="outlined"
+                                error={!!errors.department}
+                                helperText={errors.department?.message}
+                              />
+                            )}
+                          />
+                        )}
+                      />
+
+                      {/* Major Selection */}
+                      <Typography className='font-semibold text-primary text-lg mt-16'>Select Major (optional)</Typography>
+                      <Controller
+                        name="major"
+                        control={control}
+                        render={({ field }) => (
+                          <Autocomplete
+                            className="mt-16"
+                            {...field}
+                            options={majors}
+                            getOptionLabel={(option) => option.name}
+                            onChange={(_, value) => {
+                              field.onChange(value); // Update major selection in the form
+                              setValue('specialization', null); // Reset specialization
+                            }}
+                            value={field.value || null}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Major"
+                                variant="outlined"
+                                error={!!errors.major}
+                              />
+                            )}
+                          />
+                        )}
+                      />
+
+                      {/* Specialization Selection */}
+                      <Typography className='font-semibold text-primary text-lg mt-16'>Select Specialization (optional)</Typography>
                       <Controller
                         name="specialization"
                         control={control}
                         render={({ field }) => (
                           <Autocomplete
+                            className="mt-16"
                             {...field}
-                            options={counselingSpecializations}
-                            className='mt-16'
+                            options={specializations}
                             getOptionLabel={(option) => option.name}
                             onChange={(_, value) => field.onChange(value)}
                             value={field.value || null}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                label="Specialization "
+                                label="Specialization"
                                 variant="outlined"
                                 error={!!errors.specialization}
                               />
@@ -360,7 +417,7 @@ function QuickBooking() {
                         render={({ field }) => (
                           <Autocomplete
                             {...field}
-                            options={counselingExpertises}
+                            options={expertises}
                             className='mt-16'
                             getOptionLabel={(option) => option.name}
                             onChange={(_, value) => field.onChange(value)}
@@ -378,75 +435,74 @@ function QuickBooking() {
                       />
                     </div>
                 }
+              </Paper>
+              <Paper className='shadow p-32 pb-16'>
+                <Typography className='font-semibold text-primary text-lg'>Select couselor's gender (optional)</Typography>
+                <div className="mt-8">
+                  <Controller
+                    name="gender"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex gap-8 items-center">
+                        {/* Male Icon */}
+                        <Tooltip title="Male">
+                          <IconButton
+                            onClick={() => {
+                              setSelectedGender('MALE');
+                              field.onChange('MALE');
+                            }}
+                            sx={{
+                              border: selectedGender === 'MALE' ? '2px solid #1976d2' : 'none',
+                              borderRadius: '50%', // Keep the border round
+                            }}
+                          >
+                            <Male className="text-blue-500" fontSize="large" />
+                          </IconButton>
+                        </Tooltip>
 
-                <div className='mt-32'>
-                  <Typography className='font-semibold text-primary text-lg'>Select couselor's gender (optional)</Typography>
-                  <div className="mt-8">
-                    <Controller
-                      name="gender"
-                      control={control}
-                      render={({ field }) => (
-                        <div className="flex gap-8 items-center">
-                          {/* Male Icon */}
-                          <Tooltip title="Male">
-                            <IconButton
-                              onClick={() => {
-                                setSelectedGender('MALE');
-                                field.onChange('MALE');
-                              }}
-                              sx={{
-                                border: selectedGender === 'MALE' ? '2px solid #1976d2' : 'none',
-                                borderRadius: '50%', // Keep the border round
-                              }}
-                            >
-                              <Male className="text-blue-500" fontSize="large" />
-                            </IconButton>
-                          </Tooltip>
+                        {/* Female Icon */}
+                        <Tooltip title="Female">
+                          <IconButton
+                            onClick={() => {
+                              setSelectedGender('FEMALE');
+                              field.onChange('FEMALE');
+                            }}
+                            sx={{
+                              border: selectedGender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
+                              borderRadius: '50%',
+                            }}
+                          >
+                            <Female className="text-pink-500" fontSize="large" />
+                          </IconButton>
+                        </Tooltip>
 
-                          {/* Female Icon */}
-                          <Tooltip title="Female">
-                            <IconButton
-                              onClick={() => {
-                                setSelectedGender('FEMALE');
-                                field.onChange('FEMALE');
-                              }}
-                              sx={{
-                                border: selectedGender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
-                                borderRadius: '50%',
-                              }}
-                            >
-                              <Female className="text-pink-500" fontSize="large" />
-                            </IconButton>
-                          </Tooltip>
-
-                          {/* Clear Button */}
-                          <div className='flex-1 flex justify-end'>
-                            {
-                              selectedGender &&
-                              <Tooltip title="Clear gender selection">
-                                <IconButton
-                                  onClick={() => {
-                                    setSelectedGender(''); // Clear the selected gender
-                                    field.onChange(''); // Update the form state
-                                  }}
-                                  sx={{
-                                    borderRadius: '50%',
-                                  }}
-                                >
-                                  <Close /> {/* X Icon for Clear */}
-                                </IconButton>
-                              </Tooltip>
-                            }
-
-                          </div>
+                        {/* Clear Button */}
+                        <div className='flex-1 flex justify-end'>
+                          {
+                            selectedGender &&
+                            <Tooltip title="Clear gender selection">
+                              <IconButton
+                                onClick={() => {
+                                  setSelectedGender(''); // Clear the selected gender
+                                  field.onChange(''); // Update the form state
+                                }}
+                                sx={{
+                                  borderRadius: '50%',
+                                }}
+                              >
+                                <Close /> {/* X Icon for Clear */}
+                              </IconButton>
+                            </Tooltip>
+                          }
 
                         </div>
-                      )}
-                    />
-                    {errors.gender && (
-                      <p className="text-red-500 mt-2">{errors.gender.message}</p>
+
+                      </div>
                     )}
-                  </div>
+                  />
+                  {errors.gender && (
+                    <p className="text-red-500 mt-2">{errors.gender.message}</p>
+                  )}
                 </div>
               </Paper>
 

@@ -1,14 +1,11 @@
-import { FilterAltOutlined, Search, Tune } from '@mui/icons-material'
-import { Box, Button, IconButton, Input, InputAdornment, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material'
-import { useAppDispatch, useAppSelector } from '@shared/store'
-import { motion } from 'framer-motion'
-import { useState, ChangeEvent, useEffect } from 'react'
-import { selectCounselorType, selectFilter, setCounselorType, setSearchTerm } from './counselor-list-slice'
-import CounselorListFilterButton from './CounselorListFilterButton'
-import { debounce } from 'lodash'
-import { CounselingType } from '@/shared/types'
-import { useSearchParams } from 'react-router-dom'
 import { SearchField } from '@/shared/components'
+import { CounselingType } from '@/shared/types'
+import { Box, Tab, Tabs } from '@mui/material'
+import { useAppDispatch, useAppSelector } from '@shared/store'
+import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import CounselorListFilterButton from './CounselorListFilterButton'
+import { selectFilter, setCounselorType, setSearchTerm } from './counselor-list-slice'
 
 const CounselorListHeader = () => {
   const filter = useAppSelector(selectFilter)

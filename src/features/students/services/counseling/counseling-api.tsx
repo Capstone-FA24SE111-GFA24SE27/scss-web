@@ -18,28 +18,53 @@ export const counselingApi = api
     endpoints: (build) => ({
       getCounselorsAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({
-          page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '', availableFrom = '', availableTo = '' }) => ({
-            url: `/api/counselors/academic`,
-            params: {
-              search,
-              page,
-              availableFrom,
-              availableTo,
-            }
-          }),
+          page = 1,
+          ratingFrom = '',
+          ratingTo = '',
+          search = '',
+          sortBy = '',
+          sortDirection = '',
+          availableFrom = '',
+          availableTo = '',
+          departmentId = '',
+          majorId = '',
+          specializationId = '',
+        }) => ({
+          url: `/api/counselors/academic`,
+          params: {
+            search,
+            page,
+            availableFrom,
+            availableTo,
+            departmentId,
+            majorId,
+            specializationId,
+          }
+        }),
         providesTags: ['counselors']
       }),
       getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({
-          page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '', availableFrom = '', availableTo = '' }) => ({
-            url: `/api/counselors/non-academic`,
-            params: {
-              search,
-              page,
-              availableFrom,
-              availableTo,
-            }
-          }),
+          page = 1,
+          ratingFrom = '',
+          ratingTo = '',
+          search = '',
+          sortBy = '',
+          sortDirection = '',
+          availableFrom = '',
+          availableTo = '',
+          expertiseId,
+
+        }) => ({
+          url: `/api/counselors/non-academic`,
+          params: {
+            search,
+            page,
+            availableFrom,
+            availableTo,
+            expertiseId,
+          }
+        }),
         providesTags: ['counselors']
       }),
       getCounselorAcademic: build.query<GetCounselorApiAcademicResponse, string>({
@@ -74,12 +99,12 @@ export const counselingApi = api
         }),
         invalidatesTags: ['appointments']
       }),
-      getCounselorExpertises: build.query<GetCounselorExpertisesApiResponse, void>({
-        query: () => ({
-          url: `/api/counselors/expertise`,
-        }),
-        providesTags: ['expertises']
-      }),
+      // getCounselorExpertises: build.query<GetCounselorExpertisesApiResponse, void>({
+      //   query: () => ({
+      //     url: `/api/counselors/expertise`,
+      //   }),
+      //   providesTags: ['expertises']
+      // }),
       getCounselorSpecializations: build.query<GetCounselorSpecializationsApiResponse, void>({
         query: () => ({
           url: `/api/counselors/specialization`,
@@ -114,7 +139,7 @@ export const {
   useGetCounselorNonAcademicQuery,
   useGetCounselorDailySlotsQuery,
   useBookCounselorMutation,
-  useGetCounselorExpertisesQuery,
+  // useGetCounselorExpertisesQuery,
   useGetCounselorSpecializationsQuery,
   useGetCounselorSlotsQuery,
   useGetRandomMatchedCousenlorAcademicMutation,
@@ -132,6 +157,10 @@ export type GetCounselorsApiArg = {
   ratingTo?: number,
   availableFrom?: string,
   availableTo?: string,
+  specializationId?: number | '';
+  departmentId?: number | '';
+  majorId?: number | '';
+  expertiseId?: number | '';
 }
 
 export type GetCounselorApiResponse = ApiResponse<Counselor>

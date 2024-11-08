@@ -190,14 +190,14 @@ const QnaList = () => {
 					onChange={handleSelectType}
 					className='w-144'
 				/>
-				<SelectField
+				{/* <SelectField
 					disabled={!selectedType}
 					label='Topic'
 					options={topicOptions}
 					value={selectedTopic}
 					onChange={handleSelectTopic}
 					className='w-200'
-				/>
+				/> */}
 				<div className='flex justify-end flex-1 w-full'>
 					<FormControlLabel
 						label='Open Answers'

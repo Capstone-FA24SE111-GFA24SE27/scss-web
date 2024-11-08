@@ -1,6 +1,6 @@
 import { Avatar, Chip, Divider, Input, ListItemButton, Paper, Tooltip, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import {useGetMyCounselorQuestionsQuery } from '../qna-api';
+import { useGetMyCounselorQuestionsQuery } from '../qna-api';
 import { CheckCircleOutlineOutlined, HelpOutlineOutlined, Search } from '@mui/icons-material';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { selectAccount, useAppSelector } from '@shared/store';
@@ -29,10 +29,10 @@ const Conversation = () => {
   }, []);
 
   return (
-    <div className='flex h-full'>
-      <div className='p-16 space-y-16 border-r min-w-xs bg-background-paper'>
+    <div className='flex h-full w-full'>
+      <div className='p-16 space-y-16 border-r bg-background-paper'>
         <Typography className='text-3xl font-extrabold'>Conversations</Typography>
-        <Paper className="flex items-center w-full h-40 p-4 px-16 py-4 rounded-full shadow-none border-1">
+        {/* <Paper className="flex items-center w-full h-40 p-4 px-16 py-4 rounded-full shadow-none border-1">
           <Search />
           <Input
             placeholder="Search or start new chat"
@@ -43,7 +43,7 @@ const Conversation = () => {
               'aria-label': 'Search'
             }}
           />
-        </Paper>
+        </Paper> */}
         <Scrollbar className="space-y-8 overflow-y-auto !h-[calc(100vh-212px)]">
           {qnaList.map((qnaItem) => (
             <ListItemButton key={qnaItem.id} className='flex-col items-start rounded' selected={Number(id) == qnaItem.id}

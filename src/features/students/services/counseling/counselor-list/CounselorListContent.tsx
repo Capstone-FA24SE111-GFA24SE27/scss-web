@@ -13,21 +13,32 @@ function CounselorListContent() {
     const [page, setPage] = useState(1);
 
     const search = useAppSelector(selectSearchTerm)
+    const filter = useAppSelector(selectFilter)
     const counselorType = useAppSelector(selectCounselorType)
-    const availableFrom = useAppSelector(selectFilter).availableFrom
-    const availableTo = useAppSelector(selectFilter).availableTo
+    const { 
+        availableFrom,
+        availableTo,
+        departmentId,
+        majorId,
+        specializationId,
+        expertiseId
+    } = filter
     console.log(availableFrom, availableTo)
     const { data: academicCounselors, isLoading: isFetchingAcademicCounselors } = useGetCounselorsAcademicQuery({
         search,
         page,
         availableFrom,
-        availableTo
+        availableTo,
+        departmentId,
+        majorId,
+        specializationId,
     })
     const { data: nonAcademicCounselors, isLoading: isFetchingNonAcademicCounselors } = useGetCounselorsNonAcademicQuery({
         search,
         page,
         availableFrom,
-        availableTo
+        availableTo,
+        expertiseId
     })
 
     const counselors = (counselorType === 'ACADEMIC' ? academicCounselors?.content?.data : nonAcademicCounselors?.content?.data) || []
