@@ -13,7 +13,7 @@ import { Question } from '@/shared/types';
 
 const Conversation = () => {
   const { data: qnaData, refetch } = useGetMyStudentQuestionsQuery({})
-  const qnaList = qnaData?.content?.data.filter(item => item.counselor) || []
+  const qnaList = qnaData?.content?.data.filter(item => item.status === 'VERIFIED') || []
   const account = useAppSelector(selectAccount)
 
   const { id } = useParams()

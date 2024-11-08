@@ -65,6 +65,8 @@ const MyQnaContent = () => {
   const qnaList = qnaData?.content?.data || []
 
 
+  console.log(qnaList)
+
   const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
 
 

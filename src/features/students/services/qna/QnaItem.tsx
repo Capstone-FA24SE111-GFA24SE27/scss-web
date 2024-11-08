@@ -49,7 +49,6 @@ const QnaItem = (props: Props) => {
 
     const {data, isLoading} = useGetMessagesQuery(qna.id)
 
-	console.log(qna)
     const chatSession = data?.content
 
 	const navigate = useNavigate();

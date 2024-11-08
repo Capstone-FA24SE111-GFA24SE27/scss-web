@@ -35,12 +35,12 @@ type Props = {
 const ChatBox = (props: Props) => {
 	const { qna } = props;
 
-
 	const [message, setMessage] = useState('');
 	const [messages, setMessages] = useState<Message[]>([]);
 	const messagesRef = useRef<HTMLDivElement>(null);
 	const [sendMessage] = useSendMessageMutation();
 	const [readMessage] = useReadMessageMutation();
+
 	const socket = useSocket();
 	const chatListeners = useAppSelector(selectChatListeners);
 	const account = useAppSelector(selectAccount);
@@ -57,31 +57,39 @@ const ChatBox = (props: Props) => {
 
 	useEffect(() => {
 		if (qna) {
-			dispatch(setChatSessionId(qna.chatSession.id));
-			setMessages(qna.chatSession.messages)
+			setMessages(qna.chatSession.messages);
 			// console.log(qna.chatSession.messages)
 
 			if (qna.chatSession.messages.length > 0) {
-				const latestMessage = qna.chatSession.messages[qna.chatSession.messages.length - 1];
+				const latestMessage =
+					qna.chatSession.messages[
+						qna.chatSession.messages.length - 1
+					];
 				// console.log('latest',latestMessage)
-				if (latestMessage.sender.id !== account.id && !latestMessage.read) {
-				try{
-					readMessage(qna.chatSession.id);
-				} catch (e) {
-					console.log(e)
+				if (
+					latestMessage.sender.id !== account.id &&
+					!latestMessage.read
+				) {
+					try {
+						readMessage(qna.chatSession.id);
+					} catch (e) {
+						console.log(e);
+					}
 				}
 			}
 		}
-		}
-		
+
 		return () => {
 			dispatch(closeChatSession());
 		};
 	}, [qna]);
 
 	useEffect(() => {
+		console.log('asdawd');
 		if (!qna.closed && socket && chatListeners && passiveCallback) {
+			console.log('asdawd2');
 			if (chatListeners.has(qna.chatSession.id)) {
+				console.log('asdawd3	');
 				socket.off(`/user/${qna.chatSession.id}/chat`);
 				const cb = (data: Message) => {
 					if (data.sender.id !== account.id && !data.read) {
@@ -96,7 +104,7 @@ const ChatBox = (props: Props) => {
 				};
 
 				socket.on(`/user/${qna.chatSession.id}/chat`, cb);
-				// console.log(`active /user/${qna.chatSession.id}/chat`)
+				console.log(`active /user/${qna.chatSession.id}/chat`);
 			}
 
 			return () => {
@@ -106,11 +114,12 @@ const ChatBox = (props: Props) => {
 					chatListeners.has(qna.chatSession.id) &&
 					passiveCallback
 				) {
-					socket.on(
-						`/user/${qna.chatSession.id}/chat`, (data) =>
+					socket.on(`/user/${qna.chatSession.id}/chat`, (data) =>
 						passiveCallback(data, qna)
 					);
-					// console.log(`resume passive /user/${qna.chatSession.id}/chat`)
+					console.log(
+						`resume passive /user/${qna.chatSession.id}/chat`
+					);
 				}
 			};
 		}

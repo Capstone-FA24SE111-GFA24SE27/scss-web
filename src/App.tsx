@@ -61,12 +61,12 @@ const App = () => {
 								'bottom-0 right-0 mb-52 md:mb-68 mr-4 lg:mr-40 z-99',
 						}}
 					>
-						<Suspense fallback={<AppLoading />}>
-							<SocketProvider>
+						<SocketProvider>
+							<Suspense fallback={<AppLoading />}>
 								<Dialog />
 								{AppRoutes}
-							</SocketProvider>
-						</Suspense>
+							</Suspense>
+						</SocketProvider>
 					</SnackbarProvider>
 				</LocalizationProvider>
 			</StyledEngineProvider>

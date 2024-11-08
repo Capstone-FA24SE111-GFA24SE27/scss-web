@@ -26,27 +26,25 @@ const useChatNotification = (qnaList: Question[]) => {
 	useEffect(() => {
 		if (socket && qnaList && qnaList.length > 0) {
 			const cb = (data: Message, qna: Question) => {
-				console.log('current chat', currentChatId)
-				if (currentChatId !== qna.chatSession.id) {
-					enqueueSnackbar(data.content, {
-						key: data.id,
-						autoHideDuration: 5000,
-						anchorOrigin: {
-							horizontal: 'left',
-							vertical: 'bottom',
-						},
-						content: (
-							<ChatNotificationTemplate
-								item={data}
-								qna={qna}
-								onClose={() => {
-									closeSnackbar(data.id);
-								}}
-							/>
-						),
-					});
-				}
-				dispatch(chatApi.util.invalidateTags(['chat']))
+				console.log('current chat', currentChatId);
+				enqueueSnackbar(data.content, {
+					key: data.id,
+					autoHideDuration: 5000,
+					anchorOrigin: {
+						horizontal: 'left',
+						vertical: 'bottom',
+					},
+					content: (
+						<ChatNotificationTemplate
+							item={data}
+							qna={qna}
+							onClose={() => {
+								closeSnackbar(data.id);
+							}}
+						/>
+					),
+				});
+				dispatch(chatApi.util.invalidateTags(['chat']));
 				// if(account.role === 'STUDENT'){
 				// 	dispatch(studentQnasApi.util.invalidateTags(['qna']))
 				// } else {
@@ -58,14 +56,21 @@ const useChatNotification = (qnaList: Question[]) => {
 
 			let listenersList = new Set<number>();
 
+			console.log(qnaList)
+
 			qnaList.forEach((qnaItem) => {
 				if (
 					qnaItem.status === 'VERIFIED' &&
 					qnaItem.answer &&
 					!qnaItem.closed
 				) {
-					socket.on(`/user/${qnaItem.chatSession.id}/chat`, (data) =>
-						cb(data, qnaItem)
+					const result = socket.on(
+						`/user/${qnaItem.chatSession.id}/chat`,
+						(data) => cb(data, qnaItem)
+					);
+					console.log(
+						`passive /user/${qnaItem.chatSession.id}/chat`,
+						result
 					);
 					listenersList.add(qnaItem.chatSession.id);
 				}
