@@ -37,7 +37,7 @@ function StudentListContent() {
 		tab
 	} = filter;
 
-	
+
 
 	// const useConditionalQuery = isApiGetRecommended
 	// 	? (param) => {
@@ -83,7 +83,7 @@ function StudentListContent() {
 
 	const { data: data } = useGetStudentsFilterQuery({
 		keyword: searchTerm,
-		isIncludeBehavior,
+		isIncludeBehavior: false,
 		promptForBehavior,
 		semesterIdForBehavior,
 		departmentId,
