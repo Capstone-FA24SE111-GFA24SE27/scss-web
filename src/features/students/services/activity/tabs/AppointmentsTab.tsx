@@ -8,6 +8,7 @@ import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useState, useEffect, ChangeEvent } from 'react'
 import { useSocket } from '@/shared/context';
 import { statusColor } from '@/shared/constants';
+import { openCounselorView } from '@/features/students/students-layout-slice';
 const AppointmentsTab = () => {
 
   const socket = useSocket();
@@ -177,8 +178,11 @@ const AppointmentsTab = () => {
                   }
                   <Tooltip title={`View ${appointment.counselorInfo.profile.fullName}'s profile`}>
                     <ListItemButton
-                      component={NavLinkAdapter}
-                      to={`counselor/${appointment.counselorInfo.profile.id}`}
+                      // component={NavLinkAdapter}
+                      // to={`counselor/${appointment.counselorInfo.profile.id}`}
+                      onClick={() => {
+                        dispatch(openCounselorView(appointment.counselorInfo.profile.id.toString()))
+                      }}
                       className='bg-primary-light/5 flex-1 rounded shadow'
                     >
                       <UserListItem
@@ -187,7 +191,7 @@ const AppointmentsTab = () => {
                         phoneNumber={appointment.counselorInfo.profile.phoneNumber}
                         email={appointment.counselorInfo.email}
                       />
-                      <ChevronRight />
+                      {/* <ChevronRight /> */}
                     </ListItemButton>
                   </Tooltip>
                   {appointment.appointmentFeedback ?

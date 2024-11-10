@@ -19,10 +19,12 @@ import { Paper } from '@mui/material';
 interface CounselorViewProps {
     shouldShowBooking?: boolean,
     counselingType?: CounselingType
+    id?: string
 }
-function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
+function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
     const routeParams = useParams();
-    const { id: counselorId } = routeParams as { id: string };
+    const { id: counselorRouteId } = routeParams
+    const counselorId = id || counselorRouteId
     const { data, isLoading } = useGetCounselorViewQuery(counselorId)
     const counselor = data?.content
     console.log(counselor)
@@ -82,7 +84,7 @@ function CounselorView({ shouldShowBooking = true }: CounselorViewProps) {
                                         color="secondary"
                                         sx={{ color: 'white' }}
                                         component={NavLinkAdapter}
-                                        to="booking"
+                                        to={`/services/counseling/counselor/${counselorId}/booking`}
                                     >
                                         <span className="mx-8">Book Appointment</span>
                                     </Button>

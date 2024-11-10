@@ -1,11 +1,13 @@
-import { NavLinkAdapter } from '@/shared/components';
+import { NavLinkAdapter, UserLabel } from '@/shared/components';
 import { ArrowForward, ArrowRightAlt, ChatBubble, ChatBubbleOutline, CheckCircleOutlineOutlined, Close, Edit, EditNote, ExpandMore, HelpOutlineOutlined, ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Chip, Divider, FormControlLabel, IconButton, MenuItem, Paper, Switch, TextField, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import {  useAnswerQuestionMutation, useCloseQuestionCounselorMutation} from '../qna-api';
+import { useAnswerQuestionMutation, useCloseQuestionCounselorMutation } from '../qna-api';
 import { Question } from '@/shared/types';
+import { useAppDispatch } from '@shared/store';
+import { openStudentView } from '../../counselors-layout-slice';
 
 
 const container = {
@@ -66,6 +68,8 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
     navigate(`${qna.id}`)
   }
 
+  const dispatch = useAppDispatch()
+
   return (
     <motion.div
       variants={item}
@@ -91,23 +95,15 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
           </AccordionSummary>
 
           <AccordionDetails className='flex flex-col justify-start gap-16'>
-            <div className='flex items-center px-32 text-sm'>
-              Asked by
-              <Button className='flex items-center gap-8 ml-4'
-                component={NavLinkAdapter}
-                to={`student/${qna?.student?.profile?.id}`}
-              >
-                <Avatar
-                  className='size-24'
-                  alt={qna.student?.profile.fullName}
-                  src={qna.student?.profile.avatarLink}
-                />
-                <div>
-                  <Typography className='font-semibold'>{qna.student?.profile.fullName}</Typography>
-                </div>
-              </Button>
-            </div>
-            <div className='flex flex-col w-full gap-8 px-16'>
+            <UserLabel
+              profile={qna?.student?.profile}
+              label='Assigned by'
+              email={qna?.student.email}
+              onClick={()=> {
+                dispatch(openStudentView(qna?.student.id.toString()))
+              }}
+            />
+            <div className='flex flex-col w-full gap-8 mt-4'>
               {
                 qna.answer ?
                   editMode ?
@@ -162,6 +158,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 
                   : <div>
                     <TextField
+                      disabled={qna?.closed}
                       label="My answer"
                       placeholder="Enter answer for the question..."
                       variant="outlined"

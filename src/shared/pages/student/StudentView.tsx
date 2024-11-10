@@ -10,23 +10,27 @@ import { ContentLoading, Gender, NavLinkAdapter, SelectField, openDialog } from 
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useGetStudentDocumentViewQuery, useGetStudentProblemTagDetailsQuery, useGetStudentStudyViewQuery } from './student-api';
-import StudentAppointmentList from './StudentAppointmentList';
 import { calculateGPA } from '@/shared/utils';
-import { useState } from 'react';
+import { useAppDispatch } from '@shared/store';
+import { ReactNode, useState } from 'react';
 import { useGetSemestersQuery } from '@/shared/services';
 import { ChangeEvent, useEffect } from 'react'
-import AcademicTranscript from './AcademicTranscript';
-import { useAppDispatch } from '@shared/store';
-import AttendanceReport from './AttendanceReport';
+// import AcademicTranscript from './AcademicTranscript';
+// import StudentAppointmentList from './StudentAppointmentList';
+// import AttendanceReport from './AttendanceReport';
+import { lazy } from 'react'
+const AcademicTranscript = lazy(() => import('./AcademicTranscript'))
+const StudentAppointmentList = lazy(() => import('./StudentAppointmentList'))
+const AttendanceReport = lazy(() => import('./AttendanceReport'))
 /**
  * The contact view.
  */
 
 interface StudentViewProps {
   id?: string,
-  shouldShowBooking?: boolean,
+  actionButton?: ReactNode,
 }
-function StudentView({ shouldShowBooking = true, id }: StudentViewProps) {
+function StudentView({ id, actionButton }: StudentViewProps) {
   const { id: studentRouteId } = useParams();
   const studentId = id || studentRouteId
   const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
@@ -114,22 +118,23 @@ function StudentView({ shouldShowBooking = true, id }: StudentViewProps) {
               {student?.studentProfile.profile.fullName?.charAt(0)}
             </Avatar>
             <Gender gender={student?.studentProfile.profile.gender} />
-
             {
-              shouldShowBooking && (
-                <div className="flex items-center mb-4 ml-auto">
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    sx={{ color: 'white' }}
-                    component={NavLinkAdapter}
-                    to={`/students/student-list/student/${student?.studentProfile.id}/booking`}
-                    startIcon={<Add />}
-                  >
-                    Create an appointment
-                  </Button>
-                </div>
-              )
+              <div className="flex items-center mb-4 ml-auto">
+                {
+                  actionButton === undefined ? (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={{ color: 'white' }}
+                      component={NavLinkAdapter}
+                      to={`/students/student-list/student/${student?.studentProfile.id}/booking`}
+                      startIcon={<Add />}
+                    >
+                      Create an appointment
+                    </Button>
+                  ) : actionButton
+                }
+              </div>
             }
           </div>
 
@@ -188,9 +193,11 @@ function StudentView({ shouldShowBooking = true, id }: StudentViewProps) {
                     className={`w-216`}
                     // onClick={() => navigate('academic-transcript')}
                     onClick={(event) => {
-                      dispatch(openDialog({
-                        children: <AcademicTranscript id={studentId} />
-                      }));
+                      studentRouteId
+                        ? navigate('academic-transcript')
+                        : dispatch(openDialog({
+                          children: <AcademicTranscript id={studentId} />
+                        }));
                     }}
                   >
                     View academic transcript
@@ -199,9 +206,11 @@ function StudentView({ shouldShowBooking = true, id }: StudentViewProps) {
                     startIcon={<Checklist />}
                     variant='outlined' color='secondary' size='small' className={`w-216`}
                     onClick={(event) => {
-                      dispatch(openDialog({
-                        children: <AttendanceReport id={studentId} />
-                      }));
+                      studentRouteId
+                        ? navigate('academic-transcript')
+                        : dispatch(openDialog({
+                          children: <AttendanceReport id={studentId} />
+                        }));
                     }}
                   >
                     View attendance report
@@ -378,7 +387,7 @@ function StudentView({ shouldShowBooking = true, id }: StudentViewProps) {
                     History of couseling
                   </Typography>
                 </Box>
-                <StudentAppointmentList />
+                <StudentAppointmentList id={studentId} />
               </div>
             </div>
           </section>

@@ -2,7 +2,7 @@ import { Expertise } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store';
 
 
-export const addTagTypes = [
+const addTagTypes = [
   'expertises',
 ] as const;
 

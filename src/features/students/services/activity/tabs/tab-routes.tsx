@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
+import { CounselorView } from '@/shared/pages';
 
-const CounselorView = lazy(() => import('../../counseling/counselor/CounselorView'))
 
 export const tabRoutes: RouteObject[] = [
   {

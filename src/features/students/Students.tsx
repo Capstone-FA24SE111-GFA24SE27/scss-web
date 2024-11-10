@@ -4,14 +4,14 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@shared/store';
-import { closeStudentView, selectStudentView } from './counselors-layout-slice';
+import { closeCounselorView, selectCounselorView } from './students-layout-slice';
 import { lazy } from 'react';
-const StudentView  = lazy(() => import('@shared/pages/student/StudentView'));
-const Counselors = () => {
+import { CounselorView } from '@/shared/pages';
+const Students = () => {
   const dispatch = useAppDispatch()
   const isMobile = false
-  const studentView = useAppSelector(selectStudentView)
-  const isOpenStudentView = Boolean(studentView)
+  const counselorView = useAppSelector(selectCounselorView)
+  const isOpenCounselorView = Boolean(counselorView)
 
   return (
     <PageSimple
@@ -20,20 +20,20 @@ const Counselors = () => {
         <div className="flex flex-col flex-auto max-w-full w-fit">
           <IconButton
             className="absolute top-0 right-0 my-16 mx-32 z-10"
-            onClick={() => { dispatch(closeStudentView()) }}
+            onClick={() => { dispatch(closeCounselorView()) }}
             size="large"
           >
             <Close />
           </IconButton>
-          <StudentView id={studentView} />
+          <CounselorView id={counselorView} />
         </div>
       }
-      rightSidebarOpen={isOpenStudentView}
-      rightSidebarOnClose={() => { dispatch(closeStudentView()) }}
+      rightSidebarOpen={isOpenCounselorView}
+      rightSidebarOnClose={() => { dispatch(closeCounselorView()) }}
       rightSidebarVariant="temporary"
       scroll={isMobile ? 'normal' : 'content'}
     />
   );
 }
 
-export default Counselors
+export default Students
