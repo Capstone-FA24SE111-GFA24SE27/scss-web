@@ -1,12 +1,12 @@
 import { RouteObject } from 'react-router-dom'
 import { lazy } from "react";
 import { tabRoutes } from './tabs';
-const DemoFeature = lazy(() => import("./Activity"));
+const Activity = lazy(() => import("./Activity"));
 
 export const activityRoutes: RouteObject[] = [
   {
     path: 'activity',
-    element: <DemoFeature />,
+    element: <Activity />,
     children: [
       ...tabRoutes
     ]

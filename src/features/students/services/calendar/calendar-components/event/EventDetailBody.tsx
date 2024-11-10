@@ -1,4 +1,4 @@
-import { closeDialog, NavLinkAdapter, openDialog } from '@/shared/components';
+import { closeDialog, NavLinkAdapter, openDialog, UserListItem } from '@/shared/components';
 import {
 	Avatar,
 	Button,
@@ -26,6 +26,7 @@ import {
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { AppointmentScheduleType } from '@/shared/types';
+import { openCounselorView } from '@/features/students/students-layout-slice';
 
 type Props = {
 	appointment: AppointmentScheduleType;
@@ -48,6 +49,8 @@ export const EventDetailBody = (props: Props) => {
 		if (onNavClicked) {
 			onNavClicked();
 		}
+		dispatch(openCounselorView(appointment.counselorInfo.profile.id.toString()))
+
 	}
 
 	if (!appointment) {
@@ -127,24 +130,18 @@ export const EventDetailBody = (props: Props) => {
 					title={`View ${appointment.counselorInfo.profile.fullName}'s profile`}
 				>
 					<ListItemButton
-						component={NavLinkAdapter}
-						to={`/services/calendar/counselor/${appointment.counselorInfo.profile.id}`}
+						// component={NavLinkAdapter}
+						// to={`/services/calendar/counselor/${appointment.counselorInfo.profile.id}`}
+						onClick={handleNavClicked}
 						className='w-full rounded bg-primary-main/5'
 					>
-						<div className='flex w-full' onClick={handleNavClicked}>
-							<Avatar
-								alt={appointment.counselorInfo.profile.fullName}
-								src={
-									appointment.counselorInfo.profile.avatarLink
-								}
-							/>
-							<div className='ml-16'>
-								<Typography className='font-semibold text-primary-main'>
-									{appointment.counselorInfo.profile.fullName}
-								</Typography>
-							</div>
-						</div>
-						<ChevronRight />
+						<UserListItem
+							fullName={appointment.studentInfo.profile.fullName}
+							avatarLink={appointment.studentInfo.profile.avatarLink}
+							phoneNumber={appointment.studentInfo.profile.phoneNumber}
+							email={appointment.studentInfo.email}
+						/>
+
 					</ListItemButton>
 				</Tooltip>
 				{appointment.appointmentFeedback ? (

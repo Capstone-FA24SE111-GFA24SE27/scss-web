@@ -15,7 +15,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { useCreateAppointmentMutation, useGetStudentByCodeQuery, useGetStudentViewQuery } from '@features/counselors/counselors-pages';
+import { useCreateAppointmentMutation, useGetStudentByCodeQuery, useGetStudentViewQuery } from '@shared/pages';
 import { useGetCounselorDailySlotsQuery } from '@/features/students/services/counseling/counseling-api';
 import { navigateUp } from '@/shared/utils';
 import { ArrowBack } from '@mui/icons-material';

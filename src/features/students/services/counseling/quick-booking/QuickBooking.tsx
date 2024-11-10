@@ -1,7 +1,7 @@
 import { useSocket } from '@/shared/context';
 import { CounselingType, Counselor } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronRight, Close, ContactSupport, Female, Handshake, Male, People, PersonPin, School } from '@mui/icons-material';
+import { ChevronRight, Close, ContactSupport, Female, Handshake, Male, People, PersonPin, School, SentimentVeryDissatisfied } from '@mui/icons-material';
 import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, IconButton, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { ContentLoading, NavLinkAdapter } from '@shared/components';
 import dayjs from 'dayjs';
-import { isEmpty } from 'lodash';
+import { isEmpty, isError } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -64,7 +64,6 @@ function QuickBooking() {
 
   const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useBookCounselorMutation()
   const [isGettingRandomMatchedCounselor, setGettingRandomMatchedGender] = useState(false)
-
 
 
   const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(null)
@@ -180,7 +179,8 @@ function QuickBooking() {
   const [getRandomMatchedCounselor,
     {
       isLoading: isLoadingRandomMatchedCounselor,
-      isSuccess: isSuccessGettingRandomMatchedCounselor
+      isSuccess: isSuccessGettingRandomMatchedCounselor,
+      isError: isErrorGettingRandomMatchedCounselor,
     }
   ] = counselingType == 'ACADEMIC'
       ? useGetRandomMatchedCousenlorAcademicMutation()
@@ -189,6 +189,7 @@ function QuickBooking() {
   // if (isLoading) {
   //   return <ContentLoading className='m-32' />
   // }
+  console.log(isErrorGettingRandomMatchedCounselor)
 
   const [progress, setProgress] = useState(20);
 
@@ -534,110 +535,114 @@ function QuickBooking() {
           <Paper className='w-lg shadow' id={'found_counselor'}>
             <div className='p-32'>
               <div className=''>
-
                 {
-                  randomMatchedCounselor
-                    ?
-                    progress < 100 || isLoadingRandomMatchedCounselor
-                      ? <div className='flex flex-col items-center gap-16'>
-                        <Typography color='secondary' className='font-semibold text-center text-lg'>Matching the most suitable counselor for you.</Typography>
-                        <CircularProgressWithLabel value={progress} />
-                      </div>
-                      : <div>
-                        <Typography color='secondary' className='font-semibold text-center text-lg'>Best counselor that fits your criteria.</Typography>
-                        <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`} className='mt-16'>
-                          <ListItemButton
-                            component={NavLinkAdapter}
-                            to={`${randomMatchedCounselor.profile.id}`}
-                            className=' w-full rounded'
-                          >
-                            <div className='w-full flex flex-col items-center'>
-                              <Avatar
-                                className='size-96 border-2 '
-                                alt={randomMatchedCounselor.profile.fullName}
-                                src={randomMatchedCounselor.profile.avatarLink}
-                              />
-                              <div className='mt-8 text-center'>
-                                <Typography className='font-semibold text-primary-main text-18'>{randomMatchedCounselor.profile.fullName}</Typography>
-                                <Typography className='text-16' color='text.secondary'>{randomMatchedCounselor.expertise?.name || randomMatchedCounselor.specialization?.name}</Typography>
+                  isErrorGettingRandomMatchedCounselor ?
+                    <Box className="flex flex-col w-full items-center">
+                      <SentimentVeryDissatisfied className='size-224 text-text-disabled' />
+                      <Typography className='text-text-disabled text-2xl'>No counselor matched!</Typography>
+                    </Box>
+                    : randomMatchedCounselor
+                      ?
+                      progress < 100 || isLoadingRandomMatchedCounselor
+                        ? <div className='flex flex-col items-center gap-16'>
+                          <Typography color='secondary' className='font-semibold text-center text-lg'>Matching the most suitable counselor for you.</Typography>
+                          <CircularProgressWithLabel value={progress} />
+                        </div>
+                        : <div>
+                          <Typography color='secondary' className='font-semibold text-center text-lg'>Best counselor that fits your criteria.</Typography>
+                          <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`} className='mt-16'>
+                            <ListItemButton
+                              component={NavLinkAdapter}
+                              to={`counselor/${randomMatchedCounselor.profile.id}`}
+                              className=' w-full rounded'
+                            >
+                              <div className='w-full flex flex-col items-center'>
+                                <Avatar
+                                  className='size-96 border-2 '
+                                  alt={randomMatchedCounselor.profile.fullName}
+                                  src={randomMatchedCounselor.profile.avatarLink}
+                                />
+                                <div className='mt-8 text-center'>
+                                  <Typography className='font-semibold text-primary-main text-18'>{randomMatchedCounselor.profile.fullName}</Typography>
+                                  <Typography className='text-16' color='text.secondary'>{randomMatchedCounselor.expertise?.name || randomMatchedCounselor.specialization?.name}</Typography>
+                                </div>
                               </div>
-                            </div>
-                            <ChevronRight />
-                          </ListItemButton>
-                        </Tooltip>
+                              <ChevronRight />
+                            </ListItemButton>
+                          </Tooltip>
 
 
-                        <div className='px-16'>
-                          <Divider className='mt-16' />
-                          <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
+                          <div className='px-16'>
+                            <Divider className='mt-16' />
+                            <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
 
-                          <Controller
-                            name="isOnline"
-                            control={control}
-                            render={({ field }) => (
-                              <FormControl
-                              >
-                                <RadioGroup
-                                  {...field}
-                                  className="Settings-group"
-                                  row
+                            <Controller
+                              name="isOnline"
+                              control={control}
+                              render={({ field }) => (
+                                <FormControl
                                 >
-                                  <FormControlLabel
-                                    value={true}
-                                    control={<Radio />}
-                                    label="Online"
-                                  />
-                                  <FormControlLabel
-                                    value={false}
-                                    control={<Radio />}
-                                    label="Offline"
-                                  />
-                                </RadioGroup>
-                              </FormControl>
-                            )}
-                          />
+                                  <RadioGroup
+                                    {...field}
+                                    className="Settings-group"
+                                    row
+                                  >
+                                    <FormControlLabel
+                                      value={true}
+                                      control={<Radio />}
+                                      label="Online"
+                                    />
+                                    <FormControlLabel
+                                      value={false}
+                                      control={<Radio />}
+                                      label="Offline"
+                                    />
+                                  </RadioGroup>
+                                </FormControl>
+                              )}
+                            />
+                          </div>
+
+
+                          <div className='px-16'>
+                            <Controller
+                              control={control}
+                              name="reason"
+                              render={({ field }) => (
+                                <TextField
+                                  className="mt-16"
+                                  {...field}
+                                  label="Reason"
+                                  placeholder="Reason"
+                                  multiline
+                                  rows={8}
+                                  id="Reason"
+                                  error={!!errors.reason}
+                                  helperText={errors?.reason?.message}
+                                  fullWidth
+
+                                />
+                              )}
+                            />
+                          </div>
+
+
+                          <div className='flex justify-center mt-24 px-32'>
+                            <Button
+                              variant='contained'
+                              color='secondary'
+                              className='w-full'
+                              disabled={!isValid || isBookingCounselor || !formData.reason}
+                              onClick={handleSubmit(onSubmitBooking)}>
+                              Confirm booking
+                            </Button>
+                          </div>
+
                         </div>
-
-
-                        <div className='px-16'>
-                          <Controller
-                            control={control}
-                            name="reason"
-                            render={({ field }) => (
-                              <TextField
-                                className="mt-16"
-                                {...field}
-                                label="Reason"
-                                placeholder="Reason"
-                                multiline
-                                rows={8}
-                                id="Reason"
-                                error={!!errors.reason}
-                                helperText={errors?.reason?.message}
-                                fullWidth
-
-                              />
-                            )}
-                          />
-                        </div>
-
-
-                        <div className='flex justify-center mt-24 px-32'>
-                          <Button
-                            variant='contained'
-                            color='secondary'
-                            className='w-full'
-                            disabled={!isValid || isBookingCounselor || !formData.reason}
-                            onClick={handleSubmit(onSubmitBooking)}>
-                            Confirm booking
-                          </Button>
-                        </div>
-
+                      : <div className='flex flex-col items-center w-full'>
+                        <Typography color='textDisabled'>Select your preferences and matched couselor will be showed.</Typography>
+                        <PersonPin className='size-224 text-text-disabled' />
                       </div>
-                    : <div className='flex flex-col items-center w-full'>
-                      <Typography color='textDisabled'>Select your preferences and matched couselor will be showed.</Typography>
-                      <PersonPin className='size-224 text-text-disabled' />
-                    </div>
                 }
 
               </div>

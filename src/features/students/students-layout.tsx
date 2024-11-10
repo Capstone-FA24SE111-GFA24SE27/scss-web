@@ -8,6 +8,7 @@ import { useGetMyStudentQuestionsQuery } from './services/qna/qna-api';
 import { Question } from '@/shared/types';
 import useChatNotification from '@/shared/components/chat/useChatNotification';
 import { StudentDocument } from './students-components';
+import Students from './Students';
 
 const StudentLayout = () => {
 	const dispatch = useAppDispatch();
@@ -36,7 +37,7 @@ const StudentLayout = () => {
 	}, [studentDocumentData]);
 	return (
 		<AppLayout>
-			<Outlet />
+			<Students />
 		</AppLayout>
 	);
 };

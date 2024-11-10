@@ -21,7 +21,6 @@ const Root = styled(PageSimple)(({ theme }) => ({
 function Appointments() {
 	const routeParams = useParams();
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
-	const { pathname } = useLocation()
 	// const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
 	// useGetContactsListQuery();
 	// useGetContactsCountriesQuery();
@@ -30,8 +29,8 @@ function Appointments() {
 	useEffect(() => {
 		setRightSidebarOpen(Boolean(routeParams.id));
 	}, [routeParams]);
-
-	const isShowingForm = pathname.includes('create');
+	const { pathname } = useLocation()
+	const isShowingForm = pathname.includes('/counseling/appointments/create');
 
 	return (
 		<Root

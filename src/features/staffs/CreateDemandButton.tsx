@@ -14,27 +14,27 @@ type Props = {
 
 const CreateDemandButton = (props: Props) => {
 	// const { studentId } = props;
-    const location = useLocation()
-    const { id } = useParams();
+	const location = useLocation()
+	const { id } = useParams();
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-    const isStudentPath = pathSegments.length >= 2 &&
-                        pathSegments[pathSegments.length - 2] === 'student' &&
-                        pathSegments[pathSegments.length - 1] === id;
+	const pathSegments = location.pathname.split('/').filter(Boolean);
+	const isStudentPath = pathSegments.length >= 2 &&
+		pathSegments[pathSegments.length - 2] === 'student' &&
+		pathSegments[pathSegments.length - 1] === id;
 
 	const [createDemand] = usePostCreateDemandByStudentIdMutation();
 
 	const handleCreate = async () => {
-        if(isStudentPath) {
+		if (isStudentPath) {
 
-            const result = await createDemand(id);
-			if(result.data.status === 200){
-				useAlertDialog({title: 'Demand created successfully', confirmButtonTitle: 'Ok', dispatch})
+			const result = await createDemand(id);
+			if (result.data.status === 200) {
+				useAlertDialog({ title: 'Demand created successfully', confirmButtonTitle: 'Ok', dispatch })
 				navigate(-1)
 			}
-        }
+		}
 	};
 
 	return (

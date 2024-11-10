@@ -81,7 +81,7 @@ const DateDetailScheduleView = () => {
 	return (
 		<div className='relative flex flex-col '>
 			<div className='sticky top-0 left-0 z-10 flex flex-col w-full p-16 pb-32 bg-background-paper '>
-				<Typography className='pr-32 text-xl font-semibold leading-none'>
+				<Typography className='pr-32 text-xl font-semibold leading-none mt-32'>
 					Schedule from
 				</Typography>
 				<Typography className='pr-32 leading-none text-24'>

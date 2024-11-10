@@ -29,7 +29,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 				className="p-8 flex gap-24 items-center px-24 py-16"
 				sx={{ bgcolor: 'background.paper' }}
 				component={NavLinkAdapter}
-				to={`${counselor.profile.id}`}
+				to={`counselor/${counselor.profile.id}`}
 			>
 				<ListItemAvatar>
 					<Avatar

@@ -1,4 +1,4 @@
-import { NavLinkAdapter } from '@/shared/components';
+import { NavLinkAdapter, UserLabel } from '@/shared/components';
 import React, { SyntheticEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -27,9 +27,10 @@ import {
 	useDeleteQuestionStudentMutation,
 } from './qna-api';
 import { useNavigate } from 'react-router-dom';
-import { selectAccount, useAppSelector } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { statusColor } from '@/shared/constants';
-import {  useGetMessagesQuery} from '@/shared/components/chat/chat-api';
+import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
+import { openCounselorView } from '../../students-layout-slice';
 
 type Props = {
 	expanded: number | boolean;
@@ -47,10 +48,10 @@ const item = {
 const QnaItem = (props: Props) => {
 	const { expanded, toggleAccordion, qna, openAnswers } = props;
 
-    const {data, isLoading} = useGetMessagesQuery(qna.id)
+	const { data, isLoading } = useGetMessagesQuery(qna.id)
 
-	console.log(qna)
-    const chatSession = data?.content
+	const dispatch = useAppDispatch()
+	const chatSession = data?.content
 
 	const navigate = useNavigate();
 	const account = useAppSelector(selectAccount);
@@ -81,7 +82,6 @@ const QnaItem = (props: Props) => {
 					<AccordionSummary expandIcon={<ExpandMore />}>
 						<div className='flex flex-col gap-8'>
 							<div className='flex gap-8'>
-								<div>Id: {qna.id}</div>
 								<Chip
 									label={
 										qna.questionType === 'ACADEMIC'
@@ -136,34 +136,14 @@ const QnaItem = (props: Props) => {
 						<div className='flex flex-col gap-8'>
 							{
 								qna.counselor && (
-									<div className='flex items-center px-32 text-sm'>
-										Answered by
-										<Button
-											className='flex items-center gap-8 ml-4'
-											component={NavLinkAdapter}
-											to={`counselor/${qna?.counselor?.profile?.id}`}
-										>
-											<Avatar
-												className='size-24'
-												alt={
-													qna.counselor?.profile
-														.fullName
-												}
-												src={
-													qna.counselor?.profile
-														.avatarLink
-												}
-											/>
-											<div>
-												<Typography className='font-semibold'>
-													{
-														qna.counselor?.profile
-															.fullName
-													}
-												</Typography>
-											</div>
-										</Button>
-									</div>
+									<UserLabel
+										label='Answer by'
+										profile={qna?.counselor.profile}
+										email={qna?.counselor?.email}
+										onClick={()=> {	
+											dispatch(openCounselorView(qna?.counselor.profile.id.toString()))
+										}}
+									/>
 								)
 								// <Button className='flex items-center justify-start gap-16 px-16 w-fit'>
 								//   <Avatar
@@ -202,7 +182,7 @@ const QnaItem = (props: Props) => {
 							)}
 						</div>
 					</AccordionDetails>
-					<Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5 '>
+					<Box className='flex justify-end w-full gap-16 py-8 bg-primary-light/5 '>
 						{/* <div className='flex items-start w-112'>
 							<IconButton><ThumbUpOutlined /></IconButton>
 							<IconButton><ThumbDownOutlined /></IconButton>

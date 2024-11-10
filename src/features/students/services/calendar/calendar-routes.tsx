@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom'
 import { lazy } from "react";
-import CounselorView from '../counseling/counselor/CounselorView';
 import DateDetailScheduleView from './calendar-components/date/DateDetailScheduleView';
+import { CounselorView } from '@/shared/pages';
 const Calendar = lazy(() => import("./calendar-layout"));
 export const studentCalendarRoutes: RouteObject[] = [
   {

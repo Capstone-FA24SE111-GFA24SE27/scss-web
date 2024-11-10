@@ -15,6 +15,7 @@ import {
 	setSemesterIdForBehavior,
 	setTab,
 } from './student-list-slice';
+import { useGetSemestersQuery } from '@/shared/services';
 
 const StudentListHeader = ({ isShowingTab = false }) => {
 	const filter = useAppSelector(selectFilter);
@@ -33,17 +34,23 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 	const handlePromptForBehavior = (searchTerm) => {
 		dispatch(setPromptForBehavior(searchTerm));
 	};
-	const semesterOptions = [
-		{ label: '1', value: '1' },
-		{ label: '2', value: '2' },
-		{ label: '3', value: '3' },
-		{ label: '4', value: '4' },
-		{ label: '5', value: '5' },
-		{ label: '6', value: '6' },
-		{ label: '7', value: '7' },
-		{ label: '8', value: '8' },
-		{ label: '9', value: '9' },
-	];
+	// const semesterOptions = [
+	// 	{ label: '1', value: '1' },
+	// 	{ label: '2', value: '2' },
+	// 	{ label: '3', value: '3' },
+	// 	{ label: '4', value: '4' },
+	// 	{ label: '5', value: '5' },
+	// 	{ label: '6', value: '6' },
+	// 	{ label: '7', value: '7' },
+	// 	{ label: '8', value: '8' },
+	// 	{ label: '9', value: '9' },
+	// ];
+
+	const { data: semesterData, isLoading: isLoadingSemesterData } = useGetSemestersQuery();
+
+	const semesterOptions = semesterData?.map((semester) => ({
+		label: semester.name, value: semester.id
+	}))
 
 	const statusTabs = [
 		{ label: 'All', value: '' },
@@ -58,7 +65,7 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 	const handleSelectSemester = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-		if (event.target.value.length > 0) {
+		if (event.target.value) {
 			dispatch(setSemesterIdForBehavior(Number(event.target.value)));
 		} else {
 			dispatch(setSemesterIdForBehavior(''));
@@ -87,7 +94,7 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 						value={filter.semesterIdForBehavior?.toString()}
 						onChange={handleSelectSemester}
 						showClearOptions
-						className='w-200'
+						className='w-256'
 						disabled={
 							filter.tab !== 'RECOMMENDED' &&
 							!filter.isIncludeBehavior

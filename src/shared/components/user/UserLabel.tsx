@@ -3,17 +3,19 @@ import { Box, Avatar, Typography, Dialog, DialogTitle, DialogContent, DialogCont
 import { Profile } from '@/shared/types';
 import { useAppDispatch } from '@shared/store';
 import { openDialog } from '..';
-import { LocalPhoneOutlined } from '@mui/icons-material';
+import { EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
 
 interface UserLabelProps {
   profile: Profile,
   label?: string,
+  email?: string,
   onClick?: () => void; // Optional onClick function
 }
 
 const UserLabel: React.FC<UserLabelProps> = ({
   profile,
   label = ``,
+  email,
   onClick,
 }) => {
   const dispatch = useAppDispatch()
@@ -30,15 +32,17 @@ const UserLabel: React.FC<UserLabelProps> = ({
                 <Avatar alt={profile?.fullName} src={profile?.avatarLink} className='size-64' />
                 <div>
                   <Typography className='font-semibold text-primary-main'>{profile?.fullName}</Typography>
-                  <div className="flex items-center gap-16 mt-2">
+                  <div className="flex items-center justify-between gap-16">
                     <div className="flex items-center w-120">
                       <LocalPhoneOutlined fontSize='small' className='size-16' />
                       <div className="ml-8 text-text-secondary leading-6">{profile?.phoneNumber}</div>
                     </div>
-                    {/* <div className="flex items-center">
-                      <EmailOutlined fontSize='small' className='size-16' />
-                      <div className="ml-8 text-text-secondary leading-6">{email || 'emailisnull@fpt.edu.vn'}</div>
-                    </div> */}
+                    {
+                      email && <div className="flex items-center">
+                        <EmailOutlined fontSize='small' className='size-16' />
+                        <div className="ml-8 text-text-secondary leading-6">{email}</div>
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
