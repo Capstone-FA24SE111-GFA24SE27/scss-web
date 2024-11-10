@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
-import { studentRoutes } from '@features/counselors/counselors-pages';
 import { reportRoutes } from '../appointments/report';
+import { studentRoutes } from '@/shared/pages';
 const Calendar = lazy(() => import('./calendar-layout'));
 const DateDetailScheduleView = lazy(
 	() => import('./calendar-components/date/DateDetailScheduleView')

@@ -83,7 +83,7 @@ function StudentListContent() {
 
 	const { data: data } = useGetStudentsFilterQuery({
 		keyword: searchTerm,
-		isIncludeBehavior: false,
+		isIncludeBehavior,
 		promptForBehavior,
 		semesterIdForBehavior,
 		departmentId,

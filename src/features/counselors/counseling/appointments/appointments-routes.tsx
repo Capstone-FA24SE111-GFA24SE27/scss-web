@@ -11,12 +11,11 @@ export const appointmentsRoutes: RouteObject[] = [
     path: 'appointments',
     element: <Appointments />,
     children: [
-      {
-        path: 'create',
-        element: <AppointmentCreate />
-      },
-      // ...studentRoutes,
-        ...reportRoutes
+      ...reportRoutes
     ]
+  },
+  {
+    path: 'appointments/create',
+    element: <AppointmentCreate />,
   },
 ];

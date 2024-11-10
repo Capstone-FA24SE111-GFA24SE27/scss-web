@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { PageSimple } from '@shared/components';
 import CounselorList from './counselor-list';
@@ -27,6 +27,7 @@ function Counseling() {
 	// useGetContactsListQuery();
 	// useGetContactsCountriesQuery();
 	// useGetContactsTagsQuery();
+	const navigate = useNavigate()
 	const isMobile = false
 
 	function handleChangeTab(event: React.SyntheticEvent, value: number) {
@@ -66,14 +67,17 @@ function Counseling() {
 				<div className="w-full pr-8">
 					<div className=''>
 						{tabValue === 0 && <QuickBooking />}
-						{tabValue === 1 && <CounselorList/>}
+						{tabValue === 1 && <CounselorList />}
 					</div>
 				</div>
 			}
 			ref={pageLayout}
 			rightSidebarContent={<CounselingSidebarContent />}
 			rightSidebarOpen={rightSidebarOpen}
-			rightSidebarOnClose={() => setRightSidebarOpen(false)}
+			rightSidebarOnClose={() => {
+				setRightSidebarOpen(false)
+				navigate('.')
+			}}
 			rightSidebarVariant="temporary"
 			scroll={isMobile ? 'normal' : 'content'}
 		/>

@@ -6,8 +6,10 @@ import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetStudentAppointmentsQuery, useGetStudentDocumentViewQuery } from './student-api';
-import { ContentLoading, DateRangePicker, Pagination, SortingToggle } from '@/shared/components';
+import { ContentLoading, DateRangePicker, Pagination, SortingToggle, openDialog } from '@/shared/components';
 import { ChangeEvent, useState } from 'react';
+import { useAppDispatch } from '@shared/store';
+import StudentAppointmentReport from './StudentAppointmentReport';
 /**
  * The contact view.
  */
@@ -15,10 +17,10 @@ import { ChangeEvent, useState } from 'react';
 interface StudentAppointmentListProps {
   student: StudentDocument
 }
-function StudentAppointmentList() {
+function StudentAppointmentList({ id }: { id: string }) {
   const routeParams = useParams();
-  const { id: studentId } = routeParams as { id: string };
-
+  const { id: studentRouteId } = routeParams as { id: string };
+  const studentId = id || studentRouteId;
   const navigate = useNavigate()
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
@@ -42,9 +44,11 @@ function StudentAppointmentList() {
     toDate: endDate,
     sortDirection: sortDirection,
     page: page
+  }, {
+    skip: !studentRouteId
   });
 
-
+  const dispatch = useAppDispatch()
 
   const appointments = data?.content?.data
 
@@ -90,7 +94,12 @@ function StudentAppointmentList() {
                 className='flex gap-8 px-8'
                 color='secondary'
                 disabled={!appointment.havingReport}
-                onClick={() => navigate(`report/${appointment.id}`)}
+                // onClick={() => navigate(`report/${appointment.id}`)}
+                onClick={() => {
+                  dispatch(openDialog({
+                    children: <StudentAppointmentReport id={appointment?.id.toString()}/>
+                  }))
+                }}
               >
                 View report
               </Button>

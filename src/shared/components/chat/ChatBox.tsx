@@ -1,5 +1,6 @@
 import {
 	Avatar,
+	Button,
 	IconButton,
 	Paper,
 	TextField,
@@ -27,6 +28,9 @@ import {
 import useThrottle from '@/shared/hooks/useThrottle';
 import { ContentLoading } from '../loading';
 import { useSocket } from '@/shared/context';
+import { openCounselorView } from '@/features/students/students-layout-slice';
+import { openStudentView } from '@/features/counselors/counselors-layout-slice';
+import { roles } from '@/shared/constants';
 
 type Props = {
 	qna: Question;
@@ -34,7 +38,6 @@ type Props = {
 
 const ChatBox = (props: Props) => {
 	const { qna } = props;
-
 
 	const [message, setMessage] = useState('');
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -49,31 +52,37 @@ const ChatBox = (props: Props) => {
 
 	const handleSendMessage = useThrottle(() => {
 		sendMessage({
-			sessionId: qna?.chatSession.id,
+			sessionId: qna?.chatSession?.id,
 			content: message,
 		});
 		setMessage('');
 	}, 500);
 
+	const handleViewUser = () => {
+		account.role === roles.STUDENT
+			? dispatch(openCounselorView(qna?.counselor?.id.toString()))
+			: dispatch(openStudentView(qna?.student?.id.toString()))
+	}
+
 	useEffect(() => {
 		if (qna) {
-			dispatch(setChatSessionId(qna.chatSession.id));
-			setMessages(qna.chatSession.messages)
-			// console.log(qna.chatSession.messages)
+			dispatch(setChatSessionId(qna.chatSession?.id));
+			setMessages(qna.chatSession?.messages)
+			// console.log(qna.chatSession?.messages)
 
-			if (qna.chatSession.messages.length > 0) {
-				const latestMessage = qna.chatSession.messages[qna.chatSession.messages.length - 1];
+			if (qna.chatSession?.messages.length > 0) {
+				const latestMessage = qna.chatSession?.messages[qna.chatSession?.messages.length - 1];
 				// console.log('latest',latestMessage)
 				if (latestMessage.sender.id !== account.id && !latestMessage.read) {
-				try{
-					readMessage(qna.chatSession.id);
-				} catch (e) {
-					console.log(e)
+					try {
+						readMessage(qna.chatSession?.id);
+					} catch (e) {
+						console.log(e)
+					}
 				}
 			}
 		}
-		}
-		
+
 		return () => {
 			dispatch(closeChatSession());
 		};
@@ -81,8 +90,8 @@ const ChatBox = (props: Props) => {
 
 	useEffect(() => {
 		if (!qna.closed && socket && chatListeners && passiveCallback) {
-			if (chatListeners.has(qna.chatSession.id)) {
-				socket.off(`/user/${qna.chatSession.id}/chat`);
+			if (chatListeners.has(qna.chatSession?.id)) {
+				socket.off(`/user/${qna.chatSession?.id}/chat`);
 				const cb = (data: Message) => {
 					if (data.sender.id !== account.id && !data.read) {
 						readMessage(data.chatSessionId);
@@ -95,22 +104,22 @@ const ChatBox = (props: Props) => {
 					}
 				};
 
-				socket.on(`/user/${qna.chatSession.id}/chat`, cb);
-				// console.log(`active /user/${qna.chatSession.id}/chat`)
+				socket.on(`/user/${qna.chatSession?.id}/chat`, cb);
+				// console.log(`active /user/${qna.chatSession?.id}/chat`)
 			}
 
 			return () => {
-				socket.off(`/user/${qna.chatSession.id}/chat`);
+				socket.off(`/user/${qna.chatSession?.id}/chat`);
 				if (
 					!qna.closed &&
-					chatListeners.has(qna.chatSession.id) &&
+					chatListeners.has(qna.chatSession?.id) &&
 					passiveCallback
 				) {
 					socket.on(
-						`/user/${qna.chatSession.id}/chat`, (data) =>
+						`/user/${qna.chatSession?.id}/chat`, (data) =>
 						passiveCallback(data, qna)
 					);
-					// console.log(`resume passive /user/${qna.chatSession.id}/chat`)
+					// console.log(`resume passive /user/${qna.chatSession?.id}/chat`)
 				}
 			};
 		}
@@ -133,7 +142,7 @@ const ChatBox = (props: Props) => {
 	return (
 		<div className='relative flex flex-col w-full h-full'>
 			<div className='p-16 space-y-8 bg-background-paper'>
-				<div className='flex items-center gap-16'>
+				<Button className='flex items-center gap-16' onClick={handleViewUser}>
 					<Avatar
 						src={otherPerson?.profile.avatarLink}
 						alt='Student image'
@@ -141,8 +150,8 @@ const ChatBox = (props: Props) => {
 					<Typography variant='h6' className='font-semibold'>
 						{otherPerson?.profile.fullName}
 					</Typography>
-				</div>
-				<div className='flex items-center flex-1 gap-8'>
+				</Button>
+				<div className='flex items-center flex-1 gap-8 pl-16'>
 					{/* <Divider orientation='vertical' /> */}
 					{qna.answer ? (
 						<CheckCircleOutlineOutlined color='success' />
@@ -158,22 +167,20 @@ const ChatBox = (props: Props) => {
 				ref={messagesRef}
 				className='flex-grow p-16 pb-96 space-y-4 overflow-y-auto !h-[calc(100vh-265px)]'
 			>
-				{messages.map((message, index) => (
+				{messages?.map((message, index) => (
 					<div
 						key={message.id}
-						className={`flex ${
-							message.sender.id === account.id
-								? 'justify-end'
-								: 'justify-start'
-						}`}
+						className={`flex ${message.sender.id === account.id
+							? 'justify-end'
+							: 'justify-start'
+							}`}
 					>
 						<div>
 							<Paper
-								className={`p-16 text-white ${
-									message.sender.id === account.id
-										? 'bg-secondary-main text-white'
-										: 'bg-primary-main'
-								}`}
+								className={`p-16 text-white ${message.sender.id === account.id
+									? 'bg-secondary-main text-white'
+									: 'bg-primary-main'
+									}`}
 							>
 								{message.content}
 								{/* {message.sentAt} -
@@ -181,11 +188,10 @@ const ChatBox = (props: Props) => {
 							</Paper>
 							<Typography
 								color='textSecondary'
-								className={`mt-4 text-sm ${
-									message.sender.id === account.id
-										? 'text-end'
-										: 'text-start'
-								} `}
+								className={`mt-4 text-sm ${message.sender.id === account.id
+									? 'text-end'
+									: 'text-start'
+									} `}
 							>
 								{formatDateTime(message.sentAt)}
 							</Typography>

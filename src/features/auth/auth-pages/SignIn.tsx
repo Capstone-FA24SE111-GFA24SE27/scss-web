@@ -9,16 +9,17 @@ import { SignInForm } from '../auth-components';
 import { CalendarMonth, SentimentSatisfied, Summarize, SupportAgent } from '@mui/icons-material';
 import { useLoginWithGoogleMutation } from '../auth-api';
 import { googleAuth } from '@/shared/services';
-import { setAccessToken, setAccount, useAppDispatch } from '@shared/store';
+import { getApiErrorMessage, setAccessToken, setAccount, useAppDispatch } from '@shared/store';
 
 function SignInPage() {
 
-	const [loginWithGoogle] = useLoginWithGoogleMutation();
+	const [loginWithGoogle, { isLoading, error }] = useLoginWithGoogleMutation();
+	const serverError = getApiErrorMessage(error)
+
 	const dispatch = useAppDispatch()
 	const handleGoogleLogin = async () => {
 		try {
 			const accessToken = await googleAuth();
-			confirm(accessToken)
 			loginWithGoogle(accessToken)
 				.unwrap()
 				.then(response => {
@@ -84,8 +85,8 @@ function SignInPage() {
 							</Typography>
 							<div className="mt-px flex-auto border-t" />
 						</div>
-
 						<SignInForm />
+						{serverError && <Typography color='error' className='mt-8 text-center'>{serverError}</Typography>}
 					</div>
 				</CardContent>
 			</Paper>

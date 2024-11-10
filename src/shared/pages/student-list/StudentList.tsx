@@ -9,16 +9,6 @@ import { filterClose, selectFilter } from './student-list-slice';
 import StudentListSidebarContent from './StudentListSidebarContent';
 import StudentViewSidebarContent from './StudentViewSidebarContent';
 
-
-const Root = styled(PageSimple)(({ theme }) => ({
-  // '& .PageSimple-header': {
-  //   backgroundColor: theme.palette.background.paper
-  // },
-}));
-
-/**
- * The ContactsApp page.
- */
 function StudentList({isShowingTab = false}) {
   const pageLayout = useRef(null);
   const dispatch = useAppDispatch();
@@ -45,7 +35,7 @@ function StudentList({isShowingTab = false}) {
       rightSidebarVariant="temporary"
       scroll={isMobile ? 'normal' : 'content'}
       content={
-        <Root
+        <PageSimple
           className='!min-h-screen'
           header={<StudentListHeader isShowingTab={isShowingTab}  />}
           content={<StudentListContent />}

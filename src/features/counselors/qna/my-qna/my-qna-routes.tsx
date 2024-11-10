@@ -3,7 +3,7 @@ import { lazy } from 'react';
 const MyQna = lazy(() => import('./MyQna'))
 // const MyQnaChat = lazy(() => import('./MyQnaChat'))
 import MyQnaChat from './MyQnaChat'
-import { studentRoutes } from '../..';
+import { studentRoutes } from '@/shared/pages';
 export const myQnaRoutes: RouteObject[] = [
   {
     path: 'my-qna',

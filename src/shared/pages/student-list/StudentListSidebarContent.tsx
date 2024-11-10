@@ -13,16 +13,16 @@ const CounselorListSidebarContent = () => {
   const dispatch = useAppDispatch()
 
   const handleDepartmentChange = (departmentId: string) => {
-    dispatch(setDepartmentId(Number(departmentId)))
+    dispatch(setDepartmentId(Number(departmentId) || ''))
   };
 
   const handleMajorChange = (majorId: string) => {
-    dispatch(setMajorId(Number(majorId)))
+    dispatch(setMajorId(Number(majorId) || ''))
 
   };
 
   const handleSpecializationChange = (specializationId: string) => {
-    dispatch(setSpecializationId(Number(specializationId)))
+    dispatch(setSpecializationId(Number(specializationId) || ''))
 
   };
 
@@ -44,8 +44,8 @@ const CounselorListSidebarContent = () => {
 
   const { data: semesterData, isLoading: isLoadingSemesterData } = useGetSemestersQuery();
   const semesterOptions = semesterData?.map((semester) => ({
-		label: semester.name, value: semester.id
-	}))
+    label: semester.name, value: semester.id
+  }))
 
   // const semesterOptions = [
   //   { label: '1', value: '1' },

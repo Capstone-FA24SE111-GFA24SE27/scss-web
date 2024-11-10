@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useAppDispatch } from '@shared/store';
 import { ChangeEvent, useEffect, useState } from 'react'
+import { openCounselorView } from '@/features/students/students-layout-slice';
 const RequestsTab = () => {
   const [page, setPage] = useState(1);
 
@@ -16,7 +17,7 @@ const RequestsTab = () => {
 
   const [sortDirection, setSortDirection] = useState<'ASC' | 'DESC'>('DESC');
 
-
+  const dispatch = useAppDispatch();
 
   const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -128,9 +129,11 @@ const RequestsTab = () => {
                   </div>
                   <Tooltip title={`View ${appointment.counselor.profile.fullName}'s profile`}>
                     <ListItemButton
-                      component={NavLinkAdapter}
-                      to={`counselor/${appointment.counselor.profile.id}`}
+                      // component={NavLinkAdapter}
+                      // to={`counselor/${appointment.counselor.profile.id}`}
                       className='bg-primary-light/5 w-full rounded shadow'
+                      onClick={() =>
+                        dispatch(openCounselorView(appointment.counselor.profile.id.toString()))}
                     >
                       <UserListItem
                         fullName={appointment.counselor.profile.fullName}
@@ -138,7 +141,7 @@ const RequestsTab = () => {
                         phoneNumber={appointment.counselor.profile.phoneNumber}
                         email={appointment.counselor.email}
                       />
-                      <ChevronRight />
+                      {/* <ChevronRight /> */}
                     </ListItemButton>
                   </Tooltip>
                 </div>

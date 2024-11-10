@@ -128,8 +128,7 @@ const AssignDemandForm = () => {
                     : counselor && formData.counselorId && !isErrorGetCounselorById
                       ? <UserLabel
                         label='Found counselor:  '
-                        avatarLink={counselor?.profile.avatarLink}
-                        fullName={counselor?.profile.fullName}
+                        profile={counselor?.profile}
                       />
                       : <Typography color='textSecondary' className='text-sm'>Counselor not found</Typography>
                 }

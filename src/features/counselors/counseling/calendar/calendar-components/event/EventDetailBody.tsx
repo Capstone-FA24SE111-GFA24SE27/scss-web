@@ -1,4 +1,4 @@
-import { closeDialog, NavLinkAdapter, openDialog } from '@/shared/components';
+import { closeDialog, NavLinkAdapter, openDialog, UserListItem } from '@/shared/components';
 import {
 	Avatar,
 	Button,
@@ -45,6 +45,7 @@ import {
 	useTakeAppointmentAttendanceMutation,
 	useUpdateAppointmentDetailsMutation,
 } from '../../../counseling-api';
+import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 
 type Props = {
 	appointment: AppointmentScheduleType;
@@ -59,8 +60,8 @@ export const EventDetailBody = (props: Props) => {
 	const [selectedAppointment, setSelectedAppointment] =
 		useState<AppointmentScheduleType | null>(null); // Track selected appointment
 	const navigate = useNavigate();
-  	const location = useLocation()
-  	const dispatch = useAppDispatch();
+	const location = useLocation()
+	const dispatch = useAppDispatch();
 
 	const statusColor = {
 		REJECTED: 'error',
@@ -92,12 +93,12 @@ export const EventDetailBody = (props: Props) => {
 
 	const handleLocalNavigate = (route: string) => {
 		const pathSegments = location.pathname.split('/').filter(Boolean);
-	
+
 		// Create a new path using the first two segments
-		 const newPath = `/${pathSegments[0]}/${pathSegments[1]}/${route}`;
-	
+		const newPath = `/${pathSegments[0]}/${pathSegments[1]}/${route}`;
+
 		return newPath
-	  }
+	}
 
 	if (!appointment) {
 		return (
@@ -254,37 +255,24 @@ export const EventDetailBody = (props: Props) => {
 						title={`View ${appointment.studentInfo.profile.fullName}'s profile`}
 					>
 						<ListItemButton
-							component={NavLinkAdapter}
-							to={handleLocalNavigate(`student/${appointment.studentInfo.profile.id}`)}
+							// component={NavLinkAdapter}
+							// to={handleLocalNavigate(`student/${appointment.studentInfo.profile.id}`)}
+							onClick={() => {
+								dispatch(openStudentView(appointment.studentInfo.profile.id.toString()))
+							}}
 							className='w-full rounded shadow bg-primary-light/5'
 						>
 							<div
 								onClick={handleNavClicked}
 								className='flex items-start w-full gap-16'
 							>
-								<Avatar
-									alt={
-										appointment.studentInfo.profile.fullName
-									}
-									src={
-										appointment.studentInfo.profile
-											.avatarLink
-									}
+								<UserListItem
+									fullName={appointment.studentInfo.profile.fullName}
+									avatarLink={appointment.studentInfo.profile.avatarLink}
+									phoneNumber={appointment.studentInfo.profile.phoneNumber}
+									email={appointment.studentInfo.email}
 								/>
-								<div>
-									<Typography className='font-semibold text-primary-main'>
-										{
-											appointment.studentInfo.profile
-												.fullName
-										}
-									</Typography>
-									<Typography color='text.secondary'>
-										{appointment.studentInfo.email ||
-											'emailisnull.edu.vn'}
-									</Typography>
-								</div>
 							</div>
-							<ChevronRight />
 						</ListItemButton>
 					</Tooltip>
 

@@ -52,8 +52,6 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 		label: semester.name, value: semester.id
 	}))
 
-	console.log("---", filter.semesterIdForBehavior)
-
 	const statusTabs = [
 		{ label: 'All', value: '' },
 		{ label: 'Recommended', value: 'RECOMMENDED' },
