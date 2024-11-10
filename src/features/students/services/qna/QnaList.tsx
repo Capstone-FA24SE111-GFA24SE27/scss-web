@@ -163,7 +163,7 @@ const QnaList = () => {
 
 			const id = account.profile.id;
 			socket.on(`/user/${id}/question`, cb);
-			console.log(`/user/${id}/question`);
+			console.log(`/user/${id}/question`, socket);
 			return () => {
 				socket.off(`/user/${id}/question`);
 			};

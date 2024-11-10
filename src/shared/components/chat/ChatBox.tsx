@@ -90,10 +90,12 @@ const ChatBox = (props: Props) => {
 	}, [qna]);
 
 	useEffect(() => {
-		console.log('asdawd');
+		// console.log('chat box', qna, socket, chatListeners, passiveCallback);
 		if (!qna.closed && socket && chatListeners && passiveCallback) {
-			if (chatListeners.has(qna.chatSession?.id)) {
-				socket.off(`/user/${qna.chatSession?.id}/chat`);
+			// console.log('asdawd2');
+			if (chatListeners.has(qna.chatSession.id)) {
+				// console.log('asdawd3	');
+				socket.off(`/user/${qna.chatSession.id}/chat`);
 				const cb = (data: Message) => {
 					if (data.sender.id !== account.id && !data.read) {
 						readMessage(data.chatSessionId);
@@ -142,7 +144,7 @@ const ChatBox = (props: Props) => {
 	}
 
 	return (
-		<div className='relative flex flex-col w-full h-full'>
+		<div className='relative flex flex-col w-full h-full min-w-320'>
 			<div className='p-16 space-y-8 bg-background-paper'>
 				<Button className='flex items-center gap-16' onClick={handleViewUser}>
 					<Avatar

@@ -5,7 +5,6 @@ import { RouteObject } from 'react-router-dom';
 import CreateDemandButton from '../CreateDemandButton';
 
 
-const Student = lazy(() => import('./Student'));
 
 export const staffStudentRoutes: RouteObject[] = [
 	{

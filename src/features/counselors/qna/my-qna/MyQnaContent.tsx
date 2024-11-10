@@ -1,6 +1,6 @@
 import { CheckboxField, ContentLoading, Heading, NavLinkAdapter, Pagination, SearchField, SelectField } from '@/shared/components';
 import { motion } from 'framer-motion';
-import { ChangeEvent, SyntheticEvent, useState } from 'react'
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAnswerQuestionMutation, useGetMyCounselorQuestionsQuery } from '../qna-api';
 import MyQnaItem from './MyQnaItem';
@@ -8,6 +8,7 @@ import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/share
 import { selectAccount, useAppSelector } from '@shared/store';
 import { extractCounselingTypeFromRole } from '@/shared/utils';
 import { Typography } from '@mui/material';
+import { useSocket } from '@/shared/context';
 
 
 const container = {
@@ -55,7 +56,7 @@ const MyQnaContent = () => {
 
  
 
-  const { data: qnaData, isLoading } = useGetMyCounselorQuestionsQuery({
+  const { data: qnaData, isLoading, refetch } = useGetMyCounselorQuestionsQuery({
     isClosed: isClosed || '',
     studentCode: searchStudentCode,
     keyword: searchTerm,
@@ -64,8 +65,25 @@ const MyQnaContent = () => {
   })
   const qnaList = qnaData?.content?.data || []
 
+  const socket = useSocket()
 
-  console.log(qnaList)
+  useEffect(() => {
+		if (socket && account) {
+			const cb = (data) => {
+				console.log('asdasdw' , data);
+				if (data) {
+					refetch();
+				}
+			};
+
+			const id = account.profile.id;
+			socket.on(`/user/${id}/question`, cb);
+			console.log(`/user/${id}/question`, socket);
+			return () => {
+				socket.off(`/user/${id}/question`);
+			};
+		}
+	}, [socket, account]);
 
   const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
 

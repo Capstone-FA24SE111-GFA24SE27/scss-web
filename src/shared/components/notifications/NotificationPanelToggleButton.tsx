@@ -60,19 +60,20 @@ function NotificationPanelToggleButton(
 			});
 		};
 		if (socket && account) {
+			socket.off(`/user/${account.profile.id}/private/notification`);
 			socket.on(`/user/${account.profile.id}/private/notification`, cb);
+			console.log('connecting noti', socket)
 		}
 
 		return () => {
 			if (socket && account) {
-				socket.off(`/user/${account.profile.id}/private/notification`, cb);
+				socket.off(`/user/${account.profile.id}/private/notification`);
 			}
 		};
-	}, [socket]);
+	}, [socket, account]);
 
 	useEffect(() => {
 		if (data) {
-			console.log('noti query', data);
 			dispatch(setNotifications(data.content.data));
 		}
 	}, [data]);

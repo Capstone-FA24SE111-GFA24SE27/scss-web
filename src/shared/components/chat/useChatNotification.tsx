@@ -18,15 +18,12 @@ import { chatApi } from './chat-api';
 
 const useChatNotification = (qnaList: Question[]) => {
 	const socket = useSocket();
-	const currentChatId = useAppSelector(selectOpenedChatId);
 	const dispatch = useAppDispatch();
-	const account = useAppSelector(selectAccount);
 	const chatListeners = useAppSelector(selectChatListeners);
 
 	useEffect(() => {
 		if (socket && qnaList && qnaList.length > 0) {
 			const cb = (data: Message, qna: Question) => {
-				console.log('current chat', currentChatId);
 				enqueueSnackbar(data.content, {
 					key: data.id,
 					autoHideDuration: 5000,
@@ -45,11 +42,7 @@ const useChatNotification = (qnaList: Question[]) => {
 					),
 				});
 				dispatch(chatApi.util.invalidateTags(['chat']));
-				// if(account.role === 'STUDENT'){
-				// 	dispatch(studentQnasApi.util.invalidateTags(['qna']))
-				// } else {
-				// 	dispatch(counselorQnaApi.util.invalidateTags(['qna']))
-				// }
+			
 			};
 
 			dispatch(setPassiveChatCallback(cb));
@@ -75,7 +68,7 @@ const useChatNotification = (qnaList: Question[]) => {
 					listenersList.add(qnaItem.chatSession.id);
 				}
 			});
-
+			console.log('listeners', listenersList)
 			dispatch(setChatListeners(listenersList));
 		}
 		return () => {

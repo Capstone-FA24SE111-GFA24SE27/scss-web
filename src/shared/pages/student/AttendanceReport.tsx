@@ -126,7 +126,7 @@ const AttendanceReport = ({ id }: { id?: string }) => {
       <div className='flex gap-8 mt-16'>
 
         <Paper className='p-16 !w-112 shadow'>
-          <h2 className="text-lg font-bold mb-4">Terms</h2>
+          <h2 className="mb-4 text-lg font-bold">Terms</h2>
           <ul className="mb-6">
             {terms?.map((term) => (
               <li
@@ -140,7 +140,7 @@ const AttendanceReport = ({ id }: { id?: string }) => {
           </ul>
         </Paper>
         <Paper className='p-16 !w-200 shadow'>
-          <h2 className="text-lg font-bold mb-4">Courses</h2>
+          <h2 className="mb-4 text-lg font-bold">Courses</h2>
           <ul>
             {courses.map((course) => (
               <li
@@ -187,7 +187,7 @@ const AttendanceReport = ({ id }: { id?: string }) => {
             </TableBody>
           </Table>
           <Divider />
-          <Box className="p-16 text-center text-lg font-semibold">
+          <Box className="p-16 text-lg font-semibold text-center">
             {`${absentPercentage}% absent so far (${absentCount} absent on ${totalSlots} total)`}
           </Box>
         </TableContainer>
