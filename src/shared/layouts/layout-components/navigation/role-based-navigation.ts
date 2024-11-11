@@ -250,7 +250,7 @@ const managerNavigation: NavigationOptions = {
         {
             name: "Dashboard",
             description: "Data visualization & analytics",
-            route: 'management',
+            route: 'dashboard',
             items: [
                 {
                     icon: Archive,
@@ -278,6 +278,11 @@ const managerNavigation: NavigationOptions = {
                     icon: Face,
                     name: 'Students',
                     route: 'students'
+                },
+                {
+                    icon: SupportAgent,
+                    name: 'Support Staffs',
+                    route: 'counselors'
                 },
             ]
         },

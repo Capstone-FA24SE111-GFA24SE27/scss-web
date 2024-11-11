@@ -14,14 +14,18 @@ export const SocketProvider = ({ children }) => {
 	useEffect(() => {
 		if (account) {
 			// socketRef.current = io('http://102.37.21.11:4000');
-			socketRef.current = io('http://localhost:4000');
-		} else if (socketRef.current && socketRef.current.connected) {
-			socketRef.current?.disconnect();
-			socketRef.current = null;
+			const socket = io('http://localhost:9092', {
+				transports: ['websocket']
+			});
+			socketRef.current = socket;
 		}
+		// } else if (socketRef.current && socketRef.current.connected) {
+		// 	socketRef.current?.disconnect();
+		// 	socketRef.current = null;
+		// }
 
 		return () => {
-			if (socketRef.current && socketRef.current.connected){
+			if (socketRef.current && socketRef.current.connected) {
 				socketRef.current?.disconnect();
 			}
 			socketRef.current = null;

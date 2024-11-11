@@ -130,5 +130,6 @@ type BehaviorTag = {
   problemTagName: string; number: number;
   semesterName: string | null;
   contained: boolean;
+  category: string,
 };
 type BehaviorTagList = BehaviorTag[];

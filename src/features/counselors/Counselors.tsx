@@ -5,8 +5,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { closeStudentView, selectStudentView } from './counselors-layout-slice';
-import { lazy } from 'react';
-const StudentView  = lazy(() => import('@shared/pages/student/StudentView'));
+import { StudentView } from '@/shared/pages';
 const Counselors = () => {
   const dispatch = useAppDispatch()
   const isMobile = false
@@ -25,7 +24,9 @@ const Counselors = () => {
           >
             <Close />
           </IconButton>
-          <StudentView id={studentView} />
+          {
+            studentView && <StudentView id={studentView} />
+          }
         </div>
       }
       rightSidebarOpen={isOpenStudentView}

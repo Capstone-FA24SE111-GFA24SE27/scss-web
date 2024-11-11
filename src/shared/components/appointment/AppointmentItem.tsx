@@ -202,7 +202,7 @@ const AppointmentsItem = ({ appointment }: { appointment: Appointment }) => {
                 </div>
               )
             }
-            {/* {
+            {
               appointment.status === 'WAITING' && (
                 <div className='mt-16'>
                   <Button className='mt-4' variant='contained' color='secondary'
@@ -215,7 +215,7 @@ const AppointmentsItem = ({ appointment }: { appointment: Appointment }) => {
                   </Button>
                 </div>
               )
-            } */}
+            }
           </div>
         </div>
       </div>

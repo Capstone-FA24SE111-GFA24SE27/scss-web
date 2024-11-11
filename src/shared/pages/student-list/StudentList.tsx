@@ -7,7 +7,7 @@ import StudentListHeader from './StudentListHeader';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { filterClose, selectFilter } from './student-list-slice';
 import StudentListSidebarContent from './StudentListSidebarContent';
-import StudentViewSidebarContent from './StudentViewSidebarContent';
+import StudentViewSidebar from './StudentViewSidebar';
 
 function StudentList({isShowingTab = false}) {
   const pageLayout = useRef(null);
@@ -29,7 +29,7 @@ function StudentList({isShowingTab = false}) {
           />
         </div>
       }
-      rightSidebarContent={<StudentViewSidebarContent />}
+      rightSidebarContent={<StudentViewSidebar />}
       rightSidebarOpen={rightSidebarOpen}
       rightSidebarOnClose={() => setRightSidebarOpen(false)}
       rightSidebarVariant="temporary"

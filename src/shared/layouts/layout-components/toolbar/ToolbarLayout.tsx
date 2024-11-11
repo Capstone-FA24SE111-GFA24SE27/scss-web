@@ -44,11 +44,14 @@ function ToolbarLayout(props: ToolbarLayoutProps) {
 				<div className="flex flex-1 px-16">
 					{config.navbar.display && config.navbar.position === 'left' && (
 						<>
-							<Hidden lgDown>
+							{/* <Hidden lgDown>
 								{!navbar.open && (
 									<NavbarToggleButton className="" />
 								)}
-							</Hidden>
+							</Hidden> */}
+							{!navbar.open && (
+								<NavbarToggleButton className="" />
+							)}
 
 							{/* <Hidden lgUp>
 								<NavbarToggleButton className="mx-0 h-40 w-40 p-0 sm:mx-8" />

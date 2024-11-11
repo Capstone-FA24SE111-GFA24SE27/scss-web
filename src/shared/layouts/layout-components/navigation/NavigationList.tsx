@@ -64,7 +64,7 @@ function NavigationList() {
                                     selected={pathname.includes(`${sublist.route}/${item.route}`)}
                                 >
                                     <ListItemIcon>
-                                        {<item.icon color={pathname.includes(`${sublist.route}/${item.route}`) ? 'primary': 'inherit'} />}
+                                        {<item.icon color={pathname.includes(`${sublist.route}/${item.route}`) ? 'primary' : 'inherit'} />}
                                     </ListItemIcon>
                                     <ListItemText primary={item.name} />
                                     {item.children && (open ? <ExpandLess /> : <ExpandMore />)}

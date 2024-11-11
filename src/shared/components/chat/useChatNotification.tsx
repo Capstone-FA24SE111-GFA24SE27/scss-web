@@ -64,10 +64,10 @@ const useChatNotification = (qnaList: Question[]) => {
 					qnaItem.answer &&
 					!qnaItem.closed
 				) {
-					socket.on(`/user/${qnaItem.chatSession.id}/chat`, (data) =>
+					socket.on(`/user/${qnaItem.chatSession?.id}/chat`, (data) =>
 						cb(data, qnaItem)
 					);
-					listenersList.add(qnaItem.chatSession.id);
+					listenersList.add(qnaItem.chatSession?.id);
 				}
 			});
 

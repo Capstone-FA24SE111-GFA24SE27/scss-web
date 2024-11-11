@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useGetStudentDocumentQuery } from '../students-api';
 import { useAppDispatch } from '@shared/store';
-import { StudentDocument } from '../components/student-document';
+import { StudentDocument } from '../students-components/student-document';
 /**
  * The contact view.
  */
@@ -83,15 +83,15 @@ function StudentProfile({ }: StudentProfileProps) {
           </div>
 
 
-          <Divider />
+          
 
 
           <div className="flex flex-col space-y-16">
             <div>
-              <Typography className='font-semibold'>
-                General Infomation
-              </Typography>
               <Paper className="shadow p-16 mt-8">
+                <Typography className='font-semibold text-xl mb-16'>
+                  General Infomation
+                </Typography>
                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                   <div className="col-span-1 font-medium text-text-secondary">Gender:</div>
                   <div className="col-span-2 capitalize">{student?.studentProfile.profile.gender.toLocaleLowerCase()}</div>
@@ -123,13 +123,12 @@ function StudentProfile({ }: StudentProfileProps) {
 
 
 
-            <Divider />
+            
             <div>
-              <Typography className='font-semibold'>
-                Academic details
-              </Typography>
               <Paper className="shadow p-16 mt-8">
-
+                <Typography className='font-semibold mb-16 text-xl'>
+                  Academic details
+                </Typography>
                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                   <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
                   <div className="col-span-2">{student.studentProfile.specialization?.name}</div>
@@ -159,28 +158,26 @@ function StudentProfile({ }: StudentProfileProps) {
               </Paper>
             </div>
 
-            <Divider />
+            
             <div>
-              <div className='flex items-center justify-between'>
-                <Typography className='font-semibold'>
-                  Counseling infomation
-                </Typography>
-                <Button
-                  startIcon={<Edit />}
-                  onClick={() => {
-                    dispatch(openDialog({
-                      children: <StudentDocument editMode={true}/>
-                    }))
-                  }}
-                >
-                  Edit
-                </Button>
-              </div>
-
-              <Paper className='shadow p-8 flex flex-col gap-8 mt-8'>
-
+              <Paper className='shadow p-16 flex flex-col gap-8 mt-8'>
+                <div className='flex items-center justify-between '>
+                  <Typography className='font-semibold text-xl'>
+                    Counseling infomation
+                  </Typography>
+                  <Button
+                    startIcon={<Edit />}
+                    onClick={() => {
+                      dispatch(openDialog({
+                        children: <StudentDocument editMode={true} />
+                      }))
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </div>
                 {/* Psychological and Health Status */}
-                <div className="p-8 rounded">
+                <div className="rounded">
                   <Typography className="font-medium mb-4 text-lg">Psychological and Health Status</Typography>
                   <div className="grid grid-cols-3 gap-y-2">
                     <div className="col-span-1 font-medium text-gray-600">Introduction:</div>

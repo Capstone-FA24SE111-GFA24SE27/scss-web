@@ -3,8 +3,8 @@ import { Theme } from '@mui/system/createTheme';
 import { styled } from '@mui/material/styles';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import NavbarContent from './NavbarContent';
-import { selectNavbar } from './navbar-slice';
-import { useAppSelector } from '@/shared/store';
+import { navbarToggle, selectNavbar } from './navbar-slice';
+import { useAppDispatch, useAppSelector } from '@/shared/store';
 
 const navbarWidth = 280;
 
@@ -50,7 +50,7 @@ const StyledNavBarMobile = styled(SwipeableDrawer)(() => ({
  * The navbar style 1.
  */
 function NavbarLayout() {
-	// const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
 	// const config = useAppSelector(selectFuseCurrentLayoutConfig) as Layout1ConfigDefaultsType;
 	const navbar = useAppSelector(selectNavbar);
 	const config = {
@@ -61,7 +61,7 @@ function NavbarLayout() {
 
 	return (
 		<>
-			<Hidden lgDown>
+			{/* <Hidden lgDown>
 				<StyledNavBar
 					className="sticky top-0 z-20 h-screen flex-auto shrink-0 flex-col overflow-hidden shadow"
 					open={navbar.open}
@@ -69,7 +69,14 @@ function NavbarLayout() {
 				>
 					<NavbarContent />
 				</StyledNavBar>
-			</Hidden>
+			</Hidden> */}
+			<StyledNavBar
+				className="sticky top-0 z-20 h-screen flex-auto shrink-0 flex-col overflow-hidden shadow"
+				open={navbar.open}
+				position={config.navbar.position}
+			>
+				<NavbarContent />
+			</StyledNavBar>
 			{/* <Hidden lgUp>
 				<StyledNavBarMobile
 					classes={{
@@ -78,14 +85,14 @@ function NavbarLayout() {
 					anchor={config.navbar.position as 'left' | 'top' | 'right' | 'bottom'}
 					variant="temporary"
 					open={navbar.mobileOpen}
-					onClose={() => dispatch(navbarCloseMobile())}
+					onClose={() => dispatch(navbarToggle())}
 					onOpen={() => { }}
 					disableSwipeToOpen
 					ModalProps={{
 						keepMounted: true // Better open performance on mobile.
 					}}
 				>
-					<NavbarStyle1Content />
+					<NavbarContent />
 				</StyledNavBarMobile>
 			</Hidden> */}
 		</>

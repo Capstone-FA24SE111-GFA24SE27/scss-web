@@ -25,7 +25,7 @@ const Students = () => {
           >
             <Close />
           </IconButton>
-          <CounselorView id={counselorView} />
+          {counselorView && <CounselorView id={counselorView} />}
         </div>
       }
       rightSidebarOpen={isOpenCounselorView}
