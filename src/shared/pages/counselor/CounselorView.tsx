@@ -12,6 +12,7 @@ import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetCounselorViewQuery } from './counselor-api';
 import { Paper } from '@mui/material';
+import clsx from 'clsx'
 /**
  * The contact view.
  */
@@ -19,9 +20,10 @@ import { Paper } from '@mui/material';
 interface CounselorViewProps {
     shouldShowBooking?: boolean,
     counselingType?: CounselingType
-    id?: string
+    id?: string,
+    className?: string,
 }
-function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
+function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: CounselorViewProps) {
     const routeParams = useParams();
     const { id: counselorRouteId } = routeParams
     const counselorId = id || counselorRouteId
@@ -45,9 +47,9 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
     }
 
     return (
-        <div className='w-md'>
+        <div className={clsx(className)}>
             <Box
-                className="relative w-full h-160 sm:h-192 px-32 sm:px-48"
+                className="relative w-full px-32 h-160 sm:h-192 sm:px-48"
                 sx={{
                     backgroundColor: 'background.default'
                 }}
@@ -58,9 +60,9 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
                     alt="user background"
                 />
             </Box>
-            <div className="relative flex flex-col flex-auto items-center p-24 pt-0 sm:p-48 sm:pt-0">
+            <div className="relative flex flex-col items-center flex-auto p-24 pt-0 sm:p-48 sm:pt-0">
                 <div className="w-full max-w-3xl">
-                    <div className="flex flex-auto items-end -mt-64">
+                    <div className="flex items-end flex-auto -mt-64">
                         <Avatar
                             sx={{
                                 borderWidth: 4,
@@ -69,7 +71,7 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
                                 backgroundColor: 'background.default',
                                 color: 'text.secondary'
                             }}
-                            className="w-128 h-128 text-64 font-bold"
+                            className="font-bold w-128 h-128 text-64"
                             src={counselor?.profile?.avatarLink}
                             alt={counselor?.profile?.fullName}
                         >
@@ -78,7 +80,7 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
                         <Gender gender={counselor?.profile.gender} />
                         {
                             shouldShowBooking && (
-                                <div className="flex items-center ml-auto mb-4">
+                                <div className="flex items-center mb-4 ml-auto">
                                     <Button
                                         variant="contained"
                                         color="secondary"
@@ -106,11 +108,11 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
                         <div>(116)</div>
                     </div> */}
 
-                    <div className="flex items-center mt-8 gap-8 ">
+                    <div className="flex items-center gap-8 mt-8 ">
                         <Chip
                             label={counselor?.expertise?.name || counselor?.specialization?.name}
                             size="medium"
-                            className='text-lg px-16'
+                            className='px-16 text-lg'
                         />
                     </div>
 
@@ -150,15 +152,15 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
                             <Typography className='font-semibold'>
                                 Academic details
                             </Typography>
-                            <Paper className="rounded p-8 shadow mt-8">
+                            <Paper className="p-8 mt-8 rounded shadow">
 
-                                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                                <div className="grid grid-cols-3 mb-4 gap-y-2">
                                     <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
                                     <div className="col-span-2">{counselor?.specialization?.name}</div>
                                 </div>
 
                                 {/* Department Section */}
-                                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                                <div className="grid grid-cols-3 mb-4 gap-y-2">
                                     <div className="col-span-1 font-medium text-text-secondary">Department:</div>
                                     <div className="col-span-2">
                                         <span>{counselor?.department.name}</span>

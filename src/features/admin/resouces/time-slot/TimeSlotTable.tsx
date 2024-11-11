@@ -57,7 +57,7 @@ function TimeSlotTable() {
     },
     {
       accessorKey: 'startTime',
-      header: 'startTime',
+      header: 'Start Time',
       Cell: ({ row }) => (
         <Typography className='w-fit'
         >
@@ -67,7 +67,7 @@ function TimeSlotTable() {
     },
     {
         accessorKey: 'endTime',
-        header: 'endTime',
+        header: 'End Time',
         Cell: ({ row }) => (
           <Typography className='w-fit'
           >

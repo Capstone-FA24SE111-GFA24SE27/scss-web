@@ -52,7 +52,7 @@ function CounselorsTable() {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/counselor/${row.original.profile.profile.id}`}
+          to={`${row.original.profile.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >
@@ -148,9 +148,9 @@ function CounselorsTable() {
     }
   ], []);
 
-  // if (isLoading) {
-  //   return <ContentLoading />;
-  // }
+  if (isLoading) {
+    return <ContentLoading />;
+  }
 
 
   return (
