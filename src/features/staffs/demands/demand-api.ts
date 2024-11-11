@@ -145,7 +145,7 @@ export const demandApi = api
 					},
 				}),
 				providesTags: ['counselors'],
-			}),
+			})
 		}),
 	});
 

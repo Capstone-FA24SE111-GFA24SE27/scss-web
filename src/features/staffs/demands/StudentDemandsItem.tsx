@@ -135,7 +135,7 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 						</ListItemButton>
 					</Tooltip>
 
-					<div className='flex gap-8'>
+					{/* <div className='flex gap-8'>
 						<Typography className='w-96' color='textSecondary'>
 							Summarize:
 						</Typography>
@@ -143,7 +143,7 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							text={demand.summarizeNote}
 							limit={144}
 						/>
-					</div>
+					</div> */}
 
 					<div className='flex gap-8'>
 						<Typography className='w-96' color='textSecondary'>

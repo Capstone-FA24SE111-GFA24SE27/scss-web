@@ -53,9 +53,8 @@ const useChatNotification = (qnaList: Question[]) => {
 
 			qnaList.forEach((qnaItem) => {
 				if (
-					qnaItem.status === 'VERIFIED' &&
-					qnaItem.answer &&
-					!qnaItem.closed
+					qnaItem.chatSession &&
+					!qnaItem.closed 
 				) {
 					const result = socket.on(
 						`/user/${qnaItem.chatSession.id}/chat`,

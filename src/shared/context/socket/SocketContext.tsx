@@ -20,9 +20,9 @@ export const SocketProvider = ({ children }) => {
 	// console.log('Socket context: ', socketRef?.current);
 	useEffect(() => {
 		if (account) {
-			// setSocketState(
-			// 	io('http://localhost:9092', { transports: ['websocket'] })
-			// );
+			setSocketState(
+				io('http://localhost:9092', { transports: ['websocket'] })
+			);
 			console.log('connecting');
 		} else if (socketState) {
 			socketState.disconnect();

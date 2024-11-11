@@ -109,10 +109,17 @@ export const studentListApi = api
 				}),
 				providesTags: ['students'],
 			}),
+			putExcludeStudentProblemTags: build.mutation<PutExcludeStudentProblemTagsResponse, PutExcludeStudentProblemTagsArgs>({
+				query: (arg) => ({
+					url: `/api/students/problem-tag/exclude-all/${arg}`,
+					method: 'PUT',
+				}),
+				invalidatesTags: ['students']
+			})
 		}),
 	});
 
-export const { useGetStudentsFilterQuery, useGetRecommendedStudentsQuery } =
+export const { useGetStudentsFilterQuery, useGetRecommendedStudentsQuery, usePutExcludeStudentProblemTagsMutation } =
 	studentListApi;
 
 // Define types for the updated API response and arguments
@@ -135,3 +142,5 @@ export type GetStudentsFilterApiArg = {
 	page?: number;
 	tab: string;
 };
+type PutExcludeStudentProblemTagsArgs = number | string;
+type PutExcludeStudentProblemTagsResponse = ApiResponse<string>;

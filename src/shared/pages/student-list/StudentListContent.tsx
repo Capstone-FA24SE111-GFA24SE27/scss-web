@@ -81,7 +81,7 @@ function StudentListContent() {
 	// 			});
 	// 	  };
 
-	const { data: data } = useGetStudentsFilterQuery({
+	const { data: data, isLoading } = useGetStudentsFilterQuery({
 		keyword: searchTerm,
 		isIncludeBehavior,
 		promptForBehavior,
@@ -97,6 +97,11 @@ function StudentListContent() {
 	});
 
 	const students = data?.data;
+
+	if (isLoading) {
+		return <ContentLoading />
+	}
+
 	return (
 		<div className='flex flex-col flex-1 gap-16 pb-16'>
 			<Box>

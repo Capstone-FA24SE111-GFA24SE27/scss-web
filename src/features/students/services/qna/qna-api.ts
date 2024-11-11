@@ -1,5 +1,5 @@
 import { Account, Counselor, PaginationContent, Question, QuestionPayload, Student, User } from '@shared/types';
-import { ApiResponse, apiService as api } from '@shared/store'
+import { ApiMessage, ApiResponse, apiService as api } from '@shared/store'
 
 
 export const addTagTypes = [
@@ -93,6 +93,14 @@ export const studentQnasApi = api
         }),
         invalidatesTags: ['qna']
       }),
+      createChatSessionStudent: build.mutation<CreateChatSessionResponse,number>({
+        query: (questionCardId) => ({
+          url: `/api/question-cards/student/chat-session/create/${questionCardId}`,
+          method: 'POST'
+        }),
+        invalidatesTags: ['qna']
+
+      })
     })
   })
 
@@ -104,7 +112,8 @@ export const {
   useGetMyStudentQuestionsQuery,
   useGetBanInfoQuery,
   useCloseQuestionStudentMutation,
-  useDeleteQuestionStudentMutation
+  useDeleteQuestionStudentMutation,
+  useCreateChatSessionStudentMutation
 } = studentQnasApi
 
 export type GetStudentQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
@@ -125,6 +134,8 @@ export type GetStudentQuestionsApiArg = {
 };
 
 export type PostQuestionApiArg = QuestionPayload
+
+type CreateChatSessionResponse = ApiMessage;
 
 export type EditQuestionApiArg = {
   questionCardId: number,

@@ -21,10 +21,30 @@ export const timeSlotsApi = apiService
 				postCreateTimeSlotResponse,
 				postCreateTimeSlotArgs
 			>({
-				query: (args) => ({
+				query: ({
+                    slotCode,
+                    name,
+                    startTime,
+                    endTime,
+                }) => ({
 					url: `/api/manage/counselors/counselling-slots`,
 					method: 'POST',
-					body: args,
+					body: {
+                        slotCode,
+                        name,
+                        startTime : {
+                            hour: startTime.hour,
+                            minute: startTime.minute,
+                            second: 0,
+                            nano: 0
+                        },
+                        endTime : {
+                            hour: endTime.hour,
+                            minute: endTime.hour,
+                            second: 0,
+                            nano: 0
+                        },
+                    }
 				}),
 				invalidatesTags: ['time-slots'],
 			}),
@@ -76,13 +96,9 @@ type postCreateTimeSlotArgs = {
 	startTime: {
 		hour: number;
 		minute: number;
-		second: number;
-		nano: number;
 	};
 	endTime: {
 		hour: number;
 		minute: number;
-		second: number;
-		nano: number;
 	};
 };

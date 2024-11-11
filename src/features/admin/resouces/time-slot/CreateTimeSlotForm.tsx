@@ -6,39 +6,14 @@ import { z } from 'zod';
 import { Button, Paper, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TimePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
 
 const schema = z.object({
-	slotCode: z.string().min(1, 'Counselor ID is required'),
-	startTime: z
-		.instanceof(dayjs as unknown as typeof Dayjs)
-		.transform((time) => {
-			console.log('parsing', {
-				hour: time.hour(),
-				minute: time.minute(),
-				second: time.second(),
-			});
-			return {
-				hour: time.hour(),
-				minute: time.minute(),
-				second: time.second(),
-			};
-		}),
-	endTime: z
-		.instanceof(dayjs as unknown as typeof Dayjs)
-		.transform((time) => {
-			console.log('parsing', {
-				hour: time.hour(),
-				minute: time.minute(),
-				second: time.second(),
-			});
-			return {
-				hour: time.hour(),
-				minute: time.minute(),
-				second: time.second(),
-			};
-		}),
-	name: z.string().min(1, 'Counselor ID is required'),
+	slotCode: z.string().min(1, 'Slot Code is required'),
+	startTime: z.string().min(1),
+
+	endTime: z.string().min(1),
+
+	name: z.string().min(1, 'Slot name is required'),
 });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -47,9 +22,10 @@ const CreateTimeSlotForm = () => {
 	const navigate = useNavigate();
 	const [createTimeSlot] = usePostCreateTimeSlotMutation();
 	const defaultValues = {
-		counselorId: '',
-		summarizeNote: '',
-		contactNote: '',
+		slotCode: '',
+		startTime: '',
+		endTime: '',
+		name: '',
 	};
 
 	const { control, formState, watch, handleSubmit, setValue } =
@@ -67,12 +43,13 @@ const CreateTimeSlotForm = () => {
 		// 	slotCode: formData.slotCode,
 		// 	name: formData.name,
 		// 	startTime: {
-		//         hour:
-		//         minute:
-		//         second:
-		//     },
+		// 		hour: formData.startTime.hour(),
+		// 		minute: formData.startTime.minute(),
+		// 	},
 		// 	endTime: {
-		//     },
+		// 		hour: formData.endTime.hour(),
+		// 		minute: formData.endTime.minute(),
+		// 	},
 		// })
 		// 	.unwrap()
 		// 	.then(() => navigate(-1));
