@@ -31,6 +31,7 @@ export type Counselor = {
   specialization?: Specialization,
   // status: 'AVAILABLE' | 'UNAVAILABLE'
   status: string,
+  academicDegree: string,
   department?: Department
   major?: Major,
 }
@@ -79,10 +80,11 @@ export type Expertise = {
 
 export type Role =
 	| 'STUDENT'
-	| 'ACADEMIC_COUNSELOR'
 	| 'SUPPORT_STAFF'
 	| 'MANAGER'
 	| 'ADMIN'
+	| 'COUNSELOR'
+	| 'ACADEMIC_COUNSELOR'
 	| 'NON_ACADEMIC_COUNSELOR';
 
 export type CounselingType = 'ACADEMIC' | 'NON_ACADEMIC'

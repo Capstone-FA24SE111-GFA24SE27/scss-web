@@ -55,7 +55,7 @@ export const counselorQnaApi = api
           isClosed = '',
           isChatSessionClosed = '',
           sortBy = 'createdDate',
-          studentCode = null,
+          // studentCode = null,
           sortDirection = 'DESC',
           page = 1,
           // topicId
@@ -67,7 +67,7 @@ export const counselorQnaApi = api
             isClosed,
             isChatSessionClosed,
             sortBy,
-            studentCode,
+            // studentCode,
             sortDirection,
             page,
             // topicId

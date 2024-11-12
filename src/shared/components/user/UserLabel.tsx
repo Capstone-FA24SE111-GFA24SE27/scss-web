@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Avatar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText } from '@mui/material';
 import { Profile } from '@/shared/types';
 import { useAppDispatch } from '@shared/store';
-import { openDialog } from '..';
+import { openDialog } from '../dialog';
 import { EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
 
 interface UserLabelProps {

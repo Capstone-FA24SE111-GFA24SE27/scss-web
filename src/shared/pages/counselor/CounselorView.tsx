@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetCounselorViewQuery } from './counselor-api';
-import { Paper } from '@mui/material';
+import { Paper, Rating } from '@mui/material';
 /**
  * The contact view.
  */
@@ -96,23 +96,24 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
 
                     <Typography className="mt-12 text-4xl font-bold truncate">{counselor?.profile.fullName}</Typography>
 
-                    {/* <div className='flex items-end gap-8 text-lg text-gray-500'>
+                    <div className='flex items-end gap-8 text-lg text-text-secondary'>
                         <Rating
                             name="simple-controlled"
                             value={4.6}
                             readOnly
                             precision={0.5}
                         />
-                        <div>(116)</div>
-                    </div> */}
+                    </div>
 
-                    <div className="flex items-center mt-8 gap-8 ">
+                    {/* <div className="flex items-center mt-8 gap-8 ">
                         <Chip
                             label={counselor?.expertise?.name || counselor?.specialization?.name}
                             size="medium"
                             className='text-lg px-16'
                         />
-                    </div>
+                    </div> */}
+                    <Typography className="mt-4 text-xl">{counselor?.expertise?.name || counselor?.specialization?.name}</Typography>
+
 
 
                     <Divider className="mt-16 mb-24" />
@@ -144,13 +145,17 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
                     </div>
 
                     {
-
                         counselor?.specialization && <div>
                             <Divider className="mt-16 mb-24" />
                             <Typography className='font-semibold'>
                                 Academic details
                             </Typography>
-                            <Paper className="rounded p-8 shadow mt-8">
+                            <Box className="p-8 mt-8">
+
+                                <div className="grid grid-cols-3 gap-y-2 mb-4">
+                                    <div className="col-span-1 font-medium text-text-secondary">Academic Degree:</div>
+                                    <div className="col-span-2">{counselor?.academicDegree}</div>
+                                </div>
 
                                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                                     <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
@@ -178,7 +183,22 @@ function CounselorView({ shouldShowBooking = true, id }: CounselorViewProps) {
                                         )}
                                     </div>
                                 </div>
-                            </Paper>
+                            </Box>
+                        </div>
+                    }
+
+                    {
+                        counselor?.expertise && <div>
+                            <Divider className="mt-16 mb-24" />
+                            <Typography className='font-semibold'>
+                                Experience
+                            </Typography>
+                            <Box className="p-8 mt-8">
+                                <div className="gap-y-2 mb-4">
+                                    <div className="col-span-1 font-medium text-text-secondary">Expertise:</div>
+                                    <div className="col-span-2">{counselor?.expertise?.name}</div>
+                                </div>
+                            </Box>
                         </div>
                     }
 

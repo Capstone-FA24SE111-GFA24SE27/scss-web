@@ -13,7 +13,7 @@ import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutati
 import { statusColor } from '@/shared/constants';
 import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 
-const AppointmentsItem = ({ appointment }: { appointment: Appointment }) => {
+const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
 
   const dispatch = useAppDispatch();
 
@@ -425,4 +425,4 @@ const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) 
   );
 }
 
-export default AppointmentsItem;
+export default CounselorAppointmentItem;

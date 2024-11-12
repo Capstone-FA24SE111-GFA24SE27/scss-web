@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment, useCancelCounselingAppointmentMutation } from '../activity-api'
-import { AppLoading, DateRangePicker, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear } from '@mui/icons-material';
+import { AppLoading, DateRangePicker, ExpandableText, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
+import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear, Visibility } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
@@ -87,6 +87,8 @@ const AppointmentsTab = () => {
   //   };
   // }, [socket]);
 
+  const navigate = useNavigate()
+
   if (isLoading) {
     return <AppLoading />
   }
@@ -133,11 +135,18 @@ const AppointmentsTab = () => {
                             icon: <Clear fontSize='small' />,
                             disabled: ![`WAITING`].includes(appointment.status)
                           },
+                          {
+                            label: 'View details',
+                            onClick: () => {
+                              navigate(`appointment/${appointment.id}`)
+                            },
+                            icon: <Visibility fontSize='small' />
+                          },
                         ]}
                       />
                     }
                   >
-                    <div className='flex gap-8 items-center '>
+                    <div className='flex gap-8 items-center'>
                       <CalendarMonth />
                       <Typography className='' >{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
                     </div>
@@ -151,7 +160,7 @@ const AppointmentsTab = () => {
                       className='font-semibold items-center'
                       size='small'
                     />
-                    {
+                    {/* {
                       appointment.meetingType === 'ONLINE' && <div className='flex gap-24  items-center'>
                         {appointment.meetUrl && (
                           <div>
@@ -161,7 +170,7 @@ const AppointmentsTab = () => {
                           </div>
                         )}
                       </div>
-                    }
+                    } */}
                     <Chip
                       label={appointment.status}
                       variant='filled'
@@ -170,12 +179,31 @@ const AppointmentsTab = () => {
                     />
                   </ListItem>
 
-                  {
+                  {/* {
                     appointment.meetingType === 'OFFLINE' && appointment.address && (<div className='flex gap-16 items-center'>
                       <Typography className='w-68' color='textSecondary'>Address:</Typography>
                       <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                     </div>)
-                  }
+                  } */}
+                  <div className='flex gap-4'>
+                    {appointment.meetingType === 'ONLINE' ? (
+                      <div className='flex items-center gap-24'>
+                        {appointment.meetUrl && (
+                          <div className='flex items-center gap-8'>
+                            <Typography className='w-60' color='textSecondary'>Location:</Typography>
+                            <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
+                              {appointment.meetUrl}
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    ) : appointment.address && (
+                      <div className='flex items-center gap-8'>
+                        <Typography className='w-60' color='textSecondary'>Address:</Typography>
+                        <Typography className='font-semibold'>{appointment.address || ''}</Typography>
+                      </div>
+                    )}
+                  </div>
                   <Tooltip title={`View ${appointment.counselorInfo.profile.fullName}'s profile`}>
                     <ListItemButton
                       // component={NavLinkAdapter}
@@ -197,9 +225,9 @@ const AppointmentsTab = () => {
                   {appointment.appointmentFeedback ?
                     <div className='w-full'>
                       <Divider className='border' />
-                      <div className='flex items-start gap-16 mt-16'>
-                        <Typography className='w-96'>Your feedback:</Typography>
-                        <div>
+                      <div className='flex items-start gap-16 mt-8'>
+                        <Typography color='textSecondary' className='w-96 pt-2'>Your feedback:</Typography>
+                        <div className='flex-1'>
                           <div>
                             <div className='flex items-center gap-8'>
                               <Rating
@@ -210,17 +238,19 @@ const AppointmentsTab = () => {
                               <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                             </div>
                           </div>
-                          <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
+                          <ExpandableText className='pl-8 mt-8' text={appointment.appointmentFeedback.comment} limit={96} />
+                          {/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography> */}
                         </div>
                       </div>
                     </div>
                     : appointment.status === 'ATTEND' && <>
-                      <div className='flex flex-col w-full  gap-8 text-secondary-main '>
+                      <div className='flex flex-col w-full gap-4 text-secondary-main '>
                         <Divider />
                         {/* <Typography className='font-semibold'>Send feedback about the appointment!</Typography> */}
-                        <div className='flex '>
+                        <div className='flex'>
                           <Button
                             // variant='outlined'
+                            size='large'
                             onClick={() => dispatch(openDialog({
                               children: (
                                 <SendFeedbackDialog appointment={appointment} />
@@ -266,10 +296,10 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
 
   return (
     <div className='w-[50rem]'>
-      <DialogTitle id="alert-dialog-title">Edit details?</DialogTitle>
+      <DialogTitle id="alert-dialog-title">Review the counseling session?</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          <Typography>Edit the current meeting URL</Typography>
+          <Typography>Give a feedback for counselor</Typography>
           <TextField
             autoFocus
             margin="dense"

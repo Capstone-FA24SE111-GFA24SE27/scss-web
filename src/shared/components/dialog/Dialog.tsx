@@ -16,7 +16,7 @@ function ReusableDialog() {
 			onClose={() => dispatch(closeDialog())}
 			aria-labelledby="dialog-title"
 			classes={{
-				paper: 'rounded',
+				// paper: 'rounded',
 			}}
 			{...options}
 			maxWidth="lg"

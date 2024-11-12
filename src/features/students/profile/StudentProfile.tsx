@@ -82,10 +82,6 @@ function StudentProfile({ }: StudentProfileProps) {
             </div>
           </div>
 
-
-          
-
-
           <div className="flex flex-col space-y-16">
             <div>
               <Paper className="shadow p-16 mt-8">

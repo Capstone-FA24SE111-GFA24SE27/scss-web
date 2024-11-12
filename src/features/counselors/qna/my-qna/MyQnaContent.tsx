@@ -131,12 +131,12 @@ const MyQnaContent = () => {
             showClearOptions
             className='w-200'
           /> */}
-          <SearchField
+          {/* <SearchField
             onSearch={handleSearchStudentCode}
             label='Student code'
             placeholder='SE1001'
             className='!w-192'
-          />
+          /> */}
           <div className='flex justify-end flex-1 w-full'>
             <CheckboxField
               label="Is Close"

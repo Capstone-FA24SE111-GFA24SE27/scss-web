@@ -1,8 +1,8 @@
 import { ChangeEvent } from 'react'
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Paper, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
 import { useCancelCounselingAppointmentCounselorMutation, useGetCounselorCounselingAppointmentQuery } from './appointments-api';
-import { AppLoading, DateRangePicker, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@shared/components';
-import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, EmailOutlined, LocalPhoneOutlined, MoreVert, Summarize } from '@mui/icons-material';
+import { AppLoading, DateRangePicker, ExpandableText, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@shared/components';
+import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, EmailOutlined, LocalPhoneOutlined, MoreVert, Summarize, Visibility } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
@@ -176,7 +176,14 @@ const AppointmentsContent = () => {
                                 onClick: () => { navigate(`${appointment?.id}/report/create`) },
                                 icon: <Add fontSize='small' />
                               }
-                          ] : [])
+                          ] : []),
+                          {
+                            label: 'View details',
+                            onClick: () => {
+                              navigate(`appointment/${appointment.id}`)
+                            },
+                            icon: <Visibility fontSize='small' />
+                          },
                         ]}
                       />
                     }
@@ -292,7 +299,7 @@ const AppointmentsContent = () => {
                         ['ATTEND', 'ABSENT'].includes(appointment.status) && (
                           <div className='flex gap-4'>
                             <div className='flex items-center'>
-                              <Typography className={'w-[13rem]'} color='textSecondary'>Attendance Status:</Typography>
+                              <Typography className={'w-[10rem]'} color='textSecondary'>Attendance:</Typography>
                               <Typography className='pl-4 font-semibold' color={statusColor[appointment.status]}>
                                 {appointment.status}
                               </Typography>
@@ -316,13 +323,14 @@ const AppointmentsContent = () => {
                         appointment.appointmentFeedback && (
                           <div className='w-full'>
                             <div className='flex'>
-                              <Typography className='w-[13rem]'>Student feedback:</Typography>
-                              <div className='flex flex-col'>
+                              <Typography color='textSecondary' className='w-[7em]'>Feedback:</Typography>
+                              <div className='flex flex-col flex-1'>
                                 <div className='flex items-center gap-8'>
                                   <Rating size='medium' value={appointment.appointmentFeedback.rating} readOnly />
                                   <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                                 </div>
-                                <Typography className='pl-8 mt-8'>{appointment.appointmentFeedback.comment}</Typography>
+                                {/* <Typography className='pl-8 mt-8'>{appointment.appointmentFeedback.comment}</Typography> */}
+                                <ExpandableText className='pl-8 mt-8 ' text={appointment.appointmentFeedback.comment} limit={96} />
                               </div>
                             </div>
                           </div>

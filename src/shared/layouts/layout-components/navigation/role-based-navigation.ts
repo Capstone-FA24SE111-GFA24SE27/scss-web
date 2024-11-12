@@ -2,7 +2,7 @@ import { roles } from "@/shared/constants";
 import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FmdBadIcon from '@mui/icons-material/FmdBad';
-
+import { Actor } from "@/shared/components";
 interface SubList {
     name: string,
     description: string,
@@ -280,9 +280,9 @@ const managerNavigation: NavigationOptions = {
                     route: 'students'
                 },
                 {
-                    icon: SupportAgent,
+                    icon: EmojiPeople,
                     name: 'Support Staffs',
-                    route: 'counselors'
+                    route: 'support-staffs'
                 },
             ]
         },
@@ -353,12 +353,12 @@ const adminNavigation: NavigationOptions = {
                     name: 'Problem Tag',
                     route: 'tags'
                 },
-                
+
             ]
         },
     ],
     shortcuts: [
-       
+
     ],
     userMenu: [
         {

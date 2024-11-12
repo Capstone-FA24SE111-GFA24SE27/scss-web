@@ -19,6 +19,7 @@ import { ChangeEvent, useEffect } from 'react'
 // import StudentAppointmentList from './StudentAppointmentList';
 // import AttendanceReport from './AttendanceReport';
 import { lazy } from 'react'
+import { closeStudentView } from '@/features/counselors/counselors-layout-slice';
 const AcademicTranscript = lazy(() => import('./AcademicTranscript'))
 const StudentAppointmentList = lazy(() => import('./StudentAppointmentList'))
 const AttendanceReport = lazy(() => import('./AttendanceReport'))
@@ -128,6 +129,9 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                       sx={{ color: 'white' }}
                       component={NavLinkAdapter}
                       to={`/students/student-list/student/${student?.studentProfile.id}/booking`}
+                      onClick={()=> {
+                        dispatch(closeStudentView())
+                      }}
                       startIcon={<Add />}
                     >
                       Create an appointment
@@ -217,63 +221,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                   </Button>
                 </div>
               </div>
-              <Divider />
-              <div>
-                <Typography className='font-semibold'>
-                  Behavior Tags
-                </Typography>
-                <Box className='mt-16'>
-                  <SelectField
-                    label="Semester"
-                    options={semesterOptions}
-                    value={selectedSemester}
-                    onChange={handleSelectSemester}
-                    className='w-192'
-                    size='small'
-                    showClearOptions
-                  />
-                </Box>
-                <Box className="">
-                  {Object.keys(studentProblemTags).map((subject) => (
-                    <Accordion key={subject} className="p-0 shadow-0">
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography>{subject}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails className="flex flex-wrap gap-4">
-                        {/* Group tags by category */}
-                        {Object.keys(studentProblemTags[subject].isNotExcluded.concat(studentProblemTags[subject].isExcluded).reduce((acc, tag) => {
-                          // Group tags by category
-                          const { category, problemTagName, number, source, excluded } = tag;
-                          if (!acc[category]) {
-                            acc[category] = [];
-                          }
-                          acc[category].push({ problemTagName, number, source, excluded });
-                          return acc;
-                        }, {})).map((category) => (
-                          <Box key={category} className="w-full">
-                            <Typography variant="subtitle2" className="font-medium">
-                              {category}
-                            </Typography>
-                            <div className="flex flex-wrap gap-4 mb-8">
-                              {/* Render tags under each category */}
-                              {studentProblemTags[subject].isNotExcluded.concat(studentProblemTags[subject].isExcluded)
-                                .filter((tag) => tag.category === category)
-                                .map((tag, index) => (
-                                  <Chip
-                                    key={`${category}-${index}`}
-                                    label={`${tag.problemTagName} x ${tag.number}`}
-                                    variant={tag.excluded ? 'outlined' : 'filled'}
-                                    disabled={tag.excluded}
-                                  />
-                                ))}
-                            </div>
-                          </Box>
-                        ))}
-                      </AccordionDetails>
-                    </Accordion>
-                  ))}
-                </Box>
-              </div>
+
               <Divider />
               <div>
                 <Typography className='font-semibold'>
@@ -307,6 +255,64 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                       )}
                     </div>
                   </div>
+                </Box>
+              </div>
+
+              <Divider />
+              <div>
+                <Typography className='font-semibold'>
+                  Behavior Tags
+                </Typography>
+                <Box className='mt-16'>
+                  <SelectField
+                    label="Semester"
+                    options={semesterOptions}
+                    value={selectedSemester}
+                    onChange={handleSelectSemester}
+                    className='w-192'
+                    size='small'
+                    showClearOptions
+                  />
+                </Box>
+                <Box className="">
+                  {Object.keys(studentProblemTags).map((subject) => (
+                    <Accordion key={subject} className="p-0 shadow-0">
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className=''>{subject}</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails className="flex flex-wrap gap-4">
+                        {/* Group tags by category */}
+                        {Object.keys(studentProblemTags[subject].isNotExcluded.concat(studentProblemTags[subject].isExcluded).reduce((acc, tag) => {
+                          // Group tags by category
+                          const { category, problemTagName, number, source, excluded } = tag;
+                          if (!acc[category]) {
+                            acc[category] = [];
+                          }
+                          acc[category].push({ problemTagName, number, source, excluded });
+                          return acc;
+                        }, {})).map((category) => (
+                          <Box key={category} className="w-full">
+                            <Typography variant="subtitle2" className="font-medium text-text-secondary">
+                              {category}
+                            </Typography>
+                            <div className="flex flex-wrap gap-4 mb-8">
+                              {/* Render tags under each category */}
+                              {studentProblemTags[subject].isNotExcluded.concat(studentProblemTags[subject].isExcluded)
+                                .filter((tag) => tag.category === category)
+                                .map((tag, index) => (
+                                  <Chip
+                                    key={`${category}-${index}`}
+                                    label={`${tag.problemTagName} x ${tag.number}`}
+                                    variant={tag.excluded ? 'outlined' : 'filled'}
+                                    disabled={tag.excluded}
+                                  />
+                                ))}
+                            </div>
+                          </Box>
+                        ))}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
                 </Box>
               </div>
 

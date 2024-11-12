@@ -1,4 +1,4 @@
-import { AppointmentItem, NavLinkAdapter, RequestItem, Scrollbar, StatChange } from '@/shared/components'
+import { ContentLoading, CounselorAppointmentItem, NavLinkAdapter, RequestItem, Scrollbar, StatChange } from '@/shared/components'
 import { Cancel, CheckCircle, Description, DoDisturbOn, Pending } from '@mui/icons-material'
 import { Box, Button, Divider, Paper, Typography } from '@mui/material'
 import React from 'react'
@@ -6,22 +6,24 @@ import { useGetCounselorAppointmentRequestsQuery } from '../counseling/requests/
 import dayjs from 'dayjs'
 import { useGetCounselorCounselingAppointmentQuery } from '../counseling/appointments/appointments-api'
 import { useNavigate } from 'react-router-dom'
+import { useAppDispatch } from '@shared/store'
+import { openStudentView } from '../counselors-layout-slice'
 
 const HomeContent = () => {
   const today = dayjs().format('YYYY-MM-DD');
-
+  const dispatch = useAppDispatch()
   const firstDayOfMonth = dayjs().startOf('month').format('YYYY-MM-DD');
   const lastDayOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
 
   const firstDayPreviousMonth = dayjs().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
   const lastDayOfPreviousMonth = dayjs().subtract(1, 'month').endOf('month').format('YYYY-MM-DD');
 
-  const { data: requestsCurrentMonthData } = useGetCounselorAppointmentRequestsQuery({
+  const { data: requestsCurrentMonthData, isLoading: isLoadingRequest } = useGetCounselorAppointmentRequestsQuery({
     dateFrom: firstDayOfMonth,
     dateTo: lastDayOfMonth,
   })
 
-  const { data: upcomingAppointmentsData, isLoading, refetch } = useGetCounselorCounselingAppointmentQuery({
+  const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch } = useGetCounselorCounselingAppointmentQuery({
     fromDate: today,
     // toDate: lastDayOfMonth,
     status: `WAITING`,
@@ -137,12 +139,14 @@ const HomeContent = () => {
           </div>
           <Scrollbar className='flex flex-col gap-8 min-h-sm max-h-md overflow-y-auto p-4 divide-y-2 mt-8'>
             {
-              !pendingRequests?.length
-                ? <Typography className='text-center' color='textDisabled'>No pending requests</Typography>
-                : pendingRequests.map(request => <div className='rounded shadow' key={request.id} >
-                  <RequestItem appointment={request} />
-                </div>
-                )
+              isLoadingRequest
+                ? <ContentLoading />
+                : !pendingRequests?.length
+                  ? <Typography className='text-center' color='textDisabled'>No pending requests</Typography>
+                  : pendingRequests.map(request => <div className='rounded shadow' key={request.id} >
+                    <RequestItem appointment={request} onUserClick={() => dispatch(openStudentView(request.student.id.toString()))} />
+                  </div>
+                  )
             }
           </Scrollbar>
         </Paper>
@@ -160,23 +164,24 @@ const HomeContent = () => {
               !upcomingAppointments?.length
                 ? <Typography className='text-center' color='textDisabled'>No pending requests</Typography>
                 : upcomingAppointments.map(appointment =>
-                  <AppointmentItem appointment={appointment} key={appointment.id} />
+                  <CounselorAppointmentItem appointment={appointment} key={appointment.id} />
                 )
             }
           </Scrollbar> */}
 
           <Scrollbar className="flex flex-col gap-8 min-h-sm max-h-md overflow-y-auto p-4 ">
-            {
-              Object.keys(groupedAppointments).length === 0
+            {isLoadingAppointment
+              ? <ContentLoading />
+              : Object.keys(groupedAppointments).length === 0
                 ? <Typography className="text-center" color="textDisabled">No pending requests</Typography>
                 : Object.keys(groupedAppointments).map(dateLabel => (
                   <div key={dateLabel} className='pt-8'>
                     <Typography color="textPrimary" className='px-4 font-bold text-lg text-primary-light'>{dateLabel}</Typography>
                     <div className='divide-y-2 space-y-8'>
                       {groupedAppointments[dateLabel].map(appointment => (
-                        <div  key={appointment.id}
+                        <div key={appointment.id}
                           className='rounded shadow'>
-                          <AppointmentItem appointment={appointment} />
+                          <CounselorAppointmentItem appointment={appointment} />
                         </div>
                       ))}
                     </div>

@@ -4,7 +4,7 @@ import { specialRoutes } from '@shared/configs';
 import { demandRoutes } from './demands';
 import { staffStudentRoutes } from './students';
 import { recommendedStudentsRoutes } from './recommends';
-import { settingsRoutes } from '@/shared/pages';
+import { profileRoutes, settingsRoutes } from '@/shared/pages';
 
 const StaffLayout = lazy(() => import('./staff-layout'));
 
@@ -16,6 +16,7 @@ export const supportStaffRoutes: RouteObject[] = [
 			...specialRoutes,
 			...demandRoutes,
 			...staffStudentRoutes,
+			...profileRoutes,
 			...settingsRoutes
 			// ...recommendedStudentsRoutes
 		],
