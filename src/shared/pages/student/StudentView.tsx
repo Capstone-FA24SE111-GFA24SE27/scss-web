@@ -1,20 +1,21 @@
 import { Add, CakeOutlined, CalendarMonth, Checklist, Description, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Paper } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, DialogActions, DialogContent, DialogTitle, Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-import { ContentLoading, Gender, NavLinkAdapter, SelectField, openDialog } from '@shared/components';
+import { ContentLoading, Gender, NavLinkAdapter, SelectField, closeDialog, openDialog } from '@shared/components';
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useGetStudentDocumentViewQuery, useGetStudentProblemTagDetailsQuery, useGetStudentStudyViewQuery } from './student-api';
+import { useGetStudentBehaviorAssessmentMutation, useGetStudentDocumentViewQuery, useGetStudentProblemTagDetailsQuery, useGetStudentStudyViewQuery } from './student-api';
 import { calculateGPA } from '@/shared/utils';
 import { useAppDispatch } from '@shared/store';
 import { ReactNode, useState } from 'react';
 import { useGetSemestersQuery } from '@/shared/services';
 import { ChangeEvent, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown';
 // import AcademicTranscript from './AcademicTranscript';
 // import StudentAppointmentList from './StudentAppointmentList';
 // import AttendanceReport from './AttendanceReport';
@@ -36,6 +37,9 @@ function StudentView({ id, actionButton }: StudentViewProps) {
   const studentId = id || studentRouteId
   const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
   const { data: academicTranscriptData } = useGetStudentStudyViewQuery(studentId);
+  const [generalAssessment, setGeneralAssessment] = useState<string>()
+
+
   const [displayView, setDisplayView] = useState<'' | 'academic_transcrip' | 'attendance_report'>('')
   const [selectedSemester, setSelectedSemester] = useState('');
 
@@ -47,14 +51,47 @@ function StudentView({ id, actionButton }: StudentViewProps) {
   const location = useLocation()
 
   const studentGpa = calculateGPA(academicTranscriptData?.content)
-
-
   const dispatch = useAppDispatch()
 
   const { data: semesterData } = useGetSemestersQuery()
   const semesterOptions = semesterData?.map(semester => (
     { label: semester.name, value: semester.name }
   )) || []
+
+  const [assessThisSemeseter, { isLoading: isLoadingGeneralAssessment }] = useGetStudentBehaviorAssessmentMutation()
+  // const { data: generalAssessment, isFetching: isLoadingGeneralAssessment } = useGetStudentBehaviorAssessmentQuery({
+  //   studentId,
+  //   semesterName: selectedSemester
+  // }, {
+  //   skip: !selectedSemester,
+  // });
+
+  const handleAssessment = () => {
+    assessThisSemeseter({
+      studentId,
+      semesterName: selectedSemester,
+    }).unwrap().then((res) => {
+      dispatch(openDialog({
+        children: isLoadingGeneralAssessment
+          ? <ContentLoading />
+          : <div>
+            <DialogTitle>Student General Assesssment</DialogTitle>
+            <DialogContent>
+              <ReactMarkdown>
+                {formatMarkdown(res?.message) || ``}
+                {/* {res?.message} */}
+              </ReactMarkdown>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => dispatch(closeDialog())} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </div>
+      }))
+      // setGeneralAssessment(res?.message || ``)
+    })
+  }
 
   const { data: studentProblemTagsData } = useGetStudentProblemTagDetailsQuery({
     studentId,
@@ -113,7 +150,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                 color: 'text.secondary'
               }}
               className="font-bold w-128 h-128 text-64"
-              src={student.studentProfile.profile.avatarLink}
+              src={student?.studentProfile.profile.avatarLink}
               alt={student?.studentProfile.profile.fullName}
             >
               {student?.studentProfile.profile.fullName?.charAt(0)}
@@ -129,7 +166,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                       sx={{ color: 'white' }}
                       component={NavLinkAdapter}
                       to={`/students/student-list/student/${student?.studentProfile.id}/booking`}
-                      onClick={()=> {
+                      onClick={() => {
                         dispatch(closeStudentView())
                       }}
                       startIcon={<Add />}
@@ -231,16 +268,16 @@ function StudentView({ id, actionButton }: StudentViewProps) {
 
                   <div className="grid grid-cols-3 gap-y-2 mb-4">
                     <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
-                    <div className="col-span-2">{student.studentProfile?.specialization?.name}</div>
+                    <div className="col-span-2">{student?.studentProfile?.specialization?.name}</div>
                   </div>
 
                   {/* Department Section */}
                   <div className="grid grid-cols-3 gap-y-2 mb-4">
                     <div className="col-span-1 font-medium text-text-secondary">Department:</div>
                     <div className="col-span-2">
-                      <span>{student.studentProfile.department.name}</span>
-                      {student.studentProfile.department.code && (
-                        <span className="ml-2 text-text-disabled"> ({student.studentProfile.department.code})</span>
+                      <span>{student?.studentProfile.department.name}</span>
+                      {student?.studentProfile.department.code && (
+                        <span className="ml-2 text-text-disabled"> ({student?.studentProfile.department.code})</span>
                       )}
                     </div>
                   </div>
@@ -249,9 +286,9 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                   <div className="grid grid-cols-3 gap-y-2">
                     <div className="col-span-1 font-medium text-text-secondary">Major:</div>
                     <div className="col-span-2">
-                      <span>{student.studentProfile.major.name}</span>
-                      {student.studentProfile.major.code && (
-                        <span className="ml-2 text-text-disabled"> ({student.studentProfile.major.code})</span>
+                      <span>{student?.studentProfile.major.name}</span>
+                      {student?.studentProfile.major.code && (
+                        <span className="ml-2 text-text-disabled"> ({student?.studentProfile.major.code})</span>
                       )}
                     </div>
                   </div>
@@ -263,17 +300,24 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                 <Typography className='font-semibold'>
                   Behavior Tags
                 </Typography>
-                <Box className='mt-16'>
-                  <SelectField
-                    label="Semester"
-                    options={semesterOptions}
-                    value={selectedSemester}
-                    onChange={handleSelectSemester}
-                    className='w-192'
-                    size='small'
-                    showClearOptions
-                  />
-                </Box>
+                <div className='flex justify-between items-center'>
+                  <Box className='mt-16'>
+                    <SelectField
+                      label="Semester"
+                      options={semesterOptions}
+                      value={selectedSemester}
+                      onChange={handleSelectSemester}
+                      className='w-192'
+                      size='small'
+                      showClearOptions
+                    />
+                  </Box>
+                  <Button size='small' color='secondary' variant='contained'
+                    disabled={isLoadingGeneralAssessment}
+                    onClick={handleAssessment}
+                  >Assess selected semester</Button>
+                </div>
+
                 <Box className="">
                   {Object.keys(studentProblemTags).map((subject) => (
                     <Accordion key={subject} className="p-0 shadow-0">
@@ -329,10 +373,10 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         <Typography>Psychological and Health Status</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography><strong>Introduction:</strong> {student.counselingProfile?.introduction || `N/A`}</Typography>
-                        <Typography><strong>Current Health Status:</strong> {student.counselingProfile?.currentHealthStatus || `N/A`}</Typography>
-                        <Typography><strong>Psychological Status:</strong> {student.counselingProfile?.psychologicalStatus || `N/A`}</Typography>
-                        <Typography><strong>Stress Factors:</strong> {student.counselingProfile?.stressFactors || `N/A`}</Typography>
+                        <Typography><strong>Introduction:</strong> {student?.counselingProfile?.introduction || `N/A`}</Typography>
+                        <Typography><strong>Current Health Status:</strong> {student?.counselingProfile?.currentHealthStatus || `N/A`}</Typography>
+                        <Typography><strong>Psychological Status:</strong> {student?.counselingProfile?.psychologicalStatus || `N/A`}</Typography>
+                        <Typography><strong>Stress Factors:</strong> {student?.counselingProfile?.stressFactors || `N/A`}</Typography>
                       </AccordionDetails>
                     </Accordion>
 
@@ -342,8 +386,8 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         <Typography>Academic Information</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography><strong>Academic Difficulties:</strong> {student.counselingProfile?.academicDifficulties || `N/A`}</Typography>
-                        <Typography><strong>Study Plan:</strong> {student.counselingProfile?.studyPlan || `N/A`}</Typography>
+                        <Typography><strong>Academic Difficulties:</strong> {student?.counselingProfile?.academicDifficulties || `N/A`}</Typography>
+                        <Typography><strong>Study Plan:</strong> {student?.counselingProfile?.studyPlan || `N/A`}</Typography>
                       </AccordionDetails>
                     </Accordion>
 
@@ -353,9 +397,9 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         <Typography>Career Information</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography><strong>Career Goals:</strong> {student.counselingProfile?.careerGoals || `N/A`}</Typography>
-                        <Typography><strong>Part-Time Experience:</strong> {student.counselingProfile?.partTimeExperience || `N/A`}</Typography>
-                        <Typography><strong>Internship Program:</strong> {student.counselingProfile?.internshipProgram || `N/A`}</Typography>
+                        <Typography><strong>Career Goals:</strong> {student?.counselingProfile?.careerGoals || `N/A`}</Typography>
+                        <Typography><strong>Part-Time Experience:</strong> {student?.counselingProfile?.partTimeExperience || `N/A`}</Typography>
+                        <Typography><strong>Internship Program:</strong> {student?.counselingProfile?.internshipProgram || `N/A`}</Typography>
                       </AccordionDetails>
                     </Accordion>
 
@@ -365,9 +409,9 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         <Typography>Activities and Lifestyle</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography><strong>Extracurricular Activities:</strong> {student.counselingProfile?.extracurricularActivities || `N/A`}</Typography>
-                        <Typography><strong>Personal Interests:</strong> {student.counselingProfile?.personalInterests || `N/A`}</Typography>
-                        <Typography><strong>Social Relationships:</strong> {student.counselingProfile?.socialRelationships || `N/A`}</Typography>
+                        <Typography><strong>Extracurricular Activities:</strong> {student?.counselingProfile?.extracurricularActivities || `N/A`}</Typography>
+                        <Typography><strong>Personal Interests:</strong> {student?.counselingProfile?.personalInterests || `N/A`}</Typography>
+                        <Typography><strong>Social Relationships:</strong> {student?.counselingProfile?.socialRelationships || `N/A`}</Typography>
                       </AccordionDetails>
                     </Accordion>
 
@@ -377,8 +421,8 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         <Typography>Financial Support</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography><strong>Financial Situation:</strong> {student.counselingProfile?.financialSituation || `N/A`}</Typography>
-                        <Typography><strong>Financial Support:</strong> {student.counselingProfile?.financialSupport || `N/A`}</Typography>
+                        <Typography><strong>Financial Situation:</strong> {student?.counselingProfile?.financialSituation || `N/A`}</Typography>
+                        <Typography><strong>Financial Support:</strong> {student?.counselingProfile?.financialSupport || `N/A`}</Typography>
                       </AccordionDetails>
                     </Accordion>
 
@@ -388,7 +432,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         <Typography>Counseling Requests</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography><strong>Desired Counseling Fields:</strong> {student.counselingProfile?.desiredCounselingFields || `N/A`}</Typography>
+                        <Typography><strong>Desired Counseling Fields:</strong> {student?.counselingProfile?.desiredCounselingFields || `N/A`}</Typography>
                       </AccordionDetails>
                     </Accordion>
                   </div>
@@ -415,3 +459,19 @@ function StudentView({ id, actionButton }: StudentViewProps) {
 }
 
 export default StudentView;
+function formatMarkdown(data) {
+  // Clean up any extra spaces and commas
+  data = data.replace(/\n\s*\n/g, '\n'); // Remove extra empty lines
+
+  // Add bullet points before each item that needs them
+  data = data.replace(/^\s*-\s*/gm, '  - ');  // Ensure proper spacing with bullet points
+  data = data.replace(/^\s*([^\n\-].+)/gm, '  - $1'); // Add bullet point where it's missing
+
+  // Process each section header (e.g., Behavioral Performance Overview, Overall Assessment, Conclusion)
+  data = data.replace(/###/g, '\n###'); // Add newline before each section header
+
+  // Clean up any unnecessary spaces after section headers
+  data = data.replace(/\n{2,}/g, '\n\n'); // Remove redundant blank lines
+
+  return data.trim();
+}

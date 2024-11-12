@@ -13,7 +13,7 @@ import { ChangeEvent, ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRequest, onUserClick: () => void }) => {
+const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRequest, onUserClick?: () => void }) => {
   const [denyAppointmentRequest] = useDenyAppointmentRequestMutation();
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)

@@ -62,7 +62,7 @@ const QuestionBoard = () => {
   const topicOptions = account?.role ?
     extractCounselingTypeFromRole(account?.role) === 'ACADEMIC' ? academicTopicOptions : nonAcademicTopicOptions
     : []
-    
+
 
   const handleSelectTopic = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedTopic(event.target.value);
@@ -77,7 +77,7 @@ const QuestionBoard = () => {
   };
 
   const { data: questionData, isLoading } = useGetCounselorQuestionsQuery({
-    role: account?.role,
+    role: `ACADEMIC_COUNSELOR`,
     studentCode: searchStudentCode,
     keyword: searchTerm,
     topicId: selectedTopic,
