@@ -111,6 +111,7 @@ function AppointmentTable() {
             table.resetRowSelection();
             navigate(`report/${row.original.id}`)
           }}
+          disabled={!row.original.havingReport}
         >
           <ListItemIcon>
             <Summarize />

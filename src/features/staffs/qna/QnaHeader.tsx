@@ -7,11 +7,11 @@ type Props = {}
 const QnaHeader = (props: Props) => {
   return (
     <div className='flex items-center justify-between p-32 border-b bg-background-paper'>
-          <Heading
-            title='Questions and Answers'
-            description=''
-          />
-        </div>
+      <Heading
+        title='Questions and Answers'
+        description=''
+      />
+    </div>
   )
 }
 

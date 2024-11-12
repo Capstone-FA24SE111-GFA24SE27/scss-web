@@ -30,6 +30,10 @@ export const SocketProvider = ({ children }) => {
 
 			console.log('Socket disconnecting, no account');
 		}
+		// } else if (socketRef.current && socketRef.current.connected) {
+		// 	socketRef.current?.disconnect();
+		// 	socketRef.current = null;
+		// }
 
 		return () => {
 			socketState?.disconnect();

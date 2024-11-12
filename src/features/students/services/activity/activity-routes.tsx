@@ -8,7 +8,7 @@ export const activityRoutes: RouteObject[] = [
     path: 'activity',
     element: <Activity />,
     children: [
-      ...tabRoutes
+      ...tabRoutes,
     ]
   },
 ];

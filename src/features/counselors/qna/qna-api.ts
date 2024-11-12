@@ -55,10 +55,10 @@ export const counselorQnaApi = api
           isClosed = '',
           isChatSessionClosed = '',
           sortBy = 'createdDate',
-          studentCode = '',
+          // studentCode = null,
           sortDirection = 'DESC',
           page = 1,
-          topicId
+          // topicId
         }) => ({
           url: `/api/question-cards/counselor/filter`,
           method: 'GET',
@@ -70,7 +70,7 @@ export const counselorQnaApi = api
             // studentCode,
             sortDirection,
             page,
-            topicId
+            // topicId
           },
         }),
         providesTags: ['qna']

@@ -28,13 +28,11 @@ export const usersApi = api
 					type = '',
 					studentCode = '',
 				}) => ({
-					url: `/api/question-cards/review/filter?${
-						keyword.length > 0 ? `keyword=${keyword}` : ''
-					}sortBy=${sortBy}&sortDirection=${sortDirection}&page=${page}${
-						studentCode.length > 0
+					url: `/api/question-cards/review/filter?${keyword.length > 0 ? `keyword=${keyword}` : ''
+						}sortBy=${sortBy}&sortDirection=${sortDirection}&page=${page}${studentCode.length > 0
 							? `&studentCode=${studentCode}`
 							: ''
-					}${type.length > 0 ? `&type=${type}` : ''}`,
+						}${type.length > 0 ? `&type=${type}` : ''}`,
 				}),
 				providesTags: ['qna'],
 			}),

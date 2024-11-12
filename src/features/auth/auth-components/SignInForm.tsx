@@ -13,6 +13,8 @@ import Button from '@mui/material/Button';
 import { getApiErrorMessage, setAccessToken, setAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useLoginDefaultMutation } from '../auth-api'
 import { Typography } from '@mui/material';
+import { openDialog } from '@/shared/components';
+import { ForgotPasswordForm } from '@/shared/pages';
 /**
  * Form Validation Schema
  */
@@ -115,8 +117,8 @@ function SignInForm() {
 				)}
 			/>
 
-			{/* <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between">
-				<Controller
+			<div className="flex flex-col items-center justify-center sm:flex-row sm:justify-end">
+				{/* <Controller
 					name="remember"
 					control={control}
 					render={({ field }) => (
@@ -132,15 +134,20 @@ function SignInForm() {
 							/>
 						</FormControl>
 					)}
-				/>
+				/> */}
 
-				<Link
-					className="font-medium text-md"
-					to="/pages/auth/forgot-password"
-				>
+				<Button
+					size='small'
+					variant='text'
+					type='button'
+					onClick={() => {
+						dispatch(openDialog({
+							children: <ForgotPasswordForm />
+						}))
+					}}>
 					Forgot password?
-				</Link>
-			</div> */}
+				</Button>
+			</div>
 
 			{serverError && <Typography color='error'>{serverError}</Typography>}
 

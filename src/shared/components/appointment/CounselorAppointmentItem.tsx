@@ -13,7 +13,7 @@ import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutati
 import { statusColor } from '@/shared/constants';
 import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 
-const AppointmentsItem = ({ appointment }: { appointment: Appointment }) => {
+const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
 
   const dispatch = useAppDispatch();
 
@@ -202,7 +202,7 @@ const AppointmentsItem = ({ appointment }: { appointment: Appointment }) => {
                 </div>
               )
             }
-            {/* {
+            {
               appointment.status === 'WAITING' && (
                 <div className='mt-16'>
                   <Button className='mt-4' variant='contained' color='secondary'
@@ -215,7 +215,7 @@ const AppointmentsItem = ({ appointment }: { appointment: Appointment }) => {
                   </Button>
                 </div>
               )
-            } */}
+            }
           </div>
         </div>
       </div>
@@ -425,4 +425,4 @@ const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) 
   );
 }
 
-export default AppointmentsItem;
+export default CounselorAppointmentItem;

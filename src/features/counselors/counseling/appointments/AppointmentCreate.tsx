@@ -193,7 +193,7 @@ function AppointmentCreate() {
         <div className="">
           <Button
             component={NavLinkAdapter}
-            to="."
+            to="/counseling/appointments"
             startIcon={<ArrowBack />}
           >
             Back to appointment list

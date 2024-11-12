@@ -143,20 +143,20 @@ const MyQnaContent = () => {
             onSearch={handleSearch}
             className='w-xs'
           />
-          <SelectField
+          {/* <SelectField
             label="Topic"
             options={topicOptions}
             value={selectedTopic}
             onChange={handleSelectTopic}
             showClearOptions
             className='w-200'
-          />
-          <SearchField
+          /> */}
+          {/* <SearchField
             onSearch={handleSearchStudentCode}
             label='Student code'
-            placeholder='SE110000'
-            className='!w-144'
-          />
+            placeholder='SE1001'
+            className='!w-192'
+          /> */}
           <div className='flex justify-end flex-1 w-full'>
             <CheckboxField
               label="Is Close"

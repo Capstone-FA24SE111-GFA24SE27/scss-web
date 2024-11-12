@@ -5,7 +5,6 @@ import { RouteObject } from 'react-router-dom';
 import StudentView from './StudentView';
 
 
-
 export const staffStudentRoutes: RouteObject[] = [
 	{
 		path: 'student-list',

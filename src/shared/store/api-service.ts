@@ -91,6 +91,7 @@ export const getApiErrorMessage = (error: FetchBaseQueryError | SerializedError)
 	if ('status' in error) {
 		const statusMessages: Record<number, string> = {
 			401: (error.data as ApiError)?.message || 'Invalid credentials.',
+			403: (error.data as ApiError)?.message || 'Forbidden.',
 			404: (error.data as ApiError)?.message || 'Resource not found.',
 			500: 'Server error. Please try again later.',
 		};

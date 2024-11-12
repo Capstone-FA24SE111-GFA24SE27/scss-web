@@ -19,6 +19,7 @@ import { ChangeEvent, useEffect } from 'react'
 // import StudentAppointmentList from './StudentAppointmentList';
 // import AttendanceReport from './AttendanceReport';
 import { lazy } from 'react'
+import { closeStudentView } from '@/features/counselors/counselors-layout-slice';
 const AcademicTranscript = lazy(() => import('./AcademicTranscript'))
 const StudentAppointmentList = lazy(() => import('./StudentAppointmentList'))
 const AttendanceReport = lazy(() => import('./AttendanceReport'))
@@ -128,6 +129,9 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                       sx={{ color: 'white' }}
                       component={NavLinkAdapter}
                       to={`/students/student-list/student/${student?.studentProfile.id}/booking`}
+                      onClick={()=> {
+                        dispatch(closeStudentView())
+                      }}
                       startIcon={<Add />}
                     >
                       Create an appointment
@@ -217,59 +221,13 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                   </Button>
                 </div>
               </div>
-              <Divider />
-              <div>
-                <Typography className='font-semibold'>
-                  Behavior Tags
-                </Typography>
-                <Box className='mt-16'>
-                  <SelectField
-                    label="Semester"
-                    options={semesterOptions}
-                    value={selectedSemester}
-                    onChange={handleSelectSemester}
-                    className='w-192'
-                    size='small'
-                    showClearOptions
-                  />
-                </Box>
-                <Box className="">
-                  {Object.keys(studentProblemTags).map((subject) => (
-                    <Box key={subject} className="my-16">
-                      <Typography className="font">
-                        {subject}
-                      </Typography>
-                      <Box className="flex flex-wrap gap-4">
-                        {/* Render isNotExcluded tags */}
-                        {studentProblemTags[subject].isNotExcluded.map((tag, index) => (
-                          <Chip
-                            key={`included-${index}`}
-                            label={`${tag.problemTagName} x ${tag.number}`}
-                            variant="filled"
-                          // clickable
-                          />
-                        ))}
-                        {/* Render isExcluded tags */}
-                        {studentProblemTags[subject].isExcluded.map((tag, index) => (
-                          <Chip
-                            key={`excluded-${index}`}
-                            label={tag.problemTagName}
-                            variant="outlined"
-                            disabled
-                          />
-                        ))}
-                      </Box>
-                    </Box>
-                  ))}
-                </Box>
 
-              </div>
               <Divider />
               <div>
                 <Typography className='font-semibold'>
                   Academic details
                 </Typography>
-                <Paper className="rounded p-8 shadow mt-8">
+                <Box className="rounded p-8 mt-8">
 
                   <div className="grid grid-cols-3 gap-y-2 mb-4">
                     <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
@@ -297,7 +255,65 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                       )}
                     </div>
                   </div>
-                </Paper>
+                </Box>
+              </div>
+
+              <Divider />
+              <div>
+                <Typography className='font-semibold'>
+                  Behavior Tags
+                </Typography>
+                <Box className='mt-16'>
+                  <SelectField
+                    label="Semester"
+                    options={semesterOptions}
+                    value={selectedSemester}
+                    onChange={handleSelectSemester}
+                    className='w-192'
+                    size='small'
+                    showClearOptions
+                  />
+                </Box>
+                <Box className="">
+                  {Object.keys(studentProblemTags).map((subject) => (
+                    <Accordion key={subject} className="p-0 shadow-0">
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className=''>{subject}</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails className="flex flex-wrap gap-4">
+                        {/* Group tags by category */}
+                        {Object.keys(studentProblemTags[subject].isNotExcluded.concat(studentProblemTags[subject].isExcluded).reduce((acc, tag) => {
+                          // Group tags by category
+                          const { category, problemTagName, number, source, excluded } = tag;
+                          if (!acc[category]) {
+                            acc[category] = [];
+                          }
+                          acc[category].push({ problemTagName, number, source, excluded });
+                          return acc;
+                        }, {})).map((category) => (
+                          <Box key={category} className="w-full">
+                            <Typography variant="subtitle2" className="font-medium text-text-secondary">
+                              {category}
+                            </Typography>
+                            <div className="flex flex-wrap gap-4 mb-8">
+                              {/* Render tags under each category */}
+                              {studentProblemTags[subject].isNotExcluded.concat(studentProblemTags[subject].isExcluded)
+                                .filter((tag) => tag.category === category)
+                                .map((tag, index) => (
+                                  <Chip
+                                    key={`${category}-${index}`}
+                                    label={`${tag.problemTagName} x ${tag.number}`}
+                                    variant={tag.excluded ? 'outlined' : 'filled'}
+                                    disabled={tag.excluded}
+                                  />
+                                ))}
+                            </div>
+                          </Box>
+                        ))}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+                </Box>
               </div>
 
               <Divider />
@@ -308,7 +324,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                 <div className='flex flex-col gap-8 mt-8'>
                   <div>
                     {/* Psychological and Health Status */}
-                    <Accordion className='shadow'>
+                    <Accordion className="p-0 shadow-0">
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>Psychological and Health Status</Typography>
                       </AccordionSummary>
@@ -321,7 +337,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                     </Accordion>
 
                     {/* Academic Information */}
-                    <Accordion className='shadow'>
+                    <Accordion className="p-0 shadow-0">
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>Academic Information</Typography>
                       </AccordionSummary>
@@ -332,7 +348,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                     </Accordion>
 
                     {/* Career Information */}
-                    <Accordion className='shadow'>
+                    <Accordion className="p-0 shadow-0">
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>Career Information</Typography>
                       </AccordionSummary>
@@ -344,7 +360,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                     </Accordion>
 
                     {/* Activities and Lifestyle */}
-                    <Accordion className='shadow'>
+                    <Accordion className="p-0 shadow-0">
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>Activities and Lifestyle</Typography>
                       </AccordionSummary>
@@ -356,7 +372,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                     </Accordion>
 
                     {/* Financial Support */}
-                    <Accordion className='shadow'>
+                    <Accordion className="p-0 shadow-0">
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>Financial Support</Typography>
                       </AccordionSummary>
@@ -367,7 +383,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                     </Accordion>
 
                     {/* Counseling Requests */}
-                    <Accordion className='shadow'>
+                    <Accordion className="p-0 shadow-0">
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>Counseling Requests</Typography>
                       </AccordionSummary>

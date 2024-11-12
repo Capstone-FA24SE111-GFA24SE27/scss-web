@@ -70,7 +70,7 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 		} else {
 			dispatch(setSemesterIdForBehavior(''));
 		}
-		dispatch(setPromptForBehavior(''));
+		// dispatch(setPromptForBehavior(''));
 	};
 
 	return (

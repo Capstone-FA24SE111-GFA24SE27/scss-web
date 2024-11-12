@@ -1,26 +1,24 @@
 import { openStudentView } from '@/features/counselors/counselors-layout-slice';
-import { AppLoading, NavLinkAdapter, UserListItem, closeDialog, openDialog } from '@/shared/components';
+import { AppLoading, ItemMenu, NavLinkAdapter, UserListItem, closeDialog, openDialog } from '@/shared/components';
+import { statusColor } from '@/shared/constants';
 import { AppointmentRequest } from '@/shared/types';
 import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation } from '@features/counselors/counseling/counseling-api';
 import { useGetCounselorAppointmentRequestsQuery } from '@features/counselors/counseling/requests/requests-api';
-import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
-import { Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, ListItemButton, Paper, TextField, Tooltip, Typography } from '@mui/material';
+import { AccessTime, CalendarMonth, ChevronRight, Circle, Visibility } from '@mui/icons-material';
+import { Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, ListItem, ListItemButton, Paper, TextField, Tooltip, Typography } from '@mui/material';
 import { ExpandableText } from '@shared/components';
-import { useAppDispatch } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, ReactNode, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const RequestsContent = ({ appointment }: { appointment: AppointmentRequest }) => {
+
+const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRequest, onUserClick: () => void }) => {
   const [denyAppointmentRequest] = useDenyAppointmentRequestMutation();
   const dispatch = useAppDispatch()
-
-  const statusColor = {
-    'REJECTED': 'error',
-    'WAITING': 'warning',
-    'APPROVED': 'success'
-  }
-
-
+  const account = useAppSelector(selectAccount)
+  const role = account?.role
+  const navigate = useNavigate()
   const handleDenyRequest = (appointment: AppointmentRequest) => {
     console.log(appointment)
     denyAppointmentRequest(appointment.id)
@@ -30,10 +28,26 @@ const RequestsContent = ({ appointment }: { appointment: AppointmentRequest }) =
   return (
     <div
       key={appointment.id}
-      className="p-16"
+      className="p-16 w-full "
     >
-      <div className='flex flex-col w-full gap-16'>
-        <div className='flex gap-24 flex-wrap'>
+      <div className='flex flex-col w-full gap-16 '>
+        <ListItem className='flex gap-24 flex-wrap p-0'
+        // secondaryAction={
+        //   <ItemMenu
+        //     menuItems={[
+        //       {
+        //         label: 'View details',
+        //         onClick: () => {
+        //           navigate(`appointment/${appointment.id}`)
+        //         },
+        //         icon: <Visibility fontSize='small' />
+        //       },
+
+        //     ]}
+        //   />
+        // }
+        >
+
           <div className='flex items-center gap-8 '>
             <CalendarMonth />
             <Typography className='' >{appointment.requireDate}</Typography>
@@ -56,8 +70,7 @@ const RequestsContent = ({ appointment }: { appointment: AppointmentRequest }) =
             color={statusColor[appointment.status]}
             size='small'
           />
-
-        </div>
+        </ListItem>
 
         <div className='flex gap-8'>
           <Typography className='w-60' color='textSecondary'>Reason: </Typography>
@@ -65,61 +78,67 @@ const RequestsContent = ({ appointment }: { appointment: AppointmentRequest }) =
         </div>
         <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
           <ListItemButton
-            onClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
+            onClick={onUserClick}
             className='w-full rounded shadow bg-primary-light/5'
           >
-            <UserListItem
-              fullName={appointment?.student.profile.fullName}
-              avatarLink={appointment?.student.profile.avatarLink}
-              phoneNumber={appointment?.student.profile.phoneNumber}
-              email={appointment?.student.email}
-            />
+            {
+              role === 'STUDENT'
+                ? <UserListItem
+                  fullName={appointment?.counselor.profile.fullName}
+                  avatarLink={appointment?.counselor.profile.avatarLink}
+                  phoneNumber={appointment?.counselor.profile.phoneNumber}
+                  email={appointment?.counselor.email}
+                />
+                : <UserListItem
+                  fullName={appointment?.student.profile.fullName}
+                  avatarLink={appointment?.student.profile.avatarLink}
+                  phoneNumber={appointment?.student.profile.phoneNumber}
+                  email={appointment?.student.email}
+                />
+            }
           </ListItemButton>
         </Tooltip>
         {
-          appointment.status === 'WAITING' && (
-            <>
-              {/* <Divider /> */}
-              <div className='flex flex-col w-full gap-8 text-secondary-main '>
-                <div className='flex gap-16'>
-                  <Button color='secondary' variant='outlined' className='w-96'
-                    onClick={() => dispatch(openDialog({
-                      children: (
-                        <div>
-                          <DialogTitle id="alert-dialog-title">Deny this appointment request?</DialogTitle>
-                          <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                              This action won't be undo.
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions>
-                            <Button onClick={() => dispatch(closeDialog())} color="primary">
-                              Cancel
-                            </Button>
-                            <Button onClick={() => { handleDenyRequest(appointment); dispatch(closeDialog()) }} color="secondary" variant='contained' autoFocus>
-                              Confirm
-                            </Button>
-                          </DialogActions>
-                        </div>
-                      )
-                    }))}
-                  >
-                    Deny
-                  </Button>
+          (role === 'ACADEMIC_COUNSELOR' || role === 'NON_ACADEMIC_COUNSELOR')
+          && appointment.status === 'WAITING' && (
+            <div className='flex flex-col w-full gap-8 text-secondary-main '>
+              <div className='flex gap-16'>
+                <Button color='secondary' variant='outlined' className='w-96'
+                  onClick={() => dispatch(openDialog({
+                    children: (
+                      <div>
+                        <DialogTitle id="alert-dialog-title">Deny this appointment request?</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            This action won't be undo.
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={() => dispatch(closeDialog())} color="primary">
+                            Cancel
+                          </Button>
+                          <Button onClick={() => { handleDenyRequest(appointment); dispatch(closeDialog()) }} color="secondary" variant='contained' autoFocus>
+                            Confirm
+                          </Button>
+                        </DialogActions>
+                      </div>
+                    )
+                  }))}
+                >
+                  Deny
+                </Button>
 
-                  <Button color='secondary' variant='contained' className='w-96'
-                    onClick={() => dispatch(openDialog({
-                      children: (
-                        <ApproveAppointmentDialog appointment={appointment} />
-                      )
-                    }))}
-                  >
-                    Approve
-                  </Button>
-                </div>
+                <Button color='secondary' variant='contained' className='w-96'
+                  onClick={() => dispatch(openDialog({
+                    children: (
+                      <ApproveAppointmentDialog appointment={appointment} />
+                    )
+                  }))}
+                >
+                  Approve
+                </Button>
               </div>
-
-            </>
+            </div>
           )
         }
       </div>
@@ -224,4 +243,4 @@ const ApproveAppointmentDialog = ({ appointment }: { appointment: AppointmentReq
   )
 }
 
-export default RequestsContent
+export default RequestsItem

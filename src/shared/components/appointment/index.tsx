@@ -1,9 +1,11 @@
 
 import AppointmentReport from "./AppointmentReport";
 import RequestItem from "./RequestItem";
-import AppointmentItem from "./AppointmentItem";
+import CounselorAppointmentItem from "./CounselorAppointmentItem";
+import StudentAppointmentItem from "./StudentAppointmentItem";
 export {
   AppointmentReport,
   RequestItem,
-  AppointmentItem
+  CounselorAppointmentItem,
+  StudentAppointmentItem,
 }

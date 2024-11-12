@@ -64,7 +64,7 @@ const useChatNotification = (qnaList: Question[]) => {
 						`passive /user/${qnaItem.chatSession.id}/chat`,
 						result
 					);
-					listenersList.add(qnaItem.chatSession.id);
+					listenersList.add(qnaItem.chatSession?.id);
 				}
 			});
 			console.log('listeners', listenersList)

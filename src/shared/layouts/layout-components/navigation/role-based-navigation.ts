@@ -2,7 +2,7 @@ import { roles } from "@/shared/constants";
 import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description, Schedule } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FmdBadIcon from '@mui/icons-material/FmdBad';
-
+import { Actor } from "@/shared/components";
 interface SubList {
     name: string,
     description: string,
@@ -250,7 +250,7 @@ const managerNavigation: NavigationOptions = {
         {
             name: "Dashboard",
             description: "Data visualization & analytics",
-            route: 'management',
+            route: 'dashboard',
             items: [
                 {
                     icon: Archive,
@@ -278,6 +278,11 @@ const managerNavigation: NavigationOptions = {
                     icon: Face,
                     name: 'Students',
                     route: 'students'
+                },
+                {
+                    icon: EmojiPeople,
+                    name: 'Support Staffs',
+                    route: 'support-staffs'
                 },
             ]
         },
@@ -357,7 +362,7 @@ const adminNavigation: NavigationOptions = {
         },
     ],
     shortcuts: [
-       
+
     ],
     userMenu: [
         {

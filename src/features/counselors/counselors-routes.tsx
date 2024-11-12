@@ -5,6 +5,8 @@ import { counselingRoutes } from './counseling';
 import { qnaRoutes } from './qna';
 import { counselorStudentsRoutes } from './students';
 import { homeRoutes } from './home';
+import { settingsRoutes } from '@/shared/pages';
+import { profileRoutes } from './profile';
 
 const CounselorsLayout = lazy(() => import('./counselors-layout'))
 
@@ -17,6 +19,8 @@ export const counselorsRoutes: RouteObject[] = [
       ...counselingRoutes,
       ...qnaRoutes,
       ...counselorStudentsRoutes,
+      ...profileRoutes,
+      ...settingsRoutes,
       ...specialRoutes
     ],
   },

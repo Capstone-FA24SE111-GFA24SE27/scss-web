@@ -1,19 +1,24 @@
 import React from 'react';
-import { Avatar, Typography } from '@mui/material';
 import LocalPhoneOutlined from '@mui/icons-material/LocalPhoneOutlined';
 import EmailOutlined from '@mui/icons-material/EmailOutlined';
+import { Box, Avatar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText } from '@mui/material';
+import { openDialog } from '../dialog';
+import { useAppDispatch } from '@shared/store';
 
 interface UserListItemProps {
   fullName: string;
   avatarLink: string;
   phoneNumber: string;
   email: string;
+  onClick?: () => void;
 }
 
-const UserListItem: React.FC<UserListItemProps> = ({ fullName, avatarLink, phoneNumber, email }) => {
+const UserListItem: React.FC<UserListItemProps> = ({ fullName, avatarLink, phoneNumber, email, onClick}) => {
+  const dispatch = useAppDispatch()
+
   return (
-    <div className='flex items-start w-full gap-16'>
-      <Avatar alt={fullName} src={avatarLink} className='size-48'/>
+    <div className={`flex items-start w-full gap-16 ${onClick ? 'hover:bg-primary-main/5 rounded p-2 hover:cursor-pointer' : ''}`} onClick={onClick}>
+      <Avatar alt={fullName} src={avatarLink} className='size-48' />
       <div>
         <Typography className='font-semibold text-primary-main'>{fullName}</Typography>
         <div className="flex items-center gap-16 mt-2">

@@ -13,7 +13,7 @@ export const appointmentsApi = api
     endpoints: (build) => ({
       getCounselorCounselingAppointment: build.query<GetCounselingAppointmentApiResponse, GetCounselingAppointmentApiArg>({
         query: ({
-          // studentCode = '',
+          studentCode = '',
           fromDate = '',
           toDate = '',
           status = '',
@@ -21,7 +21,7 @@ export const appointmentsApi = api
           sortDirection = 'DESC',
           page = 1
         }) => ({
-          url: `/api/appointments/counselor`,
+          url: `/api/appointments/counselor?${studentCode ? `studentCode=${studentCode}` : ``}`,
           params: {
             // studentCode,
             fromDate,
