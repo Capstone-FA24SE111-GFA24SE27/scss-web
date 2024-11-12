@@ -71,6 +71,11 @@ export type ApiResponse<T> = {
 	status: number;
 }
 
+export type ApiMessage = {
+	message: string;
+	status: number
+}
+
 export type ApiError = {
 	message: string;
 	status: number;

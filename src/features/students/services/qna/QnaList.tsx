@@ -15,9 +15,10 @@ import {
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
 import {
+	studentQnasApi,
 	useGetStudentQuestionsQuery,
 } from './qna-api';
-import { selectAccount, useAppSelector } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import {
 	useGetAcademicTopicsQuery,
 	useGetNonAcademicTopicsQuery,
@@ -25,6 +26,7 @@ import {
 import { Question } from '@/shared/types';
 import { useSocket } from '@/shared/context';
 import QnaItem from './QnaItem';
+import { addChatListener, selectChatListeners, selectPassiveChatCallback } from '@/shared/components/chat';
 
 const container = {
 	show: {
@@ -55,6 +57,10 @@ const QnaList = () => {
 
 	const account = useAppSelector(selectAccount);
 	const socket = useSocket();
+	// const dispatch = useAppDispatch()
+	// const chatListeners = useAppSelector(selectChatListeners)
+	// const chatPassiveCallback = useAppSelector(selectPassiveChatCallback)
+
 
 	const toggleAccordion =
 		(panel: number) => (_: SyntheticEvent, _expanded: boolean) => {
@@ -155,20 +161,33 @@ const QnaList = () => {
 	useEffect(() => {
 		if (socket && account) {
 			const cb = (data) => {
-				console.log('asdasdw' , data);
+				console.log('qna socket receive data' , data);
 				if (data) {
-					refetch();
+					studentQnasApi.util.invalidateTags(['qna'])
 				}
 			};
 
 			const id = account.profile.id;
 			socket.on(`/user/${id}/question`, cb);
-			console.log(`/user/${id}/question`);
+			console.log(`/user/${id}/question`, socket);
 			return () => {
 				socket.off(`/user/${id}/question`);
 			};
 		}
 	}, [socket, account]);
+
+	// useEffect(()=>{
+	// 	if(qnaList && qnaList.length > 0){
+	// 		qnaList.forEach((item) => {
+	// 			if(item.chatSession){
+	// 				if(!chatListeners.has(item.chatSession.id)){
+	// 					socket.on()
+	// 					dispatch(addChatListener(item.chatSession.id))
+	// 				}
+	// 			}
+	// 		})
+	// 	}
+	// },[qnaList])
 
 	if (isLoading) {
 		return <ContentLoading />;

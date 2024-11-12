@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description, Schedule } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FmdBadIcon from '@mui/icons-material/FmdBad';
 import { Actor } from "@/shared/components";
@@ -353,7 +353,11 @@ const adminNavigation: NavigationOptions = {
                     name: 'Problem Tag',
                     route: 'tags'
                 },
-
+                {
+                    icon: Schedule,
+                    name: 'Counseling Time Slots',
+                    route: 'slots'
+                },
             ]
         },
     ],

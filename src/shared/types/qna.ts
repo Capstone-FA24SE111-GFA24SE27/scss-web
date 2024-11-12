@@ -1,6 +1,20 @@
 import { Topic } from "../services";
 import { Account, Counselor, Student } from "./user";
 
+
+export type QuestionPayload = {
+  content: string,
+  questionType: 'ACADEMIC' | 'NON_ACADEMIC',
+  specializationId?: string,
+  departmentId?: string,
+  majorId?: string,
+  expertiseId?: string,
+}
+export type SendMessageApiArg = {
+  content: string,
+  sessionId: number,
+}
+
 export type Question = {
   id: number;
   title: string;

@@ -24,6 +24,7 @@ import {
 import { Question } from '@/shared/types';
 import {
 	useCloseQuestionStudentMutation,
+	useCreateChatSessionStudentMutation,
 	useDeleteQuestionStudentMutation,
 } from './qna-api';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +32,8 @@ import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { statusColor } from '@/shared/constants';
 import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 import { openCounselorView } from '../../students-layout-slice';
+import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
 
 type Props = {
 	expanded: number | boolean;
@@ -48,10 +51,10 @@ const item = {
 const QnaItem = (props: Props) => {
 	const { expanded, toggleAccordion, qna, openAnswers } = props;
 
-	const { data, isLoading } = useGetMessagesQuery(qna.id)
+	const { data, isLoading } = useGetMessagesQuery(qna.id);
 
-	const dispatch = useAppDispatch()
-	const chatSession = data?.content
+	const dispatch = useAppDispatch();
+	const chatSession = data?.content;
 
 	const navigate = useNavigate();
 	const account = useAppSelector(selectAccount);
@@ -59,9 +62,29 @@ const QnaItem = (props: Props) => {
 	const [closeQuestion] = useCloseQuestionStudentMutation();
 	const [deleteQuestion, { isLoading: isDeletingQuestion }] =
 		useDeleteQuestionStudentMutation();
+	const [createChatSession] = useCreateChatSessionStudentMutation();
 
 	const handleSelectChat = (qna: Question) => {
-		navigate(`conversations/${qna.id}`);
+		if (qna.chatSession) {
+			navigate(`conversations/${qna.id}`);
+		} else {
+			handleCreateChat(qna);
+		}
+	};
+
+	const handleCreateChat = async (qna: Question) => {
+		const result = await createChatSession(qna.id);
+		console.log(result);
+		if (result.data.status === 200) {
+			useConfirmDialog({
+				title: 'Chat session created successfully',
+				cancelButtonTitle: 'Ok',
+				confirmButtonTitle: 'Go to chat',
+				confirmButtonFucntion: () =>
+					navigate(`conversations/${qna.id}`),
+				dispatch: dispatch,
+			});
+		}
 	};
 
 	const countUnreadMessages = () => {
@@ -140,8 +163,12 @@ const QnaItem = (props: Props) => {
 										label='Answer by'
 										profile={qna?.counselor.profile}
 										email={qna?.counselor?.email}
-										onClick={()=> {	
-											dispatch(openCounselorView(qna?.counselor.profile.id.toString()))
+										onClick={() => {
+											dispatch(
+												openCounselorView(
+													qna?.counselor.profile.id.toString()
+												)
+											);
 										}}
 									/>
 								)
@@ -182,7 +209,7 @@ const QnaItem = (props: Props) => {
 							)}
 						</div>
 					</AccordionDetails>
-					<Box className='flex justify-end w-full gap-16 py-8 bg-primary-light/5 '>
+					<Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5 '>
 						{/* <div className='flex items-start w-112'>
 							<IconButton><ThumbUpOutlined /></IconButton>
 							<IconButton><ThumbDownOutlined /></IconButton>
@@ -217,7 +244,17 @@ const QnaItem = (props: Props) => {
 								to={`edit/${qna.id}`}
 								startIcon={<Edit />}
 							>
-								Edit
+								Edit Question
+							</Button>
+						) : qna.chatSession ?(
+							<Button
+								variant='contained'
+								color='secondary'
+								startIcon={<ChatBubbleOutline />}
+								onClick={() => handleSelectChat(qna)}
+								disabled={!qna.counselor}
+							>
+								Go Chat
 							</Button>
 						) : (
 							<Button
@@ -227,7 +264,7 @@ const QnaItem = (props: Props) => {
 								onClick={() => handleSelectChat(qna)}
 								disabled={!qna.counselor}
 							>
-								Chat
+								Initiate Chat
 							</Button>
 						)}
 					</Box>

@@ -103,6 +103,29 @@ export const counselorQnaApi = api
         }),
         invalidatesTags: ['qna']
       }),
+      postReviewQuestionStatus: build.mutation<
+				PostReviewQuestionResponse,
+				PostReviewQuestionArg
+			>({
+				query: (args) => ({
+					url: `/api/question-cards/review/${args.id}/${args.status}`,
+					method: 'POST',
+				}),
+				invalidatesTags: ['qna'],
+			}),
+			postFlagQuestionStatus: build.mutation<
+				PostFlagQuestionResponse,
+				PostFlagQuestionArg
+			>({
+				query: (args) => ({
+					url: `/api/question-cards/review/flag/${args.id}`,
+					method: 'POST',
+					body: {
+						'reason': args.body
+					}
+				}),
+				invalidatesTags: ['qna'],
+			}),
     })
   })
 
@@ -113,7 +136,9 @@ export const {
   useAnswerQuestionMutation,
   useGetCounselorQuestionQuery,
   useEditAnswerMutation,
-  useCloseQuestionCounselorMutation
+  useCloseQuestionCounselorMutation,
+  usePostFlagQuestionStatusMutation,
+  usePostReviewQuestionStatusMutation
 } = counselorQnaApi
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
@@ -151,3 +176,21 @@ export type AnswerQuestionApiArg = {
   questionCardId: number,
   content: string
 }
+
+export type PostReviewQuestionArg = {
+	id: number;
+	status: 'PENDING' | 'VERIFIED' | 'FLAGGED' | 'REJECTED';
+};
+export type PostReviewQuestionResponse = {
+	message: string;
+	status: number;
+};
+
+export type PostFlagQuestionArg = {
+	id: number;
+	body: string;
+};
+export type PostFlagQuestionResponse = {
+	message: string;
+	status: number;
+};
