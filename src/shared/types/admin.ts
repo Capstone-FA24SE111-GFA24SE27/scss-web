@@ -11,3 +11,11 @@ export type ProblemTag = {
 	point: number;
 	category: ProblemTagCategory;
 };
+
+export type TimeSlot = {
+	id: number;
+	slotCode: string;
+	startTime: string;
+	endTime: string;
+	name: string;
+};

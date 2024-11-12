@@ -7,7 +7,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 const DemandSidebarContent = () => {
 	const navigate = useNavigate();
 	return (
-		<div className='flex flex-col h-full'>
+		<div className='relative flex-grow-0 h-screen max-h-screen'>
 			<IconButton
 				className='absolute top-0 right-0 z-10 m-16'
 				onClick={() => navigate(-1)}

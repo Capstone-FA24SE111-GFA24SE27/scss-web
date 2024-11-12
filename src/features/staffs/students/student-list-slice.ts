@@ -1,16 +1,46 @@
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
-/**
- * The initial state of the filter slice.
- */
 
-const initialState = {
-  open: false,
-  // mobileOpen: false,
-  // foldedOpen: false
+interface StudentListState {
+  open: boolean;
+  searchTerm: string;
+  studentCode: string;
+  specializationId: number | '';
+  departmentId: number | '';
+  majorId: number | '';
+  currentTerm: number | '';
+  semesterIdForGPA: number | '';
+  minGPA: number | '';
+  maxGPA: number | '';
+  isIncludeBehavior: boolean;
+  semesterIdForBehavior: number | '';
+  promptForBehavior: string;
+  sortBy: string;
+  sortDirection: 'ASC' | 'DESC';
+  page: number | '';
+  tab: '' | 'RECOMMENDED'
+}
+
+const initialState: StudentListState = {
+  open: true,
   searchTerm: '',
-  studentType: 'ACADEMIC'
+  studentCode: '',
+  specializationId: '',
+  departmentId: '',
+  majorId: '',
+  currentTerm: '',
+  semesterIdForGPA: '',
+  minGPA: '',
+  maxGPA: '',
+  isIncludeBehavior: false,
+  semesterIdForBehavior: '',
+  promptForBehavior: '',
+  sortBy: 'createdDate',
+  sortDirection: 'ASC',
+  page: '',
+  tab: '',
 };
+
 /**
  * The filter slice.
  */
@@ -18,24 +48,6 @@ export const studentListSlice = createSlice({
   name: 'staffStudentList',
   initialState,
   reducers: {
-    // filterToggleFolded: (state) => {
-    //     state.foldedOpen = !state.foldedOpen;
-    // },
-    // filterOpenFolded: (state) => {
-    //     state.foldedOpen = true;
-    // },
-    // filterCloseFolded: (state) => {
-    //     state.foldedOpen = false;
-    // },
-    // filterToggleMobile: (state) => {
-    //     state.mobileOpen = !state.mobileOpen;
-    // },
-    // filterOpenMobile: (state) => {
-    //     state.mobileOpen = true;
-    // },
-    // filterCloseMobile: (state) => {
-    //     state.mobileOpen = false;
-    // },
     filterClose: (state) => {
       state.open = false;
     },
@@ -46,35 +58,97 @@ export const studentListSlice = createSlice({
       state.open = !state.open;
     },
     setSearchTerm: (state, action: PayloadAction<string>) => {
-      state.searchTerm = action.payload
+      state.searchTerm = action.payload;
     },
-    setStudentType: (state, action: PayloadAction<'ACADEMIC' | 'NON_ACADEMIC'>) => {
-      state.studentType = action.payload
+    setStudentCode: (state, action: PayloadAction<string>) => {
+      state.studentCode = action.payload;
+    },
+    setSpecializationId: (state, action: PayloadAction<number | ''>) => {
+      state.specializationId = action.payload;
+    },
+    setDepartmentId: (state, action: PayloadAction<number | ''>) => {
+      state.departmentId = action.payload;
+    },
+    setMajorId: (state, action: PayloadAction<number | ''>) => {
+      state.majorId = action.payload;
+    },
+    setCurrentTerm: (state, action: PayloadAction<number | ''>) => {
+      state.currentTerm = action.payload;
+    },
+    setSemesterIdForGPA: (state, action: PayloadAction<number | ''>) => {
+      state.semesterIdForGPA = action.payload;
+    },
+    setMinGPA: (state, action: PayloadAction<number | ''>) => {
+      state.minGPA = action.payload;
+    },
+    setMaxGPA: (state, action: PayloadAction<number | ''>) => {
+      state.maxGPA = action.payload;
+    },
+    setIsIncludeBehavior: (state, action: PayloadAction<boolean>) => {
+      state.isIncludeBehavior = action.payload;
+    },
+    setSemesterIdForBehavior: (state, action: PayloadAction<number | ''>) => {
+      state.semesterIdForBehavior = action.payload;
+    },
+    setPromptForBehavior: (state, action: PayloadAction<string>) => {
+      state.promptForBehavior = action.payload;
+    },
+    setSortBy: (state, action: PayloadAction<string>) => {
+      state.sortBy = action.payload;
+    },
+    setSortDirection: (state, action: PayloadAction<'ASC' | 'DESC'>) => {
+      state.sortDirection = action.payload;
+    },
+    setPage: (state, action: PayloadAction<number | ''>) => {
+      state.page = action.payload;
+    },
+    setTab: (state, action: PayloadAction<'' | 'RECOMMENDED'>) => {
+      state.tab = action.payload
+    },
+    resetFilter: (state) => {
+      state = initialState
     }
   },
   selectors: {
-    selectFilter: (filter) => filter,
-    selectSearchTerm: (state) => state.searchTerm,
-    selectStudentType: (state) => state.studentType,
-  }
+    selectFilter: (filter: StudentListState) => filter,
+    selectSearchTerm: (state: StudentListState) => state.searchTerm,
+  },
 });
+
 /**
  * Lazy loading
  */
 rootReducer.inject(studentListSlice);
 const injectedSlice = studentListSlice.injectInto(rootReducer);
+
 export const {
   filterOpen,
   filterClose,
   filterToggle,
   setSearchTerm,
-  setStudentType,
+  setStudentCode,
+  setSpecializationId,
+  setDepartmentId,
+  setMajorId,
+  setCurrentTerm,
+  setSemesterIdForGPA,
+  setMinGPA,
+  setMaxGPA,
+  setIsIncludeBehavior,
+  setSemesterIdForBehavior,
+  setPromptForBehavior,
+  setSortBy,
+  setSortDirection,
+  setPage,
+  setTab,
+  resetFilter
 } = studentListSlice.actions;
+
 export const {
   selectFilter,
   selectSearchTerm,
-  selectStudentType
 } = injectedSlice.selectors;
+
 export default studentListSlice.reducer;
 
 declare module '@shared/store' {

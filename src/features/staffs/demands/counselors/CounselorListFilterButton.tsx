@@ -3,9 +3,9 @@ import { IconButton, Tooltip } from '@mui/material'
 import { useAppDispatch } from '@shared/store';
 import { ReactElement } from 'react'
 import clsx from 'clsx'
-import { filterToggle } from './student-list-slice';
+import { filterToggle } from './counselor-list-slice';
 
-const StudentListFilterButton = (props: { className?: string, children?: ReactElement }) => {
+const CounselorListFilterButton = (props: { className?: string, children?: ReactElement }) => {
   const {
     className = '',
     children = (
@@ -16,7 +16,7 @@ const StudentListFilterButton = (props: { className?: string, children?: ReactEl
   const dispatch = useAppDispatch();
 
   return (
-    <div className={clsx('flex flex-1 ', className)}>
+    <div className={clsx('flex ', className)}>
       <div className='flex'>
         <Tooltip title={'Toggle Filter'}
         >
@@ -34,4 +34,4 @@ const StudentListFilterButton = (props: { className?: string, children?: ReactEl
 }
 
 
-export default StudentListFilterButton
+export default CounselorListFilterButton

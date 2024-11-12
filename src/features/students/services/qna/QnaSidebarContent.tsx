@@ -7,9 +7,9 @@ import { Close } from '@mui/icons-material';
  */
 function QnaSidebarContent() {
   return (
-    <div className="h-full">
+    <div className="flex-1 h-full">
       <IconButton
-        className="absolute top-16 right-0 z-10"
+        className="absolute right-0 z-10 top-16"
         component={NavLinkAdapter}
         to="."
         size="large"

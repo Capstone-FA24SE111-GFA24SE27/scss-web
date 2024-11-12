@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePostCreateDemandByStudentIdMutation } from './demands/demand-api';
+import { usePostCreateDemandByStudentIdMutation } from '../demands/demand-api';
 import { useAppDispatch } from '@shared/store';
 import { NavLinkAdapter, openDialog } from '@/shared/components';
 import { Button } from '@mui/material';
@@ -30,6 +30,7 @@ const CreateDemandButton = (props: Props) => {
 		if (isStudentPath) {
 
 			const result = await createDemand(id);
+			console.log(result)
 			if (result.data.status === 200) {
 				useAlertDialog({ title: 'Demand created successfully', confirmButtonTitle: 'Ok', dispatch })
 				navigate(-1)
