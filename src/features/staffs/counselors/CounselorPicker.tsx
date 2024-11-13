@@ -3,9 +3,9 @@ import React, { ChangeEvent, useState } from 'react';
 import { selectFilter } from './counselor-list-slice';
 import { ContentLoading, Pagination } from '@/shared/components';
 import {
-	useGetCounselorsAcademicQuery,
-	useGetCounselorsNonAcademicQuery,
-} from '../demand-api';
+	useGetCounselorsAcademicForStaffQuery,
+	useGetCounselorsNonAcademicForStaffQuery,
+} from '../demands/demand-api';
 import { List, Typography } from '@mui/material';
 import CounselorListItem from './CounselorListItem';
 import { motion } from 'framer-motion';
@@ -26,7 +26,7 @@ const CounselorPicker = (props: Props) => {
 	const {
 		data: academicCounselors,
 		isLoading: isFetchingAcademicCounselors,
-	} = useGetCounselorsAcademicQuery({
+	} = useGetCounselorsAcademicForStaffQuery({
 		search: filter.searchTerm,
 		page,
 		availableFrom: filter.availableFrom,
@@ -35,7 +35,7 @@ const CounselorPicker = (props: Props) => {
 	const {
 		data: nonAcademicCounselors,
 		isLoading: isFetchingNonAcademicCounselors,
-	} = useGetCounselorsNonAcademicQuery({
+	} = useGetCounselorsNonAcademicForStaffQuery({
 		search: filter.searchTerm,
 		page,
 		availableFrom: filter.availableFrom,

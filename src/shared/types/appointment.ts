@@ -1,3 +1,4 @@
+import { DemandType, PriorityLevelType } from './demand';
 import { Account, Counselor, Profile, Student, SupportStaff } from './user';
 
 export type AppointmentScheduleType = {
@@ -9,15 +10,15 @@ export type AppointmentScheduleType = {
 	meetUrl?: string;
 	address?: string;
 	counselorInfo:
-	| null
-	| ({
-		rating: string;
-	} & Account);
+		| null
+		| ({
+				rating: string;
+		  } & Account);
 	studentInfo:
-	| null
-	| ({
-		studentCode: string;
-	} & Account);
+		| null
+		| ({
+				studentCode: string;
+		  } & Account);
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
 };
@@ -41,11 +42,11 @@ export type AppointmentFeedback = {
 export type TakeAppointmentAttendance = {
 	appointmentId: number;
 	counselingAppointmentStatus:
-	| 'CANCELED'
-	| 'ATTEND'
-	| 'ABSENT'
-	| 'EXPIRED'
-	| 'WAITING';
+		| 'CANCELED'
+		| 'ATTEND'
+		| 'ABSENT'
+		| 'EXPIRED'
+		| 'WAITING';
 };
 
 export type AppointmentAttendanceStatus =
@@ -66,15 +67,15 @@ export type Appointment = {
 	meetUrl?: string;
 	address?: string;
 	counselorInfo:
-	| null
-	| ({
-		rating: string;
-	} & Account);
+		| null
+		| ({
+				rating: string;
+		  } & Account);
 	studentInfo:
-	| null
-	| ({
-		studentCode: string;
-	} & Account);
+		| null
+		| ({
+				studentCode: string;
+		  } & Account);
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
 };
@@ -85,39 +86,33 @@ export type AppointmentDetails = {
 };
 
 export type AppointmentRequest = {
-	id: number,
-	requireDate: string,
-	startTime: string,
-	endTime: string,
-	status: 'APPROVED' | 'DENIED' | 'WAITING',
-	meetingType: 'ONLINE' | 'OFFLINE',
-	reason: string,
-	appointmentDetails: AppointmentDetails | null,
+	id: number;
+	requireDate: string;
+	startTime: string;
+	endTime: string;
+	status: 'APPROVED' | 'DENIED' | 'WAITING';
+	meetingType: 'ONLINE' | 'OFFLINE';
+	reason: string;
+	appointmentDetails: AppointmentDetails | null;
 	counselor: {
-		rating: string
-	} & Account,
+		rating: string;
+	} & Account;
 	student: {
-		studentCode: string
-	} & Account,
-}
-
-
-
+		studentCode: string;
+	} & Account;
+};
 
 export type UpdateAppointmentDetailsArg = {
 	requestId: number;
 	meetingDetails: Partial<AppointmentDetails>;
 };
 
-
 export type AppointmentReportType = {
-	id: number,
-	student: Student,
-	counselor: Counselor,
-	appointment: Appointment
-} & Report
-
-
+	id: number;
+	student: Student;
+	counselor: Counselor;
+	appointment: Appointment;
+} & Report;
 
 export type Report = {
 	consultationGoal?: {
@@ -141,31 +136,37 @@ export type Report = {
 	};
 };
 
-
 export type DailySlot = {
-	[date: string]: Slot[]
-}
+	[date: string]: Slot[];
+};
 
 export type Slot = {
-	slotId: number,
-	slotCode: string,
-	startTime: string,
-	endTime: string,
-	status: AppointmentSlotStatus,
-	myAppointment: boolean
-}
-
+	slotId: number;
+	slotCode: string;
+	startTime: string;
+	endTime: string;
+	status: AppointmentSlotStatus;
+	myAppointment: boolean;
+};
 
 export type CounselingDemand = {
 	id: number;
 	status: string;
-	student: Student
+	student: Student;
 	supportStaff: SupportStaff;
 	contactNote: string;
 	summarizeNote: string;
-	counselor: Counselor
+	counselor: Counselor;
 	startDateTime: string;
 	endDateTime: string;
+	appointments: Appointment[];
+	priorityLevel: PriorityLevelType;
+	additionalInformation: string;
+	issueDescription: string;
+	causeDescription: string;
+	demandType: DemandType;
 };
 
-export type AppointmentSlotStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'
+export type CounselingDemandStatusType = 'WAITING' | 'PROCESSING' | 'DONE'
+
+export type AppointmentSlotStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE';

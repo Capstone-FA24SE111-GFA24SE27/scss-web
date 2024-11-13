@@ -1,8 +1,9 @@
-import { studentRoutes } from '@/shared/pages';
+import { CounselorView, studentRoutes } from '@/shared/pages';
 import StudentList from '@/shared/pages/student-list/StudentList';
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 import StudentView from './StudentView';
+import CreateDemandForm from './CreateDemandForm';
 
 
 export const staffStudentRoutes: RouteObject[] = [
@@ -13,6 +14,14 @@ export const staffStudentRoutes: RouteObject[] = [
 			{
 				path: 'student/:id',
 				element: <StudentView  />,
+			},
+			{
+				path: 'student/:id/create-demand',
+				element: <CreateDemandForm  />,
+			},
+			{
+				path: 'counselor/:id',
+				element: <CounselorView shouldShowBooking={false} />,
 			},
 			...studentRoutes,
 

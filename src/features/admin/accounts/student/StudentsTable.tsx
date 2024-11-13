@@ -7,10 +7,12 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { Student } from '@/shared/types';
+import { Account, Role, Student } from '@/shared/types';
 import { useGetStudentsFilterAdminQuery } from './admin-student-api';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { selectFilter } from './admin-student-slice';
+import { useGetAccountsQuery } from '../../admin-api';
+import { roles } from '@/shared/constants';
 function StudentsTable() {
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
@@ -19,37 +21,43 @@ function StudentsTable() {
 	const filter = useAppSelector(selectFilter);
 	const dispatch = useAppDispatch();
 
-	const {
-		searchTerm,
-		isIncludeBehavior,
-		promptForBehavior,
-		semesterIdForBehavior,
-		departmentId,
-		majorId,
-		specializationId,
-		minGPA,
-		maxGPA,
-		semesterIdForGPA,
-		tab,
-	} = filter;
+	// const {
+	// 	searchTerm,
+	// 	isIncludeBehavior,
+	// 	promptForBehavior,
+	// 	semesterIdForBehavior,
+	// 	departmentId,
+	// 	majorId,
+	// 	specializationId,
+	// 	minGPA,
+	// 	maxGPA,
+	// 	semesterIdForGPA,
+	// 	tab,
+	// } = filter;
 
-	const { data, isLoading } = useGetStudentsFilterAdminQuery({
-		keyword: searchTerm,
-		isIncludeBehavior,
-		promptForBehavior,
-		semesterIdForBehavior,
-		departmentId,
-		majorId,
-		specializationId,
-		minGPA,
-		maxGPA,
-		semesterIdForGPA,
+	// const { data, isLoading } = useGetStudentsFilterAdminQuery({
+	// 	keyword: searchTerm,
+	// 	isIncludeBehavior,
+	// 	promptForBehavior,
+	// 	semesterIdForBehavior,
+	// 	departmentId,
+	// 	majorId,
+	// 	specializationId,
+	// 	minGPA,
+	// 	maxGPA,
+	// 	semesterIdForGPA,
+	// 	page: pagination.pageIndex + 1,
+	// 	tab,
+	// });
+
+	const { data, isLoading } = useGetAccountsQuery({
 		page: pagination.pageIndex + 1,
-		tab,
+		role: roles.STUDENT as Role,
+		status: 'ACTIVE'
 	});
 	console.log(data);
 
-	const columns = useMemo<MRT_ColumnDef<Student>[]>(
+	const columns = useMemo<MRT_ColumnDef<Account>[]>(
 		() => [
 			{
 				accessorFn: (row) => row.profile.avatarLink,
@@ -79,7 +87,7 @@ function StudentsTable() {
 						className='!underline !text-secondary-main'
 						color='secondary'
 					>
-						{row.original.profile.fullName}
+						{row.original.profile.profile.fullName}
 					</Typography>
 				),
 			},
@@ -92,18 +100,18 @@ function StudentsTable() {
 			//     </Typography>
 			//   )
 			// },
-			{
-				accessorKey: 'studentCode',
-				header: 'Student Code',
-				accessorFn: (row) => (
-					<Typography className='w-fit'>{row.studentCode}</Typography>
-				),
-			},
+			// {
+			// 	accessorKey: 'studentCode',
+			// 	header: 'Student Code',
+			// 	accessorFn: (row) => (
+			// 		<Typography className='w-fit'>{row.studentCode}</Typography>
+			// 	),
+			// },
 			{
 				accessorKey: 'phoneNumber',
 				header: 'Phone',
 				Cell: ({ row }) => (
-					<Typography>{row.original.profile.phoneNumber}</Typography>
+					<Typography>{row.original.profile.profile.phoneNumber}</Typography>
 				),
 			},
 			{
@@ -116,13 +124,13 @@ function StudentsTable() {
 				),
 			},
 
-			{
-				accessorKey: 'major.name',
-				header: 'Major',
-				accessorFn: (row) => (
-					<Typography className='w-fit'>{row.major.name}</Typography>
-				),
-			},
+			// {
+			// 	accessorKey: 'major.name',
+			// 	header: 'Major',
+			// 	accessorFn: (row) => (
+			// 		<Typography className='w-fit'>{row.major.name}</Typography>
+			// 	),
+			// },
 
 			// {
 			//   accessorKey: 'priceTaxIncl',
@@ -171,10 +179,10 @@ function StudentsTable() {
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
-				data={data?.data || []}
+				data={data?.content?.data || []}
 				columns={columns}
 				manualPagination
-				rowCount={data?.totalElements || 1}
+				rowCount={data?.content?.totalElements || 1}
 				onPaginationChange={setPagination}
 				state={{ pagination }}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [

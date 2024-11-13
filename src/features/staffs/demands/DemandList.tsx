@@ -1,7 +1,7 @@
 import { FilterTabs, Pagination, SearchField, SortingToggle } from '@/shared/components';
 import { Box, List, Typography } from '@mui/material';
 import React, { ChangeEvent, useState } from 'react'
-import { useGetCounselingDemandFilterQuery } from './demand-api';
+import { useGetCounselingDemandFilterForStaffQuery } from './demand-api';
 import { motion } from 'framer-motion';
 import { Add, ConstructionOutlined } from '@mui/icons-material';
 import StudentDemandsItem from './StudentDemandsItem';
@@ -40,7 +40,7 @@ const DemandList = (props: Props) => {
         // { label: 'Processing', value: 'PROCESSING' },
     ];
 
-    const { data } = useGetCounselingDemandFilterQuery({
+    const { data } = useGetCounselingDemandFilterForStaffQuery({
         keyword: searchTerm,
         status: statusTabs[tabValue]?.value,
         sortDirection,

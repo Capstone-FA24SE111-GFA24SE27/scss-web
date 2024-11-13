@@ -91,6 +91,20 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselors', 'appointments',]
       }),
+      putBlockAccount: build.mutation<ApiResponse<string>,number>({
+        query: (id) => ({
+          url: `/api/account/${id}/block`,
+          method: 'PUT'
+        }),
+        invalidatesTags: ['counselors']
+      }),
+      putUnblockAccount: build.mutation<ApiResponse<string>,number>({
+        query: (id) => ({
+          url: `/api/account/${id}/unblock`,
+          method: 'PUT'
+        }),
+        invalidatesTags: ['counselors']
+      })
     })
   })
 
@@ -104,6 +118,8 @@ export const {
   useGetAppointmentReportManagementQuery,
   useGetCounselorAppointmentRequestsManagementQuery,
   useGetCounselorFeedbacksQuery,
+  usePutBlockAccountMutation,
+  usePutUnblockAccountMutation
 } = counselorsMangementApi
 
 

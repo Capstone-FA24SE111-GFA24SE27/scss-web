@@ -50,24 +50,24 @@ const App = () => {
 		<ThemeProvider root>
 			<StyledEngineProvider injectFirst>
 				<LocalizationProvider dateAdapter={AdapterDayjs}>
-					<SnackbarProvider
-						maxSnack={3}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'right',
-						}}
-						classes={{
-							containerRoot:
-								'bottom-0 right-0 mb-52 md:mb-68 mr-4 lg:mr-40 z-99',
-						}}
-					>
-						<SocketProvider>
+					<SocketProvider>
+						<SnackbarProvider
+							maxSnack={3}
+							anchorOrigin={{
+								vertical: 'bottom',
+								horizontal: 'right',
+							}}
+							classes={{
+								containerRoot:
+									'bottom-0 right-0 mb-52 md:mb-68 mr-4 lg:mr-40 z-99',
+							}}
+						>
 							<Suspense fallback={<AppLoading />}>
 								<Dialog />
 								{AppRoutes}
 							</Suspense>
-						</SocketProvider>
-					</SnackbarProvider>
+						</SnackbarProvider>
+					</SocketProvider>
 				</LocalizationProvider>
 			</StyledEngineProvider>
 		</ThemeProvider>

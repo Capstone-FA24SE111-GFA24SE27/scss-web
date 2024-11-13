@@ -1,14 +1,7 @@
-import {
-	
-	PaginationContent,
-	Profile,
-	Student,
-} from '@/shared/types';
+import { PaginationContent, Profile, Student } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store';
 
-export const addTagTypes = [
-	'students'
-] as const;
+export const addTagTypes = ['students'] as const;
 
 export const counselorsMangementApi = api
 	.enhanceEndpoints({
@@ -59,10 +52,28 @@ export const counselorsMangementApi = api
 				}),
 				providesTags: ['students'],
 			}),
+			putBlockAccount: build.mutation<ApiResponse<string>, number>({
+				query: (id) => ({
+					url: `/api/account/${id}/block`,
+					method: 'PUT',
+				}),
+				invalidatesTags: ['students'],
+			}),
+			putUnblockAccount: build.mutation<ApiResponse<string>, number>({
+				query: (id) => ({
+					url: `/api/account/${id}/unblock`,
+					method: 'PUT',
+				}),
+				invalidatesTags: ['students'],
+			}),
 		}),
 	});
 
-export const {useGetStudentsFilterAdminQuery} = counselorsMangementApi;
+export const {
+	useGetStudentsFilterAdminQuery,
+	usePutBlockAccountMutation,
+	usePutUnblockAccountMutation,
+} = counselorsMangementApi;
 
 type GetStudentsFilterApiResponse = PaginationContent<Student>;
 export type GetStudentsFilterApiArg = {

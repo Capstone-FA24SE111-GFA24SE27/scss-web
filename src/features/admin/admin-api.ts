@@ -1,6 +1,6 @@
 import { roles } from '@/shared/constants';
 import { roleBasedNavigation } from '@/shared/layouts/layout-components/navigation';
-import { Account, Role } from '@/shared/types';
+import { Account, PaginationContent, Role } from '@/shared/types';
 import { apiService, ApiResponse } from '@shared/store';
 
 const addTagTypes = ['accounts'] as const;
@@ -11,19 +11,31 @@ export const adminApi = apiService
 	})
 	.injectEndpoints({
 		endpoints: (build) => ({
-			getAcademicCounselorsAccounts: build.query<
-				getAcademicCounselorsAccountsResponse,
-				getAccountsArgs
-			>({
-				query: (args) => ({
-					url: `/api/account?SortDirection=${args.sortDirection}&sortBy=${args.sortBy}&page=${args.page}&role=${args.role}`,
+			getAccounts: build.query<getAccountsResponse, getAccountsArgs>({
+				query: ({
+					search = '',
+					status,
+					sortBy = 'id',
+					page = '1',
+					SortDirection = 'ASC',
+					role,
+				}) => ({
+					url: `/api/account`,
+					params: {
+						search,
+						status,
+						sortBy,
+						page,
+						SortDirection,
+						role,
+					},
 				}),
 				providesTags: (result, error, arg) => [
-					{ type: 'accounts', id: roles.ACADEMIC_COUNSELOR },
+					{ type: 'accounts', id: arg.role },
 				],
 			}),
-			getOneAcademicCounselorAccount: build.query<
-				getOneAcademicCounselorAccountResponse,
+			getOneAccount: build.query<
+				getOneAccountResponse,
 				getOneAccountArgs
 			>({
 				query: (args) => ({
@@ -31,7 +43,7 @@ export const adminApi = apiService
 				}),
 				providesTags: ['accounts'],
 			}),
-			putBlockAccount: build.mutation<
+			putBlockAccountById: build.mutation<
 				putUpdateAccountStatusResponse,
 				putUpdateAccountStatusArg
 			>({
@@ -43,11 +55,11 @@ export const adminApi = apiService
 					{ type: 'accounts', id: arg.role },
 				],
 			}),
-			putUnblockAccount: build.mutation<
+			putUnblockAccountById: build.mutation<
 				putUpdateAccountStatusResponse,
 				putUpdateAccountStatusArg
 			>({
-				query: ({id, role}) => ({
+				query: ({ id, role }) => ({
 					url: `/api/account/${id}/unblock`,
 					method: 'PUT',
 				}),
@@ -56,43 +68,47 @@ export const adminApi = apiService
 				],
 			}),
 			postCreateAccount: build.mutation<
-			postCreateAccountRepsonse,
-			postCreateAccountArgs
-		>({
-			query: (args) => ({
-				url: `/api/account/create`,
-				method: 'POST',
-				body: args 
+				postCreateAccountRepsonse,
+				postCreateAccountArgs
+			>({
+				query: (args) => ({
+					url: `/api/account/create`,
+					method: 'POST',
+					body: args,
+				}),
+				invalidatesTags: (result, error, arg) => [
+					{ type: 'accounts', id: arg.role },
+				],
 			}),
-			invalidatesTags: (result, error, arg) => [
-				{ type: 'accounts', id: arg.role },
-			],
-		}),
 		}),
 	});
 
-export const {} = adminApi;
+export const {
+	useGetOneAccountQuery,
+	useGetAccountsQuery,
+	usePostCreateAccountMutation,
+	usePutBlockAccountByIdMutation,
+	usePutUnblockAccountByIdMutation,
+} = adminApi;
 
 type postCreateAccountArgs = {
-	email: string,
-  login: {
-    method: 'DEFAULT' | "",
-    password: string
-  },
-  profile: {
-    id: number,
-    fullName: string,
-    phoneNumber: string,
-    dateOfBirth: number,
-    avatarLink: string,
-    gender: "MALE" | "FEMALE"
-  },
-  role: Role
-}
+	email: string;
+	login: {
+		method: 'DEFAULT' | '';
+		password: string;
+	};
+	profile: {
+		id: number;
+		fullName: string;
+		phoneNumber: string;
+		dateOfBirth: number;
+		avatarLink: string;
+		gender: 'MALE' | 'FEMALE';
+	};
+	role: Role;
+};
 
-type postCreateAccountRepsonse = {
-
-}
+type postCreateAccountRepsonse = {};
 
 type putUpdateAccountStatusArg = {
 	id: number | string;
@@ -100,17 +116,17 @@ type putUpdateAccountStatusArg = {
 };
 type putUpdateAccountStatusResponse = {};
 
-type getAcademicCounselorsAccountsResponse = ApiResponse<Account[]>;
+type getAccountsResponse = ApiResponse<PaginationContent<Account>>;
 type getAccountsArgs = {
 	search?: string;
 	status?: 'ACTIVE' | 'INACTIVE';
 	sortBy?: 'fullName' | 'id';
 	page?: number;
-	sortDirection: 'ASC' | 'DESC';
+	SortDirection?: 'ASC' | 'DESC';
 	role: Role;
 };
 
-type getOneAcademicCounselorAccountResponse = ApiResponse<Account>;
+type getOneAccountResponse = ApiResponse<Account>;
 type getOneAccountArgs = {
 	id: number;
 };

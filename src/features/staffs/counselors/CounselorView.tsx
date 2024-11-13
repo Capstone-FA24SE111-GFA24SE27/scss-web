@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Paper } from '@mui/material';
-import { useGetCounselorByIdQuery } from '../demand-api';
+import { useGetCounselorByIdForStaffQuery } from '../demands/demand-api';
 /**
  * The contact view.
  */
@@ -22,7 +22,7 @@ interface CounselorViewProps {
 function CounselorView() {
     const routeParams = useParams();
     const { id: counselorId } = routeParams as { id: string };
-    const { data, isLoading } = useGetCounselorByIdQuery(counselorId)
+    const { data, isLoading } = useGetCounselorByIdForStaffQuery(counselorId)
     const counselor = data?.content
     console.log(counselor)
 

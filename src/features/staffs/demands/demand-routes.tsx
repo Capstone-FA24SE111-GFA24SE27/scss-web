@@ -1,7 +1,7 @@
 import { CounselorView, StudentView, studentRoutes } from '@/shared/pages';
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
-import AssignDemandForm from './AssignDemandForm';
+import UpdateDemandForm from './UpdateDemandForm';
 // import CounselorView from './counselors/CounselorView';
 const Demand = lazy(() => import('./Demand'));
 
@@ -20,8 +20,8 @@ export const demandRoutes: RouteObject[] = [
 			},
 			...studentRoutes,
 			{
-				path: 'assign/:id',
-				element: <AssignDemandForm />
+				path: 'update/:id',
+				element: <UpdateDemandForm />
 			}
 		],
 	},
