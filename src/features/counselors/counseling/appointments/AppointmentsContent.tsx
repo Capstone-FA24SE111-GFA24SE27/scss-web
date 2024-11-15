@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
-import { useSocket } from '@/shared/context';
+import { useAppointmentsSocketListener, useSocket } from '@/shared/context';
 import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
 import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '../counseling-api';
 import { statusColor } from '@/shared/constants';
@@ -69,6 +69,8 @@ const AppointmentsContent = () => {
     status: statusTabs[tabValue].value,
   });
   const appointments = data?.content?.data;
+
+  useAppointmentsSocketListener(account?.profile.id, refetch)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, appointment: Appointment) => {
     setOpenMenuId(openMenuId === appointment.id ? null : appointment.id); // Toggle menu

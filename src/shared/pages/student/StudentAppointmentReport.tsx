@@ -14,10 +14,9 @@ const StudentAppointmentReport = ({ id }: { id?: string }) => {
   const routeParams = useParams()
   const { appointmentId: appointmentRouteId } = routeParams
   const appointmentId = id || appointmentRouteId
-  const { data, isLoading } = useGetAppointmentReportQuery(appointmentId, {
-    skip: !appointmentRouteId
-  })
+  const { data, isLoading } = useGetAppointmentReportQuery(appointmentId)
   const report = data?.content
+  console.log(report)
   const location = useLocation()
   const studentUrl = navigateUp(location, 2)
 

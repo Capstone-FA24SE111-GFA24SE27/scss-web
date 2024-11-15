@@ -34,6 +34,7 @@ const Conversation = () => {
           placeholder="Name"
           value={input}
           fullWidth
+          size='small'
           onChange={(e) => setInput(e.target.value)}
           InputProps={{
             startAdornment: (

@@ -8,8 +8,12 @@ import { useGetCounselorCounselingAppointmentQuery } from '../counseling/appoint
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '@shared/store'
 import { openStudentView } from '../counselors-layout-slice'
+import { useAppSelector } from '@shared/store'
+import { selectAccount } from '@shared/store'
+import { useAppointmentsSocketListener, useRequestsSocketListener } from '@/shared/context'
 
 const HomeContent = () => {
+  const account = useAppSelector(selectAccount)
   const today = dayjs().format('YYYY-MM-DD');
   const dispatch = useAppDispatch()
   const firstDayOfMonth = dayjs().startOf('month').format('YYYY-MM-DD');
@@ -18,16 +22,22 @@ const HomeContent = () => {
   const firstDayPreviousMonth = dayjs().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
   const lastDayOfPreviousMonth = dayjs().subtract(1, 'month').endOf('month').format('YYYY-MM-DD');
 
-  const { data: requestsCurrentMonthData, isLoading: isLoadingRequest } = useGetCounselorAppointmentRequestsQuery({
+  const { data: requestsCurrentMonthData, isLoading: isLoadingRequest, refetch: refetchRequest } = useGetCounselorAppointmentRequestsQuery({
     dateFrom: firstDayOfMonth,
     dateTo: lastDayOfMonth,
   })
 
-  const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch } = useGetCounselorCounselingAppointmentQuery({
+  useRequestsSocketListener(account?.profile.id, refetchRequest)
+
+
+  const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch: refetchAppointments } = useGetCounselorCounselingAppointmentQuery({
     fromDate: today,
     // toDate: lastDayOfMonth,
     status: `WAITING`,
   });
+
+  useAppointmentsSocketListener(account?.profile.id, refetchAppointments)
+
   const groupAppointmentsByDate = (appointments) => {
     const today = dayjs();
     const tomorrow = dayjs().add(1, 'day');

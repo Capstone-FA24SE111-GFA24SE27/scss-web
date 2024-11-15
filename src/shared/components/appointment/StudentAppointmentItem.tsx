@@ -9,7 +9,7 @@ import { useState, useEffect, ChangeEvent } from 'react'
 import { useSocket } from '@/shared/context';
 import { statusColor } from '@/shared/constants';
 import { openCounselorView } from '@/features/students/students-layout-slice';
-const AppointmentsTab = ({ appointment }: { appointment: Appointment }) => {
+const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
 
   const dispatch = useAppDispatch()
 
@@ -46,7 +46,7 @@ const AppointmentsTab = ({ appointment }: { appointment: Appointment }) => {
                 {
                   label: 'View details',
                   onClick: () => {
-                    navigate(`appointment/${appointment.id}`)
+                    navigate(`/services/activity/appointment/${appointment.id}`)
                   },
                   icon: <Visibility fontSize='small' />
                 },
@@ -234,7 +234,7 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
   )
 }
 
-export default AppointmentsTab
+export default StudentAppointmentItem
 
 const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
   const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentMutation();

@@ -9,7 +9,6 @@ import { PageSimple } from '@/shared/components';
 import { AppointmentsTab, RequestsTab } from './tabs';
 import { useParams } from 'react-router-dom';
 import ActivitySidebarContent from './ActivitySidebarContent';
-import { useAppDispatch } from '@shared/store';
 import { Typography } from '@mui/material';
 const Root = styled(PageSimple)(({ theme }) => ({
 

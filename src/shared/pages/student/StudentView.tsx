@@ -248,7 +248,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                     variant='outlined' color='secondary' size='small' className={`w-216`}
                     onClick={(event) => {
                       studentRouteId
-                        ? navigate('academic-transcript')
+                        ? navigate('attendance-report')
                         : dispatch(openDialog({
                           children: <AttendanceReport id={studentId} />
                         }));

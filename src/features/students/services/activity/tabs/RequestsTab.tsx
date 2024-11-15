@@ -4,11 +4,13 @@ import { AppLoading, DateRangePicker, ExpandableText, NavLinkAdapter, Pagination
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useAppDispatch } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { ChangeEvent, useEffect, useState } from 'react'
 import { openCounselorView } from '@/features/students/students-layout-slice';
 import { AppointmentRequest } from '@/shared/types';
+import { useRequestsSocketListener } from '@/shared/context';
 const RequestsTab = () => {
+  const account = useAppSelector(selectAccount)
   const [page, setPage] = useState(1);
 
   const [startDate, setStartDate] = useState<string>('');
@@ -51,6 +53,8 @@ const RequestsTab = () => {
 
   const appointmentRequests = data?.content.data
 
+  useRequestsSocketListener(account?.profile.id, refetch)
+
   const statusColor = {
     'REJECTED': 'error',
     'WAITING': 'warning',
@@ -65,7 +69,7 @@ const RequestsTab = () => {
     return <AppLoading />
   }
   return (
-    <div className='p-16'>
+    <div className='p-16 container mx-auto'>
       <Box className='flex justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker

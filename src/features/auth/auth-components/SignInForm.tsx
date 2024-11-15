@@ -10,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import { getApiErrorMessage, setAccessToken, setAccount, useAppDispatch, useAppSelector } from '@shared/store';
+import { getApiErrorMessage, setAccessToken, setAccount, setRefreshToken, useAppDispatch, useAppSelector } from '@shared/store';
 import { useLoginDefaultMutation } from '../auth-api'
 import { Typography } from '@mui/material';
 import { openDialog } from '@/shared/components';
@@ -64,8 +64,9 @@ function SignInForm() {
 		loginDefault({ email, password })
 			.unwrap()
 			.then(response => {
-				const { account, accessToken } = response.content
+				const { account, accessToken, refreshToken } = response.content
 				dispatch(setAccount(account))
+				dispatch(setRefreshToken(refreshToken))
 				dispatch(setAccessToken(accessToken))
 			})
 			.catch((error) => {

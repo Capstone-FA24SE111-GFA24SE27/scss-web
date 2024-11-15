@@ -4,17 +4,18 @@ import { AppLoading, DateRangePicker, NavLinkAdapter, Pagination, RequestItem, S
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
 import { ChangeEvent, Fragment, useEffect, useState } from 'react';
-import { useAppDispatch } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { Dialog } from '@shared/components';
 import dayjs, { Dayjs } from 'dayjs';
 import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation } from '../counseling-api';
 import { Appointment, AppointmentRequest } from '@/shared/types';
 import { ExpandableText } from '@shared/components'
 import { openStudentView } from '../../counselors-layout-slice';
+import { useRequestsSocketListener } from '@/shared/context';
 
 const RequestsContent = () => {
+  const account = useAppSelector(selectAccount)
   const [page, setPage] = useState(1);
-
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
@@ -53,28 +54,12 @@ const RequestsContent = () => {
     sortDirection: sortDirection
   })
 
-  const [denyAppointmentRequest] = useDenyAppointmentRequestMutation();
   const appointmentRequests = data?.content.data
+
+  useRequestsSocketListener(account?.profile.id, refetch)
+
+
   const dispatch = useAppDispatch()
-
-
-
-  const statusColor = {
-    'REJECTED': 'error',
-    'WAITING': 'warning',
-    'APPROVED': 'success'
-  }
-
-
-  const handleDenyRequest = (appointment: AppointmentRequest) => {
-    console.log(appointment)
-    denyAppointmentRequest(appointment.id)
-    dispatch(() => closeDialog())
-  }
-
-  // useEffect(() => {
-  //   refetch()
-  // }, []);
 
 
   if (isLoading) {

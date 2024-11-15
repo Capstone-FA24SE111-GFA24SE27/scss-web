@@ -5,10 +5,12 @@ import React from 'react'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import { useGetCounselingAppointmentQuery, useGetCounselingAppointmentRequestsQuery } from '../services/activity/activity-api'
-import { useAppDispatch } from '@shared/store'
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store'
 import { openCounselorView } from '../students-layout-slice'
+import { useAppointmentsSocketListener, useRequestsSocketListener } from '@/shared/context'
 
 const HomeContent = () => {
+  const account = useAppSelector(selectAccount)
   const today = dayjs().format('YYYY-MM-DD');
 
   const firstDayOfMonth = dayjs().startOf('month').format('YYYY-MM-DD');
@@ -17,18 +19,24 @@ const HomeContent = () => {
   const firstDayPreviousMonth = dayjs().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
   const lastDayOfPreviousMonth = dayjs().subtract(1, 'month').endOf('month').format('YYYY-MM-DD');
 
-  const { data: requestsCurrentMonthData, isLoading: isLoadingRequest } = useGetCounselingAppointmentRequestsQuery({
+  const { data: requestsCurrentMonthData, isLoading: isLoadingRequest, refetch: refetchRequest } = useGetCounselingAppointmentRequestsQuery({
     dateFrom: firstDayOfMonth,
     dateTo: lastDayOfMonth,
   })
 
+  useRequestsSocketListener(account?.profile.id, refetchRequest)
+
   const dispatch = useAppDispatch()
 
-  const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch } = useGetCounselingAppointmentQuery({
+  const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch: refetchAppointments } = useGetCounselingAppointmentQuery({
     fromDate: today,
     // toDate: lastDayOfMonth,
     status: `WAITING`,
   });
+
+  useAppointmentsSocketListener(account?.profile.id, refetchAppointments)
+
+
   const groupAppointmentsByDate = (appointments) => {
     const today = dayjs();
     const tomorrow = dayjs().add(1, 'day');
@@ -122,8 +130,7 @@ const HomeContent = () => {
                       <Typography color="textPrimary" className='px-4 font-bold text-lg text-primary-light'>{dateLabel}</Typography>
                       <div className='divide-y-2 space-y-8'>
                         {groupedAppointments[dateLabel].map(appointment => (
-                          <div key={appointment.id}
-                            className='rounded shadow'>
+                          <div key={appointment.id} className='py-8'>
                             <StudentAppointmentItem appointment={appointment} />
                           </div>
                         ))}

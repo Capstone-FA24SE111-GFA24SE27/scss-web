@@ -7,13 +7,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AppLoading } from '@shared/components';
 import { specialRoutes } from '@shared/configs';
 import { roles } from '@shared/constants';
-import { ThemeProvider } from '@shared/context';
+import { SnackbarProvider, ThemeProvider } from '@shared/context';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { counselorsRoutes } from '@features/counselors';
 import { Dialog } from '@shared/components';
-import { SnackbarProvider } from 'notistack';
 import { adminRoutes } from './features/admin';
 import { supportStaffRoutes } from './features/staffs';
 import { SocketProvider } from '@shared/context';
@@ -47,30 +46,20 @@ const App = () => {
 	const AppRoutes = useRoutes([...roleBasedRoutes]);
 
 	return (
-		<ThemeProvider root>
-			<StyledEngineProvider injectFirst>
-				<LocalizationProvider dateAdapter={AdapterDayjs}>
-					<SnackbarProvider
-						maxSnack={3}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'right',
-						}}
-						classes={{
-							containerRoot:
-								'bottom-0 right-0 mb-52 md:mb-68 mr-4 lg:mr-40 z-99',
-						}}
-					>
-						<SocketProvider>
+		<SocketProvider>
+			<ThemeProvider root>
+				<StyledEngineProvider injectFirst>
+					<LocalizationProvider dateAdapter={AdapterDayjs}>
+						<SnackbarProvider>
 							<Suspense fallback={<AppLoading />}>
 								<Dialog />
 								{AppRoutes}
 							</Suspense>
-						</SocketProvider>
-					</SnackbarProvider>
-				</LocalizationProvider>
-			</StyledEngineProvider>
-		</ThemeProvider>
+						</SnackbarProvider>
+					</LocalizationProvider>
+				</StyledEngineProvider>
+			</ThemeProvider>
+		</SocketProvider >
 	);
 };
 

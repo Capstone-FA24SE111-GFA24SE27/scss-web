@@ -163,6 +163,7 @@ const QnaList = () => {
 			const cb = (data) => {
 				console.log('qna socket receive data' , data);
 				if (data) {
+					refetch()
 					studentQnasApi.util.invalidateTags(['qna'])
 				}
 			};

@@ -326,7 +326,7 @@ function CounselorBooking() {
             />
             {
               // @ts-ignore
-              formData?.isOnline === "true" ? (
+              (formData?.isOnline === true || formData?.isOnline === "true") ? (
                 <TextField
                   autoFocus
                   margin="dense"

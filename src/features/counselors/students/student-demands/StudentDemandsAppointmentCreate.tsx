@@ -214,16 +214,7 @@ function StudentDemandsAppointmentCreate() {
               <Typography className="text-lg truncate">{student.studentCode}</Typography>
 
               <div className="flex flex-wrap items-center mt-16">
-                <Chip
-                  label={`Problem 1`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
-                <Chip
-                  label={`Problem 2`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
+                
               </div>
             </div>
           </div>

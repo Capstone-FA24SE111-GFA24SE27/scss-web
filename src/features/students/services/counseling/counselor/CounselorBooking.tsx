@@ -12,7 +12,7 @@ import { Breadcrumbs, ContentLoading } from '@shared/components';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { AppointmentRequest, useBookCounselorMutation, useGetCounselorDailySlotsQuery, useGetCounselorQuery } from '../counseling-api';
 
@@ -75,9 +75,9 @@ function CounselorBooking() {
 
     const counselor = counselorData?.content
 
+    const navigate = useNavigate()
 
 
-    
 
 
     const onSubmit = () => {
@@ -85,8 +85,8 @@ function CounselorBooking() {
             counselorId: Number(counselorId),
             appointmentRequest: formData
         })
-            // .unwrap()
-            // .then(() => navigate('../'))
+        .unwrap()
+        .then(() => navigate('../'))
     }
 
     const handleDateChange = (selectedDate) => {
@@ -126,11 +126,9 @@ function CounselorBooking() {
 
     useEffect(() => {
 
-        if (socket) {
-            socket.on(`/user/${today}/${counselorId}/slot`, (data) => {
-                console.log("Socket counselor booking", data)
-            })
-        }
+        socket?.on(`/user/${today}/${counselorId}/slot`, (data) => {
+            console.log("Socket message for today", data)
+        })
 
         return () => {
             socket?.off(`/user/${formData.date}/${counselorId}/slot`);
