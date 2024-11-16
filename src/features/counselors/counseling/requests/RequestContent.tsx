@@ -91,7 +91,7 @@ const RequestsContent = () => {
           initialSort='DESC'
         />
       </Box>
-      <List className='flex flex-col gap-16'>
+      <List className='flex flex-col gap-16 mt-16'>
         {
           !appointmentRequests?.length
             ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>

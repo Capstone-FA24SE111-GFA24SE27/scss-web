@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
-import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment, useCancelCounselingAppointmentMutation } from '../activity-api'
+import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, useCancelCounselingAppointmentMutation } from '../activity-api'
 import { AppLoading, DateRangePicker, ExpandableText, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, StudentAppointmentItem, UserListItem, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear, Visibility } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -71,7 +71,7 @@ const AppointmentsTab = () => {
   }
 
   return (
-    <div className='p-16 w-full flex flex-col gap-16'>
+    <div className='p-16 w-full flex flex-col gap-16 container mx-auto'>
       <Box className='flex gap-32 justify-between'>
         <DateRangePicker
           startDate={startDate ? dayjs(startDate) : null}
@@ -102,126 +102,4 @@ const AppointmentsTab = () => {
   )
 }
 
-
-const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
-  const [comment, setComment] = useState('')
-  const [rating, setRating] = useState(0)
-  const dispatch = useAppDispatch()
-  const [sendFeedback] = useSendCouselingAppointmentFeedbackMutation()
-  const handleSendFeedback = () => {
-    sendFeedback({
-      appointmentId: appointment.id,
-      feedback: {
-        comment,
-        rating
-      }
-    })
-    dispatch(closeDialog())
-  }
-
-  return (
-    <div className='w-[50rem]'>
-      <DialogTitle id="alert-dialog-title">Review the counseling session?</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          <Typography>Give a feedback for counselor</Typography>
-          <TextField
-            autoFocus
-            margin="dense"
-            name={'comment'}
-            label={'Comment'}
-            fullWidth
-            multiline
-            rows={4}
-            maxRows={4}
-
-            value={comment}
-            className='mt-16'
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setComment(event.target.value);
-            }} />
-          <div className='mt-16'>
-            <Typography component="legend">Rate this session</Typography>
-            <Rating
-              name="simple-controlled"
-              value={rating}
-              onChange={(event, newRating) => {
-                setRating(newRating);
-              }}
-            />
-          </div>
-
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => dispatch(closeDialog())}
-          color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => handleSendFeedback()}
-          color="secondary" variant='contained'
-          disabled={!comment || !rating}
-        >
-          Confirm
-        </Button>
-      </DialogActions>
-    </div>
-  )
-}
-
 export default AppointmentsTab
-
-const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
-  const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentMutation();
-  const [cancelReason, setCancelReasonl] = useState(``);
-  const dispatch = useAppDispatch();
-  const handleCancelAppointment = () => {
-    cancelAppointment({
-      appointmentId: appointment.id,
-      reason: cancelReason
-    }).unwrap()
-      .then(() => {
-        dispatch(closeDialog())
-      })
-
-  }
-  return (
-    <div className='w-[40rem]'>
-      <DialogTitle id="alert-dialog-title">Confirm cancelling appointment?</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          <div>
-            Give the reason for cancelling
-          </div>
-          <div>
-            <TextField
-              autoFocus
-              margin="dense"
-              name={'Cancel reason'}
-              label={'Cancel reason'}
-              fullWidth
-              value={cancelReason}
-              variant="standard"
-              className='mt-16'
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setCancelReasonl(event.target.value);
-              }} />
-          </div>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => dispatch(closeDialog())} color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={handleCancelAppointment}
-          color="secondary" variant='contained'
-          disabled={!cancelReason || isLoading}
-        >
-          Confirm
-        </Button>
-      </DialogActions>
-    </div>
-  );
-}

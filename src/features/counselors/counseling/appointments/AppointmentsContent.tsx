@@ -88,36 +88,12 @@ const AppointmentsContent = () => {
   };
 
 
-  // useEffect(() => {
-  //   refetch()
-  // }, []);
-
-  // useEffect(() => {
-  //   const cb = (data: unknown) => {
-  //     if (data) {
-  //       refetch()
-  //     }
-
-  //   };
-
-  //   if (socket && account) {
-  //     socket.on(`/user/${account.profile.id}/appointment`, cb);
-  //   }
-
-  //   return () => {
-  //     if (socket && account) {
-  //       socket.off(`/user/${account.profile.id}/appointment`, cb);
-  //     }
-  //   };
-  // }, [socket]);
-
-
   if (isLoading) {
     return <AppLoading />;
   }
 
   return (
-    <div className='p-32 w-full flex flex-col gap-16'>
+    <div className='p-32 w-full flex flex-col gap-16  container mx-auto'>
       <Box className='flex justify-between items-center'>
         <div className='flex gap-32'>
           <DateRangePicker

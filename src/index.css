@@ -101,6 +101,16 @@ a[role=button] {
   z-index: 9999;
 }
 
+ul {
+  list-style-type: disc;
+  padding-left: 16px;
+}
+
+li {
+  list-style-type: disc;
+  margin-bottom: 8px;
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {

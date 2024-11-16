@@ -20,8 +20,8 @@ export const SocketProvider = ({ children }) => {
 	useEffect(() => {
 		if (account) {
 			setSocketState(
-				// io('http://localhost:9092', { transports: ['websocket'] })
-				io('http://scss-server.southafricanorth.cloudapp.azure.com:9092', { transports: ['websocket'] })
+				io('http://localhost:9092', { transports: ['websocket'] })
+				// io('http://scss-server.southafricanorth.cloudapp.azure.com:9092', { transports: ['websocket'] })
 			);
 			console.log('connecting');
 		} else if (socketState) {

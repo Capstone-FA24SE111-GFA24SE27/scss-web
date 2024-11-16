@@ -1,4 +1,4 @@
-import { Account, AppointmentRequest, Counselor, PaginationContent, Student } from '@shared/types';
+import { Account, Appointment, AppointmentRequest, Counselor, PaginationContent, Student } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -102,29 +102,6 @@ export type GetCounselingAppointmentApiArg = {
   page?: number;
 }
 
-export type Appointment = {
-  id: number,
-  requireDate: string,
-  startDateTime: string,
-  endDateTime: string,
-  status: string,
-  meetingType: 'ONLINE' | 'OFFLINE',
-  reason: string,
-  meetUrl?: string,
-  address?: string,
-  counselorInfo: Counselor,
-  studentInfo: Student,
-  appointmentFeedback: AppointmentFeedback
-}
-
-
-export type AppointmentFeedback = {
-  id: number,
-  rating: number,
-  comment: string,
-  appointmentId: number,
-  createdAt: number,
-}
 
 export type GetCounselorApiResponse = ApiResponse<AppointmentRequest>
 

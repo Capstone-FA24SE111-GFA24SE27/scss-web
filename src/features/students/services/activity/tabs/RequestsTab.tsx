@@ -55,16 +55,6 @@ const RequestsTab = () => {
 
   useRequestsSocketListener(account?.profile.id, refetch)
 
-  const statusColor = {
-    'REJECTED': 'error',
-    'WAITING': 'warning',
-    'APPROVED': 'success'
-  }
-
-  // useEffect(() => {
-  //   refetch()
-  // }, []);
-
   if (isLoading) {
     return <AppLoading />
   }
