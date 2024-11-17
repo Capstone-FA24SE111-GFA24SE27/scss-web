@@ -150,7 +150,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                         counselor?.specialization && <div>
                             <Divider className="mt-16 mb-24" />
                             <Typography className='font-semibold'>
-                                Academic details
+                                Field of study
                             </Typography>
                             <Box className="p-8 mt-8">
 

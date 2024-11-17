@@ -1,5 +1,5 @@
 import { StudentAppointmentItem, NavLinkAdapter, RequestItem, Scrollbar, StatChange, ContentLoading } from '@/shared/components'
-import { CalendarMonth, Cancel, CheckCircle, Description, DoDisturbOn, Pending } from '@mui/icons-material'
+import { ArrowForward, CalendarMonth, Cancel, CheckCircle, Description, DoDisturbOn, Pending } from '@mui/icons-material'
 import { Box, Button, Divider, Paper, Typography } from '@mui/material'
 import React from 'react'
 import dayjs from 'dayjs'
@@ -64,11 +64,27 @@ const HomeContent = () => {
               isLoadingAppointment
                 ? <ContentLoading />
                 : Object.keys(groupedAppointments).length === 0
-                  ? <Typography className="text-center" color="textDisabled">No pending requests</Typography>
+                  ? <div className='flex justify-center gap-4 items-center'>
+                    <Typography
+                      color="textDisabled"
+                      className='text-center'
+                    >
+                      You have no upcoming appointments
+                    </Typography>
+                    <Button
+                      className='w-fit'
+                      variant='text'
+                      component={NavLinkAdapter}
+                      to={`/services/counseling`}
+                      endIcon={<ArrowForward />}
+                    >
+                      Book an appointment
+                    </Button>
+                  </div>
                   : Object.keys(groupedAppointments).map(dateLabel => (
                     <div key={dateLabel} className='px-4 mb-16'>
                       <div className='flex items-start h-full gap-8'>
-                        <CalendarMonth color='secondary' fontSize='medium'/>
+                        <CalendarMonth color='secondary' fontSize='medium' />
                         <Typography color="textPrimary" className=' font-bold text-xl text-secondary-main'>{dateLabel}</Typography>
                       </div>
                       <div className='space-y-8 border-l-2 px-16 !border-secondary-main ml-36'>

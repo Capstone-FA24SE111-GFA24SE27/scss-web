@@ -146,7 +146,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 
 	return (
 		<motion.div variants={item}>
-			<Paper className='overflow-hidden'>
+			<Paper className='overflow-hidden shadow'>
 				<Accordion
 					className='shadow'
 					expanded={expanded === qna.id || expanded === true}

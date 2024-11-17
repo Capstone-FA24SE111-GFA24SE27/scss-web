@@ -1,14 +1,15 @@
 import React from "react";
 import Chart from "react-apexcharts";
-import { Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { ApexOptions } from "apexcharts";
 import { Subject } from "@/shared/types";
-
+import { calculateGPA } from "@/shared/utils";
+import { memo } from "react"
 const StudentGradeChart = ({ data }: { data: Subject[] }) => {
   // Extract subjects and their grades
   const subjects = [...new Set(data.map((d) => d.subjectName))];
   const terms = [...new Set(data.map((d) => `Term ${d.term}`))];
-
+  console.log(terms)
   // Prepare series data for each subject
   const series = subjects.map((subject) => ({
     name: subject,
@@ -16,9 +17,11 @@ const StudentGradeChart = ({ data }: { data: Subject[] }) => {
       const grade = data.find(
         (d) => d.subjectName === subject && `Term ${d.term}` === term
       )?.grade;
+      console.log(grade);
       return grade !== undefined ? grade : null;
     }),
   }));
+
 
   // Calculate average grades for each term
   const averageGrades = terms.map((term) => {
@@ -65,6 +68,17 @@ const StudentGradeChart = ({ data }: { data: Subject[] }) => {
     },
     tooltip: {
       theme: "dark",
+      shared: false, // Ensures each series is treated independently
+      followCursor: true, // Tooltip follows the cursor for clarity
+      y: {
+        formatter: (value: number | null) => {
+          // Only display non-null and non-zero values
+          if (value !== null && value > 0) {
+            return value.toString();
+          }
+          return ""; // Return an empty string to suppress tooltip for invalid values
+        },
+      },
     },
     markers: {
       size: 5,
@@ -74,8 +88,12 @@ const StudentGradeChart = ({ data }: { data: Subject[] }) => {
   return (
     <Paper className="shadow p-4">
       <Chart options={options} series={series} type="line" height={350} />
+      <Box className="flex gap-8 py-8 px-16">
+        <Typography color="textSecondary" >Currnet GPA:</Typography>
+        <Typography className="font-semibold">{calculateGPA(data)}</Typography>
+      </Box>
     </Paper>
   );
 };
 
-export default StudentGradeChart;
+export default memo(StudentGradeChart);
