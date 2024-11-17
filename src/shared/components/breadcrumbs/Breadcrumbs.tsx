@@ -14,7 +14,16 @@ type Props = {
 const Breadcrumbs = ({ parents, currentPage, className = '' }: Props) => {
   return (
     <div className={className}>
-      <MUIbreadcrumbs aria-label="breadcrumb">
+      <MUIbreadcrumbs aria-label="breadcrumb" className=''
+        sx={{
+          '& ol': {
+            listStyle: 'none',
+          },
+          '& li': { 
+            listStyle: 'none',
+          },
+        }}
+      >
         {parents.map(item =>
           <Link to={item.url} key={item.url} className='hover:!underline'>
             {item.label}

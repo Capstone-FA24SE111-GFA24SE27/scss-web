@@ -8,7 +8,7 @@ import StudentBooking from './StudentBooking';
 export const studentViewRoutes: RouteObject[] = [
   {
     path: 'student/:id',
-    element: <StudentView shouldShowBooking={false} />,
+    element: <StudentView />,
   },
   {
     path: 'student/:id/academic-transcript',

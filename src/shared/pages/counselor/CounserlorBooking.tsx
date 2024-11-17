@@ -44,6 +44,7 @@ type FormType = AppointmentRequest
 function CounselorBooking() {
   const routeParams = useParams();
   const socket = useSocket()
+  console.log(`Appointment`, socket)
   const { id: counselorId } = routeParams as { id: string };
   const today = dayjs().format('YYYY-MM-DD');
   // const endOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');

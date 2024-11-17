@@ -48,6 +48,9 @@ import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import { useDispatch } from 'react-redux';
 import { NavLinkAdapter, openDialog } from '@/shared/components';
 import QnaFlagForm from './QnaFlagFormDialog';
+import { useQuestionsSocketListener } from '@/shared/context';
+import { selectAccount, useAppSelector } from '@shared/store';
+import { statusColor } from '@/shared/constants';
 
 const container = {
 	show: {
@@ -71,12 +74,12 @@ const QnaList = () => {
 
 	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
 	const [flagQuestion] = usePostFlagQuestionStatusMutation();
-
+	const account = useAppSelector(selectAccount)
 	const navigate = useNavigate();
   	const location = useLocation()
 	const dispatch = useDispatch();
 
-	const { data: qnaData } = useGetQuestionsQuery({
+	const { data: qnaData , refetch} = useGetQuestionsQuery({
 		keyword: debounceSearchKeyword,
 		sortDirection: 'ASC'	,	
 		page: page,
@@ -84,12 +87,7 @@ const QnaList = () => {
 	});
 	const qnaList = qnaData?.content?.data || [];
 
-	const statusColor = {
-		PENDING: 'warning',
-		VERIFIED: 'success',
-		FLAGGED: 'error',
-		REJECTED: 'error',
-	};
+	useQuestionsSocketListener(account?.profile.id, refetch)
 
 	useEffect(() => {
 		console.log(qnaData);

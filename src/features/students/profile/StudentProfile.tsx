@@ -61,7 +61,7 @@ function StudentProfile({ }: StudentProfileProps) {
       </Box>
       <div className="relative flex flex-col items-center flex-auto p-24 pt-0 sm:p-48 sm:pt-0">
         <div className="w-full max-w-3xl space-y-16">
-          <div className="flex items-end flex-auto -mt-52 gap-8">
+          <div className="flex items-end flex-auto -mt-52 gap-8 ">
             <Avatar
               sx={{
                 borderWidth: 4,
@@ -119,11 +119,11 @@ function StudentProfile({ }: StudentProfileProps) {
 
 
 
-            
+
             <div>
               <Paper className="shadow p-16 mt-8">
                 <Typography className='font-semibold mb-16 text-xl'>
-                  Academic details
+                  Field of study
                 </Typography>
                 <div className="grid grid-cols-3 gap-y-2 mb-4">
                   <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
@@ -154,7 +154,7 @@ function StudentProfile({ }: StudentProfileProps) {
               </Paper>
             </div>
 
-            
+
             <div>
               <Paper className='shadow p-16 flex flex-col gap-8 mt-8'>
                 <div className='flex items-center justify-between '>

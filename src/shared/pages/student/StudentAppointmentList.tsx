@@ -45,7 +45,7 @@ function StudentAppointmentList({ id }: { id: string }) {
     sortDirection: sortDirection,
     page: page
   }, {
-    skip: !studentRouteId
+    skip: !studentId
   });
 
   const dispatch = useAppDispatch()

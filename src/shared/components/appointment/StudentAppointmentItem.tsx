@@ -1,15 +1,15 @@
-import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
-import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation, useGetCounselingAppointmentQuery, Appointment, useCancelCounselingAppointmentMutation } from '@features/students/services/activity/activity-api'
-import { AppLoading, DateRangePicker, ExpandableText, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
-import { AccessTime, CalendarMonth, ChevronRight, Circle, Clear, Visibility } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
-import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import { useState, useEffect, ChangeEvent } from 'react'
-import { useSocket } from '@/shared/context';
-import { statusColor } from '@/shared/constants';
 import { openCounselorView } from '@/features/students/students-layout-slice';
-const AppointmentsTab = ({ appointment }: { appointment: Appointment }) => {
+import { ExpandableText, ItemMenu, UserListItem, closeDialog, openDialog } from '@/shared/components';
+import { statusColor } from '@/shared/constants';
+import { Appointment } from '@/shared/types';
+import { useCancelCounselingAppointmentMutation, useSendCouselingAppointmentFeedbackMutation } from '@features/students/services/activity/activity-api';
+import { AccessTime, CalendarMonth, Circle, Clear, Visibility } from '@mui/icons-material';
+import { Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material';
+import { useAppDispatch } from '@shared/store';
+import dayjs from 'dayjs';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
 
   const dispatch = useAppDispatch()
 
@@ -46,7 +46,7 @@ const AppointmentsTab = ({ appointment }: { appointment: Appointment }) => {
                 {
                   label: 'View details',
                   onClick: () => {
-                    navigate(`appointment/${appointment.id}`)
+                    navigate(`/services/activity/appointment/${appointment.id}`)
                   },
                   icon: <Visibility fontSize='small' />
                 },
@@ -234,7 +234,7 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
   )
 }
 
-export default AppointmentsTab
+export default StudentAppointmentItem
 
 const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
   const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentMutation();

@@ -64,18 +64,18 @@ export const counselorsMangementApi = api
         providesTags: ['counselingSlots']
       }),
       updateCounselorCounselingSlots: build.mutation<void, UpdateCounselorCounselingSlotArg>({
-        query: ({ counselorId, slotId }) => ({
-          url: `/api/manage/counselors/${counselorId}/assign-slot?slotId=${slotId}`,
+        query: ({ counselorId, slotId, dayOfWeek }) => ({
+          url: `/api/manage/counselors/${counselorId}/assign-slot?slotId=${slotId}&dayOfWeek=${dayOfWeek}`,
           method: 'PUT',
         }),
-        invalidatesTags: ['counselors']
+        invalidatesTags: ['counselors', 'counselingSlots']
       }),
-      deleteCounselorCounselingSlots: build.mutation<void, UpdateCounselorCounselingSlotArg>({
+      deleteCounselorCounselingSlots: build.mutation<void, DeleteCounselorCounselingSlotArg >({
         query: ({ counselorId, slotId }) => ({
           url: `/api/manage/counselors/${counselorId}/unassign-slot?slotId=${slotId}`,
           method: 'DELETE',
         }),
-        invalidatesTags: ['counselors']
+        invalidatesTags: ['counselors',  'counselingSlots']
       }),
       updateCounselorAvailableDateRange: build.mutation<void, UpdateCounselorAvailableDateRange>({
         query: ({ counselorId, startDate, endDate, }) => ({
@@ -108,6 +108,12 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselors', 'appointments',]
       }),
+      getCounselorCounselingSlots: build.query<GetCounselingSlotsResponse, number>({
+        query: (counselorId) => ({
+          url: `/api/manage/counselors/${counselorId}/counseling-slots`,
+        }),
+        providesTags: ['counselingSlots'],
+      }),
     })
   })
 
@@ -125,6 +131,7 @@ export const {
   useGetAppointmentReportManagementQuery,
   useGetCounselorAppointmentRequestsManagementQuery,
   useGetCounselorFeedbacksQuery,
+  useGetCounselorCounselingSlotsQuery, // Add this line for the new hook
 } = counselorsMangementApi
 
 
@@ -158,6 +165,7 @@ export type CounselingSlot = {
   slotCode: string;
   startTime: string;
   endTime: string;
+  dayOfWeek: string,
 };
 
 type UpdateCounselorStatusArg = {
@@ -166,6 +174,12 @@ type UpdateCounselorStatusArg = {
 }
 
 type UpdateCounselorCounselingSlotArg = {
+  slotId: number,
+  counselorId: number,
+  dayOfWeek: string,
+}
+
+type DeleteCounselorCounselingSlotArg = {
   slotId: number,
   counselorId: number,
 }

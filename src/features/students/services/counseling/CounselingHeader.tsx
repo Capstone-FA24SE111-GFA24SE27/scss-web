@@ -1,13 +1,3 @@
-import Input from '@mui/material/Input';
-import Typography from '@mui/material/Typography';
-import { motion } from 'framer-motion';
-import Button from '@mui/material/Button';
-import { NavLinkAdapter } from '@shared/components';
-import Box from '@mui/material/Box';
-import { Search } from '@mui/icons-material';
-import { FilterAltOutlined } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
-import { useState } from 'react';
 import { Heading } from '@/shared/components';
 
 /**

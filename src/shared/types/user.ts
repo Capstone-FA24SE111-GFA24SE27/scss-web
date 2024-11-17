@@ -2,6 +2,7 @@ import { Appointment } from ".";
 
 export type User = {
 	accessToken: string;
+  refreshToken: string;
 	account: Account | null;
 };
 

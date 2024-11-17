@@ -20,8 +20,9 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
   const navigate = useNavigate();
 
   return (
-    <div
-      className="flex gap-8 p-16"
+    <Paper
+      className="p-16 flex gap-16 shadow"
+      sx={{ bgcolor: 'background.paper' }}
     >
       <div className='flex flex-col w-full'>
         <ListItem
@@ -219,7 +220,7 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
           </div>
         </div>
       </div>
-    </div>
+    </Paper>
   );
 }
 

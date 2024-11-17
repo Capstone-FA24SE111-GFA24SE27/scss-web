@@ -24,39 +24,20 @@ interface StatsCardProps {
 
 const StatsCard: React.FC<StatsCardProps> = ({ title, total, statChange, icon, color = 'inherit' }) => {
   return (
-    <Paper className="w-full flex flex-col gap-4 shadow max-w-xs p-16" elevation={3}>
-      <Box className="flex justify-between items-center">
-        <Typography className="font-semibold text-lg" color={color}>
+    <Paper className="w-full flex flex-col gap-4 shadow p-16" elevation={3}>
+      <Box className="flex justify-between items-start">
+        <Typography className="font-semibold text-lg">
           {title}
         </Typography>
-        {React.cloneElement(icon, { color })}  {/* Clone the icon with the specified color */}
+        {React.cloneElement(icon, { color, fontSize: `large` })}  {/* Clone the icon with the specified color */}
       </Box>
-      <Box className="flex justify-between items-center">
-        <Typography variant="h3" color={color} className="font-bold">
+      <Box className="flex justify-between items-end">
+        <Typography color={color} className="font-bold text-6xl -mb-8">
           {total}
         </Typography>
         <StatChange {...statChange} />
       </Box>
     </Paper>
-  );
-};
-
-// Usage Example
-import DescriptionIcon from '@mui/icons-material/Description';
-
-const App: React.FC = () => {
-  return (
-    <StatsCard
-      title="Total Appointments"
-      total={113}
-      statChange={{
-        prefixText: 'Last month',
-        current: 40,
-        previous: 48,
-      }}
-      icon={<DescriptionIcon />}
-      color="primary"  // You can set color to primary, secondary, success, error, etc.
-    />
   );
 };
 

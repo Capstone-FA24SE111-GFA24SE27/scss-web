@@ -13,7 +13,7 @@ export const studentDemandsApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getCounselingDemandFilter: build.query<GetCounselingDemandFilterApiResponse, GetCounselingDemandFilterApiArg>({
+      getCounselingDemandCounselorsFilter: build.query<GetCounselingDemandFilterApiResponse, GetCounselingDemandFilterApiArg>({
         query: ({
           keyword = '',
           status = 'PROCESSING',
@@ -60,7 +60,7 @@ export const studentDemandsApi = api
   });
 
 export const {
-  useGetCounselingDemandFilterQuery,
+  useGetCounselingDemandCounselorsFilterQuery,
   useCreateAppointmentByDemandMutation,
   useGetCounselingDemandByIdQuery,
   useSolveCounselingDemandMutation,

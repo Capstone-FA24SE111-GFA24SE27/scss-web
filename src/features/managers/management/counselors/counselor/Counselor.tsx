@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { AppLoading, Breadcrumbs, Gender, Heading, PageSimple } from '@shared/components';
-import { Autocomplete, MenuItem, Paper, Rating, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
+import { Autocomplete, Box, MenuItem, Paper, Rating, Select, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
 import CounselorSidebarContent from '../CounselorSidebarContent';
 import { Feedback, Mail, Phone, Star } from '@mui/icons-material';
 import { Controller } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
-import { CounselingSlot, useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorManagementQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
+import { CounselingSlot, useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorCounselingSlotsQuery, useGetCounselorManagementQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import AppointmentsTable from './AppointmentsTab';
@@ -21,17 +21,29 @@ const Root = styled(PageSimple)(({ theme }) => ({
   },
 }));
 
+const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+
+
 function Counseling() {
   const pageLayout = useRef(null);
   const routeParams = useParams()
   const { id } = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+
+  const [selectedDay, setSelectedDay] = useState('MONDAY');
+
   const { data, isLoading } = useGetCounselorManagementQuery(Number(id));
   const counselorData = data?.content
 
   const { data: counselingSlotsData, isLoading: isLoadingCounselingSlotsData } = useGetCounselingSlotsQuery()
+  const { data: counselorCounselingSlotsData, isLoading: isLoadingCounselorCounselingSlotsData } = useGetCounselorCounselingSlotsQuery(Number(id))
+  const counselorCounselingSlots = counselorCounselingSlotsData?.content
   const counselingSlots = counselingSlotsData?.content || []
+
+  const filteredSlots = counselorCounselingSlots?.filter(slot => slot.dayOfWeek === selectedDay) || []
+
+  console.log(filteredSlots)
 
   const isMobile = false
 
@@ -53,14 +65,22 @@ function Counseling() {
     })
   }
 
+  const handleDayChange = (event) => {
+    setSelectedDay(event.target.value);
+  };
+
   const handleSlotsChange = (e, newValue: CounselingSlot[]) => {
-    const selectedSlots = counselorData?.counselingSlot
+    // const selectedSlots = counselorData?.counselingSlot
+    const selectedSlots = filteredSlots
+    console.log(selectedSlots)
     const addedSlot = newValue.find(slot => !selectedSlots.includes(slot));
     const removedSlot = selectedSlots.find(slot => !newValue.includes(slot));
+    console.log(addedSlot, removedSlot);
     if (addedSlot) {
       updateCounselorCounselingSlots({
         counselorId: Number(id),
-        slotId: addedSlot?.id
+        slotId: addedSlot?.id,
+        dayOfWeek: selectedDay,
       })
     }
 
@@ -131,10 +151,10 @@ function Counseling() {
                     description={counselorData?.profile.specialization?.name || counselorData?.profile.expertise?.name}
                   />
                   <Rating readOnly value={counselorData?.profile.rating} />
-                  <div className='flex justify-between divide-x-1 border-t h-full mt-8'>
+                  <div className='flex justify-between divide-x-1 border-t mt-16'>
                     <Tooltip title={counselorData?.profile.profile.phoneNumber}>
                       <a
-                        className="flex flex-1 items-center p-4"
+                        className="flex flex-1 items-center p-8"
                         href={`tel${counselorData?.profile.profile.phoneNumber}`}
                         role="button"
                       >
@@ -144,7 +164,7 @@ function Counseling() {
                     </Tooltip>
                     <Tooltip title={counselorData?.profile.email}>
                       <a
-                        className="flex flex-1 items-center p-4 justify-end"
+                        className="flex flex-1 items-center p-8 justify-end"
                         href={`mailto:${counselorData?.profile.email}`}
                         role="button"
                       >
@@ -160,7 +180,6 @@ function Counseling() {
               <div className='flex-1 ml-120 flex flex-col gap-16'>
                 <div className='flex items-center'>
                   <Typography className='w-224 font-semibold '>Availability Status </Typography>
-
                   <TextField
                     size='small'
                     className='w-full'
@@ -180,27 +199,45 @@ function Counseling() {
 
                 </div>
                 <div className='flex items-center'>
-                  <Typography className='w-224 font-semibold '>Assign Slots</Typography>
-                  <Autocomplete
-                    size="small"
-                    className="w-full"
-                    multiple
-                    disabled={isLoadingCounselingSlotsData || isLoadingDeleteCounselorCounselingSlots || isLoadingUpdateCounselorCounselingSlots}
-                    options={counselingSlots}
-                    getOptionLabel={(option) => `${option.slotCode}`}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    value={counselorData?.counselingSlot}
-                    onChange={handleSlotsChange}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="Select slots"
-                        label="Slots"
-                        variant="outlined"
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    )}
-                  />
+                  <Typography className='w-224 font-semibold'>Assign Slots</Typography>
+                  <div className='flex gap-16 w-full'>
+                    <TextField
+                      size="small"
+                      select
+                      value={selectedDay}
+                      onChange={handleDayChange}
+                      label="Select Day"
+                      variant="outlined"
+                      className="w-256"
+                    >
+                      {daysOfWeek.map(day => (
+                        <MenuItem key={day} value={day}>
+                          {day}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <Autocomplete
+                      size="small"
+                      className="w-full"
+                      multiple
+                      disabled={isLoadingCounselingSlotsData || isLoadingDeleteCounselorCounselingSlots || isLoadingUpdateCounselorCounselingSlots}
+                      options={counselingSlots}
+                      getOptionLabel={(option) => `${option.slotCode}`}
+                      isOptionEqualToValue={(option, value) => option.slotCode === value.slotCode}
+                      // value={counselorData?.counselingSlot}
+                      value={filteredSlots}
+                      onChange={handleSlotsChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder="Select slots"
+                          label="Slots"
+                          variant="outlined"
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className='flex items-center'>
                   <Typography className='w-224 font-semibold '>Available date range</Typography>
@@ -228,7 +265,7 @@ function Counseling() {
               </div>
             </div>
 
-          </div>
+          </ div>
           <Tabs
             value={tabValue}
             onChange={handleChangeTab}
@@ -262,7 +299,7 @@ function Counseling() {
         </div>
       }
       content={
-        <div className="w-full p-16 h-full">
+        < div className="w-full p-16 h-full" >
           <Paper className='p-16 h-full shadow'>
             <div className="w-full pr-8">
               {tabValue === 0 && <AppointmentsTable />}
@@ -270,10 +307,10 @@ function Counseling() {
               {tabValue === 2 && <FeedbackTab />}
             </div>
           </Paper>
-        </div>
+        </div >
       }
       ref={pageLayout}
-      rightSidebarContent={<CounselorSidebarContent />}
+      rightSidebarContent={< CounselorSidebarContent />}
       rightSidebarOpen={rightSidebarOpen}
       rightSidebarOnClose={() => setRightSidebarOpen(false)}
       rightSidebarWidth={640}

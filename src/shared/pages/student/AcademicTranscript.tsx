@@ -11,7 +11,7 @@ const AcademicTranscript = ({ id }: { id?: string }) => {
   const studentId = id || studentRouteId
   const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentViewQuery(studentId);
   const { data: academicTranscriptData, isLoading } = useGetStudentStudyViewQuery(studentId, {
-    skip: !studentRouteId
+    skip: !studentId
   });
 
   const student = studentData?.content;

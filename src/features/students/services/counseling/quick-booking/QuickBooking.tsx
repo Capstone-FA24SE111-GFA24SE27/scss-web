@@ -99,10 +99,14 @@ function QuickBooking() {
   const { data: departmentsData, isFetching: isFetchingDepartments } = useGetDepartmentsQuery();
   const departments = departmentsData || [];
 
-  const { data: majorsData, isFetching: isFetchingMajors } = useGetMajorsByDepartmentQuery(watch("department")?.id.toString());
+  const { data: majorsData, isFetching: isFetchingMajors } = useGetMajorsByDepartmentQuery(watch("department")?.id.toString(), {
+    skip: !watch("department")
+  });
   const majors = majorsData || [];
 
-  const { data: specializationsData, isFetching: isFetchingSpecializations } = useGetSpecializationsByMajorQuery(watch("major")?.id.toString());
+  const { data: specializationsData, isFetching: isFetchingSpecializations } = useGetSpecializationsByMajorQuery(watch("major")?.id.toString(), {
+    skip: !watch("major")
+  });
   const specializations = specializationsData || [];
 
   const { data: counselorExpertisesData, isFetching: isFetchingCounselorExpertises } = useGetCounselorExpertisesQuery()
