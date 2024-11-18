@@ -163,6 +163,7 @@ const QnaList = () => {
 			const cb = (data) => {
 				console.log('qna socket receive data' , data);
 				if (data) {
+					refetch()
 					studentQnasApi.util.invalidateTags(['qna'])
 				}
 			};
@@ -198,7 +199,7 @@ const QnaList = () => {
 			variants={container}
 			initial='hidden'
 			animate='show'
-			className='w-full p-32 space-y-16'
+			className='w-full p-32 space-y-16 container mx-auto'
 		>
 			<div className='flex gap-16'>
 				<SearchField onSearch={handleSearch} className='w-xs' />

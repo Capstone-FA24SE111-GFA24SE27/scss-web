@@ -33,7 +33,7 @@ const AttendanceReport = ({ id }: { id?: string }) => {
   const { id: studentRouteId } = useParams();
   const studentId = id || studentRouteId
   const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentViewQuery(studentId, {
-    skip: !studentRouteId
+    skip: !studentId
   });
 
   const { data: semesterData, isLoading: isLoadingSemesterData } = useGetSemestersQuery();
@@ -127,31 +127,31 @@ const AttendanceReport = ({ id }: { id?: string }) => {
 
         <Paper className='p-16 !w-112 shadow'>
           <h2 className="mb-4 text-lg font-bold">Terms</h2>
-          <ul className="mb-6">
+          <div className="mb-6">
             {terms?.map((term) => (
-              <li
+              <div
                 key={term.id}
                 className={`cursor-pointer hover:underline pt-8 ${selectedSemester === term.name ? 'font-semibold underline text-primary-main hover:cursor-default' : 'text-secondary-main'}`}
                 onClick={() => onTermClick(term.name)}
               >
                 {term.name}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </Paper>
         <Paper className='p-16 !w-200 shadow'>
           <h2 className="mb-4 text-lg font-bold">Courses</h2>
-          <ul>
+          <div>
             {courses.map((course) => (
-              <li
+              <div
                 key={course}
                 className={`cursor-pointer hover:underline mt-8 ${selectedCourse === course ? 'font-semibold underline text-primary-main hover:cursor-default' : 'text-secondary-main'}`}
                 onClick={() => onCourseClick(course)}
               >
                 {course}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </Paper>
 
         <TableContainer component={Paper} className="!w-xl shadow">

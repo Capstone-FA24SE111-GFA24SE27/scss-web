@@ -15,7 +15,7 @@ const BASE_URL = 'http://localhost:8080'
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: BASE_URL,
-	credentials: 'include',
+	// credentials: 'include',
 	prepareHeaders: (headers, { getState }) => {
 		const token = (getState() as RootState).user.accessToken
 		if (token) {
@@ -33,7 +33,10 @@ const baseQueryWithReauth: BaseQueryFn<
 	let result = await baseQuery(args, api, extraOptions)
 
 	if (result?.error?.status === 401) {
-		const refreshResponse = await baseQuery('/api/auth/refresh-token', api, extraOptions);
+		// const refreshResponse = await baseQuery('/api/auth/refresh-token', api, extraOptions);
+		const refreshTokenString = localStorage.getItem('refreshToken');
+		const refreshToken = refreshTokenString ? JSON.parse(refreshTokenString) : ``
+		const refreshResponse = await baseQuery(`/api/auth/refresh-token/${refreshToken}`, api, extraOptions);
 		const refreshData = refreshResponse.data as ApiResponse<RefreshResponse>;
 		if (refreshData?.content?.accessToken) {
 			const { accessToken } = refreshData.content;

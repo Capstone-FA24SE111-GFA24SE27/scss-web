@@ -1,4 +1,4 @@
-export function extractCounselingTypeFromRole(role: string): string {
+ export function extractCounselingTypeFromRole(role: string): string {
   const [counselorType] = role.split('_COUNSELOR');
   return counselorType;
 }
@@ -8,7 +8,8 @@ export function calculateGPA(subjects) {
     return `Calculating...`;
   }
   // Filter subjects with status "PASSED"
-  const passedSubjects = subjects.filter(subject => subject.status === "PASSED");
+  // const passedSubjects = subjects.filter(subject => subject.status === "PASSED");
+  const passedSubjects = subjects.filter(subject => subject.status === "PASSED" || subject.status === "NOT_PASSED");
 
   // Check if there are any passed subjects to avoid division by zero
   if (passedSubjects.length === 0) return 0;

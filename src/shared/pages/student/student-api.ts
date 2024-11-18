@@ -77,6 +77,19 @@ export const studentViewApi = api
         }),
         providesTags: ['problemTags'],
       }),
+      // getStudentBehaviorAssessment: build.query<GetStudentBehaviorAssessmentApiResponse, GetStudentBehaviorAssessmentApiArg>({
+      //   query: ({ studentId, semesterName }) => ({
+      //     url: `/api/students/${studentId}/behavior/general-assessment/semester/${semesterName}`,
+      //     method: 'GET',
+      //   }),
+      //   providesTags: ['students']
+      // }),
+      getStudentBehaviorAssessment: build.mutation<GetStudentBehaviorAssessmentApiResponse, GetStudentBehaviorAssessmentApiArg>({
+        query: ({ studentId, semesterName }) => ({
+          url: `/api/students/${studentId}/behavior/general-assessment/semester/${semesterName}`,
+          method: 'GET',
+        }),
+      }),
     })
   });
 
@@ -89,6 +102,8 @@ export const {
   useGetStudentByCodeQuery,
   useGetStudentSemesterDetailsQuery,
   useGetStudentProblemTagDetailsQuery,
+  // useGetStudentBehaviorAssessmentQuery,
+  useGetStudentBehaviorAssessmentMutation,
 } = studentViewApi;
 
 type StudentAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
@@ -165,4 +180,16 @@ export type ProblemTag = {
   semesterName: string | null;
   excluded: boolean;
   contained: boolean;
+};
+
+export type GetStudentBehaviorAssessmentApiArg = {
+  studentId: string;
+  semesterName: string;
+};
+
+export type GetStudentBehaviorAssessmentApiResponse = StudentBehaviorAssessment;
+
+export type StudentBehaviorAssessment = {
+  message: string,
+  status: number,
 };

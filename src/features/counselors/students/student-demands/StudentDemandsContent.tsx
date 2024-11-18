@@ -7,7 +7,7 @@ import { useAppSelector } from '@shared/store';
 import StudentDemandsItem from './StudentDemandsItem';
 import { useState, ChangeEvent } from 'react'
 import { Box } from '@mui/material';
-import { useGetCounselingDemandFilterQuery } from './student-demands-api';
+import { useGetCounselingDemandCounselorsFilterQuery } from './student-demands-api';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -43,7 +43,7 @@ function StudentDemandsContent() {
         { label: 'Solved', value: 'SOLVE' },
     ];
 
-    const { data } = useGetCounselingDemandFilterQuery({
+    const { data } = useGetCounselingDemandCounselorsFilterQuery({
         keyword: searchTerm,
         status: statusTabs[tabValue]?.value,
         sortDirection,

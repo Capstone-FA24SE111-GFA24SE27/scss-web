@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
-import { useSocket } from '@/shared/context';
+import { useAppointmentsSocketListener, useSocket } from '@/shared/context';
 import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
 import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '../counseling-api';
 import { statusColor } from '@/shared/constants';
@@ -70,6 +70,8 @@ const AppointmentsContent = () => {
   });
   const appointments = data?.content?.data;
 
+  useAppointmentsSocketListener(account?.profile.id, refetch)
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, appointment: Appointment) => {
     setOpenMenuId(openMenuId === appointment.id ? null : appointment.id); // Toggle menu
     setSelectedAppointment(appointment); // Set the clicked appointment
@@ -86,36 +88,12 @@ const AppointmentsContent = () => {
   };
 
 
-  // useEffect(() => {
-  //   refetch()
-  // }, []);
-
-  // useEffect(() => {
-  //   const cb = (data: unknown) => {
-  //     if (data) {
-  //       refetch()
-  //     }
-
-  //   };
-
-  //   if (socket && account) {
-  //     socket.on(`/user/${account.profile.id}/appointment`, cb);
-  //   }
-
-  //   return () => {
-  //     if (socket && account) {
-  //       socket.off(`/user/${account.profile.id}/appointment`, cb);
-  //     }
-  //   };
-  // }, [socket]);
-
-
   if (isLoading) {
     return <AppLoading />;
   }
 
   return (
-    <div className='p-32 w-full flex flex-col gap-16'>
+    <div className='p-32 w-full flex flex-col gap-16  container mx-auto'>
       <Box className='flex justify-between items-center'>
         <div className='flex gap-32'>
           <DateRangePicker

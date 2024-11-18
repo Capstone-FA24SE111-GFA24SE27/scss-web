@@ -15,7 +15,6 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { useGetStudentViewQuery } from '@features/counselors/counselors-pages'
 import { useGetCounselorDailySlotsQuery } from '@/features/students/services/counseling/counseling-api';
 import { navigateUp } from '@/shared/utils';
 import { useCreateAppointmentByDemandMutation, useGetCounselingDemandByIdQuery } from './student-demands-api';
@@ -215,16 +214,7 @@ function StudentDemandsAppointmentCreate() {
               <Typography className="text-lg truncate">{student.studentCode}</Typography>
 
               <div className="flex flex-wrap items-center mt-16">
-                <Chip
-                  label={`Problem 1`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
-                <Chip
-                  label={`Problem 2`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
+                
               </div>
             </div>
           </div>
@@ -392,7 +382,7 @@ function StudentDemandsAppointmentCreate() {
               color='secondary'
               className='w-full'
               // disabled={isLoading || isBookingCounselor}
-              disabled={ !isValid || isLoading || isBookingCounselor}
+              disabled={!isValid || isLoading || isBookingCounselor}
               onClick={handleSubmit(onSubmit)}>
               Confirm booking
             </Button>
