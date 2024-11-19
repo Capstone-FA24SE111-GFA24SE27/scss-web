@@ -13,7 +13,7 @@ import { useGetCounselorAppointmentsManagementQuery } from '../counselors-api';
 import { Appointment } from '@/shared/types';
 import dayjs from 'dayjs';
 import { meetingTypeColor, statusColor } from '@/shared/constants';
-function AppointmentTable() {
+function AppointmentTab() {
 
   const { id } = useParams()
   const navigate = useNavigate()
@@ -136,5 +136,5 @@ function AppointmentTable() {
   );
 }
 
-export default AppointmentTable;
+export default AppointmentTab;
 

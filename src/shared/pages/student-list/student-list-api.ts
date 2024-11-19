@@ -140,7 +140,7 @@ export type GetStudentsFilterApiArg = {
 	sortBy?: string;
 	sortDirection?: 'ASC' | 'DESC';
 	page?: number;
-	tab: string;
+	tab?: string;
 };
 type PutExcludeStudentProblemTagsArgs = number | string;
 type PutExcludeStudentProblemTagsResponse = ApiResponse<string>;

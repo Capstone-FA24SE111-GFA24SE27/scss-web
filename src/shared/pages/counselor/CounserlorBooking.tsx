@@ -170,7 +170,7 @@ function CounselorBooking() {
             parents={[
               {
                 label: counselor.profile.fullName || "",
-                url: `/services/counseling/${counselor.profile.id}`
+                url: `/services/counseling/counselor/${counselor.profile.id}`
               }
             ]}
             currentPage={"Booking"}

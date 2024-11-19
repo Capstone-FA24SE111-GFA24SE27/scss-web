@@ -31,9 +31,9 @@ import {
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-	useGetStudentDocumentViewQuery,
+	useGetStudentDocumentDetailQuery,
 	useGetStudentProblemTagDetailsQuery,
-	useGetStudentStudyViewQuery,
+	useGetStudentStudyDetailQuery,
 } from '@/shared/pages';
 import { calculateGPA } from '@/shared/utils';
 import { useAppDispatch, useAppSelector } from '@shared/store';
@@ -67,9 +67,9 @@ interface StudentViewProps {
 function StudentView({ id, actionButton }: StudentViewProps) {
 	const { id: studentRouteId } = useParams();
 	const studentId = id || studentRouteId;
-	const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
+	const { data, isLoading } = useGetStudentDocumentDetailQuery(studentId);
 	const { data: academicTranscriptData } =
-		useGetStudentStudyViewQuery(studentId);
+		useGetStudentStudyDetailQuery(studentId);
 	const [displayView, setDisplayView] = useState<
 		'' | 'academic_transcrip' | 'attendance_report'
 	>('');

@@ -5,25 +5,25 @@ export const addTagTypes = [
   'students', 'appointments', 'problemTags'
 ] as const;
 
-export const studentViewApi = api
+export const studentDetailApi = api
   .enhanceEndpoints({
     addTagTypes
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getStudentView: build.query<StudentApiResponse, string>({
+      getStudentDetail: build.query<StudentApiResponse, string>({
         query: (id) => ({
           url: `/api/students/${id}`,
         }),
         providesTags: ['students']
       }),
-      getStudentDocumentView: build.query<StudentDocumentApiResponse, string>({
+      getStudentDocumentDetail: build.query<StudentDocumentApiResponse, string>({
         query: (id) => ({
           url: `/api/students/document/${id}`,
         }),
         providesTags: ['students']
       }),
-      getStudentStudyView: build.query<StudentStudyApiResponse, string>({
+      getStudentStudyDetail: build.query<StudentStudyApiResponse, string>({
         query: (studentId) => ({
           url: `/api/students/study/${studentId}`,
         }),
@@ -94,9 +94,9 @@ export const studentViewApi = api
   });
 
 export const {
-  useGetStudentViewQuery,
-  useGetStudentDocumentViewQuery,
-  useGetStudentStudyViewQuery,
+  useGetStudentDetailQuery,
+  useGetStudentDocumentDetailQuery,
+  useGetStudentStudyDetailQuery,
   useGetStudentAppointmentsQuery,
   useCreateAppointmentMutation,
   useGetStudentByCodeQuery,
@@ -104,7 +104,7 @@ export const {
   useGetStudentProblemTagDetailsQuery,
   // useGetStudentBehaviorAssessmentQuery,
   useGetStudentBehaviorAssessmentMutation,
-} = studentViewApi;
+} = studentDetailApi;
 
 type StudentAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
 type StudentApiResponse = ApiResponse<Student>;

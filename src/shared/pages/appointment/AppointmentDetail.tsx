@@ -25,7 +25,7 @@ import { useGetAppointmentByIdQuery } from './appointment-api';
 import { AppLoading, AppointmentReport, ContentLoading, UserLabel, UserListItem } from '@/shared/components';
 import { useAppDispatch } from '@shared/store';
 
-const AppointmentView = ({ id }: { id?: string }) => {
+const AppointmentDetail = ({ id }: { id?: string }) => {
   const { id: appointmentRouteId } = useParams();
   const appointmentId = id || appointmentRouteId
   const { data: appointmentData, isLoading } = useGetAppointmentByIdQuery(appointmentId)
@@ -51,12 +51,11 @@ const AppointmentView = ({ id }: { id?: string }) => {
   }
 
   return (
-    <Box className={`mt-4 p-24 flex flex-col gap-16 max-w-md`}>
+    <Box className={`p-36 flex flex-col gap-16 max-w-md -mt-8`}>
       <Typography className="font-extrabold leading-none tracking-tight text-20 md:text-24">
         Appointment Details
       </Typography>
-
-      <div className="flex gap-24 pb-8 mt-16">
+      <div className="flex gap-24 pb-8">
         <div className='flex gap-24 items-center'>
           <div className='flex items-center gap-8 '>
             <CalendarMonth />
@@ -89,28 +88,7 @@ const AppointmentView = ({ id }: { id?: string }) => {
         </div>
       </div>
 
-      <div className='flex gap-4 mb-8'>
-        {appointment.meetingType === 'ONLINE' ? (
-          <div className='flex items-center gap-24'>
-            {appointment.meetUrl && (
-              <div className='flex items-center gap-8'>
-                <Typography className='w-60' color='textSecondary'>Location:</Typography>
-                <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
-                  {appointment.meetUrl}
-                </Link>
-              </div>
-            )}
-          </div>
-        ) : appointment.address && (
-          <div className='flex items-center gap-8'>
-            <Typography className='w-60' color='textSecondary'>Address:</Typography>
-            <Typography className='font-semibold'>{appointment.address || ''}</Typography>
-          </div>
-        )}
-      </div>
-
-
-      <div className='flex gap-8'>
+      <div className='flex flex-col gap-32'>
         <div className='flex flex-col flex-1 gap-8 rounded'>
           <Typography className="text-lg font-semibold text-primary-light">
             Counselee
@@ -144,9 +122,37 @@ const AppointmentView = ({ id }: { id?: string }) => {
           </div>
         </div>
       </div>
+
+      <div className='flex gap-4 mb-8'>
+        {appointment.meetingType === 'ONLINE' ? (
+          <div className='flex items-center gap-24'>
+            {appointment.meetUrl && (
+              <div className='flex flex-col items-center gap-8'>
+                <Typography className='text-lg font-semibold text-primary-light'>Location:</Typography>
+                <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
+                  {appointment.meetUrl}
+                </Link>
+              </div>
+            )}
+          </div>
+        ) : appointment.address && (
+          <div className='flex flex-col items-center gap-8'>
+            <Typography className='text-lg font-semibold text-primary-light'>Address:</Typography>
+            <Typography className='font-semibold'>{appointment.address || ''}</Typography>
+          </div>
+        )}
+      </div>
+
+      <div className='flex flex-col gap-8'>
+        <Typography className='text-lg font-semibold text-primary-light'>Reason:</Typography>
+        <Typography className=''>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at tortor nec purus vehicula dapibus blandit scelerisque erat. Aliquam nec nunc vitae elit laoreet scelerisque eget consequat purus. Nunc commodo vehicula nisi ac porttitor. Proin bibendum libero vel ipsum ornare pretium. Nunc eu tellus sed dolor commodo sodales eleifend quis ligula. Sed enim lectus, ornare ac ipsum vel
+        </Typography>
+      </div>
+
       {
         appointment.appointmentFeedback && <div className='flex flex-col items-start gap-8 mt-8'>
-          <Typography className='pt-2'>Student Feedback:</Typography>
+          <Typography className='text-lg font-semibold text-primary-light'>Feedback:</Typography>
           <div className='flex-1'>
             <div className='flex-1'>
               <div className='flex items-center gap-8'>
@@ -166,4 +172,4 @@ const AppointmentView = ({ id }: { id?: string }) => {
   );
 };
 
-export default AppointmentView;
+export default AppointmentDetail;

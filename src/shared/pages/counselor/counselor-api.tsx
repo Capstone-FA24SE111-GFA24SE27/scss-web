@@ -16,7 +16,7 @@ export const counselingApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getCounselorView: build.query<GetCounselorApiResponse, string>({
+      getCounselorDetail: build.query<GetCounselorApiResponse, string>({
         query: (counselorId) => ({
           url: `/api/counselors/${counselorId}`,
         }),
@@ -70,7 +70,7 @@ export const counselingApi = api
   })
 
 export const {
-  useGetCounselorViewQuery,
+  useGetCounselorDetailQuery,
   useGetCounselorAcademicQuery,
   useGetCounselorNonAcademicQuery,
   useGetCounselorDailySlotsQuery,

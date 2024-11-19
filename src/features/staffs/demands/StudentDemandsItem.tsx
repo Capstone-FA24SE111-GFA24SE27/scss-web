@@ -95,7 +95,7 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 												{dayjs(
 													demand.startDateTime
 												).format('HH:mm')}{' '}
-												-{' '}
+												- {' '}
 											</Typography>
 										</>
 									) : (

@@ -14,6 +14,10 @@ import { useAppointmentsSocketListener, useRequestsSocketListener, useQuestionsS
 import { groupAppointmentsByDate } from '@/shared/utils'
 import { useGetMyCounselorQuestionsQuery } from '../qna/qna-api'
 import MyQnaItem from '../qna/my-qna/MyQnaItem'
+import { motion } from 'framer-motion';
+import { motionVariants } from '@/shared/configs'
+import FeedbackTab from '@/features/managers/management/counselors/counselor/FeedbackTab'
+import CounselorFeedbackTab from './CounselorFeedback'
 
 const HomeContent = () => {
   const account = useAppSelector(selectAccount)
@@ -164,6 +168,11 @@ const HomeContent = () => {
             </Scrollbar>
           </Paper>
         </Box>
+        <Paper className={`flex flex-col gap-16 bg-white p-16 shadow`}>
+          <Typography className='font-semibold text-xl px-8'>Recent Feedbacks</Typography>
+          <CounselorFeedbackTab />
+        </Paper>
+
       </div >
       <div className='p-16 flex flex-col gap-16 mt-8'>
         <Typography className='text-2xl font-bold text-text-disabled'>Question & Answer Overview</Typography>

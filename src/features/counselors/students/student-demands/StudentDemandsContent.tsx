@@ -40,7 +40,7 @@ function StudentDemandsContent() {
         { label: 'All', value: '' },
         { label: 'Processing', value: 'PROCESSING' },
         // { label: 'Waiting', value: 'WAITING' },
-        { label: 'Solved', value: 'SOLVE' },
+        { label: 'Done', value: 'DONE' },
     ];
 
     const { data } = useGetCounselingDemandCounselorsFilterQuery({

@@ -54,10 +54,10 @@ const UserLabel: React.FC<UserLabelProps> = ({
   };
 
   return (
-    <div className="flex items-center px-8 text-sm text-text-secondary gap-4">
+    <div className="flex items-center text-sm text-text-secondary gap-4">
       {label}
       <Box
-        className={`flex gap-8 items-center group hover:cursor-pointer`}
+        className={`flex gap-4 items-center group hover:cursor-pointer`}
         onClick={handleClick} // Use handleClick for conditional onClick behavior
       >
         <Avatar className="size-24" alt={profile?.fullName} src={profile?.avatarLink} />

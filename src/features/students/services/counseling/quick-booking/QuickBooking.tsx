@@ -219,7 +219,7 @@ function QuickBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto p-16 min-h-screen">
+      <div className="relative flex flex-col flex-auto p-16 min-h-screen container mx-auto">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
         <Box className='w-full flex mt-8 gap-16'>
           <div className='w-full'>
@@ -511,7 +511,7 @@ function QuickBooking() {
                 </div>
               </Paper>
 
-              <div className='flex justify-between gap-16'>
+              <div className='flex justify-end w-md self-end gap-16'>
                 <Button variant='outlined'
                   size='large'
                   className='text-lg w-1/5'
@@ -524,7 +524,7 @@ function QuickBooking() {
                   variant='contained'
                   fullWidth
                   color='secondary'
-                  className='text-lg w-4/5'
+                  className='text-lg w-4/5 py-12'
                   onClick={handleSubmit(onSubmitMatching)}
                   disabled={isLoadingRandomMatchedCounselor}
                   component="a" href={`#found_counselor`}

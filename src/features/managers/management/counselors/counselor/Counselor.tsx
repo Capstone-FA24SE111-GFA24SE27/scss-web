@@ -137,13 +137,15 @@ function Counseling() {
                   url: `/management/counselors`
                 }
               ]}
-              currentPage={"Nguyễn Văn A4 4"}
+              currentPage={counselorData?.profile.profile.fullName}
             />
-            <div className='flex relative'>
-              <div className='flex gap-16 min-w-xs max-w-sm'>
-                <img src={counselorData?.profile.profile.avatarLink} className='size-144 border rounded-full' />
-                <div className='absolute bottom-8 bg-white rounded-full border left-112'>
-                  <Gender gender={counselorData?.profile.profile.gender} />
+            <div className='flex gap-16 lg:gap-64'>
+              <div className='flex w-[42rem] mt-12'>
+                <div className='w-full h-full relative'>
+                  <img src={counselorData?.profile.profile.avatarLink} className='size-144 border rounded-full' />
+                  <div className='absolute top-112 bg-white rounded-full border left-112'>
+                    <Gender gender={counselorData?.profile.profile.gender} />
+                  </div>
                 </div>
                 <div className='flex flex-col gap-8 w-full'>
                   <Heading
@@ -177,7 +179,7 @@ function Counseling() {
               </div>
 
 
-              <div className='flex-1 ml-120 flex flex-col gap-16'>
+              <div className='flex-1 flex flex-col gap-16 '>
                 <div className='flex items-center'>
                   <Typography className='w-224 font-semibold '>Availability Status </Typography>
                   <TextField
@@ -198,9 +200,9 @@ function Counseling() {
                   </TextField>
 
                 </div>
-                <div className='flex items-center'>
+                <div className='flex items-start'>
                   <Typography className='w-224 font-semibold'>Assign Slots</Typography>
-                  <div className='flex gap-16 w-full'>
+                  <div className='flex flex-col gap-16 w-full'>
                     <TextField
                       size="small"
                       select
@@ -217,12 +219,11 @@ function Counseling() {
                       ))}
                     </TextField>
                     <Autocomplete
-                      size="small"
                       className="w-full"
                       multiple
                       disabled={isLoadingCounselingSlotsData || isLoadingDeleteCounselorCounselingSlots || isLoadingUpdateCounselorCounselingSlots}
                       options={counselingSlots}
-                      getOptionLabel={(option) => `${option.slotCode}`}
+                      getOptionLabel={(option) => `${dayjs(option.startTime, 'HH:mm:ss').format('HH:mm')} -  ${dayjs(option.endTime, 'HH:mm:ss').format('HH:mm')}`}
                       isOptionEqualToValue={(option, value) => option.slotCode === value.slotCode}
                       // value={counselorData?.counselingSlot}
                       value={filteredSlots}
@@ -233,7 +234,7 @@ function Counseling() {
                           placeholder="Select slots"
                           label="Slots"
                           variant="outlined"
-                          InputLabelProps={{ shrink: true }}
+                        // InputLabelProps={{ shrink: true }}
                         />
                       )}
                     />
@@ -241,7 +242,7 @@ function Counseling() {
                 </div>
                 <div className='flex items-center'>
                   <Typography className='w-224 font-semibold '>Available date range</Typography>
-                  <div className='flex w-full gap-32'>
+                  <div className='flex w-full gap-32 items-start'>
                     <DatePicker
                       className='h-12'
                       label="Basic date picker"
@@ -250,7 +251,7 @@ function Counseling() {
                       maxDate={dayjs(counselorData?.availableDateRange.endDate)}
                       disabled={isLoadingDeleteCounselorAvailableDateRange}
                     />
-                    <div>to</div>
+                    <div className='font-semibold pt-8'>to</div>
                     <DatePicker
                       className='h-12'
                       label="Basic date picker"
@@ -277,6 +278,10 @@ function Counseling() {
           >
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              label="Overview"
+            />
+            <Tab
+              className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Appointments"
             />
             <Tab
@@ -285,11 +290,15 @@ function Counseling() {
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              label="Schedule"
+            />
+            <Tab
+              className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Feedbacks"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Students"
+              label="Q&A"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
@@ -302,15 +311,15 @@ function Counseling() {
         < div className="w-full p-16 h-full" >
           <Paper className='p-16 h-full shadow'>
             <div className="w-full pr-8">
-              {tabValue === 0 && <AppointmentsTable />}
-              {tabValue === 1 && <RequestsTable />}
-              {tabValue === 2 && <FeedbackTab />}
+              {tabValue === 1 && <AppointmentsTable />}
+              {tabValue === 2 && <RequestsTable />}
+              {tabValue === 3 && <FeedbackTab />}
             </div>
           </Paper>
         </div >
       }
       ref={pageLayout}
-      rightSidebarContent={< CounselorSidebarContent />}
+      // rightSidebarContent={< CounselorSidebarContent />}
       rightSidebarOpen={rightSidebarOpen}
       rightSidebarOnClose={() => setRightSidebarOpen(false)}
       rightSidebarWidth={640}

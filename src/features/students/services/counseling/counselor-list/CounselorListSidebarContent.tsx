@@ -27,15 +27,22 @@ const CounselorListSidebarContent = () => {
   };
 
   const handleDepartmentChange = (departmentId: string) => {
-    dispatch(setDepartmentId(Number(departmentId)))
+    dispatch(setDepartmentId(Number(departmentId) || ''))
+    if (!departmentId) {
+      dispatch(setMajorId(''))
+      dispatch(setSpecializationId(''))
+    }
   };
 
   const handleMajorChange = (majorId: string) => {
-    dispatch(setMajorId(Number(majorId)))
-  }
+    dispatch(setMajorId(Number(majorId) || ''))
+    if (!majorId) {
+      dispatch(setSpecializationId(''))
+    }
+  };
 
   const handleSpecializationChange = (specializationId: string) => {
-    dispatch(setSpecializationId(Number(specializationId)))
+    dispatch(setSpecializationId(Number(specializationId) || ''))
   };
 
   const handleExpertiseChange = (event: React.ChangeEvent<HTMLInputElement>) => {

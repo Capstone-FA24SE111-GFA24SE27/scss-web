@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { BackdropLoading, ContentLoading, Gender, NavLinkAdapter, SelectField, closeDialog, openDialog } from '@shared/components';
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useGetStudentBehaviorAssessmentMutation, useGetStudentDocumentViewQuery, useGetStudentProblemTagDetailsQuery, useGetStudentStudyViewQuery } from './student-api';
+import { useGetStudentBehaviorAssessmentMutation, useGetStudentDocumentDetailQuery, useGetStudentProblemTagDetailsQuery, useGetStudentStudyDetailQuery } from './student-api';
 import { calculateGPA } from '@/shared/utils';
 import { useAppDispatch } from '@shared/store';
 import { ReactNode, useState } from 'react';
@@ -36,8 +36,8 @@ interface StudentViewProps {
 function StudentView({ id, actionButton }: StudentViewProps) {
   const { id: studentRouteId } = useParams();
   const studentId = id || studentRouteId
-  const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
-  const { data: academicTranscriptData } = useGetStudentStudyViewQuery(studentId);
+  const { data, isLoading } = useGetStudentDocumentDetailQuery(studentId);
+  const { data: academicTranscriptData } = useGetStudentStudyDetailQuery(studentId);
   const [tabValue, setTabValue] = useState(0);
 
 
@@ -79,14 +79,14 @@ function StudentView({ id, actionButton }: StudentViewProps) {
             <DialogTitle>Student General Assesssment</DialogTitle>
             <DialogContent>
               <ReactMarkdown
-              // components={{
-              //   ul: ({ node, ...props }) => (
-              //     <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }} {...props} />
-              //   ),
-              //   li: ({ node, ...props }) => (
-              //     <li style={{ marginBottom: '10px', fontSize: '16px' }} {...props} />
-              //   ),
-              // }}
+              components={{
+                ul: ({ node, ...props }) => (
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '16px' }} {...props} />
+                ),
+                li: ({ node, ...props }) => (
+                  <li style={{ marginBottom: '8px' }} {...props} />
+                ),
+              }}
               >
                 {/* {formatMarkdown(res?.message) || ``} */}
                 {`${res?.message}`}

@@ -87,7 +87,7 @@ const HomeContent = () => {
                         <CalendarMonth color='secondary' fontSize='medium' />
                         <Typography color="textPrimary" className=' font-bold text-xl text-secondary-main'>{dateLabel}</Typography>
                       </div>
-                      <div className='space-y-8 border-l-2 px-16 !border-secondary-main ml-36'>
+                      <div className='space-y-8 border-l-2 px-16 !border-secondary-main ml-16'>
                         {groupedAppointments[dateLabel].map(appointment => (
                           <div key={appointment.id} className='py-8 '>
                             <StudentAppointmentItem appointment={appointment} />

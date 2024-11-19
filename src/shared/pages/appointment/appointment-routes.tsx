@@ -1,11 +1,13 @@
 import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
-import AppointmentView from './AppointmentView';
+// import AppointmentDetail from './AppointmentDetail';
+const AppointmentDetail = lazy(() => import('./AppointmentDetail'));
+
 
 
 export const appointmentRoutes: RouteObject[] = [
   {
     path: 'appointment/:id',
-    element: <AppointmentView />,
+    element: <AppointmentDetail />,
   },
 ];

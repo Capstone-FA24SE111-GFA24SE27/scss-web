@@ -166,6 +166,12 @@ export type CounselingDemand = {
 	counselor: Counselor
 	startDateTime: string;
 	endDateTime: string;
+	appointments: Appointment[];
+	priorityLevel: string;
+	additionalInformation: string;
+	issueDescription: string;
+	causeDescription: string;
+	demandType: 'ACADEMIC' | 'NON_ACADEMIC'
 };
 
 export type AppointmentSlotStatus = 'EXPIRED' | 'AVAILABLE' | 'UNAVAILABLE'

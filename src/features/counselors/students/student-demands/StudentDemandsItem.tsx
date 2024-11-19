@@ -1,9 +1,9 @@
 import Typography from '@mui/material/Typography';
 // import NavLinkAdapter from '@fuse/core/NavLinkAdapter';
 import { ExpandableText, ItemMenu, UserLabel, UserListItem, closeDialog, openDialog } from '@/shared/components';
-import { statusColor } from '@/shared/constants';
-import { AccessTime, Add, Check } from '@mui/icons-material';
-import { Chip, ListItem, Paper, Tooltip, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
+import { priorityColor, statusColor } from '@/shared/constants';
+import { AccessTime, Add, CalendarMonth, Check, Visibility } from '@mui/icons-material';
+import { Chip, ListItem, Paper, Tooltip, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Box } from '@mui/material';
 import ListItemButton from '@mui/material/ListItemButton';
 import { useAppDispatch } from '@shared/store';
 import { CounselingDemand } from '@shared/types';
@@ -32,10 +32,17 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 			>
 				<div className="flex flex-col gap-16 w-full justify-center">
 					<ListItem
-						className="flex gap-8 px-0"
+						className="flex gap-16 p-0"
 						secondaryAction={
 							<ItemMenu
 								menuItems={[
+									{
+										label: 'View details',
+										onClick: () => {
+											navigate(`demand/${demand.id}`)
+										},
+										icon: <Visibility fontSize='small' />
+									},
 									{
 										label: 'Create an appointment',
 										icon: <Add fontSize='small' />,
@@ -47,7 +54,7 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 										icon: <Check fontSize='small' />,
 										onClick: () => {
 											dispatch(openDialog({
-												children: <SolveCounselingDemandDialog demand={demand}/>
+												children: <SolveCounselingDemandDialog demand={demand} />
 											}))
 										},
 										disabled: demand.status !== 'PROCESSING'
@@ -56,32 +63,31 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							/>
 						}
 					>
-						<div className="flex gap-8 items-center">
-							<AccessTime />
-							<Typography>{dayjs(demand.startDateTime).format('YYYY-MM-DD')}</Typography>
-							<Typography>
-								{dayjs(demand.startDateTime).format('HH:mm')} -{' '}
-							</Typography>
-						</div>
-						<div className="flex gap-8 items-center">
-							{
-								demand.endDateTime
-									? <>
-										<Typography>{dayjs(demand.startDateTime).format('YYYY-MM-DD')}</Typography>
-										<Typography>
-											{dayjs(demand.startDateTime).format('HH:mm')} -{' '}
+						<div className='flex gap-8'>
+							<div className="flex gap-8 items-center">
+								<CalendarMonth fontSize='small' />
+								<Typography>{dayjs(demand.startDateTime).format('YYYY-MM-DD')}</Typography>
+								<Typography>
+									{dayjs(demand.startDateTime).format('HH:mm')}
+								</Typography>
+							</div>
+							<div className="flex gap-8 items-center">
+								- {
+									demand.endDateTime
+										? <>
+											<CalendarMonth fontSize='small' />
+											<Typography>{dayjs(demand.endDateTime).format('YYYY-MM-DD')}</Typography>
+											<Typography>
+												{dayjs(demand.endDateTime).format('HH:mm')}
+											</Typography>
+										</>
+										: <Typography>
+											Ongoing
 										</Typography>
-									</>
-									: <Typography>
-										Ongoing
-									</Typography>
-							}
+								}
+							</div>
 						</div>
 
-						<UserLabel
-							profile={demand.supportStaff?.profile}
-							label='Assigned by'
-						/>
 
 						<Chip
 							label={demand.status}
@@ -105,16 +111,16 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							{/* <ChevronRight /> */}
 						</ListItemButton>
 					</Tooltip>
-					<div className="flex gap-8">
-						<Typography className="w-60" color="textSecondary">Contact:</Typography>
-						<ExpandableText text={demand.contactNote} limit={144} />
-					</div>
-					<div className="flex gap-8">
-						<Typography className="w-60" color="textSecondary">Note:</Typography>
-						<ExpandableText text={demand.summarizeNote} limit={144} />
-					</div>
-
-
+					<Box className='flex flex-col gap-8'>
+						<UserLabel
+							profile={demand.supportStaff?.profile}
+							label='Assigned by'
+						/>
+						<div className='flex items-center gap-8'>
+							<Typography className='text-sm text-text-secondary w-68'>Priority:</Typography>
+							<Typography className='text-sm font-bold' color={priorityColor[demand.priorityLevel]}>{demand.priorityLevel}</Typography>
+						</div>
+					</Box>
 				</div>
 			</Paper >
 		</>
@@ -131,7 +137,7 @@ const SolveCounselingDemandDialog = ({ demand }: { demand: CounselingDemand }) =
 	const handleCancelAppointment = () => {
 		solve({
 			counselingDemandId: demand.id.toString(),
-			summarizeNote: ``
+			summarizeNote: summarize
 		}).unwrap()
 			.then(() => {
 				dispatch(closeDialog())

@@ -1,0 +1,9 @@
+ul {
+  list-style-type: disc;
+  padding-left: 16px;
+}
+
+li {
+  list-style-type: disc;
+  margin-bottom: 8px;
+} 

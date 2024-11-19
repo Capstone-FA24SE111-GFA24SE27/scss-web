@@ -257,11 +257,11 @@ const managerNavigation: NavigationOptions = {
                     name: 'Overview',
                     route: 'overview'
                 },
-                {
-                    icon: Description,
-                    name: 'Analytics',
-                    route: 'analytics'
-                },
+                // {
+                //     icon: Description,
+                //     name: 'Analytics',
+                //     route: 'analytics'
+                // },
             ]
         },
         {

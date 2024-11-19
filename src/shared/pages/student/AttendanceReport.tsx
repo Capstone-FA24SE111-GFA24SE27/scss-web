@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Typography, Divider, Box } from '@mui/material';
 import { Breadcrumbs, ContentLoading, Heading } from '@shared/components';
 import { useLocation, useParams } from 'react-router-dom';
-import { useGetStudentDocumentViewQuery, useGetStudentSemesterDetailsQuery, useGetStudentStudyViewQuery, useGetStudentViewQuery } from './student-api';
+import { useGetStudentDocumentDetailQuery, useGetStudentSemesterDetailsQuery, useGetStudentStudyDetailQuery, useGetStudentDetailQuery } from './student-api';
 import { navigateUp } from '@/shared/utils';
 import { Subject } from '@/shared/types';
 import { useGetSemestersQuery } from '@/shared/services';
@@ -32,7 +32,7 @@ export interface CourseData {
 const AttendanceReport = ({ id }: { id?: string }) => {
   const { id: studentRouteId } = useParams();
   const studentId = id || studentRouteId
-  const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentViewQuery(studentId, {
+  const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentDetailQuery(studentId, {
     skip: !studentId
   });
 
@@ -48,7 +48,7 @@ const AttendanceReport = ({ id }: { id?: string }) => {
   });
 
 
-  // const { data: academicTranscriptData, isLoading } = useGetStudentStudyViewQuery(studentId);
+  // const { data: academicTranscriptData, isLoading } = useGetStudentStudyDetailQuery(studentId);
 
   const student = studentData?.content;
 

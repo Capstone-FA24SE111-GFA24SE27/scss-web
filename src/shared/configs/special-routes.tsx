@@ -9,12 +9,8 @@ export const specialRoutes: RouteObject[] = [
         path: '500',
         element: <Error500 />
     },
-    {
-        path: '*',
-        element: <Navigate to="404" />
-    },
-    {
-        path: 'student-view/:id',
-        element: <StudentView />
-    }
+    // {
+    //     path: '*',
+    //     element: <Navigate to="404" />
+    // },
 ]

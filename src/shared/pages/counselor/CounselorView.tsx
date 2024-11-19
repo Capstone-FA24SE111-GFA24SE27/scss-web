@@ -10,7 +10,7 @@ import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
 import dayjs from 'dayjs';
 import { memo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetCounselorViewQuery } from './counselor-api';
+import { useGetCounselorDetailQuery } from './counselor-api';
 import { Paper, Rating } from '@mui/material';
 import clsx from 'clsx'
 /**
@@ -27,7 +27,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
     const routeParams = useParams();
     const { id: counselorRouteId } = routeParams
     const counselorId = id || counselorRouteId
-    const { data, isLoading } = useGetCounselorViewQuery(counselorId)
+    const { data, isLoading } = useGetCounselorDetailQuery(counselorId)
     const counselor = data?.content
     console.log(counselor)
 
@@ -120,7 +120,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
 
                     <Divider className="mt-16 mb-24" />
 
-                    <div className="flex flex-col space-y-16">
+                    <div className="flex flex-col space-y-16 pl-8">
                         {counselor.email && (
                             <div className="flex items-center">
                                 <EmailOutlined />

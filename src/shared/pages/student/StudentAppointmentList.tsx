@@ -1,15 +1,16 @@
 import { StudentDocument } from '@/shared/types';
-import { CalendarMonth } from '@mui/icons-material';
-import { Box, Paper } from '@mui/material';
+import { CalendarMonth, Circle, Summarize } from '@mui/icons-material';
+import { Box, Chip, ListItem, Paper } from '@mui/material';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetStudentAppointmentsQuery, useGetStudentDocumentViewQuery } from './student-api';
-import { ContentLoading, DateRangePicker, Pagination, SortingToggle, openDialog } from '@/shared/components';
+import { useGetStudentAppointmentsQuery, useGetStudentDocumentDetailQuery } from './student-api';
+import { ContentLoading, DateRangePicker, ItemMenu, Pagination, SortingToggle, openDialog } from '@/shared/components';
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
 import StudentAppointmentReport from './StudentAppointmentReport';
+import { statusColor } from '@/shared/constants';
 /**
  * The contact view.
  */
@@ -72,40 +73,75 @@ function StudentAppointmentList({ id }: { id: string }) {
           initialSort='DESC'
         />
       </Box>
-      {
-        !appointments?.length
-          ? <Typography color='textSecondary'>No appointments found</Typography>
-          : appointments?.map((appointment) =>
-            <Paper
-              key={appointment.id}
-              className='flex justify-between px-8 py-4 rounded shadow'
-            >
-              <div className='flex gap-8'>
-                <div className='flex items-center gap-8 '>
-                  <CalendarMonth fontSize='small' />
-                  <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
-                </div>
-                <div className='flex items-center gap-8'>
-                  <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-                </div>
-              </div>
-              <Button
+      <Box className='flex flex-col gap-8'>
+        {
+          !appointments?.length
+            ? <Typography color='textSecondary'>No appointments found</Typography>
+            : appointments?.map((appointment) =>
+              <Paper
+                key={appointment.id}
+                className='flex justify-between p-4 rounded shadow'
+              >
+                <ListItem className='flex gap-16 items-center p-4 min-h-32'
+                  secondaryAction={
+                    <ItemMenu
+                      menuItems={[
+                        {
+                          label: 'View report',
+                          disabled: !appointment.havingReport,
+                          onClick: () => {
+                            dispatch(openDialog({
+                              children: <StudentAppointmentReport id={appointment?.id.toString()} />
+                            }))
+                          },
+                          icon: <Summarize fontSize='small' />
+                        },
+
+                      ]}
+                    />
+                  }
+                >
+                  <div className='flex items-center gap-8 '>
+                    <CalendarMonth fontSize='small' />
+                    <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
+                  </div>
+                  <div className='flex items-center gap-8'>
+                    <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+                  </div>
+                  <Chip
+                    label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+                    icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} fontSize='small' />}
+                    className='items-center font-semibold text-sm'
+                    size='small'
+                  />
+
+                  <Chip
+                    label={appointment.status}
+                    variant='filled'
+                    color={statusColor[appointment.status]}
+                    size='small'
+                    className='text-sm'
+                  />
+                </ListItem>
+                {/* <Button
                 size='small'
                 className='flex gap-8 px-8'
                 color='secondary'
                 disabled={!appointment.havingReport}
-                // onClick={() => navigate(`report/${appointment.id}`)}
                 onClick={() => {
                   dispatch(openDialog({
-                    children: <StudentAppointmentReport id={appointment?.id.toString()}/>
+                    children: <StudentAppointmentReport id={appointment?.id.toString()} />
                   }))
+                  // onClick={() => navigate(`report/${appointment.id}`)}
                 }}
               >
                 View report
-              </Button>
-            </Paper>
-          )
-      }
+              </Button> */}
+              </Paper>
+            )
+        }
+      </Box>
+
       {
         <Pagination
           page={page}

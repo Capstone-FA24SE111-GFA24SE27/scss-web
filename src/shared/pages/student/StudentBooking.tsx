@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { useCreateAppointmentMutation, useGetStudentViewQuery } from './student-api';
+import { useCreateAppointmentMutation, useGetStudentDetailQuery } from './student-api';
 import { useGetCounselorDailySlotsQuery } from '@/features/students/services/counseling/counseling-api';
 import { navigateUp } from '@/shared/utils';
 
@@ -78,7 +78,7 @@ function CounselorBooking() {
   const isOnline = watch("isOnline")
 
 
-  const { data: studentData, isLoading } = useGetStudentViewQuery(studentId)
+  const { data: studentData, isLoading } = useGetStudentDetailQuery(studentId)
   const { data: counselorDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId: counselorId?.toString(), from: startOfMonth, to: endOfMonth });
 
   const counselor = account

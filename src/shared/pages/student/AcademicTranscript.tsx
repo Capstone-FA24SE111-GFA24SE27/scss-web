@@ -2,15 +2,15 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Typography } from '@mui/material';
 import { Breadcrumbs, ContentLoading, Heading } from '@shared/components';
 import { useLocation, useParams } from 'react-router-dom';
-import { useGetStudentDocumentViewQuery, useGetStudentStudyViewQuery, useGetStudentViewQuery } from './student-api';
+import { useGetStudentDocumentDetailQuery, useGetStudentStudyDetailQuery, useGetStudentDetailQuery } from './student-api';
 import { navigateUp } from '@/shared/utils';
 import { Subject } from '@/shared/types';
 
 const AcademicTranscript = ({ id }: { id?: string }) => {
   const { id: studentRouteId } = useParams();
   const studentId = id || studentRouteId
-  const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentViewQuery(studentId);
-  const { data: academicTranscriptData, isLoading } = useGetStudentStudyViewQuery(studentId, {
+  const { data: studentData, isLoading: isLoadingStudentData } = useGetStudentDocumentDetailQuery(studentId);
+  const { data: academicTranscriptData, isLoading } = useGetStudentStudyDetailQuery(studentId, {
     skip: !studentId
   });
 

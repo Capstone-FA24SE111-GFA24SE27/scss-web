@@ -1,6 +1,6 @@
 export * from './appointment-routes';
 export * from './appointment-api';
-import AppointmentView from './AppointmentView';
+import AppointmentDetail from './AppointmentDetail';
 export {
-  AppointmentView
+  AppointmentDetail
 }
