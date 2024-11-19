@@ -13,6 +13,8 @@ import dayjs from 'dayjs';
 import AppointmentsTable from './AppointmentsTab';
 import RequestsTable from './RequestsTab';
 import FeedbackTab from './FeedbackTab';
+import ScheduleTab from './ScheduleTab';
+import OverviewTab from './OverviewTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -309,11 +311,13 @@ function Counseling() {
       }
       content={
         < div className="w-full p-16 h-full" >
-          <Paper className='p-16 h-full shadow'>
+          <Paper className='p-16 min-h-full shadow'>
             <div className="w-full pr-8">
+              {tabValue === 0 && <OverviewTab />}
               {tabValue === 1 && <AppointmentsTable />}
               {tabValue === 2 && <RequestsTable />}
-              {tabValue === 3 && <FeedbackTab />}
+              {tabValue === 3 && <ScheduleTab />}
+              {tabValue === 4 && <FeedbackTab />}
             </div>
           </Paper>
         </div >

@@ -146,10 +146,9 @@ const AppointmentDetail = ({ id }: { id?: string }) => {
       <div className='flex flex-col gap-8'>
         <Typography className='text-lg font-semibold text-primary-light'>Reason:</Typography>
         <Typography className=''>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at tortor nec purus vehicula dapibus blandit scelerisque erat. Aliquam nec nunc vitae elit laoreet scelerisque eget consequat purus. Nunc commodo vehicula nisi ac porttitor. Proin bibendum libero vel ipsum ornare pretium. Nunc eu tellus sed dolor commodo sodales eleifend quis ligula. Sed enim lectus, ornare ac ipsum vel
+            {appointment.reason || ''}
         </Typography>
       </div>
-
       {
         appointment.appointmentFeedback && <div className='flex flex-col items-start gap-8 mt-8'>
           <Typography className='text-lg font-semibold text-primary-light'>Feedback:</Typography>

@@ -117,7 +117,7 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							label='Assigned by'
 						/>
 						<div className='flex items-center gap-8'>
-							<Typography className='text-sm text-text-secondary w-68'>Priority:</Typography>
+							<Typography className='text-sm text-text-secondary w-64'>Priority:</Typography>
 							<Typography className='text-sm font-bold' color={priorityColor[demand.priorityLevel]}>{demand.priorityLevel}</Typography>
 						</div>
 					</Box>

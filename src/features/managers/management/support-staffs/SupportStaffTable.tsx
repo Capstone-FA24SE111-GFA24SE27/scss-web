@@ -8,8 +8,9 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { CounselingType, Student } from '@/shared/types';
+import { CounselingType, Student, SupportStaff } from '@/shared/types';
 import { useGetStudentsFilterQuery } from '@/shared/pages';
+import { useGetSupportStaffsManagementQuery } from './support-staffs-api';
 function StudentsTable() {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -17,7 +18,7 @@ function StudentsTable() {
   });
 
 
-  const { data, isLoading } = useGetStudentsFilterQuery({
+  const { data, isLoading } = useGetSupportStaffsManagementQuery({
     page: pagination.pageIndex + 1
   })
 
@@ -25,7 +26,7 @@ function StudentsTable() {
 
   };
 
-  const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
+  const columns = useMemo<MRT_ColumnDef<SupportStaff>[]>(() => [
     {
       accessorFn: (row) => row.profile.avatarLink,
       id: 'avatarLink',
@@ -68,16 +69,16 @@ function StudentsTable() {
         </Typography>
       )
     },
-    {
-      accessorKey: 'email',
-      header: 'Email',
-      Cell: ({ row }) => (
-        <Typography className='w-fit'
-        >
-          {row.original.email}
-        </Typography>
-      )
-    },
+    // {
+    //   accessorKey: 'email',
+    //   header: 'Email',
+    //   Cell: ({ row }) => (
+    //     <Typography className='w-fit'
+    //     >
+    //       {row.original.email}
+    //     </Typography>
+    //   )
+    // },
 
     // {
     //   accessorKey: 'availableDateRange',
@@ -136,10 +137,10 @@ function StudentsTable() {
       className="flex flex-col flex-auto shadow overflow-hidden rounded-b-0 w-full h-full"
     >
       <DataTable
-        data={data?.data || []}
+        data={data?.content.data || []}
         columns={columns}
         manualPagination
-        rowCount={data?.totalElements || 1}
+        rowCount={data?.content.totalElements || 1}
         onPaginationChange={setPagination}
         state={{ pagination }}
         renderRowActionMenuItems={({ closeMenu, row, table }) => [

@@ -1,4 +1,4 @@
-import { studentRoutes } from '@/shared/pages';
+import { demandRoutes, studentRoutes } from '@/shared/pages';
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ export const studentDemandsRoutes: RouteObject[] = [
         element: <StudentDemandsAppointmentCreate />,
       },
       ...studentRoutes,
+      ...demandRoutes
     ]
   },
 ];

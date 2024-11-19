@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import { AppLoading, Breadcrumbs, Gender, Heading, PageSimple } from '@shared/components';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { useGetStudentDetailQuery } from '@/shared/pages';
+import { useGetSupportStaffManagementQuery, useGetSupportStaffsManagementQuery } from '../support-staffs-api';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -14,7 +14,7 @@ const Root = styled(PageSimple)(({ theme }) => ({
 }));
 
 
-function Student() {
+function SupportStaff() {
   const pageLayout = useRef(null);
   const routeParams = useParams()
   const { id } = useParams();
@@ -23,8 +23,8 @@ function Student() {
 
   const [selectedDay, setSelectedDay] = useState('MONDAY');
 
-  const { data, isLoading } = useGetStudentDetailQuery(id);
-  const studentData = data?.content
+  const { data, isLoading } = useGetSupportStaffManagementQuery(id);
+  const supportStaffData = data?.content
 
   const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -42,7 +42,7 @@ function Student() {
     return <AppLoading />;
   }
   if (!data) {
-    return <Typography color='text.secondary' variant='h5' className='p-16'>No student</Typography>;
+    return <Typography color='text.secondary' variant='h5' className='p-16'>No supportStaff</Typography>;
   }
 
   return (
@@ -57,24 +57,23 @@ function Student() {
                   url: `${location.pathname}`
                 },
                 {
-                  label: "Students",
-                  url: `/management/students`
+                  label: "Support Staffs",
+                  url: `/management/supportStaffs`
                 }
               ]}
-              currentPage={studentData?.profile.fullName}
+              currentPage={supportStaffData?.profile.fullName}
             />
             <div className='flex relative gap-32 md:gap-64'>
               <div className='flex gap-32'>
                 <div className='w-full h-full relative'>
-                  <img src={studentData?.profile.avatarLink} className='size-144 border rounded-full' />
+                  <img src={supportStaffData?.profile.avatarLink} className='size-144 border rounded-full object-cover' />
                   <div className='absolute top-112 bg-white rounded-full border left-112'>
-                    <Gender gender={studentData?.profile.gender} />
+                    <Gender gender={supportStaffData?.profile.gender} />
                   </div>
                 </div>
-                <div className='flex flex-col gap-8 w-full mt-8'>
+                <div className='flex flex-col gap-8 w-full mt-8 '>
                   <Heading
-                    title={studentData?.profile.fullName}
-                    description={studentData?.studentCode.toString()}
+                    title={supportStaffData?.profile.fullName}
                   />
                   <div className='flex justify-between divide-x-1 border-t mt-16'>
                     <div
@@ -82,20 +81,20 @@ function Student() {
                       role="button"
                     >
                       <Phone fontSize='small' />
-                      <Typography className="ml-8">{studentData?.profile.phoneNumber}</Typography>
+                      <Typography className="ml-8">{supportStaffData?.profile.phoneNumber}</Typography>
                     </div>
                     <div
                       className="flex flex-1 items-center p-8 min-w-136"
                       role="button"
                     >
                       <Mail fontSize='small' />
-                      <Typography className="ml-8">{studentData?.email}</Typography>
+                      <Typography className="ml-8">{supportStaffData?.email || `why no email?`}</Typography>
                     </div>
                   </div>
                 </div>
               </div>
 
-          
+
 
             </div>
 
@@ -119,7 +118,7 @@ function Student() {
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Following Students"
+              label="Following SupportStaffs"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
@@ -148,4 +147,4 @@ function Student() {
   );
 }
 
-export default Student;
+export default SupportStaff;

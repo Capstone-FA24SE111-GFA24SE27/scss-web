@@ -2,7 +2,7 @@ import { FilterTabs, Heading, NavLinkAdapter } from '@/shared/components'
 import { Add } from '@mui/icons-material'
 import { Box, Button, Tab, Tabs, Typography } from '@mui/material'
 import React, { useState } from 'react'
-import StudentsTable from './SupportStaffTable'
+import SupportStaffsTable from './SupportStaffTable'
 import { Outlet } from 'react-router-dom'
 import { CounselingType } from '@/shared/types'
 
@@ -14,7 +14,7 @@ const Students = () => {
         <Heading title='Students Management' description='Manage academic and non-academic counselors'/>
       </div>
       <div>
-        <StudentsTable/>
+        <SupportStaffsTable/>
       </div>
     </div>
   )
