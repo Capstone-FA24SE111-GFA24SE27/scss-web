@@ -5,7 +5,7 @@ import { apiService, ApiResponse } from '@shared/store';
 
 const addTagTypes = ['accounts'] as const;
 
-export const adminApi = apiService
+export const adminAccountsApi = apiService
 	.enhanceEndpoints({
 		addTagTypes,
 	})
@@ -89,7 +89,7 @@ export const {
 	usePostCreateAccountMutation,
 	usePutBlockAccountByIdMutation,
 	usePutUnblockAccountByIdMutation,
-} = adminApi;
+} = adminAccountsApi;
 
 type postCreateAccountArgs = {
 	email: string;

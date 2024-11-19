@@ -7,28 +7,59 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import {
-	ManagementCounselor,
-	useGetCounselorsAcademicAdminQuery,
-} from './admin-counselor-api';
-function CounselorsTable() {
+import { Account, Role, Student } from '@/shared/types';
+import { useGetStudentsFilterAdminQuery } from './admin-student-api';
+import { useAppDispatch, useAppSelector } from '@shared/store';
+import { selectFilter } from './admin-student-slice';
+import { roles } from '@/shared/constants';
+function StudentsTable() {
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
 	});
-	console.log(pagination);
+	const filter = useAppSelector(selectFilter);
+	const dispatch = useAppDispatch();
 
-	const { data, isLoading } = useGetCounselorsAcademicAdminQuery({
+	const {
+		searchTerm,
+		isIncludeBehavior,
+		promptForBehavior,
+		semesterIdForBehavior,
+		departmentId,
+		majorId,
+		specializationId,
+		minGPA,
+		maxGPA,
+		semesterIdForGPA,
+		tab,
+	} = filter;
+
+	const { data, isLoading } = useGetStudentsFilterAdminQuery({
+		keyword: searchTerm,
+		isIncludeBehavior,
+		promptForBehavior,
+		semesterIdForBehavior,
+		departmentId,
+		majorId,
+		specializationId,
+		minGPA,
+		maxGPA,
+		semesterIdForGPA,
 		page: pagination.pageIndex + 1,
+		tab,
 	});
+
+	// const { data, isLoading } = useGetAccountsQuery({
+	// 	page: pagination.pageIndex + 1,
+	// 	role: roles.STUDENT as Role,
+	// 	status: 'ACTIVE'
+	// });
 	console.log(data);
 
-	const removeProducts = (ids: string[]) => {};
-
-	const columns = useMemo<MRT_ColumnDef<ManagementCounselor>[]>(
+	const columns = useMemo<MRT_ColumnDef<Student>[]>(
 		() => [
 			{
-				accessorFn: (row) => row.profile.profile.avatarLink,
+				accessorFn: (row) => row.profile.avatarLink,
 				id: 'avatarLink',
 				header: '',
 				enableColumnFilter: false,
@@ -39,8 +70,8 @@ function CounselorsTable() {
 					<div className='flex items-center justify-center'>
 						<img
 							className='block w-full rounded max-h-40 max-w-40'
-							src={row.original.profile.profile.avatarLink}
-							alt={row.original.profile.profile.fullName}
+							src={row.original.profile.avatarLink}
+							alt={row.original.profile.fullName}
 						/>
 					</div>
 				),
@@ -51,30 +82,27 @@ function CounselorsTable() {
 				Cell: ({ row }) => (
 					<Typography
 						component={NavLinkAdapter}
-						to={`${row.original.profile.profile.id}`}
+						to={`${row.original.profile.id}`}
 						className='!underline !text-secondary-main'
 						color='secondary'
 					>
-						{row.original.profile.profile.fullName}
+						{row.original.profile.fullName}
 					</Typography>
 				),
 			},
-			// {
-			//   accessorKey: 'specialization',
-			//   header: 'Specialization',
-			//   Cell: ({ row }) => (
-			//     <Typography className='w-fit'>
-			//       {row.original.profile.expertise?.name || row.original.profile.specialization?.name}
-			//     </Typography>
-			//   )
-			// },
+			
+			{
+				accessorKey: 'studentCode',
+				header: 'Student Code',
+				accessorFn: (row) => (
+					<Typography className='w-fit'>{row.studentCode}</Typography>
+				),
+			},
 			{
 				accessorKey: 'phoneNumber',
 				header: 'Phone',
 				Cell: ({ row }) => (
-					<Typography>
-						{row.original.profile.profile.phoneNumber}
-					</Typography>
+					<Typography>{row.original.profile.phoneNumber}</Typography>
 				),
 			},
 			{
@@ -82,35 +110,29 @@ function CounselorsTable() {
 				header: 'Email',
 				Cell: ({ row }) => (
 					<Typography className='w-fit'>
-						{row.original.profile.email}
+						{row.original.email}
 					</Typography>
 				),
 			},
 
 			{
-				accessorKey: 'counselingSlots',
-				header: 'Counseling Slots',
+				accessorKey: 'major.name',
+				header: 'Major',
 				accessorFn: (row) => (
-					<div className='flex flex-wrap gap-2'>
-						{row.counselingSlot.map((slot) => (
-							<Chip
-								key={slot.id}
-								label={slot.slotCode}
-								size='small'
-							/>
-						))}
-					</div>
+					<Typography className='w-fit'>{row.major.name}</Typography>
 				),
 			},
+
 			{
-				accessorKey: 'availableDateRange',
-				header: 'Available Date',
-				accessorFn: (row) => (
-					<div className='flex flex-wrap space-x-2'>
-						{`${row.availableDateRange.startDate} to ${row.availableDateRange.endDate}`}
-					</div>
-				),
-			},
+				accessorKey: 'specialization.name',
+				header: 'Specialization',
+				Cell: ({ row }) => (
+				  <Typography className='w-fit'>
+					{row.original.specialization?.name || 'None'}
+				  </Typography>
+				)
+			  },
+
 			// {
 			//   accessorKey: 'priceTaxIncl',
 			//   header: 'Price',
@@ -133,20 +155,20 @@ function CounselorsTable() {
 			//     </div>
 			//   )
 			// },
-			{
-				accessorKey: 'status',
-				header: 'Status',
-				size: 64,
-				accessorFn: (row) => (
-					<div className='flex items-center max-w-40'>
-						{row.profile.status == 'AVAILABLE' ? (
-							<CheckCircle className='text-green' />
-						) : (
-							<RemoveCircle className='text-red' />
-						)}
-					</div>
-				),
-			},
+			// {
+			// 	accessorKey: '',
+			// 	header: 'Status',
+			// 	size: 64,
+			// 	accessorFn: (row) => (
+			// 		<div className='flex items-center max-w-40'>
+			// 			{row.profile.status == 'AVAILABLE' ? (
+			// 				<CheckCircle className='text-green' />
+			// 			) : (
+			// 				<RemoveCircle className='text-red' />
+			// 			)}
+			// 		</div>
+			// 	),
+			// },
 		],
 		[]
 	);
@@ -158,10 +180,10 @@ function CounselorsTable() {
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
-				data={data?.content.data || []}
+				data={data?.data || []}
 				columns={columns}
 				manualPagination
-				rowCount={data?.content.totalElements || 1}
+				rowCount={data?.totalElements || 1}
 				onPaginationChange={setPagination}
 				state={{ pagination }}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
@@ -176,7 +198,7 @@ function CounselorsTable() {
 						<ListItemIcon>
 							<Delete />
 						</ListItemIcon>
-						Block
+						Delete
 					</MenuItem>,
 				]}
 				renderTopToolbarCustomActions={({ table }) => {
@@ -211,4 +233,4 @@ function CounselorsTable() {
 	);
 }
 
-export default CounselorsTable;
+export default StudentsTable;

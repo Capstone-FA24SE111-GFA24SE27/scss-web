@@ -7,60 +7,31 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { Account, Role, Student } from '@/shared/types';
-import { useGetStudentsFilterAdminQuery } from './admin-student-api';
-import { useAppDispatch, useAppSelector } from '@shared/store';
-import { selectFilter } from './admin-student-slice';
-import { useGetAccountsQuery } from '../../admin-api';
-import { roles } from '@/shared/constants';
-function StudentsTable() {
+import {
+	ManagementCounselor,
+	useGetCounselorsAcademicAdminQuery,
+	useGetCounselorsAdminQuery,
+} from './admin-counselor-api';
+import { CounselingType } from '@/shared/types';
+function CounselorsTable({ type }: { type: CounselingType }) {
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
 	});
-	const filter = useAppSelector(selectFilter);
-	const dispatch = useAppDispatch();
+	console.log(pagination);
 
-	// const {
-	// 	searchTerm,
-	// 	isIncludeBehavior,
-	// 	promptForBehavior,
-	// 	semesterIdForBehavior,
-	// 	departmentId,
-	// 	majorId,
-	// 	specializationId,
-	// 	minGPA,
-	// 	maxGPA,
-	// 	semesterIdForGPA,
-	// 	tab,
-	// } = filter;
-
-	// const { data, isLoading } = useGetStudentsFilterAdminQuery({
-	// 	keyword: searchTerm,
-	// 	isIncludeBehavior,
-	// 	promptForBehavior,
-	// 	semesterIdForBehavior,
-	// 	departmentId,
-	// 	majorId,
-	// 	specializationId,
-	// 	minGPA,
-	// 	maxGPA,
-	// 	semesterIdForGPA,
-	// 	page: pagination.pageIndex + 1,
-	// 	tab,
-	// });
-
-	const { data, isLoading } = useGetAccountsQuery({
+	const { data, isLoading } = useGetCounselorsAdminQuery({
 		page: pagination.pageIndex + 1,
-		role: roles.STUDENT as Role,
-		status: 'ACTIVE'
+		type: type
 	});
 	console.log(data);
 
-	const columns = useMemo<MRT_ColumnDef<Account>[]>(
+	const removeProducts = (ids: string[]) => {};
+
+	const columns = useMemo<MRT_ColumnDef<ManagementCounselor>[]>(
 		() => [
 			{
-				accessorFn: (row) => row.profile.avatarLink,
+				accessorFn: (row) => row.profile.profile.avatarLink,
 				id: 'avatarLink',
 				header: '',
 				enableColumnFilter: false,
@@ -71,8 +42,8 @@ function StudentsTable() {
 					<div className='flex items-center justify-center'>
 						<img
 							className='block w-full rounded max-h-40 max-w-40'
-							src={row.original.profile.avatarLink}
-							alt={row.original.profile.fullName}
+							src={row.original.profile.profile.avatarLink}
+							alt={row.original.profile.profile.fullName}
 						/>
 					</div>
 				),
@@ -83,7 +54,7 @@ function StudentsTable() {
 				Cell: ({ row }) => (
 					<Typography
 						component={NavLinkAdapter}
-						to={`${row.original.profile.id}`}
+						to={`${row.original.profile.profile.id}`}
 						className='!underline !text-secondary-main'
 						color='secondary'
 					>
@@ -100,18 +71,13 @@ function StudentsTable() {
 			//     </Typography>
 			//   )
 			// },
-			// {
-			// 	accessorKey: 'studentCode',
-			// 	header: 'Student Code',
-			// 	accessorFn: (row) => (
-			// 		<Typography className='w-fit'>{row.studentCode}</Typography>
-			// 	),
-			// },
 			{
 				accessorKey: 'phoneNumber',
 				header: 'Phone',
 				Cell: ({ row }) => (
-					<Typography>{row.original.profile.profile.phoneNumber}</Typography>
+					<Typography>
+						{row.original.profile.profile.phoneNumber}
+					</Typography>
 				),
 			},
 			{
@@ -119,19 +85,35 @@ function StudentsTable() {
 				header: 'Email',
 				Cell: ({ row }) => (
 					<Typography className='w-fit'>
-						{row.original.email}
+						{row.original.profile.email}
 					</Typography>
 				),
 			},
 
-			// {
-			// 	accessorKey: 'major.name',
-			// 	header: 'Major',
-			// 	accessorFn: (row) => (
-			// 		<Typography className='w-fit'>{row.major.name}</Typography>
-			// 	),
-			// },
-
+			{
+				accessorKey: 'counselingSlots',
+				header: 'Counseling Slots',
+				accessorFn: (row) => (
+					<div className='flex flex-wrap gap-2'>
+						{row.counselingSlot.map((slot) => (
+							<Chip
+								key={slot.id}
+								label={slot.slotCode}
+								size='small'
+							/>
+						))}
+					</div>
+				),
+			},
+			{
+				accessorKey: 'availableDateRange',
+				header: 'Available Date',
+				accessorFn: (row) => (
+					<div className='flex flex-wrap space-x-2'>
+						{`${row.availableDateRange.startDate} to ${row.availableDateRange.endDate}`}
+					</div>
+				),
+			},
 			// {
 			//   accessorKey: 'priceTaxIncl',
 			//   header: 'Price',
@@ -154,20 +136,20 @@ function StudentsTable() {
 			//     </div>
 			//   )
 			// },
-			// {
-			// 	accessorKey: '',
-			// 	header: 'Status',
-			// 	size: 64,
-			// 	accessorFn: (row) => (
-			// 		<div className='flex items-center max-w-40'>
-			// 			{row.profile.status == 'AVAILABLE' ? (
-			// 				<CheckCircle className='text-green' />
-			// 			) : (
-			// 				<RemoveCircle className='text-red' />
-			// 			)}
-			// 		</div>
-			// 	),
-			// },
+			{
+				accessorKey: 'status',
+				header: 'Status',
+				size: 64,
+				accessorFn: (row) => (
+					<div className='flex items-center max-w-40'>
+						{row.profile.status == 'AVAILABLE' ? (
+							<CheckCircle className='text-green' />
+						) : (
+							<RemoveCircle className='text-red' />
+						)}
+					</div>
+				),
+			},
 		],
 		[]
 	);
@@ -179,10 +161,10 @@ function StudentsTable() {
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
-				data={data?.content?.data || []}
+				data={data?.content.data || []}
 				columns={columns}
 				manualPagination
-				rowCount={data?.content?.totalElements || 1}
+				rowCount={data?.content.totalElements || 1}
 				onPaginationChange={setPagination}
 				state={{ pagination }}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
@@ -197,7 +179,7 @@ function StudentsTable() {
 						<ListItemIcon>
 							<Delete />
 						</ListItemIcon>
-						Delete
+						Block
 					</MenuItem>,
 				]}
 				renderTopToolbarCustomActions={({ table }) => {
@@ -232,4 +214,4 @@ function StudentsTable() {
 	);
 }
 
-export default StudentsTable;
+export default CounselorsTable;

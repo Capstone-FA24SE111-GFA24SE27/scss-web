@@ -2,22 +2,17 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import {
-	useGetCounselorByIdForStaffQuery,
 	useGetDemandByIdForStaffQuery,
 	usePutUpdateDemandByDemandIdForStaffMutation,
 } from './demand-api';
 import { Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
-import { NavLinkAdapter, UserLabel } from '@/shared/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { debounce } from 'lodash';
 import CounselorPicker from '../counselors/CounselorPicker';
 import CounselorListItem from '../counselors/CounselorListItem';
 import { Counselor } from '@/shared/types';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@shared/store';
 import {
-	selectCounselor,
 	setSelectedCounselor,
 } from '../counselors/counselor-list-slice';
 
@@ -56,10 +51,12 @@ const UpdateDemandForm = () => {
 		// demandType: demandData ? demandData.demandType : 'ACADEMIC',
 	};
 
+	
+
 	const counselor = demandData?.counselor;
 
 
-	const { control, formState, watch, handleSubmit, setValue } =
+	const { control, formState, watch, handleSubmit, setValue, reset } =
 		useForm<FormType>({
 			// @ts-ignore
 			defaultValues,
@@ -69,18 +66,31 @@ const UpdateDemandForm = () => {
 
 	const { isValid, dirtyFields, errors } = formState;
 
+	useEffect(() => {
+		if (demandData) {
+			reset({
+				counselorId: demandData.counselor.id,
+				contactNote: demandData.contactNote,
+				priorityLevel: demandData.priorityLevel,
+				additionalInformation: demandData.additionalInformation,
+				issueDescription: demandData.issueDescription,
+				causeDescription: demandData.causeDescription,
+			});
+		}
+	}, [demandData]);
+
 	const [updateDemand] = usePutUpdateDemandByDemandIdForStaffMutation();
 
 	const onSubmit = () => {
-		// updateDemand({
-		// 	counselingDemandId: demandId,
-		// 	body: {
-		// 		...formData,
-		// 	},
-		// })
-		// 	.unwrap()
-		// 	.then(() => navigate(-1))
-		// 	.catch((err) => console.log(err));
+		updateDemand({
+			counselingDemandId: demandId,
+			body: {
+				...formData,
+			},
+		})
+			.unwrap()
+			.then(() => navigate(-1))
+			.catch((err) => console.log(err));
 	};
 
 	const toggleShowCounselorsList = () => {
