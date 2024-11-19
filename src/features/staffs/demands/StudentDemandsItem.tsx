@@ -16,17 +16,7 @@ import {
 	Rating,
 	Tooltip,
 } from '@mui/material';
-import {
-	AccessTime,
-	Add,
-	CalendarMonth,
-	ChevronRight,
-	Circle,
-	EmailOutlined,
-	LocalPhoneOutlined,
-	Mail,
-	Phone,
-} from '@mui/icons-material';
+import { AccessTime, Add, ChevronRight } from '@mui/icons-material';
 import { CounselingDemand, Student } from '@shared/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -56,12 +46,12 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							<ItemMenu
 								menuItems={[
 									{
-										label: 'Assign a counselor',
+										label: 'Update demand detail',
 										icon: <Add fontSize='small' />,
 										onClick: () => {
-											navigate(`assign/${demand.id}`);
+											navigate(`update/${demand.id}`);
 										},
-										disabled: demand.status !== 'WAITING',
+										disabled: demand.status === 'DONE',
 									},
 								]}
 							/>
@@ -107,6 +97,11 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 						<UserLabel
 							profile={demand.supportStaff?.profile}
 							label='Assigned by'
+						/>
+
+						<UserLabel
+							profile={demand.counselor?.profile}
+							label='Assigned to'
 						/>
 
 						<Chip

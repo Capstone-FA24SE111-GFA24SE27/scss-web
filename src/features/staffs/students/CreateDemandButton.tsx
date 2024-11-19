@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePostCreateDemandByStudentIdMutation } from '../demands/demand-api';
+import { usePostCreateDemandByStudentIdForStaffMutation } from '../demands/demand-api';
 import { useAppDispatch } from '@shared/store';
 import { NavLinkAdapter, openDialog } from '@/shared/components';
 import { Button } from '@mui/material';
@@ -24,17 +24,17 @@ const CreateDemandButton = (props: Props) => {
 		pathSegments[pathSegments.length - 2] === 'student' &&
 		pathSegments[pathSegments.length - 1] === id;
 
-	const [createDemand] = usePostCreateDemandByStudentIdMutation();
+	
 
 	const handleCreate = async () => {
 		if (isStudentPath) {
-
-			const result = await createDemand(id);
-			console.log(result)
-			if (result.data.status === 200) {
-				useAlertDialog({ title: 'Demand created successfully', confirmButtonTitle: 'Ok', dispatch })
-				navigate(-1)
-			}
+			navigate('create-demand')
+			// const result = await createDemand(id);
+			// console.log(result)
+			// if (result.data.status === 200) {
+			// 	useAlertDialog({ title: 'Demand created successfully', confirmButtonTitle: 'Ok', dispatch })
+			// 	navigate(-1)
+			// }
 		}
 	};
 

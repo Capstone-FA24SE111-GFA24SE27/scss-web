@@ -1,5 +1,4 @@
 import React from 'react';
-import {  usePostCreateDemandByStudentIdMutation, usePutAssignDemandByDemandIdMutation } from '../demands/demand-api';
 import { useAppDispatch } from '@shared/store';
 import { NavLinkAdapter } from '@/shared/components';
 import { Button } from '@mui/material';
@@ -23,7 +22,6 @@ const AssignDemandButton = (props: Props) => {
                         pathSegments[pathSegments.length - 2] === 'student' &&
                         pathSegments[pathSegments.length - 1] === id;
 
-	// const [createDemand] = usePostCreateDemandByStudentIdMutation();
 
 	const handleCreate = () => {
         if(isStudentPath ) {
