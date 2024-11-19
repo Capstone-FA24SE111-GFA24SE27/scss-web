@@ -3,6 +3,10 @@ import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent
 import BadgeIcon from '@mui/icons-material/Badge';
 import FmdBadIcon from '@mui/icons-material/FmdBad';
 import { Actor } from "@/shared/components";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+
 interface SubList {
     name: string,
     description: string,
@@ -317,6 +321,24 @@ const adminNavigation: NavigationOptions = {
             route: 'accounts',
             items: [
                 {
+                    icon: AccountCircleIcon,
+                    name: 'Accounts List',
+                    route: 'table'
+                },
+                {
+                    icon: PersonAddIcon,
+                    name: 'Create Account',
+                    route: 'create'
+                },
+                
+            ]
+        },
+        {
+            name: "Profiles",
+            description: "Manage users' profiles",
+            route: 'profiles',
+            items: [
+                {
                     icon: SupervisedUserCircle,
                     name: 'Manager',
                     route: 'managers'
@@ -343,11 +365,11 @@ const adminNavigation: NavigationOptions = {
             description: "Manage system's resources",
             route: 'resources',
             items: [
-                {
-                    icon: Event,
-                    name: 'Holiday',
-                    route: 'holidays'
-                },
+                // {
+                //     icon: Event,
+                //     name: 'Holiday',
+                //     route: 'holidays'
+                // },
                 {
                     icon: LocalOffer,
                     name: 'Problem Tag',
@@ -393,18 +415,24 @@ const supportStaffNavigation: NavigationOptions = {
         {
             name: "Student",
             description: "Find students",
-            route: '',
+            route: 'students',
             items: [
-                // {
-                //     icon: FmdBadIcon,
-                //     name: 'Recommended Students',
-                //     route: 'recommended',
-                // },
                 {
                     icon: PeopleAlt,
-                    name: 'Student List',
-                    route: 'student-list'
+                    name: 'Students List',
+                    route: 'list'
                 },
+                {
+                    icon: FmdBadIcon,
+                    name: 'Recommended Students',
+                    route: 'recommended',
+                },
+                {
+                    icon: BookmarkIcon,
+                    name: 'Followed Students',
+                    route: 'followed',
+                },
+                
             ]
         },
     ],

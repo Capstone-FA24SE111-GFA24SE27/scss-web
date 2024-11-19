@@ -9,7 +9,7 @@ function StudentViewSidebarContent() {
   return (
     <div className="flex flex-col flex-auto max-w-full w-fit">
       <IconButton
-        className="absolute top-0 right-0 my-16 mx-32 z-10"
+        className="absolute top-0 right-0 z-10 mx-32 my-16"
         component={NavLinkAdapter}
         to="."
         size="large"

@@ -2,7 +2,9 @@ import {
 	Account,
 	CounselingDemand,
 	Counselor,
+	DemandType,
 	PaginationContent,
+	PriorityLevelType,
 	Question,
 	Student,
 	User,
@@ -11,13 +13,13 @@ import { ApiResponse, apiService as api } from '@shared/store';
 
 export const addTagTypes = ['demands', 'counselors'] as const;
 
-export const demandApi = api
+export const demandForStaffApi = api
 	.enhanceEndpoints({
 		addTagTypes,
 	})
 	.injectEndpoints({
 		endpoints: (build) => ({
-			getCounselingDemandFilter: build.query<
+			getCounselingDemandFilterForStaff: build.query<
 				GetCounselingDemandFilterApiResponse,
 				GetCounselingDemandFilterApiArg
 			>({
@@ -39,22 +41,31 @@ export const demandApi = api
 				}),
 				providesTags: ['demands'],
 			}),
-			postCreateDemandByStudentId: build.mutation<
+			postCreateDemandByStudentIdForStaff: build.mutation<
 				PostCreateDemandByStudentIdResponse,
 				PostCreateDemandByStudentIdArg
 			>({
-				query: (arg) => {
-					if (!arg) return null;
+				query: (args) => {
+					if (!args) return null;
 					return {
-						url: `/api/counseling-demand/create/${arg}`,
+						url: `/api/counseling-demand/create/${args.studentId}`,
 						method: 'POST',
+						body: {
+							counselorId: args.counselorId,
+							priorityLevel: args.priorityLevel,
+							additionalInformation: args.additionalInformation,
+							issueDescription: args.issueDescription,
+							causeDescription: args.causeDescription,
+							contactNote: args.contactNote,
+							demandType: args.demandType,
+						},
 					};
 				},
 				invalidatesTags: ['demands'],
 			}),
-			putAssignDemandByDemandId: build.mutation<
-				PutAssignDemandByDemandIdResponse,
-				PutAssignDemandByDemandIdArgs
+			putUpdateDemandByDemandIdForStaff: build.mutation<
+				PutUpdateDemandByDemandIdResponse,
+				PutUpdateDemandByDemandIdArgs
 			>({
 				query: (args) => {
 					if (!args) return null;
@@ -66,7 +77,7 @@ export const demandApi = api
 				},
 				invalidatesTags: ['demands'],
 			}),
-			getCounselorById: build.query<
+			getCounselorByIdForStaff: build.query<
 				getCounselorByIdReponse,
 				getCounselorByIdArg
 			>({
@@ -77,7 +88,10 @@ export const demandApi = api
 					{ type: 'counselors', id: arg },
 				],
 			}),
-			getCounselors: build.query<getCounselorsReponse, getCounselorsArg>({
+			getCounselorsForStaff: build.query<
+				getCounselorsReponse,
+				getCounselorsArg
+			>({
 				query: ({
 					search = '',
 					SortDirection = 'ASC',
@@ -98,7 +112,7 @@ export const demandApi = api
 				}),
 				providesTags: ['counselors'],
 			}),
-			getCounselorsAcademic: build.query<
+			getCounselorsAcademicForStaff: build.query<
 				GetCounselorApiAcademicResponse,
 				GetCounselorsApiArg
 			>({
@@ -122,7 +136,7 @@ export const demandApi = api
 				}),
 				providesTags: ['counselors'],
 			}),
-			getCounselorsNonAcademic: build.query<
+			getCounselorsNonAcademicForStaff: build.query<
 				GetCounselorApiAcademicResponse,
 				GetCounselorsApiArg
 			>({
@@ -145,18 +159,31 @@ export const demandApi = api
 					},
 				}),
 				providesTags: ['counselors'],
-			})
+			}),
+			getDemandByIdForStaff: build.query<
+				GetDemandByIdResponse,
+				GetDemandByIdArg
+			>({
+				query: (arg) => ({
+					url: `/api/counseling-demand/${arg}`,
+				}),
+				providesTags: ['demands'],
+			}),
 		}),
 	});
 
 export const {
-	useGetCounselingDemandFilterQuery,
-	usePostCreateDemandByStudentIdMutation,
-	usePutAssignDemandByDemandIdMutation,
-	useGetCounselorByIdQuery,
-	useGetCounselorsAcademicQuery,
-	useGetCounselorsNonAcademicQuery
-} = demandApi;
+	useGetCounselingDemandFilterForStaffQuery,
+	usePostCreateDemandByStudentIdForStaffMutation,
+	usePutUpdateDemandByDemandIdForStaffMutation,
+	useGetCounselorByIdForStaffQuery,
+	useGetCounselorsAcademicForStaffQuery,
+	useGetCounselorsNonAcademicForStaffQuery,
+	useGetDemandByIdForStaffQuery
+} = demandForStaffApi;
+
+type GetDemandByIdArg = number | string;
+type GetDemandByIdResponse = CounselingDemand;
 
 export type GetCounselingDemandFilterApiResponse = ApiResponse<
 	PaginationContent<CounselingDemand>
@@ -170,9 +197,18 @@ export type GetCounselingDemandFilterApiArg = {
 };
 
 export type PostCreateDemandByStudentIdResponse = ApiResponse<CounselingDemand>;
-export type PostCreateDemandByStudentIdArg = number | string;
+export type PostCreateDemandByStudentIdArg = {
+	studentId: number | string;
+	counselorId: number | string;
+	priorityLevel: PriorityLevelType;
+	additionalInformation: string;
+	issueDescription: string;
+	causeDescription: string;
+	contactNote: string;
+	demandType: DemandType;
+};
 
-type PutAssignDemandByDemandIdArgs = {
+type PutUpdateDemandByDemandIdArgs = {
 	counselingDemandId: number | string;
 	body: {
 		counselorId: number | string;
@@ -180,7 +216,7 @@ type PutAssignDemandByDemandIdArgs = {
 		contactNote: string;
 	};
 };
-type PutAssignDemandByDemandIdResponse = ApiResponse<CounselingDemand>;
+type PutUpdateDemandByDemandIdResponse = ApiResponse<CounselingDemand>;
 
 type getCounselorByIdArg = number | string;
 type getCounselorByIdReponse = ApiResponse<Counselor>;
