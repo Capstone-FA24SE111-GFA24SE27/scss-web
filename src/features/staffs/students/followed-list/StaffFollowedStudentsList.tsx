@@ -5,6 +5,7 @@ import { Box, List, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import StudentListItem from '@/shared/pages/student-list/StudentListItem';
 import { useGetFollowedStudentsStaffQuery } from './staff-followed-student-api';
+import FollowedListItem from './FollowedListItem';
 
 type Props = {}
 
@@ -29,7 +30,7 @@ const StaffFollowedStudentsList = (props: Props) => {
 	}
 
   return (
-    <div className='flex flex-col flex-1 gap-16 pb-16'>
+    <div className='flex flex-col flex-1 gap-16 p-16'>
 			<Box>
 				<motion.div
 					initial={{ y: 20, opacity: 0 }}
@@ -37,7 +38,7 @@ const StaffFollowedStudentsList = (props: Props) => {
 					className='flex flex-col flex-auto w-full max-h-full gap-16'
 				>
 
-					<List className='w-full p-0 m-0'>
+					<List className='w-full gap-16 p-0 m-0'>
 						{
 							isLoadingStudents ?
 								<AppLoading />
@@ -49,7 +50,7 @@ const StaffFollowedStudentsList = (props: Props) => {
 									</div>
 								) : (
 									students.map((item) => (
-										<StudentListItem key={item.id} student={item} />
+										<FollowedListItem key={item.followDate} item={item} />
 									))
 								)}
 					</List>

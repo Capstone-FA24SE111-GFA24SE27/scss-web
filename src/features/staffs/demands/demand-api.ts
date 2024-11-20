@@ -11,7 +11,7 @@ import {
 } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store';
 
-export const addTagTypes = ['demands', 'counselors'] as const;
+export const addTagTypes = ['demands', 'counselors', 'counselor'] as const;
 
 export const demandForStaffApi = api
 	.enhanceEndpoints({
@@ -84,9 +84,7 @@ export const demandForStaffApi = api
 				query: (arg) => ({
 					url: `/api/counselors/${arg}`,
 				}),
-				providesTags: (result, error, arg) => [
-					{ type: 'counselors', id: arg },
-				],
+				providesTags: ['counselor'],
 			}),
 			getCounselorsForStaff: build.query<
 				getCounselorsReponse,
@@ -169,6 +167,34 @@ export const demandForStaffApi = api
 				}),
 				providesTags: ['demands'],
 			}),
+			getQuickMatchCounselorForStaff: build.mutation<
+				GetQuickMatchCounselorForStaffResponse,
+				GetQuickMatchCounselorForStaffArgs
+			>({
+				query: ({
+					counselorGender,
+					expertiseId,
+					departmentId,
+					specializationId,
+					majorId,
+					matchType,
+				}) => ({
+					url:
+						matchType === 'ACADEMIC'
+							? `/api/support-staff/academic/match`
+							: `/api/support-staff/non-academic/match`,
+					params: Object.fromEntries(
+						Object.entries({
+							counselorGender,
+							expertiseId,
+							departmentId,
+							specializationId,
+							majorId,
+						}).filter(([_, value]) => value !== null)
+					),
+					method: 'GET',
+				}),
+			}),
 		}),
 	});
 
@@ -179,7 +205,8 @@ export const {
 	useGetCounselorByIdForStaffQuery,
 	useGetCounselorsAcademicForStaffQuery,
 	useGetCounselorsNonAcademicForStaffQuery,
-	useGetDemandByIdForStaffQuery
+	useGetDemandByIdForStaffQuery,
+	useGetQuickMatchCounselorForStaffMutation,
 } = demandForStaffApi;
 
 type GetDemandByIdArg = number | string;
@@ -245,3 +272,13 @@ type GetCounselorsApiArg = {
 type GetCounselorApiAcademicResponse = ApiResponse<
 	PaginationContent<Counselor>
 >;
+
+type GetQuickMatchCounselorForStaffArgs = {
+	matchType: 'ACADEMIC' | 'NON_ACADEMIC';
+	counselorGender: 'MALE' | 'FEMALE';
+	expertiseId?: string;
+	departmentId?: string;
+	specializationId?: string;
+	majorId?: string;
+};
+type GetQuickMatchCounselorForStaffResponse = ApiResponse<Counselor>;

@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import {
-	usePostCreateDemandByStudentIdForStaffMutation,
-} from '../demands/demand-api';
+import { usePostCreateDemandByStudentIdForStaffMutation } from '../demands/demand-api';
 import { Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
 import { NavLinkAdapter, UserLabel } from '@/shared/components';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +16,7 @@ import {
 	selectCounselor,
 	setSelectedCounselor,
 } from '../counselors/counselor-list-slice';
+import { selectCreateDemandCounselorFormData } from './staff-demand-create-slice';
 
 const schema = z.object({
 	counselorId: z.number().min(1, 'Counselor ID is required'),
@@ -48,14 +47,17 @@ const CreateDemandForm = () => {
 
 	const [showCounselorsList, setShowCounselorsList] = useState(false);
 
+	const createDemandFormData = useAppSelector(
+		selectCreateDemandCounselorFormData
+	);
+
 	const defaultValues = {
-		counselorId: '',
+		counselorId: createDemandFormData.counselorId,
 		contactNote: '',
 		priorityLevel: 'MEDIUM',
 		additionalInformation: '',
 		issueDescription: '',
 		causeDescription: '',
-		demandType: 'ACADEMIC',
 	};
 
 	const { control, formState, watch, handleSubmit, setValue } =
@@ -73,10 +75,13 @@ const CreateDemandForm = () => {
 	const onSubmit = () => {
 		createDemand({
 			...formData,
-			studentId: studentId
+			studentId: studentId,
 		})
 			.unwrap()
-			.then(() => navigate(-1))
+			.then((result) => {
+				navigate(-1);
+				console.log('create demand result', result);
+			})
 			.catch((err) => console.log(err));
 	};
 
@@ -151,12 +156,25 @@ const CreateDemandForm = () => {
 								</div>
 								<div className='w-full'>
 									{counselor && formData.counselorId ? (
-										<CounselorListItem
-											counselor={counselor}
-											onClick={
-												handleNavigateViewCounselor
-											}
-										/>
+										<>
+											<CounselorListItem
+												counselor={counselor}
+												onClick={
+													handleNavigateViewCounselor
+												}
+											/>
+
+											<div className='flex flex-wrap gap-8 py-8'>
+												<Typography className='font-semibold'>
+													Demand type:
+												</Typography>
+												<Typography>
+													{counselor.expertise
+														? 'Non academic'
+														: 'Academic'}
+												</Typography>
+											</div>
+										</>
 									) : (
 										<Typography
 											color='textSecondary'
@@ -202,7 +220,7 @@ const CreateDemandForm = () => {
 										)}
 									/>
 								</div>
-								<div className='flex-1'>
+								{/* <div className='flex-1'>
 									<Controller
 										control={control}
 										name='demandType'
@@ -229,7 +247,7 @@ const CreateDemandForm = () => {
 											</TextField>
 										)}
 									/>
-								</div>
+								</div> */}
 							</div>
 
 							<div className=''>
@@ -341,7 +359,6 @@ const CreateDemandForm = () => {
 										!formData.contactNote ||
 										!formData.issueDescription ||
 										!formData.causeDescription ||
-										!formData.demandType ||
 										!formData.priorityLevel
 									}
 									onClick={handleSubmit(onSubmit)}
