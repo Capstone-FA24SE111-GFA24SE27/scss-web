@@ -113,7 +113,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 		useConfirmDialog({
 			dispatch: dispatch,
 			title: 'Are you sure you want to reject this question?',
-			confirmButtonFucntion: async () => {
+			confirmButtonFunction: async () => {
 				const result = await reviewQuestion({
 					id: id,
 					status: 'REJECTED',
@@ -131,6 +131,29 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 					});
 				}
 			},
+		});
+	};
+
+	const handleCloseQuestion = async () => {
+		useConfirmDialog({
+			title: 'Are you sure you want to close the question?',
+			confirmButtonFunction: async () => {
+				const result = await closeQuestion(qna.id);
+				console.log('close qna', result);
+				if (result?.data?.status === 200) {
+					useAlertDialog({
+						title: result.data.message,
+						dispatch,
+					});
+					setExpanded(false);
+				} else {
+					useAlertDialog({
+						title: result.data.message,
+						dispatch: dispatch,
+					});
+				}
+			},
+			dispatch,
 		});
 	};
 
@@ -308,10 +331,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								variant='outlined'
 								color='secondary'
 								startIcon={<Close />}
-								onClick={() => {
-									setExpanded(false);
-									closeQuestion(qna.id);
-								}}
+								onClick={() => handleCloseQuestion()}
 							>
 								Close
 							</Button>

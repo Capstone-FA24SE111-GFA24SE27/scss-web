@@ -24,7 +24,7 @@ export const staffFollowedStudentsApi = api
 				providesTags: ['students'],
 			}),
 			postFollowStudentsStaff: build.mutation<
-				PostFollowStudentsApiResponse,
+				string,
 				PostFollowStudentsApiArg
 			>({
 				query: (arg) => ({
@@ -52,7 +52,7 @@ export const staffFollowedStudentsApi = api
 				}),
 				invalidatesTags: ['students'],
 			}),
-			updateFollowNote: build.mutation<UpdateFollowNoteApiResponse, UpdateFollowNoteApiArg>({
+			updateFollowNote: build.mutation<string, UpdateFollowNoteApiArg>({
 				query: ({
 					id,
 					followNote
@@ -84,7 +84,7 @@ export type GetStudentsFilterApiArg = {
 	page?: number;
 };
 
-export type PostFollowStudentsApiResponse = any;
+export type PostFollowStudentsApiResponse = string;
 export type PostFollowStudentsApiArg = number | string;
 
 export type GetStudentsFollowStatusApiResponse =
@@ -109,10 +109,10 @@ export type FollowedDTOType = {
 
 export type GetStudentsFollowStatusApiArg = number | string;
 
-type UnfollowStudentApiResponse = any;
+type UnfollowStudentApiResponse = string;
 type UnfollowStudentApiArg = number | string;
 
-type UpdateFollowNoteApiResponse = any;
+type UpdateFollowNoteApiResponse = string;
 type UpdateFollowNoteApiArg = {
 	id: number | string;
 	followNote: string

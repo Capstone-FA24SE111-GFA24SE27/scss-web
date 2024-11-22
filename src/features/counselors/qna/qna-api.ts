@@ -1,5 +1,5 @@
 import { Account, Counselor, PaginationContent, Question, Student, User } from '@shared/types';
-import { ApiResponse, apiService as api } from '@shared/store'
+import { ApiMessage, ApiResponse, apiService as api } from '@shared/store'
 import { Role } from '@/shared/constants';
 import { Topic } from '@/shared/services';
 
@@ -96,7 +96,7 @@ export const counselorQnaApi = api
         }),
         providesTags: (result, error, arg) => [{type: 'qna', id: arg}]
       }),
-      closeQuestionCounselor: build.mutation<void, number>({
+      closeQuestionCounselor: build.mutation<ApiMessage, number>({
         query: (questionCardId) => ({
           url: `/api/question-cards/counselor/close/${questionCardId}`,
           method: 'POST',

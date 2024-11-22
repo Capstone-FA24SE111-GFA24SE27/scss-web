@@ -19,7 +19,7 @@ export const academicApi = api
         }),
         providesTags: ['departments']
       }),
-      getMajorsByDepartment: build.query<GetMajorsByDepartmentApiResponse, string>({
+      getMajorsByDepartment: build.query<GetMajorsByDepartmentApiResponse, string | number>({
         query: (departmentId) => ({
           url: `/api/academic/departments/${departmentId}/majors`,
           method: 'GET',
@@ -27,7 +27,7 @@ export const academicApi = api
         providesTags: ['major']
       }),
 
-      getSpecializationsByMajor: build.query<GetSpecializationsByMajorApiResponse, string>({
+      getSpecializationsByMajor: build.query<GetSpecializationsByMajorApiResponse, string | number>({
         query: (majorId) => ({
           url: `/api/academic/majors/${majorId}/specializations`,
           method: 'GET',

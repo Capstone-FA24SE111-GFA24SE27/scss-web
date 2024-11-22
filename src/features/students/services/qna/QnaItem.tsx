@@ -72,15 +72,59 @@ const QnaItem = (props: Props) => {
 		}
 	};
 
+	const handleDeleteQuestion = async () => {
+
+		useConfirmDialog(
+			{
+				title: 'Are you sure you want to delete the question?',
+				confirmButtonFunction: async ()=>{
+					const result = await deleteQuestion(qna.id)
+					console.log('delete qna', result)
+					// if(result?.data?.status === 200) {
+						useAlertDialog({
+							title: result.data.message,
+							dispatch
+						})
+					// }
+				},
+				dispatch
+			}
+		)
+		
+		
+	}
+
+	const handleCloseQuestion = async () => {
+
+		useConfirmDialog(
+			{
+				title: 'Are you sure you want to close the question?',
+				confirmButtonFunction: async ()=>{
+					const result = await closeQuestion(qna.id)
+					console.log('close qna', result)
+					// if(result?.data?.status === 200) {
+						useAlertDialog({
+							title: result.data.message,
+							dispatch
+						})
+					// }
+				},
+				dispatch
+			}
+		)
+		
+		
+	}
+
 	const handleCreateChat = async (qna: Question) => {
 		const result = await createChatSession(qna.id);
 		console.log(result);
-		if (result.data.status === 200) {
+		if (result?.data?.status === 200) {
 			useConfirmDialog({
 				title: 'Chat session created successfully',
 				cancelButtonTitle: 'Ok',
 				confirmButtonTitle: 'Go to chat',
-				confirmButtonFucntion: () =>
+				confirmButtonFunction: () =>
 					navigate(`conversations/${qna.id}`),
 				dispatch: dispatch,
 			});
@@ -220,7 +264,7 @@ const QnaItem = (props: Props) => {
 								color='secondary'
 								startIcon={<Delete />}
 								disabled={isDeletingQuestion}
-								onClick={() => deleteQuestion(qna.id)}
+								onClick={() => handleDeleteQuestion()}
 							>
 								Delete
 							</Button>
@@ -229,7 +273,7 @@ const QnaItem = (props: Props) => {
 								variant='outlined'
 								color='secondary'
 								startIcon={<Close />}
-								onClick={() => closeQuestion(qna.id)}
+								onClick={() => handleCloseQuestion()}
 							>
 								Close
 							</Button>
@@ -262,7 +306,7 @@ const QnaItem = (props: Props) => {
 								color='secondary'
 								startIcon={<ChatBubbleOutline />}
 								onClick={() => handleSelectChat(qna)}
-								disabled={!qna.counselor}
+								disabled={!qna.counselor || qna.closed}
 							>
 								Initiate Chat
 							</Button>

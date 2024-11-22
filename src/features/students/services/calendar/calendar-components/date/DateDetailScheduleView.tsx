@@ -1,7 +1,7 @@
 import { ContentLoading } from '@/shared/components';
 import { useAppSelector } from '@shared/store';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { selectHolidays, selectScheduleData } from '../../calendar-slice';
 import { isDateRangeOverlapping } from '@/shared/utils';
 import { Typography } from '@mui/material';
@@ -10,6 +10,7 @@ import { EventHolidayBody } from '../event/EventHolidayBody';
 
 const DateDetailScheduleView = () => {
 	const routeParams = useParams();
+	const navigate = useNavigate()
 
 	const appointmentList = useAppSelector(selectScheduleData);
 	const holidayList = useAppSelector(selectHolidays)
@@ -82,7 +83,7 @@ const DateDetailScheduleView = () => {
 	return (
 		<div className='relative flex flex-col '>
 			<div className='sticky top-0 left-0 z-10 flex flex-col w-full p-16 pb-32 bg-background-paper '>
-				<Typography className='pr-32 text-xl font-semibold leading-none mt-32'>
+				<Typography className='pr-32 mt-32 text-xl font-semibold leading-none'>
 					Schedule from
 				</Typography>
 				<Typography className='pr-32 leading-none text-28'>
@@ -103,7 +104,7 @@ const DateDetailScheduleView = () => {
 						<div key={item.id} className='rounded shadow-md bg-background-paper '>
 							<EventDetailBody
 								appointment={item}
-								onNavClicked={() => {}}
+								onNavClicked={() => {navigate(-1)}}
 								/>
 						</div>
 					))

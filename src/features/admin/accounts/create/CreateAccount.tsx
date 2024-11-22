@@ -12,7 +12,6 @@ const CreateAccount = () => {
   const createAccountTabs = [
     { label: 'Academic Counselor', value: roles.ACADEMIC_COUNSELOR },
     { label: 'Non-academic Counselor', value: roles.NON_ACADEMIC_COUNSELOR },
-    { label: 'Student', value: roles.STUDENT },
     { label: 'Manager', value: roles.MANAGER },
     { label: 'Support Staffs', value: roles.SUPPORT_STAFF },
   ];

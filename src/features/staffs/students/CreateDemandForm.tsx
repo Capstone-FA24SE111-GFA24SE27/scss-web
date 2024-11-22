@@ -17,6 +17,7 @@ import {
 	setSelectedCounselor,
 } from '../counselors/counselor-list-slice';
 import { selectCreateDemandCounselorFormData } from './staff-demand-create-slice';
+import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 
 const schema = z.object({
 	counselorId: z.number().min(1, 'Counselor ID is required'),
@@ -32,9 +33,9 @@ const schema = z.object({
 		.or(z.literal('')),
 	issueDescription: z.string().min(1, 'Please enter issue description'),
 	causeDescription: z.string().min(1, 'Please enter cause description'),
-	demandType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
-		errorMap: () => ({ message: 'Please select a demand type' }),
-	}),
+	// demandType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
+	// 	errorMap: () => ({ message: 'Please select a demand type' }),
+	// }),
 });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -58,6 +59,7 @@ const CreateDemandForm = () => {
 		additionalInformation: '',
 		issueDescription: '',
 		causeDescription: '',
+		// demandType: createDemandFormData.matchType
 	};
 
 	const { control, formState, watch, handleSubmit, setValue } =
@@ -75,11 +77,15 @@ const CreateDemandForm = () => {
 	const onSubmit = () => {
 		createDemand({
 			...formData,
+			demandType: counselor.expertise ? 'NON_ACADEMIC' : 'ACADEMIC',
 			studentId: studentId,
 		})
 			.unwrap()
 			.then((result) => {
-				navigate(-1);
+				if(result.status === 200) {
+					useAlertDialog({dispatch, title: 'Demand created successfully'})
+					navigate(-1);
+				}
 				console.log('create demand result', result);
 			})
 			.catch((err) => console.log(err));

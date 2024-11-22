@@ -64,9 +64,21 @@ const QuickMatchCounselorForm = (props: Props) => {
 			selectedDepartment?.length > 0 ? selectedDepartment : undefined;
 		const majorId = selectedMajor?.length > 0 ? selectedMajor : undefined;
 		const specializationId =
-			selectedSpecialization?.length > 0 ? selectedSpecialization : undefined;
+			selectedSpecialization?.length > 0
+				? selectedSpecialization
+				: undefined;
 		const expertiseId =
 			selectedExpertise?.length > 0 ? selectedExpertise : undefined;
+
+		console.log(
+			'asd',
+			matchType,
+			counselorGender,
+			departmentId,
+			expertiseId,
+			majorId,
+			specializationId
+		);
 		getQuickMatchCounselor({
 			matchType,
 			counselorGender,
@@ -77,7 +89,7 @@ const QuickMatchCounselorForm = (props: Props) => {
 		})
 			.unwrap()
 			.then((response) => {
-				  onPickCounselor(response?.content)
+				onPickCounselor(response?.content);
 				console.log('res', response);
 			});
 	};
@@ -94,6 +106,12 @@ const QuickMatchCounselorForm = (props: Props) => {
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		setSelectedExpertise((event.target as HTMLInputElement).value);
+	};
+
+	const handleSelectGender = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setSelectedGender(
+			(event.target as HTMLInputElement).value as 'MALE' | 'FEMALE'
+		);
 	};
 
 	return (
@@ -119,6 +137,24 @@ const QuickMatchCounselorForm = (props: Props) => {
 				<Typography className='font-semibold'>
 					Select counselor's additional information (optional):
 				</Typography>
+				<TextField
+					select
+					label='Gender'
+					variant='outlined'
+					fullWidth
+					value={selectedGender ? selectedGender : ''}
+					onChange={handleSelectGender}
+				>
+					<MenuItem key={'Male'} value={'MALE'}>
+						{'Male'}
+					</MenuItem>
+					<MenuItem key={'Female'} value={'FEMALE'}>
+						{'Female'}
+					</MenuItem>
+					<ClearMenuItem key='clear-expertise' value=''>
+						Clear
+					</ClearMenuItem>
+				</TextField>
 				{demandType === 'ACADEMIC' ? (
 					<AcademicFilter
 						showClearOptions

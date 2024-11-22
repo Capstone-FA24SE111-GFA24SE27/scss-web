@@ -123,7 +123,7 @@ const QnaList = () => {
 		useConfirmDialog({
 			dispatch: dispatch,
 			title: 'Are you sure you want to verify this question?',
-			confirmButtonFucntion: async () => {
+			confirmButtonFunction: async () => {
 				const result = await reviewQuestion({
 					id: selectedQna.id,
 					status: 'VERIFIED',
@@ -141,7 +141,7 @@ const QnaList = () => {
 		useConfirmDialog({
 			dispatch: dispatch,
 			title: 'Are you sure you want to reject this question?',
-			confirmButtonFucntion: async () => {
+			confirmButtonFunction: async () => {
 				const result = await reviewQuestion({
 					id: selectedQna.id,
 					status: 'REJECTED',
@@ -181,7 +181,7 @@ const QnaList = () => {
 			animate='show'
 			className='w-full p-32 space-y-16'
 		>
-			<div className='flex gap-16'>
+			<div className='flex w-full gap-16'>
 				<TextField
 					label='Search for questions'
 					placeholder='Enter a keyword...'
@@ -211,7 +211,7 @@ const QnaList = () => {
 					<MenuItem value='NON_ACADEMIC'>Non-Academic</MenuItem>
 				</TextField>
 			</div>
-			{qnaList?.length > 0 && (
+			{qnaList?.length > 0 ? (
 				<div className='space-y-16'>
 					{qnaList.map((qna) => {
 						return (
@@ -296,7 +296,7 @@ const QnaList = () => {
 															<CheckCircle color='success' />
 															Verify
 														</MenuItem>
-														<MenuItem
+														{/* <MenuItem
 															onClick={() => {
 																handleReject();
 																handleClose();
@@ -305,7 +305,7 @@ const QnaList = () => {
 														>
 															<RemoveCircle color='warning' />
 															Reject
-														</MenuItem>
+														</MenuItem> */}
 														<MenuItem
 															onClick={() => {
 																handleFlag();
@@ -374,6 +374,10 @@ const QnaList = () => {
 							</motion.div>
 						);
 					})}
+				</div>
+			) : (
+				<div className='flex items-center justify-center w-full h-full'>
+					<Typography color='textDisabled' className='text-2xl '>There are currently no questions</Typography>
 				</div>
 			)}
 		</motion.div>

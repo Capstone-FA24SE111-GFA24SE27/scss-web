@@ -183,15 +183,23 @@ export const demandForStaffApi = api
 						matchType === 'ACADEMIC'
 							? `/api/support-staff/academic/match`
 							: `/api/support-staff/non-academic/match`,
-					params: Object.fromEntries(
-						Object.entries({
-							counselorGender,
-							expertiseId,
-							departmentId,
-							specializationId,
-							majorId,
-						}).filter(([_, value]) => value !== null)
-					),
+					params: {
+						gender: counselorGender,
+						expertiseId,
+						departmentId,
+						specializationId,
+						majorId,
+			
+					},
+					//Object.fromEntries(
+					// 	Object.entries({
+					// 		counselorGender,
+					// 		expertiseId,
+					// 		departmentId,
+					// 		specializationId,
+					// 		majorId,
+					// 	}).filter(([_, value]) => value !== null)
+					//),
 					method: 'GET',
 				}),
 			}),

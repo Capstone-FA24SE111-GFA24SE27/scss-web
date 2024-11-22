@@ -136,10 +136,10 @@ export const EventDetailBody = (props: Props) => {
 						className='w-full rounded bg-primary-main/5'
 					>
 						<UserListItem
-							fullName={appointment.studentInfo.profile.fullName}
-							avatarLink={appointment.studentInfo.profile.avatarLink}
-							phoneNumber={appointment.studentInfo.profile.phoneNumber}
-							email={appointment.studentInfo.email}
+							fullName={appointment.counselorInfo.profile.fullName}
+							avatarLink={appointment.counselorInfo.profile.avatarLink}
+							phoneNumber={appointment.counselorInfo.profile.phoneNumber}
+							email={appointment.counselorInfo.email}
 						/>
 
 					</ListItemButton>
