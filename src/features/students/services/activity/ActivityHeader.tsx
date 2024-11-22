@@ -32,7 +32,7 @@ function ActivityHeader() {
           <div className="flex flex-col min-w-0 mx-16">
             <Heading
               title={user?.fullName}
-              description={'Activies throughout FPTU school life'}
+              description={'Appointments throughout FPTU school life'}
             />
           </div>
         </div>

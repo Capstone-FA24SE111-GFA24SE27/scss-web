@@ -21,6 +21,7 @@ export const priorityColor = {
   'LOW': 'inherit',
   'MEDIUM': 'warning',
   'HIGH': 'error',
+  'URGEN': 'error',
 }
 
 export const counselingTypeColor = {

@@ -3,7 +3,6 @@ import { AppointmentReportType } from '@/shared/types';
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { Avatar, Box, Divider, Paper, Typography, styled } from '@mui/material';
 import dayjs from 'dayjs';
-// import styles from './AppointmentReport.module.css';
 
 // Helper function to render HTML
 const Root = styled(Box)(({ theme }) => ({

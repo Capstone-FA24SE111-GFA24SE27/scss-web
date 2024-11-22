@@ -7,7 +7,7 @@ import { Close } from '@mui/icons-material';
  */
 function CounselingSidebarContent() {
     return (
-        <div className="flex flex-col flex-auto max-w-full w-md">
+        <div className="flex flex-col flex-auto max-w-full w-fit">
             <IconButton
                 className="absolute top-0 right-0 my-16 mx-32 z-10"
                 component={NavLinkAdapter}

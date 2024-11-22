@@ -129,15 +129,23 @@ const QnaChart = () => {
         academic: { appointments: 10, canceled: 0, completed: 8, expired: 2 },
         nonAcademic: { appointments: 8, canceled: 1, completed: 7, expired: 0 },
       },
-     
+
     ],
   };
 
+
+
   const [granularity, setGranularity] = useState('semester');
-  const [selectedData, setSelectedData] = useState(null);
+
+  const barData = appointmentData[granularity];
+
+  const [selectedData, setSelectedData] = useState({
+    period: `Fall 2024`,
+    data:{ appointments: 140, canceled: 7, completed: 130, expired: 3 },
+    category: 'Academic',
+  });
 
   // Update data dynamically based on granularity
-  const barData = appointmentData[granularity];
 
   const barChartOptions: ApexOptions = {
     chart: {
@@ -199,29 +207,17 @@ const QnaChart = () => {
     },
   };
 
-  const pieChartOptionsForLocation: ApexOptions = {
+  const pieChartOptionsAnswer: ApexOptions = {
     chart: {
       type: 'pie',
     },
-    labels: ['Online', 'Offline'],
+    labels: ['Answered', 'Unanswered'],
     dataLabels: {
       enabled: true,
     },
   };
 
-  const pieChartSeriesForLocation = [60, 40]; // Example data
-
-  const pieChartOptionsForCounselingState: ApexOptions = {
-    chart: {
-      type: 'pie',
-    },
-    labels: ['Active Booking', 'Passive Booking'],
-    dataLabels: {
-      enabled: true,
-    },
-  };
-
-  const pieChartSeriesForCounselingState = [70, 30]; // Example data
+  const pieChartSeriesAnswer = [75, 25]; // Example data
 
   const pieChartSeries = selectedData
     ? [selectedData.data.completed, selectedData.data.canceled, selectedData.data.expired]
@@ -273,7 +269,14 @@ const QnaChart = () => {
               type="pie"
               width={400}
             />
-            
+
+            <ReactApexChart
+              options={pieChartOptionsAnswer}
+              series={pieChartSeriesAnswer}
+              type="pie"
+              width={400}
+            />
+
           </div>
         )}
       </Paper>

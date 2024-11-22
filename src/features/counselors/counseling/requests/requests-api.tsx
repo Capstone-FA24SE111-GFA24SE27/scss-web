@@ -17,6 +17,7 @@ export const requestsApi = api
           dateTo = '',
           meetingType = '',
           sortBy = '',
+          status = '',
           sortDirection = 'DESC',
           page = 1
         }) => ({
@@ -27,6 +28,7 @@ export const requestsApi = api
             meetingType,
             sortBy,
             sortDirection,
+            status,
             page
           },
         }),
@@ -48,4 +50,5 @@ export type GetCounselingAppointmentRequestApiArg = {
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC' | '';
   page?: number;
+  status?: string;
 };

@@ -8,27 +8,6 @@ import { Subject } from '@/shared/types';
 import { useGetSemestersQuery } from '@/shared/services';
 
 
-export interface AttendanceDetail {
-  date: string;
-  slot: string;
-  room: string;
-  lecturer: string;
-  groupName: string;
-  status: string;
-  lecturerComment: string | null;
-}
-
-export interface CourseData {
-  id: number;
-  startDate: string;
-  totalSlot: number;
-  studentCode: string;
-  subjectName: string;
-  semesterName: string;
-  detais: AttendanceDetail[];
-}
-
-
 const AttendanceReport = ({ id }: { id?: string }) => {
   const { id: studentRouteId } = useParams();
   const studentId = id || studentRouteId

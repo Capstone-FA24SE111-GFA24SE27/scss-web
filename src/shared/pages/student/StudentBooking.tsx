@@ -86,6 +86,7 @@ function CounselorBooking() {
 
   const location = useLocation();
   const studentUrl = navigateUp(location, 1);
+  const navigate = useNavigate()
 
   const onSubmit = () => {
     bookCounselor({
@@ -96,8 +97,8 @@ function CounselorBooking() {
         address,
       }
     })
-    // .unwrap()
-    // .then(() => navigate('../'))
+    .unwrap()
+    .then(() => navigate('../'))
   }
 
   const handleDateChange = (selectedDate) => {
@@ -184,7 +185,7 @@ function CounselorBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto items-center w-md p-24 sm:p-48">
+      <div className="relative flex flex-col flex-auto items-center w-md p-24 sm:p-48 min-w-lg">
         <div className="w-full max-w-3xl">
           <Breadcrumbs
             parents={[
@@ -195,7 +196,7 @@ function CounselorBooking() {
             ]}
             currentPage={"Booking"}
           />
-          <div className="flex flex-auto items-end gap-32">
+          <div className="flex flex-auto items-center gap-32">
             <Avatar
               sx={{
                 borderWidth: 4,
@@ -214,22 +215,8 @@ function CounselorBooking() {
               <Typography className="mt-32 text-4xl font-bold truncate">{student.profile.fullName}</Typography>
               <Typography className="text-lg truncate">{student.studentCode}</Typography>
 
-              <div className="flex flex-wrap items-center mt-16">
-                <Chip
-                  label={`Problem 1`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
-                <Chip
-                  label={`Problem 2`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
-              </div>
             </div>
           </div>
-
-
 
           <Divider className="mt-16 mb-24" />
 

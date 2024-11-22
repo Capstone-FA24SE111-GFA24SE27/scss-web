@@ -1,4 +1,4 @@
-import { Counselor, PaginationContent, Profile } from '@/shared/types';
+import { CounselingSlot, Counselor, PaginationContent, Profile } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -10,7 +10,7 @@ export const addTagTypes = [
 ] as const;
 
 
-export const counselingApi = api
+export const counselorApi = api
   .enhanceEndpoints({
     addTagTypes
   })
@@ -66,6 +66,12 @@ export const counselingApi = api
           url: `/api/counselors/counseling-slot?date=${date}`,
         }),
       }),
+      getWeeklySlots: build.query<GetCounselingSlotsResponse, number>({
+        query: (counselorId) => ({
+          url: `/api/manage/counselors/${counselorId}/counseling-slots`,
+        }),
+        providesTags: ['counselors'],
+      }),
     })
   })
 
@@ -78,7 +84,8 @@ export const {
   useGetCounselorExpertisesQuery,
   useGetCounselorSpecializationsQuery,
   useGetCounselorSlotsQuery,
-} = counselingApi
+  useGetWeeklySlotsQuery
+} = counselorApi
 
 
 export type GetCounselorsApiResponse = ApiResponse<PaginationContent<Counselor>>
@@ -156,3 +163,5 @@ export type GetCounselorRandomMatchApiArg = {
   expertiseId?: number,
   specializationId?: number,
 }
+
+export type GetCounselingSlotsResponse = ApiResponse<CounselingSlot[]>

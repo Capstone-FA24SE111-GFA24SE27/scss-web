@@ -43,12 +43,12 @@ const useConfirmDialog = (props: Props) => {
 	};
 
 	const customChildren = (
-		<div className='flex flex-col bg-background-paper'>
+		<div className='flex flex-col bg-background-paper p-4'>
 			<DialogTitle id='alert-dialog-title'>{title}</DialogTitle>
 			
 			<DialogActions>
-				<Button onClick={handleClose} color='error'>{cancelButtonTitle}</Button>
-				<Button onClick={handleConfirm} autoFocus color='success'>
+				<Button onClick={handleClose} color='primary'>{cancelButtonTitle}</Button>
+				<Button onClick={handleConfirm} autoFocus color='secondary' variant='contained'>
 					{confirmButtonTitle}
 				</Button>
 			</DialogActions>

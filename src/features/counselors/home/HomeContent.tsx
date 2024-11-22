@@ -34,7 +34,6 @@ const HomeContent = () => {
     dateTo: lastDayOfMonth,
   })
 
-  useRequestsSocketListener(account?.profile.id, refetchRequest)
 
 
   const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch: refetchAppointments } = useGetCounselorCounselingAppointmentQuery({
@@ -42,6 +41,19 @@ const HomeContent = () => {
     // toDate: lastDayOfMonth,
     status: `WAITING`,
   });
+
+
+ 
+  const { data: totalAppointments } = useGetCounselorCounselingAppointmentQuery({});
+  const { data: completedAppointments } = useGetCounselorCounselingAppointmentQuery({
+    status: `ATTEND`
+  });
+  const { data: canceledAppointments } = useGetCounselorCounselingAppointmentQuery({
+    status: `CANCELED`
+  });
+
+  const { data: pendingAppointments } = useGetCounselorAppointmentRequestsQuery({
+  })
 
   useAppointmentsSocketListener(account?.profile.id, refetchAppointments)
 
@@ -52,9 +64,20 @@ const HomeContent = () => {
   const groupedAppointments = groupAppointmentsByDate(upcomingAppointments);
 
   const { data: qnaData, isLoading: isLoadingQuestions, refetch: refetchQna } = useGetMyCounselorQuestionsQuery({})
+
+  const { data: totalQuestions, isLoading: isLoadingTotalQuetions, refetch: refetchTotalQuesionts } = useGetMyCounselorQuestionsQuery({
+    size: 9999,
+  })
+
+  const { data: completedQuestions, isLoading: isLoadingCompletedQuestions, refetch: refetchCompletedQuestions } = useGetMyCounselorQuestionsQuery({
+    isClosed: true,
+    size: 9999,
+  })
+
   const unansweredQuestionList = qnaData?.content?.data?.filter(question => !question.answer) || []
 
   useQuestionsSocketListener(account?.profile.id, refetchQna)
+  useRequestsSocketListener(account?.profile.id, refetchRequest)
 
   const navigate = useNavigate()
   return (
@@ -66,7 +89,7 @@ const HomeContent = () => {
 
           <StatsCard
             title="Total Appontments"
-            total={113}
+            total={totalAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
               current: 40,
@@ -78,7 +101,7 @@ const HomeContent = () => {
 
           <StatsCard
             title="Completed Counseling"
-            total={93}
+            total={completedAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
               current: 52,
@@ -89,7 +112,7 @@ const HomeContent = () => {
           />
           <StatsCard
             title="Canceled Appontments"
-            total={13}
+            total={canceledAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
               current: 52,
@@ -100,7 +123,7 @@ const HomeContent = () => {
           />
           <StatsCard
             title="Appointment Requests"
-            total={13}
+            total={pendingAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
               current: 18,
@@ -179,24 +202,24 @@ const HomeContent = () => {
         <Box className='flex justify-between w-full gap-16'>
           <StatsCard
             title="Total Questions"
-            total={23}
-            statChange={{
-              prefixText: 'Last month',
-              current: 40,
-              previous: 48,
-            }}
+            total={completedQuestions?.content?.data?.length}
+            // statChange={{
+            //   prefixText: 'Last month',
+            //   current: 40,
+            //   previous: 48,
+            // }}
             icon={<Class />}
             color="primary"  // You can set color to primary, secondary, success, error, etc.
           />
 
           <StatsCard
             title="Answered Questions"
-            total={113}
-            statChange={{
-              prefixText: 'Last month',
-              current: 40,
-              previous: 48,
-            }}
+            total={totalQuestions?.content?.data?.length}
+            // statChange={{
+            //   prefixText: 'Last month',
+            //   current: 40,
+            //   previous: 48,
+            // }}
             icon={<CheckCircle fontSize='large' />}
             color="success"  // You can set color to primary, secondary, success, error, etc.
           />

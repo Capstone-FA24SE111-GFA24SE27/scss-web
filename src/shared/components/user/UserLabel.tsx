@@ -38,10 +38,17 @@ const UserLabel: React.FC<UserLabelProps> = ({
                       <div className="ml-8 text-text-secondary leading-6">{profile?.phoneNumber}</div>
                     </div>
                     {
-                      email && <div className="flex items-center">
-                        <EmailOutlined fontSize='small' className='size-16' />
-                        <div className="ml-8 text-text-secondary leading-6">{email}</div>
-                      </div>
+                      profile.email ?
+                        <div className="flex items-center">
+                          <EmailOutlined fontSize='small' className='size-16' />
+                          <div className="ml-8 text-text-secondary leading-6">{profile.email}</div>
+                        </div>
+                        : email
+                          ? <div className="flex items-center">
+                            <EmailOutlined fontSize='small' className='size-16' />
+                            <div className="ml-8 text-text-secondary leading-6">{email}</div>
+                          </div>
+                          : null
                     }
                   </div>
                 </div>

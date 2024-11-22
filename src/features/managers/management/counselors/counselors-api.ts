@@ -1,4 +1,4 @@
-import { Appointment, AppointmentFeedback, AppointmentReportType, AppointmentRequest, Counselor, PaginationContent, Profile, Student } from '@/shared/types';
+import { Appointment, AppointmentFeedback, AppointmentReportType, AppointmentRequest, CounselingSlot, Counselor, PaginationContent, Profile, Question, Student } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -6,6 +6,7 @@ export const addTagTypes = [
   'counselors',
   'counselingSlots',
   'appointments',
+  'qna'
 ] as const;
 
 
@@ -70,12 +71,12 @@ export const counselorsMangementApi = api
         }),
         invalidatesTags: ['counselors', 'counselingSlots']
       }),
-      deleteCounselorCounselingSlots: build.mutation<void, DeleteCounselorCounselingSlotArg >({
+      deleteCounselorCounselingSlots: build.mutation<void, DeleteCounselorCounselingSlotArg>({
         query: ({ counselorId, slotId }) => ({
           url: `/api/manage/counselors/${counselorId}/unassign-slot?slotId=${slotId}`,
           method: 'DELETE',
         }),
-        invalidatesTags: ['counselors',  'counselingSlots']
+        invalidatesTags: ['counselors', 'counselingSlots']
       }),
       updateCounselorAvailableDateRange: build.mutation<void, UpdateCounselorAvailableDateRange>({
         query: ({ counselorId, startDate, endDate, }) => ({
@@ -114,6 +115,29 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselingSlots'],
       }),
+      getCounselorQuestionCardsManagement: build.query<GetCounselorQuestionCardsManagementApiArg, GetCounselorQuestionCardsManagementApiResponse>({
+        query: ({
+          counselorId,
+          page
+        }) => ({
+          url: `/api/question-cards/manage/counselor/filter/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'qna'],
+      }),
+      getCounselorScheduleAppointments: build.query<
+        GetCounselorScheduleAppointmentsApiResponse,
+        GetCounselorScheduleAppointmentsApiArg
+      >({
+        query: ({ 
+          id,
+          fromDate,
+          toDate
+         }) => ({
+          url: `/api/manage/counselors/schedule/appointment/counselor/${id}`,
+          params: {fromDate, toDate },
+        }),
+        providesTags: ['counselors', 'appointments'],
+      }),
     })
   })
 
@@ -131,7 +155,9 @@ export const {
   useGetAppointmentReportManagementQuery,
   useGetCounselorAppointmentRequestsManagementQuery,
   useGetCounselorFeedbacksQuery,
-  useGetCounselorCounselingSlotsQuery, // Add this line for the new hook
+  useGetCounselorCounselingSlotsQuery,
+  useGetCounselorQuestionCardsManagementQuery,
+  useGetCounselorScheduleAppointmentsQuery
 } = counselorsMangementApi
 
 
@@ -160,13 +186,6 @@ type AvailableDateRange = {
   endDate: string;
 };
 
-export type CounselingSlot = {
-  id: number;
-  slotCode: string;
-  startTime: string;
-  endTime: string;
-  dayOfWeek: string,
-};
 
 type UpdateCounselorStatusArg = {
   status: 'AVAILABLE' | 'UNAVAILABLE',
@@ -191,13 +210,25 @@ type UpdateCounselorAvailableDateRange = {
 }
 
 
-type GetCounselingSlotsResponse = ApiResponse<CounselingSlot[]>
+export type GetCounselingSlotsResponse = ApiResponse<CounselingSlot[]>
 
 export type GetCounselorAppointmentsApiArg = {
   sortDirection?: 'ASC' | 'DESC',
   sortBy?: string,
   page?: number,
   counselorId: number,
+}
+
+export type GetCounselorQuestionCardsManagementApiArg = ApiResponse<PaginationContent<Question>>
+
+export type GetCounselorQuestionCardsManagementApiResponse = {
+  sortBy?: string;
+  keyword?: string;
+  type?: 'ACADEMIC' | 'NON-ACADEMIC' | '';
+  studentCode?: string;
+  sortDirection?: 'ASC' | 'DESC';
+  page?: number;
+  counselorId: number
 }
 
 export type GetCounselorAppointmentsApiResponse = ApiResponse<PaginationContent<Appointment>>
@@ -220,4 +251,11 @@ export type AppointmentFeedbacksApManagement = AppointmentFeedback & {
 
 export type GetCounselorFeedbacksApiArg = {
   counselorId: number
+}
+
+export type GetCounselorScheduleAppointmentsApiResponse = ApiResponse<Appointment>
+export type GetCounselorScheduleAppointmentsApiArg = {
+  id: number,
+  fromDate : string,
+  toDate: string,
 }

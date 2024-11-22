@@ -70,7 +70,6 @@ const AppointmentsContent = () => {
   });
   const appointments = data?.content?.data;
 
-  useAppointmentsSocketListener(account?.profile.id, refetch)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, appointment: Appointment) => {
     setOpenMenuId(openMenuId === appointment.id ? null : appointment.id); // Toggle menu
@@ -86,6 +85,8 @@ const AppointmentsContent = () => {
   const handleSortChange = (newSortDirection: 'ASC' | 'DESC') => {
     setSortDirection(newSortDirection);
   };
+
+  useAppointmentsSocketListener(account?.profile.id, refetch)
 
 
   if (isLoading) {

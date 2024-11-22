@@ -10,9 +10,9 @@ import {
 import {
 	StudentAppointmentList,
 	useGetStudentBehaviorAssessmentMutation,
-	useGetStudentDocumentViewQuery,
+	useGetStudentDocumentDetailQuery,
 	useGetStudentProblemTagDetailsQuery,
-	useGetStudentStudyViewQuery,
+	useGetStudentStudyDetailQuery,
 } from '@/shared/pages';
 import AcademicTranscript from '@/shared/pages/student/AcademicTranscript';
 import AttendanceReport from '@/shared/pages/student/AttendanceReport';
@@ -54,9 +54,9 @@ type Props = {};
 
 const StudentDetails = (props: Props) => {
 	const { id: studentId } = useParams();
-	const { data, isLoading } = useGetStudentDocumentViewQuery(studentId);
+	const { data, isLoading } = useGetStudentDocumentDetailQuery(studentId);
 	const { data: academicTranscriptData } =
-		useGetStudentStudyViewQuery(studentId);
+		useGetStudentStudyDetailQuery(studentId);
 	const [displayView, setDisplayView] = useState<
 		'' | 'academic_transcrip' | 'attendance_report'
 	>('');

@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { ContentLoading, DataTable, NavLinkAdapter, openDialog } from '@shared/components';
+import { AppointmentReport, ContentLoading, DataTable, NavLinkAdapter, openDialog } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -14,7 +14,7 @@ import { Appointment } from '@/shared/types';
 import dayjs from 'dayjs';
 import { meetingTypeColor, statusColor } from '@/shared/constants';
 import { useAppDispatch } from '@shared/store';
-import { AppointmentDetail } from '@/shared/pages';
+import { AppointmentDetail, StudentAppointmentReport } from '@/shared/pages';
 function AppointmentTab() {
 
   const { id } = useParams()
@@ -121,10 +121,13 @@ function AppointmentTab() {
           </ListItemIcon>
           View Detail
         </MenuItem>,
-        <MenuItem
+                <MenuItem
           key={1}
           onClick={() => {
-            navigate(`report/${row.original.id}`)
+            // navigate(`report/${row.original.id}`)
+            dispatch(openDialog({
+              children: <StudentAppointmentReport id={row.original.id.toString()}/>
+            }))
             closeMenu();
             table.resetRowSelection();
           }}

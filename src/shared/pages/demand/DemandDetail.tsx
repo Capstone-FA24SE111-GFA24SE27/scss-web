@@ -1,5 +1,6 @@
-import { UserListItem } from '@/shared/components';
-import { priorityColor } from '@/shared/constants';
+import { BackdropLoading, ContentLoading, ItemMenu, UserListItem, openDialog } from '@/shared/components';
+import { counselingTypeColor, priorityColor, statusColor } from '@/shared/constants';
+import { CalendarMonth, Circle, Summarize } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -7,217 +8,179 @@ import {
   Rating,
   Typography,
   Link,
+  Paper,
+  Divider,
+  ListItem,
 } from '@mui/material';
 import dayjs from 'dayjs';
+import { useParams } from 'react-router-dom';
+import { useGetDemandByIdQuery } from './demand-api';
+import { StudentAppointmentItem, StudentAppointmentReport } from '../student';
+import { useAppDispatch } from '@shared/store';
 
 const DemandDetail = ({ id }: { id?: string }) => {
-  const appointment = {
-    "id": 1,
-    "status": "PROCESSING",
-    "student": {
-      "id": 44,
-      "profile": {
-        "id": 44,
-        "fullName": "John Doe",
-        "phoneNumber": "1234567890",
-        "dateOfBirth": 946684800000,
-        "avatarLink": "https://png.pngtree.com/png-vector/20240204/ourlarge/pngtree-avatar-job-student-flat-portrait-of-man-png-image_11606889.png",
-        "gender": "MALE"
-      },
-      "studentCode": "SE1001",
-      "email": "sm1",
-      "specialization": null,
-      "department": {
-        "id": 1,
-        "name": "Information Technology",
-        "code": "IT"
-      },
-      "major": {
-        "id": 1,
-        "name": "Software Engineering",
-        "code": "SE",
-        "departmentId": 1
-      }
-    },
-    "supportStaff": {
-      "id": 3,
-      "profile": {
-        "id": 3,
-        "fullName": "Support staff",
-        "phoneNumber": "0987654321",
-        "dateOfBirth": 631152000000,
-        "avatarLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbcgVPXa2ROdMbYfGCTKjcL6KE9p-So1BaxQ&s",
-        "gender": "FEMALE"
-      },
-      "status": "AVAILABLE"
-    },
-    "contactNote": "string",
-    "summarizeNote": null,
-    "counselor": {
-      "id": 12,
-      "profile": {
-        "id": 12,
-        "fullName": "Nguyễn Văn A1 1",
-        "phoneNumber": "1234567890",
-        "dateOfBirth": 315532800000,
-        "avatarLink": "https://png.pngtree.com/png-vector/20230903/ourmid/pngtree-man-avatar-isolated-png-image_9935819.png",
-        "gender": "MALE"
-      },
-      "rating": 4,
-      "email": "acm1",
-      "gender": "MALE",
-      "status": "AVAILABLE",
-      "specialization": {
-        "id": 1,
-        "name": "Bridge Engineer",
-        "majorId": null,
-        "code": null
-      },
-      "academicDegree": "Thạc sĩ",
-      "department": {
-        "id": 1,
-        "name": "Information Technology",
-        "code": "IT"
-      },
-      "major": {
-        "id": 1,
-        "name": "Software Engineering",
-        "code": "SE",
-        "departmentId": 1
-      }
-    },
-    "startDateTime": "2024-11-19T13:12:47.221948427",
-    "endDateTime": null,
-    "appointments": [],
-    "priorityLevel": "LOW",
-    "additionalInformation": "string",
-    "issueDescription": "string",
-    "causeDescription": "string",
-    "demandType": "ACADEMIC"
+  const { id: demandRouteId } = useParams()
+  const demandId = id || demandRouteId
+  const { data: demandData, isLoading } = useGetDemandByIdQuery(demandId)
+  const demand = demandData
+  const dispatch = useAppDispatch()
+  if (isLoading) {
+    // return <ContentLoading className='min-w-md' />
+    return <BackdropLoading />
   }
-  if (!appointment) {
+
+  if (!demand) {
     return (
-      <Typography variant="h5" color="textSecondary">
-        No appointment
+      <Typography variant="h5" color="textSecondary" className='min-w-md p-32'>
+        No demand
       </Typography>
     );
   }
 
   return (
-    <Box className="p-36 flex flex-col gap-16 w-md">
+    <Box className="p-36 flex flex-col gap-16 min-w-md">
       <Typography className="font-extrabold leading-none tracking-tight text-20 md:text-24">
-        Detailed Appointment
+        Detailed Demand
       </Typography>
-
-      {/* Appointment Status */}
-      <div className="flex gap-24 pb-8">
+      <Box className="flex gap-24 pb-8">
+        <Box className='flex gap-8'>
+          <div className="flex gap-8 items-center">
+            <CalendarMonth fontSize='small' />
+            <Typography>{dayjs(demand.startDateTime).format('YYYY-MM-DD')}</Typography>
+            <Typography>
+              {dayjs(demand.startDateTime).format('HH:mm')}
+            </Typography>
+          </div>
+          <div className="flex gap-8 items-center">
+            - {
+              demand.endDateTime
+                ? <>
+                  <CalendarMonth fontSize='small' />
+                  <Typography>{dayjs(demand.endDateTime).format('YYYY-MM-DD')}</Typography>
+                  <Typography>
+                    {dayjs(demand.endDateTime).format('HH:mm')}
+                  </Typography>
+                </>
+                : <Typography>
+                  Ongoing
+                </Typography>
+            }
+          </div>
+        </Box>
         <Chip
-          label={appointment.status}
+          label={demand.status}
           variant="filled"
           color="warning"
           size="small"
         />
-        {/* <Chip
-          label={appointment.priorityLevel}
-          variant="outlined"
-          color="secondary"
-          size="small"
-        /> */}
-        <Chip
-          label={appointment.demandType}
-          variant="filled"
-          color="info"
-          size="small"
-        />
-      </div>
+      </Box>
 
-      {/* Appointment Time */}
-      <div className="flex gap-24 pb-8">
-        <div className="flex items-center gap-8">
-          <Typography>
-            {dayjs(appointment.startDateTime).format('YYYY-MM-DD HH:mm')}
+      <Box className="flex flex-col gap-8">
+        <div className='flex items-center gap-8'>
+          <Typography className='font-semibold text-text-secondary w-112'>Priority:</Typography>
+          <Typography className='font-bold' color={priorityColor[demand.priorityLevel]}>{demand.priorityLevel}</Typography>
+        </div>
+        <div className='flex items-center gap-8'>
+          <Typography className='font-semibold text-text-secondary w-112'>Demand type:</Typography>
+          <Typography className={`font-bold text-${counselingTypeColor[demand.demandType]}`}>{demand.demandType}</Typography>
+        </div>
+      </Box>
+      <Divider />
+
+      <div className="flex flex-col gap-16">
+
+        <div className="flex flex-col flex-1 gap-8 rounded">
+          <Typography className="font-semibold text-text-secondary">
+            Student
           </Typography>
+          <UserListItem
+            className='ml-4'
+            fullName={demand.student.profile.fullName}
+            avatarLink={demand.student.profile.avatarLink}
+            phoneNumber={demand.student.profile.phoneNumber}
+            email={demand.student.email}
+          />
+        </div>
+
+
+        {/* Counselor Information */}
+
+        <div className="flex flex-col flex-1 gap-8 rounded">
+          <Typography className="font-semibold text-text-secondary">
+            Assignee
+          </Typography>
+          <UserListItem
+            className='ml-4'
+            fullName={demand.counselor.profile.fullName}
+            avatarLink={demand.counselor.profile.avatarLink}
+            phoneNumber={demand.counselor.profile.phoneNumber}
+            email={demand.counselor.email}
+          />
+        </div>
+
+        <div className="flex flex-col flex-1 gap-8 rounded">
+          <Typography className="font-semibold text-text-secondary">
+            Assigner
+          </Typography>
+          <UserListItem
+            className='ml-4'
+            fullName={demand.supportStaff.profile.fullName}
+            avatarLink={demand.supportStaff.profile.avatarLink}
+            phoneNumber={demand.supportStaff.profile.phoneNumber}
+          // email={demand.supportStaff.email}
+          />
         </div>
       </div>
 
-      <div className='flex items-center gap-8'>
-        <Typography className='text-sm text-text-secondary w-64'>Priority:</Typography>
-        <Typography className='text-sm font-bold' color={priorityColor[appointment.priorityLevel]}>{appointment.priorityLevel}</Typography>
-      </div>
+      <Divider />
 
-      {/* Student Information */}
-      <div className="flex flex-col flex-1 gap-8 rounded">
-        <UserListItem
-          fullName={appointment.student.profile.fullName}
-          avatarLink={appointment.student.profile.avatarLink}
-          phoneNumber={appointment.student.profile.phoneNumber}
-          email={appointment.student.email}
-        />
-      </div>
-
-      {/* Support Staff Information */}
-      <div className="flex flex-col flex-1 gap-8 rounded">
-        <Typography className="text-lg font-semibold text-primary-light">
-          Support Staff
-        </Typography>
-        <div className="flex items-center gap-16">
-          <Avatar src={appointment.supportStaff.profile.avatarLink} />
-          <Typography>{appointment.supportStaff.profile.fullName}</Typography>
+      <div className="flex flex-col gap-16">
+        <div>
+          <Typography className="font-semibold text-text-secondary">
+            Additional Information
+          </Typography>
+          <Typography>{demand.additionalInformation || 'N/A'}</Typography>
         </div>
-        <Typography>Phone: {appointment.supportStaff.profile.phoneNumber}</Typography>
-        <Typography>Status: {appointment.supportStaff.status}</Typography>
-      </div>
-
-      {/* Counselor Information */}
-      <div className="flex flex-col flex-1 gap-8 rounded">
-        <Typography className="text-lg font-semibold text-primary-light">
-          Counselor
-        </Typography>
-        <div className="flex items-center gap-16">
-          <Avatar src={appointment.counselor.profile.avatarLink} />
-          <Typography>{appointment.counselor.profile.fullName}</Typography>
+        <div>
+          <Typography className="font-semibold text-text-secondary">
+            Contact Note
+          </Typography>
+          <Typography>{demand.contactNote || 'N/A'}</Typography>
         </div>
-        <Typography>Phone: {appointment.counselor.profile.phoneNumber}</Typography>
-        <Typography>Email: {appointment.counselor.email}</Typography>
-        <Typography>
-          Specialization: {appointment.counselor.specialization.name}
-        </Typography>
-        <Typography>Academic Degree: {appointment.counselor.academicDegree}</Typography>
-        <Rating value={appointment.counselor.rating} readOnly />
+        <div>
+          <Typography className="font-semibold text-text-secondary">
+            Issue Description
+          </Typography>
+          <Typography>{demand.issueDescription || 'N/A'}</Typography>
+        </div>
+        <div>
+          <Typography className="font-semibold text-text-secondary">
+            Cause Description
+          </Typography>
+          <Typography>{demand.causeDescription || 'N/A'}</Typography>
+        </div>
       </div>
 
-      {/* Additional Information */}
-      <div className="flex flex-col gap-8">
-        <Typography className="text-lg font-semibold text-primary-light">
-          Additional Information
+      <Divider />
+
+
+      <div className="flex flex-col gap-16">
+        <Typography className="font-semibold text-text-secondary">
+          Associated Appointments
         </Typography>
-        <Typography>Contact Note: {appointment.contactNote || 'N/A'}</Typography>
-        <Typography>Issue Description: {appointment.issueDescription || 'N/A'}</Typography>
-        <Typography>Cause Description: {appointment.causeDescription || 'N/A'}</Typography>
-        <Typography>
-          Additional Information: {appointment.additionalInformation || 'N/A'}
-        </Typography>
+        <Box className='flex flex-col gap-8'>
+          {
+            !demand?.appointments?.length
+              ? <Typography color='textSecondary'>No appointments found</Typography>
+              : demand?.appointments?.map(appointment => <StudentAppointmentItem appointment={appointment} />
+              )
+          }
+        </Box>
+
+
       </div>
 
-      {/* Meeting Location */}
-      {/* <div className="flex flex-col gap-8">
-        <Typography className="text-lg font-semibold text-primary-light">
-          Meeting Details
-        </Typography>
-        {appointment.meetingType === 'ONLINE' && appointment.meetUrl ? (
-          <Link
-            href={appointment.meetUrl}
-            target="_blank"
-            rel="noopener"
-            className="underline text-secondary-main"
-          >
-            {appointment.meetUrl}
-          </Link>
-        ) : (
-          <Typography>Address: {appointment.address || 'N/A'}</Typography>
-        )}
-      </div> */}
-    </Box>
+    </Box >
   );
 };
 

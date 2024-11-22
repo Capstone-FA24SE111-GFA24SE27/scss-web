@@ -90,6 +90,13 @@ export const studentDetailApi = api
           method: 'GET',
         }),
       }),
+      getStudentMarkReport: build.query<GetStudentMarkReportApiResponse, GetStudentMarkReportApiArg>({
+        query: ({ studentId, semesterName }) => ({
+          url: `/api/students/mark-report/${studentId}/semester/${semesterName}`,
+          method: 'GET',
+        }),
+        providesTags: ['students'],
+      }),
     })
   });
 
@@ -104,6 +111,7 @@ export const {
   useGetStudentProblemTagDetailsQuery,
   // useGetStudentBehaviorAssessmentQuery,
   useGetStudentBehaviorAssessmentMutation,
+  useGetStudentMarkReportQuery
 } = studentDetailApi;
 
 type StudentAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
@@ -192,4 +200,22 @@ export type GetStudentBehaviorAssessmentApiResponse = StudentBehaviorAssessment;
 export type StudentBehaviorAssessment = {
   message: string,
   status: number,
+};
+
+export type GetStudentMarkReportApiArg = {
+  studentId: string;
+  semesterName: string;
+};
+
+export type GetStudentMarkReportApiResponse = ApiResponse<StudentMarkReport[]>;
+
+export type StudentMarkReport = {
+  id: number;
+  startDate: string;
+  totalSlot: number;
+  studentCode: string;
+  subjectName: string;
+  semesterName: string;
+  grade: number | null;
+  detais: AttendanceDetail[] | null;
 };

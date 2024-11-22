@@ -6,11 +6,11 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/system/Box';
-import { ContentLoading, Gender, NavLinkAdapter } from '@shared/components';
+import { BackdropLoading, ContentLoading, Gender, NavLinkAdapter, WeeklySlots } from '@shared/components';
 import dayjs from 'dayjs';
 import { memo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetCounselorDetailQuery } from './counselor-api';
+import { useGetCounselorDetailQuery, useGetWeeklySlotsQuery } from './counselor-api';
 import { Paper, Rating } from '@mui/material';
 import clsx from 'clsx'
 /**
@@ -29,7 +29,9 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
     const counselorId = id || counselorRouteId
     const { data, isLoading } = useGetCounselorDetailQuery(counselorId)
     const counselor = data?.content
-    console.log(counselor)
+
+    const { data: counselorCounselingSlotsData, isLoading: isLoadingCounselorCounselingSlotsData } = useGetWeeklySlotsQuery(Number(counselorId))
+    const counselorCounselingSlots = counselorCounselingSlotsData?.content
 
     if (isLoading) {
         return <ContentLoading className='m-32' />
@@ -47,7 +49,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
     }
 
     return (
-        <div className={clsx(className)}>
+        <div className={clsx(className, "min-w-lg")}>
             <Box
                 className="relative w-full px-32 h-160 sm:h-192 sm:px-48"
                 sx={{
@@ -61,7 +63,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                 />
             </Box>
             <div className="relative flex flex-col items-center flex-auto p-24 pt-0 sm:p-48 sm:pt-0">
-                <div className="w-full max-w-3xl">
+                <div className="w-full">
                     <div className="flex items-end flex-auto -mt-64">
                         <Avatar
                             sx={{
@@ -101,7 +103,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                     <div className='flex items-end gap-8 text-lg text-text-secondary'>
                         <Rating
                             name="simple-controlled"
-                            value={4.6}
+                            value={counselor?.rating}
                             readOnly
                             precision={0.5}
                         />
@@ -188,7 +190,6 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                             </Box>
                         </div>
                     }
-
                     {
                         counselor?.expertise && <div>
                             <Divider className="mt-16 mb-24" />
@@ -204,8 +205,18 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                         </div>
                     }
 
+                    <Divider className="mt-16 mb-24" />
 
+                    <div className="flex flex-col gap-16">
+                        <Typography className='font-semibold'>
+                            Weekly Schedule
+                        </Typography>
+                        <WeeklySlots slots={counselorCounselingSlots} />
+                    </div>
                 </div>
+
+
+
             </div >
         </div>
     );

@@ -49,7 +49,7 @@ const StaffFollowedStudentsList = (props: Props) => {
 									</div>
 								) : (
 									students.map((item) => (
-										<StudentListItem key={item.id} student={item} />
+										<StudentListItem key={item.id} student={item?.student} />
 									))
 								)}
 					</List>

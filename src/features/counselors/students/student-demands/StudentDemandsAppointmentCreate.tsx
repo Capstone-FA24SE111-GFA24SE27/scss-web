@@ -214,7 +214,7 @@ function StudentDemandsAppointmentCreate() {
               <Typography className="text-lg truncate">{student.studentCode}</Typography>
 
               <div className="flex flex-wrap items-center mt-16">
-                
+
               </div>
             </div>
           </div>
@@ -277,18 +277,7 @@ function StudentDemandsAppointmentCreate() {
 
           <div className='px-32'>
             <Typography className='font-semibold text-primary text-lg'>Meeting Type</Typography>
-            {/* <FormControl>
-                            <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
-                                name="radio-buttons-group"
-                            >
-                                <div className='flex gap-16'>
-                                    <FormControlLabel value="female" control={<Radio />} label="Online" />
-                                    <FormControlLabel value="male" control={<Radio />} label="Offline" />
-                                </div>
-                            </RadioGroup>
-                        </FormControl> */}
+
             <Controller
               name="isOnline"
               control={control}
@@ -316,7 +305,7 @@ function StudentDemandsAppointmentCreate() {
             />
             {
               // @ts-ignore
-              formData?.isOnline === "true" ? (
+              (formData?.isOnline === true || formData?.isOnline === "true") ? (
                 <TextField
                   autoFocus
                   margin="dense"

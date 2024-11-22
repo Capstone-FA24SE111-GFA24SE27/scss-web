@@ -140,20 +140,20 @@ function StudentsTable() {
     //     </div>
     //   )
     // },
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      size: 64,
-      accessorFn: (row) => (
-        <div className="flex items-center max-w-40">
-          {row.status !== 'UNAVAILABLE' ? (
-            <CheckCircle className="text-green" />
-          ) : (
-            <RemoveCircle className="text-red" />
-          )}
-        </div>
-      )
-    }
+    // {
+    //   accessorKey: 'status',
+    //   header: 'Status',
+    //   size: 64,
+    //   accessorFn: (row) => (
+    //     <div className="flex items-center max-w-40">
+    //       {row.status !== 'UNAVAILABLE' ? (
+    //         <CheckCircle className="text-green" />
+    //       ) : (
+    //         <RemoveCircle className="text-red" />
+    //       )}
+    //     </div>
+    //   )
+    // }
   ], []);
 
   // if (isLoading) {

@@ -158,6 +158,7 @@ function QnaForm() {
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						<div className="mb-24">
 							<Typography variant="h6">Submit your question</Typography>
+							<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
 						</div>
 						<div className="space-y-32">
 							{/* Question Type Radio Group */}
@@ -310,7 +311,7 @@ function QnaForm() {
 										fullWidth
 										variant="outlined"
 										multiline
-										minRows={4}
+										minRows={8}
 										error={!!errors.content}
 										helperText={errors.content?.message}
 									/>

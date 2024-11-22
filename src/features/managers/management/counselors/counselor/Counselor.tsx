@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { AppLoading, Breadcrumbs, Gender, Heading, PageSimple } from '@shared/components';
-import { Autocomplete, Box, MenuItem, Paper, Rating, Select, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
+import { AppLoading, BackdropLoading, Breadcrumbs, Gender, Heading, PageSimple, Popover, WeeklySlots } from '@shared/components';
+import { Autocomplete, Box, Button, MenuItem, Paper, Rating, Select, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
 import CounselorSidebarContent from '../CounselorSidebarContent';
-import { Feedback, Mail, Phone, Star } from '@mui/icons-material';
+import { CalendarMonth, CalendarViewWeek, Feedback, Mail, Phone, Star } from '@mui/icons-material';
 import { Controller } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
-import { CounselingSlot, useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorCounselingSlotsQuery, useGetCounselorManagementQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
+import { useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorCounselingSlotsQuery, useGetCounselorManagementQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import AppointmentsTable from './AppointmentsTab';
@@ -15,6 +15,12 @@ import RequestsTable from './RequestsTab';
 import FeedbackTab from './FeedbackTab';
 import ScheduleTab from './ScheduleTab';
 import OverviewTab from './OverviewTab';
+import { CounselingSlot } from '@/shared/types';
+import { daysOfWeek } from '@/shared/constants';
+import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
+import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import { isApiSuccess, useAppDispatch } from '@shared/store';
+import QnaTab from './QnaTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -22,8 +28,6 @@ const Root = styled(PageSimple)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper
   },
 }));
-
-const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
 
 function Counseling() {
@@ -43,28 +47,49 @@ function Counseling() {
   const counselorCounselingSlots = counselorCounselingSlotsData?.content
   const counselingSlots = counselingSlotsData?.content || []
 
+
   const filteredSlots = counselorCounselingSlots?.filter(slot => slot.dayOfWeek === selectedDay) || []
 
   console.log(filteredSlots)
 
   const isMobile = false
 
-  const [updateCounselorStatus, { isLoading: isLoadingCounselorStatus }] = useUpdateCounselorStatusMutation()
+  const [updateCounselorStatus, { isLoading: isLoadingCounselorStatus, isSuccess: isSuccessCounselorStatus }] = useUpdateCounselorStatusMutation()
   const [updateCounselorCounselingSlots, { isLoading: isLoadingUpdateCounselorCounselingSlots }] = useUpdateCounselorCounselingSlotsMutation()
   const [deleteCounselorCounselingSlots, { isLoading: isLoadingDeleteCounselorCounselingSlots }] = useDeleteCounselorCounselingSlotsMutation()
-  const [updateCounselorAvailableDateRange, { isLoading: isLoadingDeleteCounselorAvailableDateRange }] = useUpdateCounselorAvailableDateRangeMutation()
+  const [updateCounselorAvailableDateRange, { isLoading: isLoadingUpdateCounselorAvailableDateRange }] = useUpdateCounselorAvailableDateRangeMutation()
 
   const location = useLocation();
 
   function handleChangeTab(event: React.SyntheticEvent, value: number) {
     setTabValue(value);
   }
+  const dispatch = useAppDispatch()
 
   const handleStatusChange = (e) => {
-    updateCounselorStatus({
-      status: e.target.value,
-      counselorId: Number(id),
-    })
+    useConfirmDialog({
+      dispatch: dispatch,
+      title: 'Are you you want to update status for this counselor?',
+      confirmButtonFucntion: async () => {
+        const result = await updateCounselorStatus({
+          status: e.target.value,
+          counselorId: Number(id),
+          })
+          if (isApiSuccess(result)) {
+          useAlertDialog({
+            dispatch,
+            title: 'Counselor status updated success',
+            color: 'success'
+          });
+        } else {
+          useAlertDialog({
+            dispatch,
+            title: 'Counselor status updated fail',
+            color: 'error'
+          });
+        }
+      },
+    });
   }
 
   const handleDayChange = (event) => {
@@ -119,6 +144,7 @@ function Counseling() {
   if (isLoading) {
     return <AppLoading />;
   }
+
   if (!data) {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No counselor</Typography>;
   }
@@ -127,6 +153,16 @@ function Counseling() {
     <Root
       header={
         <div className=''>
+          {
+            (
+              isLoadingUpdateCounselorAvailableDateRange
+              || isLoadingDeleteCounselorCounselingSlots
+              || isLoadingUpdateCounselorCounselingSlots
+              || isLoadingCounselorStatus
+            ) && (
+              <BackdropLoading />
+            )
+          }
           <div className='p-16 px-32 space-y-16'>
             <Breadcrumbs
               parents={[
@@ -156,24 +192,24 @@ function Counseling() {
                   />
                   <Rating readOnly value={counselorData?.profile.rating} />
                   <div className='flex justify-between divide-x-1 border-t mt-16'>
-                    <Tooltip title={counselorData?.profile.profile.phoneNumber}>
+                    <Tooltip title={`Call`}>
                       <a
                         className="flex flex-1 items-center p-8"
                         href={`tel${counselorData?.profile.profile.phoneNumber}`}
                         role="button"
                       >
                         <Phone fontSize='small' />
-                        <Typography className="ml-8">Call</Typography>
+                        <Typography className="ml-8 text-sm">{counselorData?.profile.profile.phoneNumber}</Typography>
                       </a>
                     </Tooltip>
-                    <Tooltip title={counselorData?.profile.email}>
+                    <Tooltip title={`Mail`}>
                       <a
                         className="flex flex-1 items-center p-8 justify-end"
                         href={`mailto:${counselorData?.profile.email}`}
                         role="button"
                       >
                         <Mail fontSize='small' />
-                        <Typography className="ml-8">Email</Typography>
+                        <Typography className="ml-8 text-sm">{counselorData?.profile.email}</Typography>
                       </a>
                     </Tooltip>
                   </div>
@@ -205,21 +241,40 @@ function Counseling() {
                 <div className='flex items-start'>
                   <Typography className='w-224 font-semibold'>Assign Slots</Typography>
                   <div className='flex flex-col gap-16 w-full'>
-                    <TextField
-                      size="small"
-                      select
-                      value={selectedDay}
-                      onChange={handleDayChange}
-                      label="Select Day"
-                      variant="outlined"
-                      className="w-256"
-                    >
-                      {daysOfWeek.map(day => (
-                        <MenuItem key={day} value={day}>
-                          {day}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                    <Box className='flex w-full justify-between'>
+                      <TextField
+                        size="small"
+                        select
+                        value={selectedDay}
+                        onChange={handleDayChange}
+                        label="Select Day"
+                        variant="outlined"
+                        className="w-256"
+                      >
+                        {daysOfWeek.map(day => (
+                          <MenuItem key={day} value={day}>
+                            {day}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      <Popover
+                        trigger={
+                          <Button startIcon={<CalendarMonth />}>Weekly schedule</Button>
+                        }
+                        content={
+                          <WeeklySlots slots={counselorCounselingSlots} />
+                        }
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                      />
+                    </Box>
+
                     <Autocomplete
                       className="w-full"
                       multiple
@@ -251,7 +306,7 @@ function Counseling() {
                       value={dayjs(counselorData?.availableDateRange.startDate)}
                       onChange={handleStartDateChange}
                       maxDate={dayjs(counselorData?.availableDateRange.endDate)}
-                      disabled={isLoadingDeleteCounselorAvailableDateRange}
+                      disabled={counselorData?.profile.status === 'UNAVAILABLE' || isLoadingUpdateCounselorAvailableDateRange}
                     />
                     <div className='font-semibold pt-8'>to</div>
                     <DatePicker
@@ -260,7 +315,7 @@ function Counseling() {
                       value={dayjs(counselorData?.availableDateRange.endDate)}
                       onChange={handleEndDateChange}
                       minDate={dayjs(counselorData?.availableDateRange.startDate)}
-                      disabled={isLoadingDeleteCounselorAvailableDateRange}
+                      disabled={counselorData?.profile.status === 'UNAVAILABLE' || isLoadingUpdateCounselorAvailableDateRange}
                     />
                   </div>
                 </div>
@@ -307,6 +362,7 @@ function Counseling() {
               label="Profile"
             />
           </Tabs>
+
         </div>
       }
       content={
@@ -318,6 +374,7 @@ function Counseling() {
               {tabValue === 2 && <RequestsTable />}
               {tabValue === 3 && <ScheduleTab />}
               {tabValue === 4 && <FeedbackTab />}
+              {tabValue === 5 && <QnaTab />}
             </div>
           </Paper>
         </div >

@@ -25,24 +25,25 @@ type StudentListItemPropsType = {
 function StudentListItem(props: StudentListItemPropsType) {
   const { student } = props;
   const { id } = useParams();
+  console.log(student)
 
   // Separate and prioritize tags with `contained: true`
-  const containedTags = student.behaviorTagList.filter(tag => tag.contained).map(tag => ({ ...tag, color: 'success.main' }));
-  const otherTags = student.behaviorTagList.filter(tag => !tag.contained);
-  
+  const containedTags = student.behaviorTagList?.filter(tag => tag.contained).map(tag => ({ ...tag, color: 'success.main' })) || [];
+  const otherTags = student.behaviorTagList?.filter(tag => !tag.contained) || [];
+
   // Combine contained and other tags, then slice to get the first 3 displayed tags and the rest as hidden
   const displayedTags = [...containedTags, ...otherTags].slice(0, 3);
   const hiddenTags = [...containedTags, ...otherTags].slice(3);
 
   // Group tags by category
-  const groupedTags = student.behaviorTagList.reduce((acc, tag) => {
+  const groupedTags = student.behaviorTagList?.reduce((acc, tag) => {
     const { category, contained, problemTagName, number, source } = tag;
     if (!acc[category]) {
       acc[category] = [];
     }
     acc[category].push({ problemTagName, number, source, contained });
     return acc;
-  }, {} as { [category: string]: { problemTagName: string; number: number; source: string; contained: boolean }[] });
+  }, {} as { [category: string]: { problemTagName: string; number: number; source: string; contained: boolean }[] }) || [];
 
   // Render tags grouped by category
   const renderTagGroup = (category: string, tags: { problemTagName: string; number: number; source: string; contained: boolean }[]) => {

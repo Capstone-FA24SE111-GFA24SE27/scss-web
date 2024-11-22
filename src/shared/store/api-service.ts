@@ -106,3 +106,17 @@ export const getApiErrorMessage = (error: FetchBaseQueryError | SerializedError)
 	// Handle SerializedError
 	return 'Unexpected error. Please try again.';
 };
+
+export const isApiSuccess = (
+	result: { data?: { status?: number } | void; error?: any }
+): result is { data: { status: number } } =>
+	'data' in result &&
+	result.data !== undefined &&
+	typeof result.data === 'object' &&
+	'status' in result.data &&
+	result.data.status === 200;
+
+export const isApiError = (
+	result: { data?: any; error?: FetchBaseQueryError | SerializedError }
+): result is { error: FetchBaseQueryError | SerializedError } =>
+	'error' in result && result.error !== undefined;

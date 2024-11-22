@@ -134,7 +134,11 @@ const RequestChart = () => {
   };
 
   const [granularity, setGranularity] = useState('semester');
-  const [selectedData, setSelectedData] = useState(null);
+  const [selectedData, setSelectedData] = useState({
+    period: `Fall 2024`,
+    data:{ appointments: 140, canceled: 7, completed: 130, expired: 3 },
+    category: 'Academic',
+  });
 
   // Update data dynamically based on granularity
   const barData = appointmentData[granularity];

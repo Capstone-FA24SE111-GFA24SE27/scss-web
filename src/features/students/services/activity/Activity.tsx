@@ -55,11 +55,11 @@ function Activity() {
 
 						label="Requests"
 					/>
-					<Tab
+					{/* <Tab
 						className="text-lg font-semibold min-h-40 min-w-64 px-16"
 
 						label="Others"
-					/>
+					/> */}
 				</Tabs>
 			</div>}
 			rightSidebarContent={<ActivitySidebarContent />}

@@ -1,4 +1,4 @@
-import { Add, CakeOutlined, CalendarMonth, Checklist, Description, EmailOutlined, EventNote, LocalPhoneOutlined, Summarize } from '@mui/icons-material';
+import { Add, CakeOutlined, CalendarMonth, Checklist, Description, EmailOutlined, EventNote, Grade, LocalPhoneOutlined, Summarize } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Box, DialogActions, DialogContent, DialogTitle, Paper, Tab, Tabs } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -22,6 +22,7 @@ import AttendanceReport from './AttendanceReport';
 import { lazy } from 'react'
 import { closeStudentView } from '@/features/counselors/counselors-layout-slice';
 import StudentGradeChart from './StudentGradeChart';
+import MarkReport from './MarkReport';
 // const AcademicTranscript = lazy(() => import('./AcademicTranscript'))
 // const StudentAppointmentList = lazy(() => import('./StudentAppointmentList'))
 // const AttendanceReport = lazy(() => import('./AttendanceReport'))
@@ -124,11 +125,11 @@ function StudentView({ id, actionButton }: StudentViewProps) {
   }
 
   if (isLoading) {
-    return <ContentLoading className='m-32 w-md' />
+    return <ContentLoading className='m-32 min-w-lg' />
   }
 
   if (!student) {
-    return <div className='relative p-48 w-md'>
+    return <div className='relative p-48 min-w-lg'>
       <Typography
         color="text.secondary"
         variant="h5"
@@ -433,6 +434,27 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         }}
                       >
                         View attendance report
+                      </Button>
+                      <Button
+                        startIcon={<Grade />}
+                        variant='outlined'
+                        color='secondary'
+                        size='small'
+                        className={`w-216`}
+                        // onClick={(event) => {
+                        //   studentRouteId
+                        //     ? navigate('academic-transcript')
+                        //     : dispatch(openDialog({
+                        //       children: <AcademicTranscript id={studentId} />
+                        //     }));
+                        // }}
+                        onClick={(event) => {
+                          dispatch(openDialog({
+                            children: <MarkReport id={studentId} />
+                          }));
+                        }}
+                      >
+                        View mark report
                       </Button>
                     </div>
                   </div>
