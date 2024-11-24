@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, List, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselingAppointmentRequestsQuery, useSendCouselingAppointmentFeedbackMutation } from '../activity-api'
-import { AppLoading, DateRangePicker, ExpandableText, NavLinkAdapter, Pagination, RequestItem, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
+import { AppLoading, DateRangePicker, ExpandableText, FilterTabs, NavLinkAdapter, Pagination, RequestItem, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -15,6 +15,7 @@ const RequestsTab = () => {
 
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [statusValue, setStatusValue] = useState(0);
 
   const [selectedMeetingType, setSelectedMeetingType] = useState('');
 
@@ -43,15 +44,34 @@ const RequestsTab = () => {
     setSortDirection(newSortDirection);
   };
 
+  
+
+  const statusTabs = [
+    { label: 'All', value: '' },
+    { label: 'Approved', value: 'APPROVED' },
+    { label: 'Waiting', value: 'WAITING' },
+    { label: 'Denied', value: 'DENIED' },
+    { label: 'Expired', value: 'EXPIRED' },
+  ];
+
+  
+  const handleChangeStatus = (event: React.SyntheticEvent, newValue: number) => {
+    setStatusValue(newValue);
+  };
+
+
   const { data, isLoading, refetch } = useGetCounselingAppointmentRequestsQuery({
     dateFrom: startDate,
     dateTo: endDate,
     meetingType: selectedMeetingType as `ONLINE` | `OFFLINE` | ``,
     page: page,
-    sortDirection: sortDirection
+    sortDirection: sortDirection,
+    status: statusTabs[statusValue].value,
   })
 
   const appointmentRequests = data?.content.data
+
+  
 
   useRequestsSocketListener(account?.profile.id, refetch)
 
@@ -59,7 +79,7 @@ const RequestsTab = () => {
     return <AppLoading />
   }
   return (
-    <div className='p-16 container mx-auto'>
+    <div className='p-16 container mx-auto flex flex-col gap-16'>
       <Box className='flex justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker
@@ -82,7 +102,8 @@ const RequestsTab = () => {
           initialSort='DESC'
         />
       </Box>
-      <List className='flex flex-col gap-16 mt-8'>
+      <FilterTabs tabs={statusTabs} tabValue={statusValue} onChangeTab={handleChangeStatus}/>
+      <List className='flex flex-col gap-16'>
         {
           !appointmentRequests?.length
             ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>

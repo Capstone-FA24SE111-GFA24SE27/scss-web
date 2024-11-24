@@ -9,15 +9,16 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { Breadcrumbs, ContentLoading } from '@shared/components';
-import { selectAccount, useAppSelector } from '@shared/store';
+import { getApiErrorMessage, selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { useCreateAppointmentMutation, useGetStudentViewQuery } from './student-api';
+import { useCreateAppointmentMutation, useGetStudentDetailQuery } from './student-api';
 import { useGetCounselorDailySlotsQuery } from '@/features/students/services/counseling/counseling-api';
 import { navigateUp } from '@/shared/utils';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 
 /**
  * The contact view.
@@ -78,7 +79,7 @@ function CounselorBooking() {
   const isOnline = watch("isOnline")
 
 
-  const { data: studentData, isLoading } = useGetStudentViewQuery(studentId)
+  const { data: studentData, isLoading } = useGetStudentDetailQuery(studentId)
   const { data: counselorDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId: counselorId?.toString(), from: startOfMonth, to: endOfMonth });
 
   const counselor = account
@@ -86,20 +87,40 @@ function CounselorBooking() {
 
   const location = useLocation();
   const studentUrl = navigateUp(location, 1);
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
 
   const onSubmit = () => {
-    bookCounselor({
-      studentId: studentId,
-      body: {
-        ...formData,
-        meetURL,
-        address,
-      }
+    useConfirmDialog({
+      dispatch,
+      title: 'Confirm booking',
+      content: `Are you sure to book ${counselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
+      confirmButtonFucntion: () => bookCounselor({
+        studentId: student?.id.toString(),
+        body: {
+          ...formData,
+          meetURL,
+          address,
+        }
+      })
+        .unwrap()
+        .then(() => {
+          useAlertDialog({
+            dispatch,
+            title: 'Booking success',
+            confirmFunction: () => navigate(-1)
+          })
+        })
+        .catch(error => {
+          useAlertDialog({
+            dispatch,
+            title: `Booking failed ${getApiErrorMessage(error)}`,
+            color: 'error',
+          })
+        })
     })
-    // .unwrap()
-    // .then(() => navigate('../'))
-  }
 
+  }
   const handleDateChange = (selectedDate) => {
     const previousDate = formData.date
     const currentDate = dayjs(selectedDate).format('YYYY-MM-DD')
@@ -184,7 +205,7 @@ function CounselorBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto items-center w-md p-24 sm:p-48">
+      <div className="relative flex flex-col flex-auto items-center w-md p-24 sm:p-48 min-w-lg">
         <div className="w-full max-w-3xl">
           <Breadcrumbs
             parents={[
@@ -195,7 +216,7 @@ function CounselorBooking() {
             ]}
             currentPage={"Booking"}
           />
-          <div className="flex flex-auto items-end gap-32">
+          <div className="flex flex-auto items-center gap-32">
             <Avatar
               sx={{
                 borderWidth: 4,
@@ -214,22 +235,8 @@ function CounselorBooking() {
               <Typography className="mt-32 text-4xl font-bold truncate">{student.profile.fullName}</Typography>
               <Typography className="text-lg truncate">{student.studentCode}</Typography>
 
-              <div className="flex flex-wrap items-center mt-16">
-                <Chip
-                  label={`Problem 1`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
-                <Chip
-                  label={`Problem 2`}
-                  className="mr-12 mb-12"
-                  size="medium"
-                />
-              </div>
             </div>
           </div>
-
-
 
           <Divider className="mt-16 mb-24" />
 
@@ -281,6 +288,12 @@ function CounselorBooking() {
                       ))
               }
             </div>
+              {
+                errors?.slotCode && (
+                  <Typography className='mt-16' color='error'>Please select a counseling slot</Typography>
+                )
+              }
+
           </div>
 
           <Divider className="mt-16 mb-24" />

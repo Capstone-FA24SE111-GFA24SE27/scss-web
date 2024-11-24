@@ -9,10 +9,10 @@ import { SyntheticEvent, useState } from 'react'
 import { ContentLoading, ExpandableText, Heading, ItemMenu, openDialog } from '@/shared/components';
 import { motionVariants } from '@/shared/configs';
 import dayjs from 'dayjs';
-import { AppointmentView } from '@/shared/pages';
+import { AppointmentDetail } from '@/shared/pages';
 
 
-const QuestionBoard = () => {
+const FeedbackTab = () => {
   const role: Role = useAppSelector(selectAccount)?.role
   const { id } = useParams()
   const { data: counselorFeedbacksData, isLoading } = useGetCounselorFeedbacksQuery({ counselorId: Number(id) })
@@ -63,7 +63,8 @@ const QuestionBoard = () => {
                         src={feedback.appointment.studentInfo?.profile.avatarLink}
                       />
                       <div>
-                        <Typography className='font-semibold'>{feedback.appointment.studentInfo?.profile.fullName}<span className='text-text-disabled font-normal text-sm pl-8'>{dayjs(feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span></Typography>
+                        <Typography className='font-semibold'>{feedback.appointment.studentInfo?.profile.fullName}</Typography>
+                        <Typography className='text-text-disabled font-normal text-sm'>{dayjs(feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                         <Rating value={feedback.rating} readOnly />
                         <ExpandableText text={feedback.comment} limit={300} />
                       </div>
@@ -77,7 +78,7 @@ const QuestionBoard = () => {
                               label: 'View Appointment',
                               onClick: () => {
                                 dispatch(openDialog({
-                                  children: <AppointmentView id={feedback.appointment.id.toString()}/>
+                                  children: <AppointmentDetail id={feedback.appointment.id.toString()} />
                                 }))
                               },
                               icon: <Description fontSize='small' />
@@ -101,4 +102,4 @@ const QuestionBoard = () => {
   )
 }
 
-export default QuestionBoard
+export default FeedbackTab

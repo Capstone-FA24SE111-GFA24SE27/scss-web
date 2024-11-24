@@ -19,17 +19,18 @@ export const appointmentsApi = api
           status = '',
           sortBy = 'id',
           sortDirection = 'DESC',
-          page = 1
+          page = 1,
+          size = 10 
         }) => ({
           url: `/api/appointments/counselor?${studentCode ? `studentCode=${studentCode}` : ``}`,
           params: {
-            // studentCode,
             fromDate,
             toDate,
             status,
             sortBy,
             sortDirection,
             page,
+            size 
           },
         }),
         providesTags: ['appointments']
@@ -50,6 +51,7 @@ export const {
   useCancelCounselingAppointmentCounselorMutation
 } = appointmentsApi;
 
+// Updated type to include 'size'
 export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
 export type GetCounselingAppointmentApiArg = {
   studentCode?: string;
@@ -59,9 +61,11 @@ export type GetCounselingAppointmentApiArg = {
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC';
   page?: number;
+  size?: number;
 };
 
 export type CancelCounselingAppointmentArg = {
   appointmentId: number;
   reason: string
 };
+

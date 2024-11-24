@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { PageSimple } from '@shared/components';
 import StudentDemandsHeader from './StudentDemandsHeader';
@@ -14,6 +14,7 @@ function StudentDemands() {
   // useGetContactsCountriesQuery();
   // useGetContactsTagsQuery();
   const isMobile = false
+  const navigate = useNavigate()
   useEffect(() => {
     setRightSidebarOpen(Boolean(routeParams.id));
   }, [routeParams]);
@@ -24,7 +25,10 @@ function StudentDemands() {
       content={<StudentDemandsContent />}
       rightSidebarContent={<StudentDemandsSidebarContent />}
       rightSidebarOpen={rightSidebarOpen}
-      rightSidebarOnClose={() => setRightSidebarOpen(false)}
+      rightSidebarOnClose={() => {
+        setRightSidebarOpen(false)
+        navigate(-1)
+      }}
       rightSidebarVariant="temporary"
       scroll={isMobile ? 'normal' : 'content'}
     />

@@ -55,6 +55,28 @@ const studentNavigation: NavigationOptions = {
                     route: 'counseling'
                 },
                 {
+                    icon: QuestionAnswer,
+                    name: 'Question & Answer',
+                    route: 'qna',
+                },
+                // {
+                //     icon: CalendarMonth,
+                //     name: 'Schedule',
+                //     route: 'calendar',
+                // },
+                // {
+                //     icon: Article,
+                //     name: 'Appointments',
+                //     route: 'activity'
+                // },
+            ]
+        },
+        {
+            name: "Activities",
+            description: "Student schedule and history tracking",
+            route: 'services',
+            items: [
+                {
                     icon: CalendarMonth,
                     name: 'Schedule',
                     route: 'calendar',
@@ -64,37 +86,10 @@ const studentNavigation: NavigationOptions = {
                     name: 'Appointments',
                     route: 'activity'
                 },
-                {
-                    icon: QuestionAnswer,
-                    name: 'Q&A',
-                    route: 'qna',
-                },
+                
 
             ]
         },
-        // {
-        //     name: 'Resources',
-        //     description: 'Resources for students',
-        //     route: 'resources',
-        //     items: [
-        //         {
-        //             icon: Campaign,
-        //             name: 'Events',
-        //             route: 'events'
-        //         },
-        //         {
-        //             icon: Article,
-        //             name: 'Articles',
-        //             route: 'article'
-        //         },
-        //         {
-        //             icon: NotStarted,
-        //             name: 'Videos',
-        //             route: 'videos'
-        //         },
-
-        //     ]
-        // }
     ],
     shortcuts: [
         {
@@ -261,11 +256,11 @@ const managerNavigation: NavigationOptions = {
                     name: 'Overview',
                     route: 'overview'
                 },
-                {
-                    icon: Description,
-                    name: 'Analytics',
-                    route: 'analytics'
-                },
+                // {
+                //     icon: Description,
+                //     name: 'Analytics',
+                //     route: 'analytics'
+                // },
             ]
         },
         {

@@ -5,25 +5,25 @@ export const addTagTypes = [
   'students', 'appointments', 'problemTags'
 ] as const;
 
-export const studentViewApi = api
+export const studentDetailApi = api
   .enhanceEndpoints({
     addTagTypes
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getStudentView: build.query<StudentApiResponse, string>({
+      getStudentDetail: build.query<StudentApiResponse, string>({
         query: (id) => ({
           url: `/api/students/${id}`,
         }),
         providesTags: ['students']
       }),
-      getStudentDocumentView: build.query<StudentDocumentApiResponse, string>({
+      getStudentDocumentDetail: build.query<StudentDocumentApiResponse, string>({
         query: (id) => ({
           url: `/api/students/document/${id}`,
         }),
         providesTags: ['students']
       }),
-      getStudentStudyView: build.query<StudentStudyApiResponse, string>({
+      getStudentStudyDetail: build.query<StudentStudyApiResponse, string>({
         query: (studentId) => ({
           url: `/api/students/study/${studentId}`,
         }),
@@ -90,13 +90,20 @@ export const studentViewApi = api
           method: 'GET',
         }),
       }),
+      getStudentMarkReport: build.query<GetStudentMarkReportApiResponse, GetStudentMarkReportApiArg>({
+        query: ({ studentId, semesterName }) => ({
+          url: `/api/students/mark-report/${studentId}/semester/${semesterName}`,
+          method: 'GET',
+        }),
+        providesTags: ['students'],
+      }),
     })
   });
 
 export const {
-  useGetStudentViewQuery,
-  useGetStudentDocumentViewQuery,
-  useGetStudentStudyViewQuery,
+  useGetStudentDetailQuery,
+  useGetStudentDocumentDetailQuery,
+  useGetStudentStudyDetailQuery,
   useGetStudentAppointmentsQuery,
   useCreateAppointmentMutation,
   useGetStudentByCodeQuery,
@@ -104,7 +111,8 @@ export const {
   useGetStudentProblemTagDetailsQuery,
   // useGetStudentBehaviorAssessmentQuery,
   useGetStudentBehaviorAssessmentMutation,
-} = studentViewApi;
+  useGetStudentMarkReportQuery
+} = studentDetailApi;
 
 type StudentAppointmentApiResponse = ApiResponse<PaginationContent<Appointment>>;
 type StudentApiResponse = ApiResponse<Student>;
@@ -192,4 +200,22 @@ export type GetStudentBehaviorAssessmentApiResponse = StudentBehaviorAssessment;
 export type StudentBehaviorAssessment = {
   message: string,
   status: number,
+};
+
+export type GetStudentMarkReportApiArg = {
+  studentId: string;
+  semesterName: string;
+};
+
+export type GetStudentMarkReportApiResponse = ApiResponse<StudentMarkReport[]>;
+
+export type StudentMarkReport = {
+  id: number;
+  startDate: string;
+  totalSlot: number;
+  studentCode: string;
+  subjectName: string;
+  semesterName: string;
+  grade: number | null;
+  detais: AttendanceDetail[] | null;
 };

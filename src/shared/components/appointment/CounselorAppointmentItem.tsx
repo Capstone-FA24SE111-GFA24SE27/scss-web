@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react'
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Menu, MenuItem, Paper, Radio, RadioGroup, Rating, TextField, Tooltip, Typography } from '@mui/material';
 import { useCancelCounselingAppointmentCounselorMutation, useGetCounselorCounselingAppointmentQuery } from '@features/counselors/counseling/appointments/appointments-api';
 import { AppLoading, DateRangePicker, FilterTabs, ItemMenu, NavLinkAdapter, Pagination, SearchField, SortingToggle, UserListItem, closeDialog, openDialog } from '@shared/components';
-import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, EmailOutlined, LocalPhoneOutlined, MoreVert, Summarize } from '@mui/icons-material';
+import { AccessTime, Add, CalendarMonth, ChevronRight, Circle, Clear, EditNote, EmailOutlined, LocalPhoneOutlined, MoreVert, Summarize, ViewAgenda, Visibility } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
@@ -12,6 +12,8 @@ import { Appointment, AppointmentAttendanceStatus } from '@/shared/types';
 import { useTakeAppointmentAttendanceMutation, useUpdateAppointmentDetailsMutation } from '@features/counselors/counseling';
 import { statusColor } from '@/shared/constants';
 import { openStudentView } from '@/features/counselors/counselors-layout-slice';
+import { AppointmentDetail } from '@/shared/pages';
+import { splitUserAndReason } from '@/shared/utils';
 
 const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
 
@@ -30,7 +32,23 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
           secondaryAction={
             <ItemMenu
               menuItems={[
+                // {
+                //   label: 'View details',
+                //   onClick: () => {
+                //     dispatch(openDialog({
+                //       children: <AppointmentDetail id={appointment?.id.toString()} />
+                //     }))
+                //   },
+                //   icon: <Visibility fontSize='small' />
+                // },
                 {
+                  label: 'View details',
+                  onClick: () => {
+                    navigate(`/counseling/appointments/appointment/${appointment.id}`)
+                  },
+                  icon: <Visibility fontSize='small' />
+                },
+                ...(['WAITING'].includes(appointment?.status) ? [{
                   label: 'Cancel',
                   onClick: () => {
                     dispatch(
@@ -40,7 +58,7 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
                     )
                   },
                   icon: <Clear fontSize='small' />
-                },
+                }] : []),
                 ...(['ATTEND'].includes(appointment?.status) ? [
                   appointment?.havingReport
                     ? {
@@ -112,6 +130,15 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
           </Menu>
         </div> */}
         </ListItem>
+        <div className='mt-16'>
+          {appointment.cancelReason && (
+            <div className='flex items-center gap-8'>
+              <Typography className='font-semibold italic' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
+              <Typography className='font-semibold italic' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
+            </div>
+          )}
+        </div>
+
         <div className='flex gap-4 mb-8'>
           {appointment.meetingType === 'ONLINE' ? (
             <div className='flex items-center gap-24'>
@@ -133,6 +160,7 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
           <Tooltip title={appointment.meetingType === 'ONLINE' ? 'Update meet URL' : 'Update address'}>
             <IconButton
               color='secondary'
+              disabled={['CANCELED', 'EXPIRED '].includes(appointment.status)}
               onClick={(event) => {
                 event.stopPropagation();
                 event.preventDefault();
@@ -347,7 +375,7 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
               value={attendanceStatus}
               onChange={handleRadioChange}
             >
-              <div className='flex gap-16'>
+              <div className='flex gap-16 justify-between '>
                 <FormControlLabel value="ATTEND" control={<Radio color='success' />} label="Attended" className='text-black' />
                 <FormControlLabel value="ABSENT" control={<Radio color='error' />} label="Absent" className='text-black' />
                 <Tooltip title='Clear selection'>
@@ -364,7 +392,12 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
         <Button onClick={() => dispatch(closeDialog())} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleTakeAttendance} color="secondary" variant='contained'>
+        <Button
+          onClick={handleTakeAttendance}
+          color="secondary"
+          variant='contained'
+          disabled={appointment.status === attendanceStatus}
+        >
           Confirm
         </Button>
       </DialogActions>

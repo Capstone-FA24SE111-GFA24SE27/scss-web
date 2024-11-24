@@ -38,10 +38,17 @@ const UserLabel: React.FC<UserLabelProps> = ({
                       <div className="ml-8 text-text-secondary leading-6">{profile?.phoneNumber}</div>
                     </div>
                     {
-                      email && <div className="flex items-center">
-                        <EmailOutlined fontSize='small' className='size-16' />
-                        <div className="ml-8 text-text-secondary leading-6">{email}</div>
-                      </div>
+                      profile.email ?
+                        <div className="flex items-center">
+                          <EmailOutlined fontSize='small' className='size-16' />
+                          <div className="ml-8 text-text-secondary leading-6">{profile.email}</div>
+                        </div>
+                        : email
+                          ? <div className="flex items-center">
+                            <EmailOutlined fontSize='small' className='size-16' />
+                            <div className="ml-8 text-text-secondary leading-6">{email}</div>
+                          </div>
+                          : null
                     }
                   </div>
                 </div>
@@ -54,10 +61,10 @@ const UserLabel: React.FC<UserLabelProps> = ({
   };
 
   return (
-    <div className="flex items-center px-8 text-sm text-text-secondary gap-4">
+    <div className="flex items-center text-sm text-text-secondary gap-4">
       {label}
       <Box
-        className={`flex gap-8 items-center group hover:cursor-pointer`}
+        className={`flex gap-4 items-center group hover:cursor-pointer`}
         onClick={handleClick} // Use handleClick for conditional onClick behavior
       >
         <Avatar className="size-24" alt={profile?.fullName} src={profile?.avatarLink} />

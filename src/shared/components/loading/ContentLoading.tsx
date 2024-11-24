@@ -25,7 +25,7 @@ function Loading(props: LoadingProps) {
     <div
       className={clsx(
         className,
-        'flex flex-1 h-full w-full self-center flex-col items-center justify-center p-24 m-12',
+        'flex flex-1 h-full w-full self-center flex-col items-center justify-center p-36',
         !showLoading ? 'hidden' : ''
       )}
     >

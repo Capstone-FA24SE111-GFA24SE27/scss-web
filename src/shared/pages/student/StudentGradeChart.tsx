@@ -17,7 +17,6 @@ const StudentGradeChart = ({ data }: { data: Subject[] }) => {
       const grade = data.find(
         (d) => d.subjectName === subject && `Term ${d.term}` === term
       )?.grade;
-      console.log(grade);
       return grade !== undefined ? grade : null;
     }),
   }));
@@ -62,6 +61,7 @@ const StudentGradeChart = ({ data }: { data: Subject[] }) => {
       },
       min: 0,
       max: 10,
+      // tickAmount: 10,
       labels: {
         formatter: (value: number) => Math.round(value).toString(),
       },

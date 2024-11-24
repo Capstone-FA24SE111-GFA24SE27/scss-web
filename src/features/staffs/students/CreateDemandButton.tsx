@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import { useAlertDialog } from '@/shared/hooks';
 
 type Props = {
 	// studentId?: number | string;

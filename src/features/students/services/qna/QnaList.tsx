@@ -2,12 +2,14 @@ import {
 	CheckboxField,
 	ContentLoading,
 	FilterTabs,
+	NavLinkAdapter,
 	Pagination,
 	SearchField,
 	SelectField,
 } from '@/shared/components';
 
 import {
+	Button,
 	FormControlLabel,
 	Switch,
 	Typography,
@@ -150,9 +152,9 @@ const QnaList = () => {
 	});
 	const qnaList = qnaData?.content?.data || ([] as Question[]);
 
-	
 
-	
+
+
 
 	useEffect(() => {
 		refetch();
@@ -161,9 +163,9 @@ const QnaList = () => {
 	useEffect(() => {
 		if (socket && account) {
 			const cb = (data) => {
-				console.log('qna socket receive data' , data);
+				console.log('qna socket receive data', data);
 				if (data) {
-					refetch()
+					refetch
 					studentQnasApi.util.invalidateTags(['qna'])
 				}
 			};
@@ -193,6 +195,26 @@ const QnaList = () => {
 	if (isLoading) {
 		return <ContentLoading />;
 	}
+
+	// if (!qnaData?.content.data.length) {
+	// 	return <div className='flex justify-center gap-4 items-center'>
+	// 		<Typography
+	// 			color="textDisabled"
+	// 			className='text-center text-lg'
+	// 		>
+	// 			You have not asked any questions
+	// 		</Typography>
+	// 		<Button
+	// 			className='w-fit text-lg'
+	// 			variant='text'
+	// 			component={NavLinkAdapter}
+	// 			to={`create`}
+	// 		// endIcon={<ArrowForward />}
+	// 		>
+	// 			Ask a question
+	// 		</Button>
+	// 	</div>
+	// }
 
 	return (
 		<motion.div

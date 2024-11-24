@@ -21,6 +21,7 @@ export type Profile = {
 	dateOfBirth: number;
 	avatarLink: string;
 	gender: string;
+  email?: string;
 };
 
 export type Counselor = {
@@ -30,8 +31,8 @@ export type Counselor = {
   rating?: number,
   expertise?: Expertise,
   specialization?: Specialization,
-  // status: 'AVAILABLE' | 'UNAVAILABLE'
-  status: string,
+  status: 'AVAILABLE' | 'UNAVAILABLE'
+  // status: string,
   academicDegree: string,
   department?: Department
   major?: Major,

@@ -1,7 +1,9 @@
 import { StatsCard } from '@/shared/components'
 import { Archive, AssignmentLate, Class, Description, Handshake, Save, School, SupportAgent, TagFaces } from '@mui/icons-material'
 import React from 'react'
-import AppointmentChart from './AppointmentCharts';
+import AppointmentChart from './AppointmentChart';
+import RequestChart from './RequestChart';
+import QnaChart from './QnaChart';
 
 const Overview = () => {
   return (
@@ -91,8 +93,10 @@ const Overview = () => {
           icon={<AssignmentLate />}
         />
       </div>
-      <div className='mt-16'>
+      <div className='mt-16 flex flex-col gap-16'>
         <AppointmentChart />
+        <RequestChart />
+        <QnaChart />
       </div>
     </div>
   )

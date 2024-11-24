@@ -36,7 +36,7 @@ const initialState: {
  * The CalendarApp labels slice.
  */
 export const calendarAppSlice = createSlice({
-	name: 'calendarApp',
+	name: 'studentCalendarApp',
 	initialState,
 	reducers: {
 		openEventDetailDialog: {

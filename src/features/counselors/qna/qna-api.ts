@@ -58,6 +58,7 @@ export const counselorQnaApi = api
           // studentCode = null,
           sortDirection = 'DESC',
           page = 1,
+          size = `10`
           // topicId
         }) => ({
           url: `/api/question-cards/counselor/filter`,
@@ -67,6 +68,7 @@ export const counselorQnaApi = api
             isClosed,
             isChatSessionClosed,
             sortBy,
+            size,
             // studentCode,
             sortDirection,
             page,
@@ -170,6 +172,7 @@ export type GetMyQuestionsApiArg = {
   sortDirection?: 'ASC' | 'DESC';
   page?: number;
   topicId?: string;
+  size?: number;
 }
 
 export type AnswerQuestionApiArg = {

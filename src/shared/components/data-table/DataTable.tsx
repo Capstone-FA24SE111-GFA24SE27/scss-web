@@ -12,7 +12,7 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 				initialState: {
 					density: 'spacious',
 					showColumnFilters: false,
-					showGlobalFilter: true,
+					showGlobalFilter: false,
 					columnPinning: {
 						left: ['mrt-row-expand', 'mrt-row-select'],
 						right: ['mrt-row-actions']
@@ -34,6 +34,7 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 				enableFacetedValues: true,
 				enableRowActions: true,
 				enableRowSelection: true,
+				enableGlobalFilter: false, // Disable the global search functionality
 				muiBottomToolbarProps: {
 					className: 'flex items-center min-h-56 h-56'
 				},

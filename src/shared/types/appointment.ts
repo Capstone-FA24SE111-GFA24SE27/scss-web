@@ -10,15 +10,15 @@ export type AppointmentScheduleType = {
 	meetUrl?: string;
 	address?: string;
 	counselorInfo:
-		| null
-		| ({
-				rating: string;
-		  } & Account);
+	| null
+	| ({
+		rating: string;
+	} & Account);
 	studentInfo:
-		| null
-		| ({
-				studentCode: string;
-		  } & Account);
+	| null
+	| ({
+		studentCode: string;
+	} & Account);
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
 };
@@ -42,11 +42,11 @@ export type AppointmentFeedback = {
 export type TakeAppointmentAttendance = {
 	appointmentId: number;
 	counselingAppointmentStatus:
-		| 'CANCELED'
-		| 'ATTEND'
-		| 'ABSENT'
-		| 'EXPIRED'
-		| 'WAITING';
+	| 'CANCELED'
+	| 'ATTEND'
+	| 'ABSENT'
+	| 'EXPIRED'
+	| 'WAITING';
 };
 
 export type AppointmentAttendanceStatus =
@@ -67,17 +67,18 @@ export type Appointment = {
 	meetUrl?: string;
 	address?: string;
 	counselorInfo:
-		| null
-		| ({
-				rating: string;
-		  } & Account);
+	| null
+	| ({
+		rating: string;
+	} & Account);
 	studentInfo:
-		| null
-		| ({
-				studentCode: string;
-		  } & Account);
+	| null
+	| ({
+		studentCode: string;
+	} & Account);
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
+	cancelReason?: string;
 };
 
 export type AppointmentDetails = {
@@ -90,7 +91,7 @@ export type AppointmentRequest = {
 	requireDate: string;
 	startTime: string;
 	endTime: string;
-	status: 'APPROVED' | 'DENIED' | 'WAITING';
+	status: 'APPROVED' | 'DENIED' | 'WAITING' | 'EXPIRED';
 	meetingType: 'ONLINE' | 'OFFLINE';
 	reason: string;
 	appointmentDetails: AppointmentDetails | null;
@@ -148,6 +149,15 @@ export type Slot = {
 	status: AppointmentSlotStatus;
 	myAppointment: boolean;
 };
+
+export type CounselingSlot = {
+	id: number;
+	slotCode: string;
+	startTime: string;
+	endTime: string;
+	dayOfWeek: string,
+	name: string,
+}
 
 export type CounselingDemand = {
 	id: number;

@@ -18,6 +18,10 @@ import { z } from 'zod';
 import { useBookCounselorMutation, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
 import { counselingTypeDescription } from '@/shared/constants';
 import { useGetCounselorExpertisesQuery, useGetDepartmentsQuery, useGetMajorsByDepartmentQuery, useGetSpecializationsByMajorQuery } from '@/shared/services';
+import { useConfirmDialog } from '@/shared/hooks';
+import { useAppDispatch } from '@shared/store';
+import { useAlertDialog } from '@/shared/hooks';
+import { getApiErrorMessage } from '@shared/store';
 
 /**
  * The contact view.
@@ -81,7 +85,7 @@ function QuickBooking() {
   const defaultValues = {
     slotId: 0,
     date: startOfMonth,
-    // isOnline: true,
+    isOnline: true,
   }
 
 
@@ -111,7 +115,7 @@ function QuickBooking() {
 
   const { data: counselorExpertisesData, isFetching: isFetchingCounselorExpertises } = useGetCounselorExpertisesQuery()
   const expertises = counselorExpertisesData?.content || []
-
+  const dispatch = useAppDispatch()
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -125,7 +129,6 @@ function QuickBooking() {
   // const { data: counserDailySlotsData, isFetching: isFetchingCounselorSlots } = useGetCounselorDailyQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
   const onSubmitMatching = () => {
-    console.log("------", formData)
     const element = document.getElementById('found_counselor');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -147,22 +150,41 @@ function QuickBooking() {
   }
 
   const onSubmitBooking = () => {
-    bookCounselor({
-      counselorId: randomMatchedCounselor?.profile.id,
-      appointmentRequest: {
-        slotCode: formData.slotCode,
-        date: formData.date,
-        isOnline: formData.isOnline,
-        reason: formData.reason,
-      }
-    })
-      .unwrap()
-      .then(() => {
-        reset();
-        setRandomMatchedCounselor(null)
+    useConfirmDialog({
+      dispatch,
+      title: 'Confirm booking',
+      content: `Are you sure to book ${randomMatchedCounselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
+      confirmButtonFucntion: () => bookCounselor({
+        counselorId: randomMatchedCounselor?.profile.id,
+        appointmentRequest: {
+          slotCode: formData.slotCode,
+          date: formData.date,
+          isOnline: formData.isOnline,
+          reason: formData.reason,
+        }
       })
+        .unwrap()
+        .then(() => {
+          reset();
+          setRandomMatchedCounselor(null)
+          useAlertDialog({
+            dispatch,
+            title: 'Booking success',
+            // confirmFunction: () => navigate('../')
+          })
+        })
+        .catch(error => {
+          useAlertDialog({
+            dispatch,
+            title: `Booking failed ${getApiErrorMessage(error)}`,
+            color: 'error',
+          })
+        })
+    })
 
   }
+
+
 
   const handleDateChange = (selectedDate) => {
     const previousDate = formData.date
@@ -193,7 +215,7 @@ function QuickBooking() {
   // if (isLoading) {
   //   return <ContentLoading className='m-32' />
   // }
-  console.log(isErrorGettingRandomMatchedCounselor)
+  console.log(formData)
 
   const [progress, setProgress] = useState(20);
 
@@ -219,7 +241,7 @@ function QuickBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto p-16 min-h-screen">
+      <div className="relative flex flex-col flex-auto p-16 min-h-screen container mx-auto">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
         <Box className='w-full flex mt-8 gap-16'>
           <div className='w-full'>
@@ -511,7 +533,7 @@ function QuickBooking() {
                 </div>
               </Paper>
 
-              <div className='flex justify-between gap-16'>
+              <div className='flex justify-end w-md self-end gap-16'>
                 <Button variant='outlined'
                   size='large'
                   className='text-lg w-1/5'
@@ -524,7 +546,7 @@ function QuickBooking() {
                   variant='contained'
                   fullWidth
                   color='secondary'
-                  className='text-lg w-4/5'
+                  className='text-lg w-4/5 py-12'
                   onClick={handleSubmit(onSubmitMatching)}
                   disabled={isLoadingRandomMatchedCounselor}
                   component="a" href={`#found_counselor`}
@@ -624,7 +646,6 @@ function QuickBooking() {
                                   error={!!errors.reason}
                                   helperText={errors?.reason?.message}
                                   fullWidth
-
                                 />
                               )}
                             />

@@ -9,15 +9,16 @@ interface UserListItemProps {
   fullName: string;
   avatarLink: string;
   phoneNumber: string;
-  email: string;
+  email?: string;
   onClick?: () => void;
+  className?: string
 }
 
-const UserListItem: React.FC<UserListItemProps> = ({ fullName, avatarLink, phoneNumber, email, onClick}) => {
+const UserListItem: React.FC<UserListItemProps> = ({ fullName, avatarLink, phoneNumber, email, onClick, className = ''}) => {
   const dispatch = useAppDispatch()
 
   return (
-    <div className={`flex items-start w-full gap-16 ${onClick ? 'hover:bg-primary-main/5 rounded p-2 hover:cursor-pointer' : ''}`} onClick={onClick}>
+    <div className={`${className} flex items-start w-full gap-16 ${onClick ? 'hover:bg-primary-main/5 rounded p-2 hover:cursor-pointer' : ''}`} onClick={onClick}>
       <Avatar alt={fullName} src={avatarLink} className='size-48' />
       <div>
         <Typography className='font-semibold text-primary-main'>{fullName}</Typography>
@@ -26,10 +27,14 @@ const UserListItem: React.FC<UserListItemProps> = ({ fullName, avatarLink, phone
             <LocalPhoneOutlined fontSize='small' className='size-16' />
             <div className="ml-8 text-text-secondary leading-6">{phoneNumber}</div>
           </div>
-          <div className="flex items-center">
-            <EmailOutlined fontSize='small' className='size-16' />
-            <div className="ml-8 text-text-secondary leading-6">{email || 'emailisnull@fpt.edu.vn'}</div>
-          </div>
+          {
+            email && (
+              <div className="flex items-center">
+                <EmailOutlined fontSize='small' className='size-16' />
+                <div className="ml-8 text-text-secondary leading-6">{email || 'emailisnull@fpt.edu.vn'}</div>
+              </div>
+            )
+          }
         </div>
       </div>
     </div>

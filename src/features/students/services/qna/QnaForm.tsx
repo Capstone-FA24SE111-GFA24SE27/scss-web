@@ -25,6 +25,9 @@ import _ from 'lodash';
 import BanInfo from './BanInfo';
 import { NavLinkAdapter } from '@/shared/components';
 import { ArrowBack } from '@mui/icons-material';
+import { useAppDispatch } from '@shared/store';
+import { useAlertDialog } from '@/shared/hooks';
+import { useConfirmDialog } from '@/shared/hooks';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -93,33 +96,78 @@ function QnaForm() {
 	// Mutations for posting and editing questions
 	const [postQuestion, { isLoading: isPosting }] = usePostQuestionMutation();
 	const [editQuestion, { isLoading: isEditing }] = useEditQuestionMutation();
-
+	const dispatch = useAppDispatch()
 	// Form submission handler
 	const onSubmit = async (data: FormValues) => {
 		try {
 			if (editMode && questionId) {
-				// Edit existing question
-				await editQuestion({
-					questionCardId: Number(questionId),
-					question: {
-						content: data.content,
-						questionType: data.questionType,
-						departmentId: data.departmentId,
-						majorId: data.majorId,
-						specializationId: data.specializationId,
+				useConfirmDialog({
+					dispatch: dispatch,
+					title: 'Confirm editing question?',
+					confirmButtonFucntion: () => {
+						editQuestion({
+							questionCardId: Number(questionId),
+							question: {
+								content: data.content,
+								questionType: data.questionType,
+								departmentId: data.departmentId,
+								majorId: data.majorId,
+								specializationId: data.specializationId,
+							}
+						})
+							.unwrap()
+							.then(() => {
+								useAlertDialog({
+									dispatch,
+									color: 'success',
+									title: 'Question was edit successfully!',
+								})
+								navigate('.');
+							})
+							.catch(error => useAlertDialog({
+								dispatch,
+								color: 'error',
+								title: 'Error editing question',
+							}))
 					}
-				}).unwrap();
-				navigate('.');
+				})
+
 			} else {
-				// Post a new question
-				await postQuestion({
-					content: data.content,
-					questionType: data.questionType,
-					departmentId: data.departmentId,
-					majorId: data.majorId,
-					specializationId: data.specializationId,
-				}).unwrap();
-				navigate('.');
+				useConfirmDialog({
+					dispatch: dispatch,
+					title: 'Confirm creating question',
+					content: (
+						<div>
+							<Typography>Question type: {data.questionType}</Typography>
+							<Typography>Content:</Typography>
+							<Typography>{data.content}</Typography>
+						</div>
+					),
+					confirmButtonFucntion: () => {
+						postQuestion({
+							content: data.content,
+							questionType: data.questionType,
+							departmentId: data.departmentId,
+							majorId: data.majorId,
+							specializationId: data.specializationId,
+						})
+							.unwrap()
+							.then(() => {
+								useAlertDialog({
+									dispatch,
+									color: 'success',
+									title: 'Question was created successfully!',
+								})
+								navigate('.');
+							})
+							.catch(error => useAlertDialog({
+								dispatch,
+								color: 'error',
+								title: 'Error creating question',
+							}))
+					}
+				})
+
 			}
 		} catch (error) {
 			console.error("Failed to submit question:", error);
@@ -158,6 +206,7 @@ function QnaForm() {
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						<div className="mb-24">
 							<Typography variant="h6">Submit your question</Typography>
+							<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
 						</div>
 						<div className="space-y-32">
 							{/* Question Type Radio Group */}
@@ -310,7 +359,7 @@ function QnaForm() {
 										fullWidth
 										variant="outlined"
 										multiline
-										minRows={4}
+										minRows={8}
 										error={!!errors.content}
 										helperText={errors.content?.message}
 									/>

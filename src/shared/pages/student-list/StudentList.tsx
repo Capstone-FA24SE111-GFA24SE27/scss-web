@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Heading, PageSimple } from '@shared/components';
 import StudentListContent from './StudentListContent';
@@ -16,6 +16,7 @@ function StudentList({isShowingTab = false}) {
   const routeParams = useParams();
   const isMobile = false
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
+  const navigate = useNavigate()
   useEffect(() => {
     setRightSidebarOpen(Boolean(routeParams.id));
   }, [routeParams]);
@@ -42,7 +43,10 @@ function StudentList({isShowingTab = false}) {
           ref={pageLayout}
           rightSidebarContent={<StudentListSidebarContent />}
           rightSidebarOpen={filter.open}
-          rightSidebarOnClose={() => dispatch(filterClose())}
+          rightSidebarOnClose={() => {
+            navigate('.')
+            dispatch(filterClose())
+          }}
           rightSidebarVariant="permanent"
           rightSidebarWidth={432}
         />

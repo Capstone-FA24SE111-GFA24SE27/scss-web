@@ -43,8 +43,8 @@ import {
 } from '@mui/icons-material';
 import useDebounceValue from '@/shared/hooks/useDebounceValue';
 import { Question } from '@/shared/types';
-import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
-import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import { useConfirmDialog } from '@/shared/hooks';
+import { useAlertDialog } from '@/shared/hooks';
 import { useDispatch } from 'react-redux';
 import { NavLinkAdapter, openDialog } from '@/shared/components';
 import QnaFlagForm from './QnaFlagFormDialog';

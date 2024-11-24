@@ -1,7 +1,9 @@
 import { openCounselorView } from '@/features/students/students-layout-slice';
 import { ExpandableText, ItemMenu, UserListItem, closeDialog, openDialog } from '@/shared/components';
 import { statusColor } from '@/shared/constants';
+import { AppointmentDetail } from '@/shared/pages';
 import { Appointment } from '@/shared/types';
+import { splitUserAndReason } from '@/shared/utils';
 import { useCancelCounselingAppointmentMutation, useSendCouselingAppointmentFeedbackMutation } from '@features/students/services/activity/activity-api';
 import { AccessTime, CalendarMonth, Circle, Clear, Visibility } from '@mui/icons-material';
 import { Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material';
@@ -31,7 +33,7 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
           secondaryAction={
             <ItemMenu
               menuItems={[
-                {
+                ...(['WAITING'].includes(appointment?.status) ? [{
                   label: 'Cancel',
                   onClick: () => {
                     dispatch(
@@ -40,9 +42,17 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
                       })
                     )
                   },
-                  icon: <Clear fontSize='small' />,
-                  disabled: ![`WAITING`].includes(appointment.status)
-                },
+                  icon: <Clear fontSize='small' />
+                }] : []),
+                // {
+                //   label: 'View details',
+                //   onClick: () => {
+                //     dispatch(openDialog({
+                //       children: <AppointmentDetail id={appointment?.id.toString()} />
+                //     }))
+                //   },
+                //   icon: <Visibility fontSize='small' />
+                // },
                 {
                   label: 'View details',
                   onClick: () => {
@@ -82,6 +92,13 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
                       <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                     </div>)
                   } */}
+
+        {appointment.cancelReason && (
+          <div className='flex items-center gap-8'>
+            <Typography className='font-semibold italic' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
+            <Typography className='font-semibold italic' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
+          </div>
+        )}
         <div className='flex gap-4'>
           {appointment.meetingType === 'ONLINE' ? (
             <div className='flex items-center gap-24'>

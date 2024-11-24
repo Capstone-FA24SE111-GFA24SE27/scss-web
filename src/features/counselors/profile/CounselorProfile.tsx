@@ -7,11 +7,11 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/system/Box';
-import { ContentLoading, Gender, NavLinkAdapter, openDialog } from '@shared/components';
+import { ContentLoading, Gender, NavLinkAdapter, WeeklySlots, openDialog } from '@shared/components';
 import dayjs from 'dayjs';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import { useGetCounselorProfileQuery } from '@/shared/pages';
+import { useGetCounselorProfileQuery, useGetWeeklySlotsQuery } from '@/shared/pages';
 /**
  * The contact view.
  */
@@ -25,6 +25,9 @@ function CounselorProfile() {
   const account = useAppSelector(selectAccount)
   const role = account?.role
   const dispatch = useAppDispatch();
+
+  const { data: counselorCounselingSlotsData, isLoading: isLoadingCounselorCounselingSlotsData } = useGetWeeklySlotsQuery(account.profile.id)
+  const counselorCounselingSlots = counselorCounselingSlotsData?.content
 
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
@@ -165,6 +168,12 @@ function CounselorProfile() {
               }
 
             </div>
+            <Paper className="shadow p-16 mt-8">
+              <Typography className='font-semibold mb-16 text-xl'>
+                Weekly Schedule
+              </Typography>
+              <WeeklySlots slots={counselorCounselingSlots} />
+            </Paper>
 
           </div>
         </div>

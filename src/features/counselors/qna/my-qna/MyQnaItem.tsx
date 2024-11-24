@@ -48,8 +48,8 @@ import {
 import { Question } from '@/shared/types';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { openStudentView } from '../../counselors-layout-slice';
-import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
-import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
+import { useAlertDialog } from '@/shared/hooks';
+import { useConfirmDialog } from '@/shared/hooks';
 import QnaFlagForm from './QnaFlagFormDialog';
 import { statusColor } from '@/shared/constants';
 import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';

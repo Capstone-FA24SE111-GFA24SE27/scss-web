@@ -92,17 +92,17 @@ function CounselorsTable({ type }: { type: CounselingType }) {
       )
     },
 
-    {
-      accessorKey: 'counselingSlots',
-      header: 'Counseling Slots',
-      accessorFn: (row) => (
-        <div className="flex flex-wrap gap-2">
-          {row.counselingSlot.map((slot) =>
-            <Chip key={slot.id} label={slot.slotCode} size='small'
-            />)}
-        </div>
-      )
-    },
+    // {
+    //   accessorKey: 'counselingSlots',
+    //   header: 'Counseling Slots',
+    //   accessorFn: (row) => (
+    //     <div className="flex flex-wrap gap-2">
+    //       {row.counselingSlot.map((slot) =>
+    //         <Chip key={slot.id} label={slot.slotCode} size='small'
+    //         />)}
+    //     </div>
+    //   )
+    // },
     {
       accessorKey: 'availableDateRange',
       header: 'Available Date',

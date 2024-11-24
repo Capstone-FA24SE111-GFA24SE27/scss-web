@@ -22,7 +22,7 @@ export const studentListApi = api
 					semesterIdForGPA = '',
 					minGPA = '',
 					maxGPA = '',
-					isIncludeBehavior = false,
+					isUsingPrompt = false,
 					semesterIdForBehavior = '',
 					promptForBehavior = '',
 					keyword = '',
@@ -30,6 +30,13 @@ export const studentListApi = api
 					sortDirection = 'ASC',
 					page = '',
 					tab = '',
+					behaviorList = '',
+					typeOfAttendanceFilter = 'COUNT',
+					semesterIdForAttendance = '',
+					fromForAttendanceCount = '',
+					toForAttendanceCount = '',
+					fromForAttendancePercentage = '',
+					toForAttendancePercentage = '',
 				}) => {
 					if (tab === '') {
 						// Call the first API endpoint if the condition is met
@@ -44,17 +51,23 @@ export const studentListApi = api
 								semesterIdForGPA,
 								minGPA,
 								maxGPA,
-								isIncludeBehavior,
+								isUsingPrompt,
 								semesterIdForBehavior,
 								promptForBehavior,
 								keyword,
 								sortBy,
 								sortDirection,
 								page,
+								behaviorList,
+								typeOfAttendanceFilter,
+								semesterIdForAttendance,
+								fromForAttendanceCount,
+								toForAttendanceCount,
+								fromForAttendancePercentage,
+								toForAttendancePercentage,
 							},
 						};
 					} else if (tab === 'RECOMMENDED') {
-						
 						return {
 							url: `/api/students/recommendation/filter`,
 							params: {
@@ -69,6 +82,12 @@ export const studentListApi = api
 								sortBy,
 								sortDirection,
 								page,
+								typeOfAttendanceFilter,
+								semesterIdForAttendance,
+								fromForAttendanceCount,
+								toForAttendanceCount,
+								fromForAttendancePercentage,
+								toForAttendancePercentage,
 							},
 						};
 					}
@@ -114,13 +133,16 @@ export const studentListApi = api
 					url: `/api/students/problem-tag/exclude-all/${arg}`,
 					method: 'PUT',
 				}),
-				invalidatesTags: ['students']
-			})
+				invalidatesTags: ['students'],
+			}),
 		}),
 	});
 
-export const { useGetStudentsFilterQuery, useGetRecommendedStudentsQuery, usePutExcludeStudentProblemTagsMutation } =
-	studentListApi;
+export const {
+	useGetStudentsFilterQuery,
+	useGetRecommendedStudentsQuery,
+	usePutExcludeStudentProblemTagsMutation,
+} = studentListApi;
 
 // Define types for the updated API response and arguments
 export type GetStudentsFilterApiResponse = PaginationContent<Student>;
@@ -133,14 +155,21 @@ export type GetStudentsFilterApiArg = {
 	semesterIdForGPA?: number | '';
 	minGPA?: number | '';
 	maxGPA?: number | '';
-	isIncludeBehavior?: boolean;
+	isUsingPrompt?: boolean;
 	semesterIdForBehavior?: number | '';
 	promptForBehavior?: string;
 	keyword?: string;
 	sortBy?: string;
 	sortDirection?: 'ASC' | 'DESC';
 	page?: number;
-	tab: string;
+	behaviorList?: string;
+	tab?: string;
+	typeOfAttendanceFilter?: 'COUNT' | 'PERCENTAGE';
+	semesterIdForAttendance?: number | '';
+	fromForAttendanceCount?: number | '';
+	toForAttendanceCount?: number | '';
+	fromForAttendancePercentage?: number | '';
+	toForAttendancePercentage?: number | '';
 };
 type PutExcludeStudentProblemTagsArgs = number | string;
 type PutExcludeStudentProblemTagsResponse = ApiResponse<string>;

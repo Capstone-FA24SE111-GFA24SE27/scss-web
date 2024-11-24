@@ -24,7 +24,7 @@ function CounselorListContent() {
         expertiseId
     } = filter
     console.log(availableFrom, availableTo)
-    const { data: academicCounselors, isLoading: isFetchingAcademicCounselors } = useGetCounselorsAcademicQuery({
+    const { data: academicCounselors, isFetching: isFetchingAcademicCounselors } = useGetCounselorsAcademicQuery({
         search,
         page,
         availableFrom,
@@ -33,7 +33,7 @@ function CounselorListContent() {
         majorId,
         specializationId,
     })
-    const { data: nonAcademicCounselors, isLoading: isFetchingNonAcademicCounselors } = useGetCounselorsNonAcademicQuery({
+    const { data: nonAcademicCounselors, isFetching: isFetchingNonAcademicCounselors } = useGetCounselorsNonAcademicQuery({
         search,
         page,
         availableFrom,

@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
+import { AppointmentReport, ContentLoading, DataTable, NavLinkAdapter, openDialog } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -8,12 +8,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import Button from '@mui/material/Button';
-import { CheckCircle, Circle, Delete, Info, RemoveCircle, Report, Summarize } from '@mui/icons-material';
+import { CheckCircle, Circle, Delete, Info, RemoveCircle, Report, Summarize, Visibility } from '@mui/icons-material';
 import { useGetCounselorAppointmentsManagementQuery } from '../counselors-api';
 import { Appointment } from '@/shared/types';
 import dayjs from 'dayjs';
 import { meetingTypeColor, statusColor } from '@/shared/constants';
-function AppointmentTable() {
+import { useAppDispatch } from '@shared/store';
+import { AppointmentDetail, StudentAppointmentReport } from '@/shared/pages';
+function AppointmentTab() {
 
   const { id } = useParams()
   const navigate = useNavigate()
@@ -21,7 +23,7 @@ function AppointmentTable() {
     pageIndex: 0,
     pageSize: 10,
   });
-
+  const dispatch = useAppDispatch()
   const { data, isLoading } = useGetCounselorAppointmentsManagementQuery({
     counselorId: Number(id),
     page: pagination.pageIndex,
@@ -48,7 +50,7 @@ function AppointmentTable() {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/counselor/${row.original.studentInfo.profile.id}`}
+          to={`/management/student/${row.original.studentInfo.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >
@@ -107,9 +109,27 @@ function AppointmentTable() {
         <MenuItem
           key={0}
           onClick={() => {
+            dispatch(openDialog({
+              children: <AppointmentDetail id={row.original.id.toString()} />
+            }))
             closeMenu();
             table.resetRowSelection();
-            navigate(`report/${row.original.id}`)
+          }}
+        >
+          <ListItemIcon>
+            <Visibility />
+          </ListItemIcon>
+          View Detail
+        </MenuItem>,
+                <MenuItem
+          key={1}
+          onClick={() => {
+            // navigate(`report/${row.original.id}`)
+            dispatch(openDialog({
+              children: <StudentAppointmentReport id={row.original.id.toString()}/>
+            }))
+            closeMenu();
+            table.resetRowSelection();
           }}
           disabled={!row.original.havingReport}
         >
@@ -118,6 +138,7 @@ function AppointmentTable() {
           </ListItemIcon>
           View Report
         </MenuItem>
+
       ]}
       renderTopToolbarCustomActions={({ table }) => {
         const { rowSelection } = table.getState();
@@ -136,5 +157,5 @@ function AppointmentTable() {
   );
 }
 
-export default AppointmentTable;
+export default AppointmentTab;
 

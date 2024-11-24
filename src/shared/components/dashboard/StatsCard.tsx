@@ -13,7 +13,7 @@ interface StatChangeProps {
 interface StatsCardProps {
   title: string;
   total: number;
-  statChange: {
+  statChange?: {
     prefixText: string;
     current: number;
     previous: number;
@@ -35,7 +35,11 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, total, statChange, icon, c
         <Typography color={color} className="font-bold text-6xl -mb-8">
           {total}
         </Typography>
-        <StatChange {...statChange} />
+        {
+          statChange && (
+            <StatChange {...statChange} />
+          )
+        }
       </Box>
     </Paper>
   );

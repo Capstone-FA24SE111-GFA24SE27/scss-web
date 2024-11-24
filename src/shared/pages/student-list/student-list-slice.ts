@@ -12,13 +12,20 @@ interface StudentListState {
   semesterIdForGPA: number | '';
   minGPA: number | '';
   maxGPA: number | '';
-  isIncludeBehavior: boolean;
+  isUsingPrompt: boolean;
   semesterIdForBehavior: number | '';
   promptForBehavior: string;
   sortBy: string;
   sortDirection: 'ASC' | 'DESC';
   page: number | '';
-  tab: '' | 'RECOMMENDED'
+  tab: '' | 'RECOMMENDED';
+  behaviorList: string;
+  typeOfAttendanceFilter: 'COUNT' | 'PERCENTAGE'; // New state
+  semesterIdForAttendance: number | ''; // New state
+  fromForAttendanceCount: number | ''; // New state
+  toForAttendanceCount: number | ''; // New state
+  fromForAttendancePercentage: number | ''; // New state
+  toForAttendancePercentage: number | ''; // New state
 }
 
 const initialState: StudentListState = {
@@ -32,13 +39,20 @@ const initialState: StudentListState = {
   semesterIdForGPA: '',
   minGPA: '',
   maxGPA: '',
-  isIncludeBehavior: false,
+  isUsingPrompt: false,
   semesterIdForBehavior: '',
   promptForBehavior: '',
   sortBy: 'createdDate',
   sortDirection: 'ASC',
   page: '',
   tab: '',
+  behaviorList: '',
+  typeOfAttendanceFilter: 'COUNT', // Default value
+  semesterIdForAttendance: '', // Default value
+  fromForAttendanceCount: '', // Default value
+  toForAttendanceCount: '', // Default value
+  fromForAttendancePercentage: '', // Default value
+  toForAttendancePercentage: '', // Default value
 };
 
 /**
@@ -84,8 +98,8 @@ export const studentListSlice = createSlice({
     setMaxGPA: (state, action: PayloadAction<number | ''>) => {
       state.maxGPA = action.payload;
     },
-    setIsIncludeBehavior: (state, action: PayloadAction<boolean>) => {
-      state.isIncludeBehavior = action.payload;
+    setIsUsingPrompt: (state, action: PayloadAction<boolean>) => {
+      state.isUsingPrompt = action.payload;
     },
     setSemesterIdForBehavior: (state, action: PayloadAction<number | ''>) => {
       state.semesterIdForBehavior = action.payload;
@@ -103,15 +117,37 @@ export const studentListSlice = createSlice({
       state.page = action.payload;
     },
     setTab: (state, action: PayloadAction<'' | 'RECOMMENDED'>) => {
-      state.tab = action.payload
+      state.tab = action.payload;
     },
     resetFilter: (state) => {
-      state = initialState
-    }
+      state = initialState;
+    },
+    setBehaviorList: (state, action: PayloadAction<string>) => {
+      state.behaviorList = action.payload;
+    },
+    setTypeOfAttendanceFilter: (state, action: PayloadAction<'COUNT' | 'PERCENTAGE'>) => {
+      state.typeOfAttendanceFilter = action.payload;
+    },
+    setSemesterIdForAttendance: (state, action: PayloadAction<number | ''>) => {
+      state.semesterIdForAttendance = action.payload;
+    },
+    setFromForAttendanceCount: (state, action: PayloadAction<number | ''>) => {
+      state.fromForAttendanceCount = action.payload;
+    },
+    setToForAttendanceCount: (state, action: PayloadAction<number | ''>) => {
+      state.toForAttendanceCount = action.payload;
+    },
+    setFromForAttendancePercentage: (state, action: PayloadAction<number | ''>) => {
+      state.fromForAttendancePercentage = action.payload;
+    },
+    setToForAttendancePercentage: (state, action: PayloadAction<number | ''>) => {
+      state.toForAttendancePercentage = action.payload;
+    },
   },
   selectors: {
     selectFilter: (filter: StudentListState) => filter,
     selectSearchTerm: (state: StudentListState) => state.searchTerm,
+    selectBehaviorList: (state: StudentListState) => state.behaviorList,
   },
 });
 
@@ -134,23 +170,31 @@ export const {
   setSemesterIdForGPA,
   setMinGPA,
   setMaxGPA,
-  setIsIncludeBehavior,
+  setIsUsingPrompt,
   setSemesterIdForBehavior,
   setPromptForBehavior,
   setSortBy,
   setSortDirection,
   setPage,
   setTab,
-  resetFilter
+  resetFilter,
+  setBehaviorList,
+  setTypeOfAttendanceFilter,
+  setSemesterIdForAttendance,
+  setFromForAttendanceCount,
+  setToForAttendanceCount,
+  setFromForAttendancePercentage,
+  setToForAttendancePercentage,
 } = studentListSlice.actions;
 
 export const {
   selectFilter,
   selectSearchTerm,
+  selectBehaviorList,
 } = injectedSlice.selectors;
 
 export default studentListSlice.reducer;
 
 declare module '@shared/store' {
-  export interface LazyLoadedSlices extends WithSlice<typeof studentListSlice> { }
+  export interface LazyLoadedSlices extends WithSlice<typeof studentListSlice> {}
 }
