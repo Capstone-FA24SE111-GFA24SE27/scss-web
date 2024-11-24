@@ -21,7 +21,7 @@ export type Question = {
   content: string;
   answer: string | null,
   questionType: 'ACADEMIC' | 'NON_ACADEMIC';
-  status: 'VERIFIED' | 'PENDING' | 'REJECTED';
+  status: QuestionCardStatus;
   student: Student;
   counselor: Counselor | null;
   chatSession: ChatSession;

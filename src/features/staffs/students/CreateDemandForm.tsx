@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import {
-	usePostCreateDemandByStudentIdForStaffMutation,
-} from '../demands/demand-api';
+import { usePostCreateDemandByStudentIdForStaffMutation } from '../demands/demand-api';
 import { Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
 import { NavLinkAdapter, UserLabel } from '@/shared/components';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +16,8 @@ import {
 	selectCounselor,
 	setSelectedCounselor,
 } from '../counselors/counselor-list-slice';
+import { selectCreateDemandCounselorFormData } from './staff-demand-create-slice';
+import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 
 const schema = z.object({
 	counselorId: z.number().min(1, 'Counselor ID is required'),
@@ -33,9 +33,9 @@ const schema = z.object({
 		.or(z.literal('')),
 	issueDescription: z.string().min(1, 'Please enter issue description'),
 	causeDescription: z.string().min(1, 'Please enter cause description'),
-	demandType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
-		errorMap: () => ({ message: 'Please select a demand type' }),
-	}),
+	// demandType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
+	// 	errorMap: () => ({ message: 'Please select a demand type' }),
+	// }),
 });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -48,14 +48,18 @@ const CreateDemandForm = () => {
 
 	const [showCounselorsList, setShowCounselorsList] = useState(false);
 
+	const createDemandFormData = useAppSelector(
+		selectCreateDemandCounselorFormData
+	);
+
 	const defaultValues = {
-		counselorId: '',
+		counselorId: createDemandFormData.counselorId,
 		contactNote: '',
 		priorityLevel: 'MEDIUM',
 		additionalInformation: '',
 		issueDescription: '',
 		causeDescription: '',
-		demandType: 'ACADEMIC',
+		// demandType: createDemandFormData.matchType
 	};
 
 	const { control, formState, watch, handleSubmit, setValue } =
@@ -73,10 +77,17 @@ const CreateDemandForm = () => {
 	const onSubmit = () => {
 		createDemand({
 			...formData,
-			studentId: studentId
+			demandType: counselor.expertise ? 'NON_ACADEMIC' : 'ACADEMIC',
+			studentId: studentId,
 		})
 			.unwrap()
-			.then(() => navigate(-1))
+			.then((result) => {
+				if(result.status === 200) {
+					useAlertDialog({dispatch, title: 'Demand created successfully'})
+					navigate(-1);
+				}
+				console.log('create demand result', result);
+			})
 			.catch((err) => console.log(err));
 	};
 
@@ -151,12 +162,25 @@ const CreateDemandForm = () => {
 								</div>
 								<div className='w-full'>
 									{counselor && formData.counselorId ? (
-										<CounselorListItem
-											counselor={counselor}
-											onClick={
-												handleNavigateViewCounselor
-											}
-										/>
+										<>
+											<CounselorListItem
+												counselor={counselor}
+												onClick={
+													handleNavigateViewCounselor
+												}
+											/>
+
+											<div className='flex flex-wrap gap-8 py-8'>
+												<Typography className='font-semibold'>
+													Demand type:
+												</Typography>
+												<Typography>
+													{counselor.expertise
+														? 'Non academic'
+														: 'Academic'}
+												</Typography>
+											</div>
+										</>
 									) : (
 										<Typography
 											color='textSecondary'
@@ -202,7 +226,7 @@ const CreateDemandForm = () => {
 										)}
 									/>
 								</div>
-								<div className='flex-1'>
+								{/* <div className='flex-1'>
 									<Controller
 										control={control}
 										name='demandType'
@@ -229,7 +253,7 @@ const CreateDemandForm = () => {
 											</TextField>
 										)}
 									/>
-								</div>
+								</div> */}
 							</div>
 
 							<div className=''>
@@ -341,7 +365,6 @@ const CreateDemandForm = () => {
 										!formData.contactNote ||
 										!formData.issueDescription ||
 										!formData.causeDescription ||
-										!formData.demandType ||
 										!formData.priorityLevel
 									}
 									onClick={handleSubmit(onSubmit)}

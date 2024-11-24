@@ -1,5 +1,4 @@
 import React from 'react';
-import {  usePutAssignDemandByDemandIdMutation } from '../demands/demand-api';
 import { useAppDispatch } from '@shared/store';
 import { NavLinkAdapter } from '@/shared/components';
 import { Button } from '@mui/material';
@@ -47,7 +46,7 @@ const ExcludeStudentButton = (props: Props) => {
 			onClick={handleExclude}
 			startIcon={<Remove />}
 		>
-			Exclude Student
+			Exclude Current Behaviour
 		</Button>
 	);
 };

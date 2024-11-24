@@ -15,7 +15,9 @@ const CounselorListHeader = () => {
   const dispatch = useAppDispatch()
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [tabValue, setTabValue] = useState(0);
+
+
+  const [tabValue, setTabValue] = useState(filter.counselorType === 'ACADEMIC' ? 0 : 1);
 
   function handleChangeTab(event: React.SyntheticEvent, value: number) {
     let counselingType: CounselingType = 'ACADEMIC'

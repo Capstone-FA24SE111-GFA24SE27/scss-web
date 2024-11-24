@@ -23,6 +23,10 @@ export const staffFollowedStudentsRoutes: RouteObject[] = [
 				path: 'student/:id/create-demand',
 				element: <CreateDemandForm />,
 			},
+			{
+				path: ':id/create-demand',
+				element: <CreateDemandForm />,
+			},
 			...studentRoutes,
 		],
 		// path: 'student-list',

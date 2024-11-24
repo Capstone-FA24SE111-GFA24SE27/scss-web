@@ -20,6 +20,8 @@ type Props = {
 	confirmButtonTitle?: string;
 	confirmButtonFucntion: any;
 	dispatch: ThunkDispatch<any, any, any>
+	confirmButtonFunction: any;
+  dispatch: ThunkDispatch<any,any,any>
 };
 
 const useConfirmDialog = (props: Props) => {
@@ -28,8 +30,8 @@ const useConfirmDialog = (props: Props) => {
 		content = '',
 		cancelButtonTitle = 'Cancel',
 		confirmButtonTitle = 'Confirm',
-		confirmButtonFucntion,
-		dispatch
+		confirmButtonFunction,
+    dispatch
 	} = props;
 
 
@@ -38,8 +40,8 @@ const useConfirmDialog = (props: Props) => {
 	};
 
 	const handleConfirm = () => {
-		if (confirmButtonFucntion) {
-			confirmButtonFucntion();
+		if (confirmButtonFunction) {
+			confirmButtonFunction();
 		}
 		handleClose();
 	};

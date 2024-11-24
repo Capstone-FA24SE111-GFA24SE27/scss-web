@@ -6,9 +6,9 @@ import { studentRoutes } from '@/shared/pages';
 
 const Qna = lazy(() => import('./Qna'))
 
-export const qnaRoutes: RouteObject[] = [
+export const qnaStaffRoutes: RouteObject[] = [
     {
-        path: 'qna',
+        path: 'questions',
         element: <Qna />,
         children: [
             {

@@ -72,7 +72,7 @@ const QnaDetails = () => {
 		useConfirmDialog({
 			dispatch: dispatch,
 			title: 'Are you sure you want to verify this question?',
-			confirmButtonFucntion: async () => {
+			confirmButtonFunction: async () => {
 				const result = await reviewQuestion({
 					id: qna.id,
 					status: 'VERIFIED',
@@ -92,7 +92,7 @@ const QnaDetails = () => {
 		useConfirmDialog({
 			dispatch: dispatch,
 			title: 'Are you sure you want to reject this question?',
-			confirmButtonFucntion: async () => {
+			confirmButtonFunction: async () => {
 				const result = await reviewQuestion({
 					id: qna.id,
 					status: 'REJECTED',
@@ -120,9 +120,9 @@ const QnaDetails = () => {
 	};
 
 	return (
-		<div className='relative w-full h-full p-16 '>
+		<div className='relative w-full h-full p-16 min-w-288'>
 			<div className='w-full h-full pb-32 bg-background-paper'>
-				<Typography className='pt-16 pb-32 pr-32 text-xl font-semibold leading-none'>
+				<Typography className='pt-16 pb-32 pr-32 text-3xl font-semibold leading-none'>
 					Question Details
 				</Typography>
 
@@ -258,13 +258,13 @@ const QnaDetails = () => {
 					<CheckCircle color='success' />
 					Verify
 				</Button>
-				<Button
+				{/* <Button
 					className='flex items-center gap-4'
 					onClick={handleReject}
 				>
 					<RemoveCircle color='warning' />
 					Reject
-				</Button>
+				</Button> */}
 				<Button
 					className='flex items-center gap-4'
 					onClick={handleFlag}
