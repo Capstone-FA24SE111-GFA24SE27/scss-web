@@ -30,7 +30,13 @@ export const studentListApi = api
 					sortDirection = 'ASC',
 					page = '',
 					tab = '',
-					behaviorList = ''
+					behaviorList = '',
+					typeOfAttendanceFilter = 'COUNT',
+					semesterIdForAttendance = '',
+					fromForAttendanceCount = '',
+					toForAttendanceCount = '',
+					fromForAttendancePercentage = '',
+					toForAttendancePercentage = '',
 				}) => {
 					if (tab === '') {
 						// Call the first API endpoint if the condition is met
@@ -53,10 +59,15 @@ export const studentListApi = api
 								sortDirection,
 								page,
 								behaviorList,
+								typeOfAttendanceFilter,
+								semesterIdForAttendance,
+								fromForAttendanceCount,
+								toForAttendanceCount,
+								fromForAttendancePercentage,
+								toForAttendancePercentage,
 							},
 						};
 					} else if (tab === 'RECOMMENDED') {
-						
 						return {
 							url: `/api/students/recommendation/filter`,
 							params: {
@@ -71,6 +82,12 @@ export const studentListApi = api
 								sortBy,
 								sortDirection,
 								page,
+								typeOfAttendanceFilter,
+								semesterIdForAttendance,
+								fromForAttendanceCount,
+								toForAttendanceCount,
+								fromForAttendancePercentage,
+								toForAttendancePercentage,
 							},
 						};
 					}
@@ -116,13 +133,16 @@ export const studentListApi = api
 					url: `/api/students/problem-tag/exclude-all/${arg}`,
 					method: 'PUT',
 				}),
-				invalidatesTags: ['students']
-			})
+				invalidatesTags: ['students'],
+			}),
 		}),
 	});
 
-export const { useGetStudentsFilterQuery, useGetRecommendedStudentsQuery, usePutExcludeStudentProblemTagsMutation } =
-	studentListApi;
+export const {
+	useGetStudentsFilterQuery,
+	useGetRecommendedStudentsQuery,
+	usePutExcludeStudentProblemTagsMutation,
+} = studentListApi;
 
 // Define types for the updated API response and arguments
 export type GetStudentsFilterApiResponse = PaginationContent<Student>;
@@ -142,8 +162,14 @@ export type GetStudentsFilterApiArg = {
 	sortBy?: string;
 	sortDirection?: 'ASC' | 'DESC';
 	page?: number;
-	behaviorList?: string,
+	behaviorList?: string;
 	tab?: string;
+	typeOfAttendanceFilter?: 'COUNT' | 'PERCENTAGE';
+	semesterIdForAttendance?: number | '';
+	fromForAttendanceCount?: number | '';
+	toForAttendanceCount?: number | '';
+	fromForAttendancePercentage?: number | '';
+	toForAttendancePercentage?: number | '';
 };
 type PutExcludeStudentProblemTagsArgs = number | string;
 type PutExcludeStudentProblemTagsResponse = ApiResponse<string>;

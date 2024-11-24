@@ -19,7 +19,13 @@ interface StudentListState {
   sortDirection: 'ASC' | 'DESC';
   page: number | '';
   tab: '' | 'RECOMMENDED';
-  behaviorList: string; // Added new property
+  behaviorList: string;
+  typeOfAttendanceFilter: 'COUNT' | 'PERCENTAGE'; // New state
+  semesterIdForAttendance: number | ''; // New state
+  fromForAttendanceCount: number | ''; // New state
+  toForAttendanceCount: number | ''; // New state
+  fromForAttendancePercentage: number | ''; // New state
+  toForAttendancePercentage: number | ''; // New state
 }
 
 const initialState: StudentListState = {
@@ -40,7 +46,13 @@ const initialState: StudentListState = {
   sortDirection: 'ASC',
   page: '',
   tab: '',
-  behaviorList: '', // Initialize with an empty string
+  behaviorList: '',
+  typeOfAttendanceFilter: 'COUNT', // Default value
+  semesterIdForAttendance: '', // Default value
+  fromForAttendanceCount: '', // Default value
+  toForAttendanceCount: '', // Default value
+  fromForAttendancePercentage: '', // Default value
+  toForAttendancePercentage: '', // Default value
 };
 
 /**
@@ -111,13 +123,31 @@ export const studentListSlice = createSlice({
       state = initialState;
     },
     setBehaviorList: (state, action: PayloadAction<string>) => {
-      state.behaviorList = action.payload; // Action for modifying behaviorList
+      state.behaviorList = action.payload;
+    },
+    setTypeOfAttendanceFilter: (state, action: PayloadAction<'COUNT' | 'PERCENTAGE'>) => {
+      state.typeOfAttendanceFilter = action.payload;
+    },
+    setSemesterIdForAttendance: (state, action: PayloadAction<number | ''>) => {
+      state.semesterIdForAttendance = action.payload;
+    },
+    setFromForAttendanceCount: (state, action: PayloadAction<number | ''>) => {
+      state.fromForAttendanceCount = action.payload;
+    },
+    setToForAttendanceCount: (state, action: PayloadAction<number | ''>) => {
+      state.toForAttendanceCount = action.payload;
+    },
+    setFromForAttendancePercentage: (state, action: PayloadAction<number | ''>) => {
+      state.fromForAttendancePercentage = action.payload;
+    },
+    setToForAttendancePercentage: (state, action: PayloadAction<number | ''>) => {
+      state.toForAttendancePercentage = action.payload;
     },
   },
   selectors: {
     selectFilter: (filter: StudentListState) => filter,
     selectSearchTerm: (state: StudentListState) => state.searchTerm,
-    selectBehaviorList: (state: StudentListState) => state.behaviorList, // Selector for behaviorList
+    selectBehaviorList: (state: StudentListState) => state.behaviorList,
   },
 });
 
@@ -148,13 +178,19 @@ export const {
   setPage,
   setTab,
   resetFilter,
-  setBehaviorList, // Exporting the new action
+  setBehaviorList,
+  setTypeOfAttendanceFilter,
+  setSemesterIdForAttendance,
+  setFromForAttendanceCount,
+  setToForAttendanceCount,
+  setFromForAttendancePercentage,
+  setToForAttendancePercentage,
 } = studentListSlice.actions;
 
 export const {
   selectFilter,
   selectSearchTerm,
-  selectBehaviorList, // Exporting the new selector
+  selectBehaviorList,
 } = injectedSlice.selectors;
 
 export default studentListSlice.reducer;
