@@ -46,7 +46,7 @@ const CreateAccount = () => {
   return (
     <div className='p-32'>
       <div className='flex items-center justify-between '>
-        <Heading title='Create Account' description='Enter the required information for new account creatation'/>
+        <Heading title={`Create ${createAccountTabs[tabValue].label}`} description='Enter the required information for new account creatation'/>
       </div>
       <div className='py-16'>
         <FilterTabs tabs={createAccountTabs} tabValue={tabValue} onChangeTab={handleChangeTab}/>
