@@ -18,8 +18,6 @@ type Props = {
 	content?: ReactNode;
 	cancelButtonTitle?: string;
 	confirmButtonTitle?: string;
-	confirmButtonFucntion: any;
-	dispatch: ThunkDispatch<any, any, any>
 	confirmButtonFunction: any;
   dispatch: ThunkDispatch<any,any,any>
 };
