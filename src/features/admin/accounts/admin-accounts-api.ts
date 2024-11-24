@@ -215,7 +215,7 @@ type putUpdateAccountStatusArg = {
 	id: number | string;
 	role: string;
 };
-type putUpdateAccountStatusResponse = {};
+type putUpdateAccountStatusResponse = ApiMessage;
 
 type getAccountsResponse = ApiResponse<PaginationContent<Account>>;
 type getAccountsArgs = {

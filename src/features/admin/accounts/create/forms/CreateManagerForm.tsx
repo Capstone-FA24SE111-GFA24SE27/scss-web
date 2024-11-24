@@ -167,11 +167,12 @@ const CreateManagerForm = () => {
 									minDate={dayjs('1900-01-01')}
 									slotProps={{
 										textField: {
-											helperText:
+											helperText: 	
 												'Please select a valid date of birth',
 										},
 									}}
 									disableFuture
+									maxDate={dayjs()}
 									views={['year', 'month', 'day']}
 									onChange={(date) => {
 										console.log(

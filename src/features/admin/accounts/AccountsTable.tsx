@@ -15,9 +15,14 @@ import { Account, Role } from '@/shared/types';
 import {
 	useGetAccountsQuery,
 	usePutBlockAccountByIdMutation,
+	usePutUnblockAccountByIdMutation,
 } from './admin-accounts-api';
 import { clsx } from 'clsx';
 import useDebounceValue from '@/shared/hooks/useDebounceValue';
+import dayjs from 'dayjs';
+import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import { useAppDispatch } from '@shared/store';
+import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
 
 type Props = {
 	selectedRole: Role;
@@ -30,9 +35,9 @@ const AccountsTable = (props: Props) => {
 		pageSize: 10,
 	});
 
-	const [search, setSearch] = useState('');
+	const dispatch = useAppDispatch();
 
-	console.log(pagination);
+	const [search, setSearch] = useState('');
 
 	const { data, isLoading } = useGetAccountsQuery({
 		page: pagination.pageIndex + 1,
@@ -40,9 +45,8 @@ const AccountsTable = (props: Props) => {
 	});
 	console.log(data);
 
-	const removeProducts = (ids: string[]) => {};
-
 	const [blockAccountById] = usePutBlockAccountByIdMutation();
+	const [unblockAccountById] = usePutUnblockAccountByIdMutation();
 
 	const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
 		setSearch(useDebounceValue(event.target.value, 500));
@@ -50,22 +54,62 @@ const AccountsTable = (props: Props) => {
 
 	const handleBlockAccount = (id: number) => {
 		console.log(id);
-		if (id) {
-			blockAccountById({id, role: selectedRole})
-				.unwrap()
-				.then((result) => console.log(result))
-				.catch((err) => console.log(err));
-		}
+		useConfirmDialog({
+			dispatch,
+			confirmButtonFunction: () => {
+				if (id) {
+					blockAccountById({ id, role: selectedRole })
+						.unwrap()
+						.then((result) => {
+							if (result) {
+								useAlertDialog({
+									dispatch,
+									title: result.message,
+								});
+							}
+						})
+						.catch((err) => console.log(err));
+				}
+			},
+			title: 'Are you sure you want to block this account?',
+		});
 	};
+
+	const handleUnblockAccount = (id: number) => {
+		console.log(id);
+		useConfirmDialog({
+			dispatch,
+			confirmButtonFunction: () => {
+				if (id) {
+					unblockAccountById({ id, role: selectedRole })
+						.unwrap()
+						.then((result) => {
+							if (result) {
+								useAlertDialog({
+									dispatch,
+									title: result.message,
+								});
+							}
+						})
+						.catch((err) => console.log(err));
+				}
+			},
+			title: 'Are you sure you want to unblock this account?',
+		});
+	};
+
+	// const handleBlockMultipleAccounts = (selected: number[]) => {
+	// 	console.log(selected);
+	// 	if (selected.length > 0) {
+	// 		blockAccountById({id, role: selectedRole})
+	// 			.unwrap()
+	// 			.then((result) => console.log(result))
+	// 			.catch((err) => console.log(err));
+	// 	}
+	// };
 
 	const columns = useMemo<MRT_ColumnDef<Account>[]>(
 		() => [
-			{
-				accessorKey: 'id',
-				header: 'ID',
-				size: 64,
-				Cell: ({ row }) => <Typography>{row.original.id}</Typography>,
-			},
 			{
 				accessorFn: (row) => row.profile.avatarLink,
 				id: 'profile',
@@ -99,21 +143,42 @@ const AccountsTable = (props: Props) => {
 				),
 			},
 			{
+				accessorKey: 'profile.dateOfBirth',
+				header: 'Birthdate',
+				Cell: ({ row }) => (
+					<Typography className='w-fit'>
+						{dayjs(row.original.profile.dateOfBirth).format(
+							'DD-MM-YYYY'
+						)}
+					</Typography>
+				),
+			},
+			{
 				accessorKey: 'email',
 				header: 'Email',
 				Cell: ({ row }) => (
 					<Typography>{row.original.email}</Typography>
 				),
 			},
-			// {
-			//   accessorKey: 'specialization',
-			//   header: 'Specialization',
-			//   Cell: ({ row }) => (
-			//     <Typography className='w-fit'>
-			//       {row.original.profile.expertise?.name || row.original.profile.specialization?.name}
-			//     </Typography>
-			//   )
-			// },
+			{
+				accessorKey: 'profile.phoneNumber',
+				header: 'Phone number',
+				Cell: ({ row }) => (
+					<Typography className='w-fit'>
+						{row.original.profile.phoneNumber}
+					</Typography>
+				),
+			},
+			{
+				accessorKey: 'profile.gender',
+				header: 'Gender',
+				Cell: ({ row }) => (
+					<Typography className='w-min'>
+						{row.original.profile.gender}
+					</Typography>
+				),
+			},
+
 			{
 				accessorKey: 'status',
 				header: 'Status',
@@ -161,7 +226,11 @@ const AccountsTable = (props: Props) => {
 					<MenuItem
 						key={0}
 						onClick={() => {
-							// removeProducts([row.original.id]);
+							if (row.original.status === 'ACTIVE') {
+								handleBlockAccount(row.original.id);
+							} else {
+								handleUnblockAccount(row.original.id);
+							}
 							closeMenu();
 							table.resetRowSelection();
 						}}
@@ -169,36 +238,37 @@ const AccountsTable = (props: Props) => {
 						<ListItemIcon>
 							<Delete />
 						</ListItemIcon>
-						Block
+						{row.original.status === 'ACTIVE' ? 'Block' : 'Unblock'}
 					</MenuItem>,
 				]}
-				renderTopToolbarCustomActions={({ table }) => {
-					const { rowSelection } = table.getState();
+				enableRowSelection={false}
+				// 	renderTopToolbarCustomActions={({ table }) => {
+				// 		const { rowSelection } = table.getState();
 
-					if (Object.keys(rowSelection).length === 0) {
-						return null;
-					}
+				// 		if (Object.keys(rowSelection).length === 0) {
+				// 			return null;
+				// 		}
 
-					return (
-						<Button
-							variant='contained'
-							size='small'
-							onClick={() => {
-								const selectedRows =
-									table.getSelectedRowModel().rows;
-								// removeProducts(selectedRows.map((row) => row.original.id));
-								table.resetRowSelection();
-							}}
-							className='flex shrink min-w-40 ltr:mr-8 rtl:ml-8'
-							color='secondary'
-						>
-							<Delete />
-							<span className='hidden mx-8 sm:flex'>
-								Delete selected items
-							</span>
-						</Button>
-					);
-				}}
+				// 		return (
+				// 			<Button
+				// 				variant='contained'
+				// 				size='small'
+				// 				onClick={() => {
+				// 					const selectedRows =
+				// 						table.getSelectedRowModel().rows;
+				// 					handleBlockMultipleAccounts(selectedRows.map((row) => row.original.id));
+				// 					table.resetRowSelection();
+				// 				}}
+				// 				className='flex shrink min-w-40 ltr:mr-8 rtl:ml-8'
+				// 				color='secondary'
+				// 			>
+				// 				<Delete />
+				// 				<span className='hidden mx-8 sm:flex'>
+				// 					Block slected accounts
+				// 				</span>
+				// 			</Button>
+				// 		);
+				// 	}}
 			/>
 		</Paper>
 	);

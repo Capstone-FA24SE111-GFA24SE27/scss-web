@@ -6,12 +6,13 @@ import { z } from 'zod';
 import { Button, Paper, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 const schema = z.object({
 	slotCode: z.string().min(1, 'Slot Code is required'),
-	startTime: z.string().min(1),
+	startTime: z.string().min(6, 'Time is required'),
 
-	endTime: z.string().min(1),
+	endTime: z.string().min(6, 'Time is required'),
 
 	name: z.string().min(1, 'Slot name is required'),
 });
@@ -39,20 +40,28 @@ const CreateTimeSlotForm = () => {
 	const { isValid, dirtyFields, errors } = formState;
 
 	const onSubmit = () => {
-		// createTimeSlot({
-		// 	slotCode: formData.slotCode,
-		// 	name: formData.name,
-		// 	startTime: {
-		// 		hour: formData.startTime.hour(),
-		// 		minute: formData.startTime.minute(),
-		// 	},
-		// 	endTime: {
-		// 		hour: formData.endTime.hour(),
-		// 		minute: formData.endTime.minute(),
-		// 	},
-		// })
-		// 	.unwrap()
-		// 	.then(() => navigate(-1));
+		createTimeSlot({
+			slotCode: formData.slotCode,
+			name: formData.name,
+			startTime: {
+				hour: dayjs(formData.startTime).hour(),
+				minute: dayjs(formData.startTime).minute(),
+				second: 0,
+				nano: 0,
+			},
+			endTime: {
+				hour: dayjs(formData.endTime).hour(),
+				minute: dayjs(formData.endTime).minute(),
+				second: 0,
+				nano: 0,
+			},
+		})
+			.unwrap()
+			.then((res) => {
+				console.log(res);
+				navigate(-1);
+			})
+			.catch((err) => console.log('err creating time slot', err));
 	};
 
 	useEffect(() => {
@@ -80,11 +89,9 @@ const CreateTimeSlotForm = () => {
 								render={({ field }) => (
 									<TextField
 										{...field}
-										label='Name'
+										label='Slot name'
 										placeholder='Name...'
-										multiline
-										rows={1}
-										id='Reason'
+										id='Slot name'
 										error={!!errors.name}
 										helperText={errors?.name?.message}
 										fullWidth
@@ -102,9 +109,7 @@ const CreateTimeSlotForm = () => {
 										{...field}
 										label='Slot Code'
 										placeholder='Slot Code...'
-										multiline
-										rows={1}
-										id='Reason'
+										id='Slot code'
 										error={!!errors.slotCode}
 										helperText={errors?.slotCode?.message}
 										fullWidth
@@ -113,19 +118,60 @@ const CreateTimeSlotForm = () => {
 							/>
 						</div>
 
-						<div className='flex flex-wrap items-center gap-16'>
+						<div className='flex flex-wrap items-start gap-16'>
 							<Controller
 								control={control}
 								name='startTime'
 								render={({ field }) => (
-									<TimePicker {...field} label='Start time' />
+									<TimePicker
+										value={dayjs(field.value)}
+										label='Start time'
+										onChange={(newValue) => {
+											console.log('startTime', newValue);
+											setValue(
+												'startTime',
+												newValue.format()
+											);
+										}}
+									/>
 								)}
 							/>
 							<Controller
 								control={control}
 								name='endTime'
 								render={({ field }) => (
-									<TimePicker {...field} label='End time' />
+									<TimePicker
+										value={dayjs(field.value)}
+										slotProps={{
+											textField: {
+												helperText:
+													'End time must be after start time',
+											},
+										}}
+										label='End time'
+										onError={() => {
+											setValue(
+												'endTime',
+												dayjs(formData.startTime)
+													.add(30, 'minute')
+													.format()
+											);
+										}}
+										minTime={
+											formData &&
+											dayjs(formData.startTime).add(
+												30,
+												'minute'
+											)
+										}
+										onChange={(newValue) => {
+											console.log('endtime', newValue);
+											setValue(
+												'endTime',
+												newValue.format()
+											);
+										}}
+									/>
 								)}
 							/>
 						</div>
@@ -143,8 +189,8 @@ const CreateTimeSlotForm = () => {
 								disabled={
 									!formData.name ||
 									!formData.slotCode ||
-									!formData.startTime ||
-									!formData.endTime
+									!dayjs(formData.startTime).isValid() ||
+									!dayjs(formData.endTime).isValid()
 								}
 								onClick={handleSubmit(onSubmit)}
 							>

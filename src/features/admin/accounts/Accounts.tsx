@@ -8,19 +8,17 @@ import { Role } from '@/shared/types'
 const Accounts = () => {
 
   const [tabValue, setTabValue] = useState(0)
-  const [selectedRole, setSelectedRole] = useState<Role>('STUDENT');
 
   const accountTabs = [
-    { label: 'Academic Counselor', value: roles.ACADEMIC_COUNSELOR },
-    { label: 'Non-academic Counselor', value: roles.NON_ACADEMIC_COUNSELOR },
-    { label: 'Student', value: roles.STUDENT },
-    { label: 'Manager', value: roles.MANAGER },
-    { label: 'Support Staffs', value: roles.SUPPORT_STAFF },
+    { label: 'Academic Counselor', value: roles.ACADEMIC_COUNSELOR as Role},
+    { label: 'Non-academic Counselor', value: roles.NON_ACADEMIC_COUNSELOR as Role},
+    { label: 'Student', value: roles.STUDENT as Role},
+    { label: 'Manager', value: roles.MANAGER as Role},
+    { label: 'Support Staffs', value: roles.SUPPORT_STAFF as Role},
   ];
 
   const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
-    setSelectedRole(accountTabs[newValue ].value as Role)
   };
 
   return (
@@ -31,7 +29,7 @@ const Accounts = () => {
       </div>
       
       <div>
-        <AccountsTable selectedRole={selectedRole} />
+        <AccountsTable selectedRole={accountTabs[tabValue].value} />
       </div>
     </div>
   )

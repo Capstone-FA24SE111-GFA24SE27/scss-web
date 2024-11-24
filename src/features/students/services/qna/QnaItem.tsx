@@ -51,10 +51,10 @@ const item = {
 const QnaItem = (props: Props) => {
 	const { expanded, toggleAccordion, qna, openAnswers } = props;
 
-	const { data, isLoading } = useGetMessagesQuery(qna.id);
+	const { data, isLoading } = useGetMessagesQuery(qna.id,  {skip: !qna || qna.closed || !qna.chatSession || qna.status !== 'VERIFIED'});
+	const chatSession = data?.content;
 
 	const dispatch = useAppDispatch();
-	const chatSession = data?.content;
 
 	const navigate = useNavigate();
 	const account = useAppSelector(selectAccount);
@@ -204,7 +204,7 @@ const QnaItem = (props: Props) => {
 							{
 								qna.counselor && (
 									<UserLabel
-										label='Answer by'
+										label='Assigned to'
 										profile={qna?.counselor.profile}
 										email={qna?.counselor?.email}
 										onClick={() => {
@@ -306,7 +306,7 @@ const QnaItem = (props: Props) => {
 								color='secondary'
 								startIcon={<ChatBubbleOutline />}
 								onClick={() => handleSelectChat(qna)}
-								disabled={!qna.counselor || qna.closed}
+								disabled={!qna.counselor || qna.closed || qna.status !== 'VERIFIED'}
 							>
 								Initiate Chat
 							</Button>

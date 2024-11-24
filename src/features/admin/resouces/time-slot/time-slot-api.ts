@@ -1,6 +1,6 @@
 import { Account, PaginationContent, Role } from '@/shared/types';
 import { TimeSlot } from '@/shared/types/admin';
-import { apiService, ApiResponse } from '@shared/store';
+import { apiService, ApiResponse, ApiMessage } from '@shared/store';
 import { url } from 'inspector';
 
 const addTagTypes = ['time-slots'] as const;
@@ -89,16 +89,20 @@ type putUpdateTimeSlotResponse = ApiResponse<TimeSlot>;
 type deleteTimeSlotArgs = number | string;
 type deleteTimeSlotResponse = ApiResponse<TimeSlot>;
 
-type postCreateTimeSlotResponse = {};
+type postCreateTimeSlotResponse = ApiMessage;
 type postCreateTimeSlotArgs = {
 	slotCode: string;
 	name: string;
 	startTime: {
 		hour: number;
 		minute: number;
+		second: number;
+		nano: number;
 	};
 	endTime: {
 		hour: number;
 		minute: number;
+		second: number;
+		nano: number;
 	};
 };
