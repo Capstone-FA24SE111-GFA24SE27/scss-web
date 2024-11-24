@@ -30,3 +30,15 @@ export const groupAppointmentsByDate = (appointments: Appointment[] = []) => {
     return groups;
   }, {});
 };
+
+export const splitUserAndReason = (text: string) => {
+  // Split the string by the colon and space
+  const parts = text.split(': ');
+
+  // Trim any extra whitespace just in case
+  const user = parts[0]?.trim() || '';
+  const reason = parts[1]?.trim() || '';
+
+  // Return an object with the split parts
+  return { user, reason };
+}

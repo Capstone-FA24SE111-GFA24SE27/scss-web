@@ -10,6 +10,7 @@ export const statusColor = {
   'REJECTED': 'error',
   'FLAGGED': 'error',
   'CANCELED': 'error',
+  'DENIED': 'error',
 }
 
 export const meetingTypeColor = {

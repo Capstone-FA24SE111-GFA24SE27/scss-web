@@ -13,6 +13,7 @@ import {
 import { Box } from '@mui/material';
 import { resetFilter, selectFilter } from './student-list-slice';
 import { useDispatch } from 'react-redux';
+import clsx from 'clsx';
 
 function StudentListContent() {
 	const [page, setPage] = useState(1);
@@ -25,7 +26,7 @@ function StudentListContent() {
 
 	const {
 		searchTerm,
-		isIncludeBehavior,
+		isUsingPrompt,
 		promptForBehavior,
 		semesterIdForBehavior,
 		departmentId,
@@ -34,7 +35,8 @@ function StudentListContent() {
 		minGPA,
 		maxGPA,
 		semesterIdForGPA,
-		tab
+		tab,
+		behaviorList
 	} = filter;
 
 
@@ -54,7 +56,7 @@ function StudentListContent() {
 	// 	  }
 	// 	: ({
 	// 			keyword,
-	// 			isIncludeBehavior,
+	// 			isUsingPrompt,
 	// 			promptForBehavior,
 	// 			semesterIdForBehavior,
 	// 			departmentId,
@@ -68,7 +70,7 @@ function StudentListContent() {
 	// 			console.log('using default');
 	// 			return useGetStudentsFilterQuery({
 	// 				keyword,
-	// 				isIncludeBehavior,
+	// 				isUsingPrompt,
 	// 				promptForBehavior,
 	// 				semesterIdForBehavior,
 	// 				departmentId,
@@ -83,7 +85,7 @@ function StudentListContent() {
 
 	const { data: data, isLoading: isLoadingStudents } = useGetStudentsFilterQuery({
 		keyword: searchTerm,
-		isIncludeBehavior,
+		isUsingPrompt,
 		promptForBehavior,
 		semesterIdForBehavior,
 		departmentId,
@@ -93,7 +95,8 @@ function StudentListContent() {
 		maxGPA,
 		semesterIdForGPA,
 		page,
-		tab
+		tab,
+		behaviorList
 	});
 
 	const students = data?.data;
@@ -140,3 +143,6 @@ function StudentListContent() {
 	);
 }
 export default StudentListContent;
+
+
+

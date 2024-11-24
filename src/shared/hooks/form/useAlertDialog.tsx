@@ -1,7 +1,6 @@
-import { useAppSelector } from '@shared/store';
 import { useAppDispatch } from '@shared/store';
-import React, { ReactElement, ReactNode, useEffect } from 'react';
-import { closeDialog, openDialog, selectDialogProps } from '../../components/dialog/dialog-slice';
+import React, { ReactElement } from 'react';
+import { closeDialog, openDialog } from '../../components/dialog/dialog-slice';
 import {
 	Alert,
 	AlertTitle,
@@ -14,6 +13,7 @@ import {
 	DialogTitle,
 	Typography,
 } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 
 type Props = {
@@ -21,32 +21,44 @@ type Props = {
 	confirmButtonTitle?: string;
 	color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
 	dispatch: ThunkDispatch<any, any, any>;
+	confirmFunction?: () => void; // Optional confirm function
 };
 
 const useAlertDialog = (props: Props) => {
 	const {
-		title = '',
+		title = 'Alert',
 		confirmButtonTitle = 'OK',
-		color = 'primary', // Default color to 'success'
+		color = 'success',
 		dispatch,
+		confirmFunction,
 	} = props;
 
 	const handleClose = () => {
-		dispatch(closeDialog());	
+		dispatch(closeDialog());
+		if (confirmFunction) {
+			confirmFunction(); // Call the confirm function if provided
+		}
 	};
 
 	const customChildren = (
-		<div className='flex flex-col bg-background-paper'>
-			{/* 	@ts-ignore */}
-			<Alert severity={color} className='p-8'>
-				<AlertTitle className='font-semibold px-16 text-lg	'>{title}</AlertTitle>
-				<Box className='w-full flex justify-end mt-16'>
-					<Button onClick={handleClose} autoFocus color={color} >
-						{confirmButtonTitle}
-					</Button>
-				</Box>
-			</Alert>
-		</div>
+		<Alert
+			/* 	@ts-ignore */
+			severity={color}
+			icon={!color ? <InfoIcon /> : ''}
+			className='p-16 w-full flex'
+		>
+			<AlertTitle className='font-semibold px-16 text-xl w-full min-w-xs'>{title}</AlertTitle>
+			<Box className='w-full flex justify-end mt-32'>
+				<Button
+					onClick={handleClose}
+					autoFocus
+					color={color}
+					size='large'
+				>
+					{confirmButtonTitle}
+				</Button>
+			</Box>
+		</Alert>
 	) as ReactElement;
 
 	return dispatch(openDialog({ children: customChildren }));

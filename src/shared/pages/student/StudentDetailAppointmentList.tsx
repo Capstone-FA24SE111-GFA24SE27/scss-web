@@ -15,10 +15,10 @@ import { statusColor } from '@/shared/constants';
  * The contact view.
  */
 
-interface StudentAppointmentListProps {
+interface StudentDetailAppointmentListProps {
   student: StudentDocument
 }
-function StudentAppointmentList({ id }: { id: string }) {
+function StudentDetailAppointmentList({ id }: { id: string }) {
   const routeParams = useParams();
   const { id: studentRouteId } = routeParams as { id: string };
   const studentId = id || studentRouteId;
@@ -153,4 +153,4 @@ function StudentAppointmentList({ id }: { id: string }) {
   );
 }
 
-export default StudentAppointmentList;
+export default StudentDetailAppointmentList;

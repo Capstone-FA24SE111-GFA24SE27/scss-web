@@ -51,7 +51,7 @@ const AcademicTranscript = lazy(
 	() => import('@/shared/pages/student/AcademicTranscript')
 );
 const StudentAppointmentList = lazy(
-	() => import('@/shared/pages/student/StudentAppointmentList')
+	() => import('@/shared/pages/student/StudentDetailAppointmentList')
 );
 const AttendanceReport = lazy(
 	() => import('@/shared/pages/student/AttendanceReport')

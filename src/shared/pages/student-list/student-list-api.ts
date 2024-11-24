@@ -22,7 +22,7 @@ export const studentListApi = api
 					semesterIdForGPA = '',
 					minGPA = '',
 					maxGPA = '',
-					isIncludeBehavior = false,
+					isUsingPrompt = false,
 					semesterIdForBehavior = '',
 					promptForBehavior = '',
 					keyword = '',
@@ -30,6 +30,7 @@ export const studentListApi = api
 					sortDirection = 'ASC',
 					page = '',
 					tab = '',
+					behaviorList = ''
 				}) => {
 					if (tab === '') {
 						// Call the first API endpoint if the condition is met
@@ -44,13 +45,14 @@ export const studentListApi = api
 								semesterIdForGPA,
 								minGPA,
 								maxGPA,
-								isIncludeBehavior,
+								isUsingPrompt,
 								semesterIdForBehavior,
 								promptForBehavior,
 								keyword,
 								sortBy,
 								sortDirection,
 								page,
+								behaviorList,
 							},
 						};
 					} else if (tab === 'RECOMMENDED') {
@@ -133,13 +135,14 @@ export type GetStudentsFilterApiArg = {
 	semesterIdForGPA?: number | '';
 	minGPA?: number | '';
 	maxGPA?: number | '';
-	isIncludeBehavior?: boolean;
+	isUsingPrompt?: boolean;
 	semesterIdForBehavior?: number | '';
 	promptForBehavior?: string;
 	keyword?: string;
 	sortBy?: string;
 	sortDirection?: 'ASC' | 'DESC';
 	page?: number;
+	behaviorList?: string,
 	tab?: string;
 };
 type PutExcludeStudentProblemTagsArgs = number | string;

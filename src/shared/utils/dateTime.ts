@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { monthsOfYear } from "../constants";
 
 export function isDateRangeOverlapping(
 	startDate1: Date,
@@ -37,10 +38,18 @@ export const formatDateTime = (inputDate) => {
 	const date = dayjs(inputDate.split('.')[0]);
 
 	if (date.isSame(today, 'day')) {
-		return date.format('h:mm A'); 
+		return date.format('h:mm A');
 	} else if (date.isSame(today, 'year')) {
 		return date.format('MMM D [at] h:mm A');
 	} else {
 		return date.format('MMM D, YYYY [at] h:mm A');
 	}
 };
+
+export const getCurrentMonthYear = () => {
+	const currentDate = new Date();
+	const currentMonth = monthsOfYear[currentDate.getMonth()];
+	const currentYear = currentDate.getFullYear();
+
+	return `${currentMonth}, ${currentYear}`;
+}

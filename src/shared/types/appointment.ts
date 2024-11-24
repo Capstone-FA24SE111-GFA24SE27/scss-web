@@ -78,6 +78,7 @@ export type Appointment = {
 	} & Account);
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
+	cancelReason?: string;
 };
 
 export type AppointmentDetails = {

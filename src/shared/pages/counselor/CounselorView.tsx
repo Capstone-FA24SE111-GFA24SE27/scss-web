@@ -99,24 +99,18 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                     </div>
 
                     <Typography className="mt-12 text-4xl font-bold truncate">{counselor?.profile.fullName}</Typography>
+                    <Typography className="mt-4 text-xl">{counselor?.expertise?.name || counselor?.specialization?.name}</Typography>
 
-                    <div className='flex items-end gap-8 text-lg text-text-secondary'>
+                    <div className='flex items-end gap-8 text-lg text-text-secondary mt-8'>
                         <Rating
                             name="simple-controlled"
                             value={counselor?.rating}
                             readOnly
                             precision={0.5}
                         />
+                        ({counselor?.rating}/5)
                     </div>
 
-                    {/* <div className="flex items-center mt-8 gap-8 ">
-                        <Chip
-                            label={counselor?.expertise?.name || counselor?.specialization?.name}
-                            size="medium"
-                            className='px-16 text-lg'
-                        />
-                    </div> */}
-                    <Typography className="mt-4 text-xl">{counselor?.expertise?.name || counselor?.specialization?.name}</Typography>
 
 
 

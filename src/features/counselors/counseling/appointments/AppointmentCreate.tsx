@@ -9,7 +9,7 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { Breadcrumbs, ContentLoading, NavLinkAdapter, UserLabel } from '@shared/components';
-import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
+import { getApiErrorMessage, selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { useEffect, useState, useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -21,6 +21,7 @@ import { navigateUp } from '@/shared/utils';
 import { ArrowBack } from '@mui/icons-material';
 import { debounce } from 'lodash';
 import { openStudentView } from '../../counselors-layout-slice';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 
 /**
  * The contact view.
@@ -103,16 +104,35 @@ function AppointmentCreate() {
   const location = useLocation();
 
   const onSubmit = () => {
-    bookCounselor({
-      studentId: student?.id.toString(),
-      body: {
-        ...formData,
-        meetURL,
-        address,
-      }
+    useConfirmDialog({
+      dispatch,
+      title: 'Confirm booking',
+      content: `Are you sure to book ${counselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
+      confirmButtonFucntion: () => bookCounselor({
+        studentId: student?.id.toString(),
+        body: {
+          ...formData,
+          meetURL,
+          address,
+        }
+      })
+        .unwrap()
+        .then(() => {
+          useAlertDialog({
+            dispatch,
+            title: 'Booking success',
+            confirmFunction: () => navigate(-1)
+          })
+        })
+        .catch(error => {
+          useAlertDialog({
+            dispatch,
+            title: `Booking failed ${getApiErrorMessage(error)}`,
+            color: 'error',
+          })
+        })
     })
-      .unwrap()
-      .then(() => navigate('.'))
+
   }
 
   const handleDateChange = (selectedDate) => {
@@ -294,6 +314,12 @@ function AppointmentCreate() {
                 }
               </div>
             </div>
+
+            {
+              errors?.slotCode && (
+                <Typography className='mt-16' color='error'>Please select a counseling slot</Typography>
+              )
+            }
 
             <div className=''>
               <Typography className='font-semibold text-primary text-lg'>Meeting Type</Typography>

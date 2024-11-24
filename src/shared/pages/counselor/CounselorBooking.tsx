@@ -15,6 +15,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import { AppointmentRequest, useBookCounselorMutation, useGetCounselorDailySlotsQuery, useGetCounselorQuery } from '@features/students/services/counseling/counseling-api';
+import { getApiErrorMessage, useAppDispatch } from '@shared/store';
+import { useAlertDialog } from '@/shared/hooks';
+import { useConfirmDialog } from '@/shared/hooks';
 
 /**
  * The contact view.
@@ -69,7 +72,7 @@ function CounselorBooking() {
   const formData = watch();
   const { isValid, dirtyFields, errors } = formState;
 
-
+  const dispatch = useAppDispatch()
 
   const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId)
   const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth, to: endOfMonth });
@@ -82,12 +85,31 @@ function CounselorBooking() {
 
 
   const onSubmit = () => {
-    bookCounselor({
-      counselorId: Number(counselorId),
-      appointmentRequest: formData
+    useConfirmDialog({
+      dispatch,
+      title: 'Confirm booking',
+      content: `Are you sure to book ${counselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
+      confirmButtonFucntion: () => bookCounselor({
+        counselorId: Number(counselorId),
+        appointmentRequest: formData
+      })
+        .unwrap()
+        .then(() => {
+          useAlertDialog({
+            dispatch,
+            title: 'Booking success',
+            confirmFunction: () => navigate('../')
+          })
+        })
+        .catch(error => {
+          useAlertDialog({
+            dispatch,
+            title: `Booking failed ${getApiErrorMessage(error)}`,
+            color: 'error',
+          })
+        })
     })
-      .unwrap()
-      .then(() => navigate('../'))
+
   }
 
   const handleDateChange = (selectedDate) => {
@@ -264,6 +286,11 @@ function CounselorBooking() {
                       ))
               }
             </div>
+            {
+              errors?.slotCode && (
+                <Typography className='mt-16' color='error'>Please select a counseling slot</Typography>
+              )
+            }
           </div>
 
           <Divider className="mt-16 mb-24" />

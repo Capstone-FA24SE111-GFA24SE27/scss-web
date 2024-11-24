@@ -17,7 +17,7 @@ import { useGetSemestersQuery } from '@/shared/services';
 import { ChangeEvent, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown';
 import AcademicTranscript from './AcademicTranscript';
-import StudentAppointmentList from './StudentAppointmentList';
+import StudentDetailAppointmentList from './StudentDetailAppointmentList';
 import AttendanceReport from './AttendanceReport';
 import { lazy } from 'react'
 import { closeStudentView } from '@/features/counselors/counselors-layout-slice';
@@ -373,7 +373,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
                         History of couseling
                       </Typography>
                     </Box>
-                    <StudentAppointmentList id={studentId} />
+                    <StudentDetailAppointmentList id={studentId} />
                   </div>
                 </div>
               )

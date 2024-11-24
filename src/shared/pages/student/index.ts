@@ -4,14 +4,14 @@ export * from './student-routes'
 export * from './student-view-routes'
 export * from './student-api'
 import StudentView from './StudentView'
-import StudentAppointmentList from './StudentAppointmentList'
+import StudentDetailAppointmentList from './StudentDetailAppointmentList'
 import StudentAppointmentReport from './StudentAppointmentReport'
 import StudentBooking from './StudentBooking'
-import StudentAppointmentItem from './StudentAppointmentItem'
+import StudentDetailAppointmentItem from './StudentDetailAppointmentItem'
 export {
   StudentView,
-  StudentAppointmentList,
+  StudentDetailAppointmentList,
   StudentAppointmentReport,
   StudentBooking,
-  StudentAppointmentItem
+  StudentDetailAppointmentItem
 }

@@ -17,8 +17,8 @@ import ScheduleTab from './ScheduleTab';
 import OverviewTab from './OverviewTab';
 import { CounselingSlot } from '@/shared/types';
 import { daysOfWeek } from '@/shared/constants';
-import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
-import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import { useConfirmDialog } from '@/shared/hooks';
+import { useAlertDialog } from '@/shared/hooks';
 import { isApiSuccess, useAppDispatch } from '@shared/store';
 import QnaTab from './QnaTab';
 
@@ -79,7 +79,6 @@ function Counseling() {
           useAlertDialog({
             dispatch,
             title: 'Counselor status updated success',
-            color: 'success'
           });
         } else {
           useAlertDialog({

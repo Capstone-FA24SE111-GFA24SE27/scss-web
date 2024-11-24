@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselorAppointmentRequestsQuery } from './requests-api'
-import { AppLoading, DateRangePicker, FilterTabs, NavLinkAdapter, Pagination, RequestItem, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
+import { AppLoading, ContentLoading, DateRangePicker, FilterTabs, NavLinkAdapter, Pagination, RequestItem, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
 import { ChangeEvent, Fragment, useEffect, useState } from 'react';
@@ -60,7 +60,7 @@ const RequestsContent = () => {
   };
 
 
-  const { data, isLoading, refetch } = useGetCounselorAppointmentRequestsQuery({
+  const { data, isLoading, isFetching, refetch } = useGetCounselorAppointmentRequestsQuery({
     dateFrom: startDate,
     dateTo: endDate,
     meetingType: selectedMeetingType,
@@ -70,7 +70,7 @@ const RequestsContent = () => {
   })
 
   const appointmentRequests = data?.content.data
-  
+
 
   useRequestsSocketListener(account?.profile.id, refetch)
 
@@ -107,21 +107,23 @@ const RequestsContent = () => {
           initialSort='DESC'
         />
       </Box>
-      <FilterTabs tabs={statusTabs} tabValue={statusValue} onChangeTab={handleChangeStatus}/>
+      <FilterTabs tabs={statusTabs} tabValue={statusValue} onChangeTab={handleChangeStatus} />
 
       <List className='flex flex-col gap-16'>
         {
-          !appointmentRequests?.length
-            ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
-            : appointmentRequests?.map(appointment =>
-              <Paper
-                key={appointment.id}
-                className="shadow"
-                sx={{ bgcolor: 'background.paper' }}
-              >
-                <RequestItem appointment={appointment} />
-              </Paper >
-            )}
+          isFetching
+            ? <ContentLoading />
+            : !appointmentRequests?.length
+              ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
+              : appointmentRequests?.map(appointment =>
+                <Paper
+                  key={appointment.id}
+                  className="shadow"
+                  sx={{ bgcolor: 'background.paper' }}
+                >
+                  <RequestItem appointment={appointment} />
+                </Paper >
+              )}
       </List >
       <Pagination
         page={page}

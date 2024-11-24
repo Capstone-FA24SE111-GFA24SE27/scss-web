@@ -32,8 +32,8 @@ import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { statusColor } from '@/shared/constants';
 import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 import { openCounselorView } from '../../students-layout-slice';
-import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
-import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
+import { useAlertDialog } from '@/shared/hooks';
+import { useConfirmDialog } from '@/shared/hooks';
 
 type Props = {
 	expanded: number | boolean;
@@ -86,6 +86,32 @@ const QnaItem = (props: Props) => {
 			});
 		}
 	};
+
+	const handleDeleteQuestion = (id) => {
+		useConfirmDialog({
+			title: 'Confirm deleting the question?',
+			content: 'This action will permanently delete the question and cannnot be undone',
+			confirmButtonFucntion: () => {
+				deleteQuestion(id)
+					.unwrap()
+					.then(() => {
+						useAlertDialog({
+							title: 'Question was deleted successfully',
+							dispatch: dispatch,
+							color: 'success'
+						});
+					})
+					.catch(() => {
+						useAlertDialog({
+							title: 'Failed to delete question',
+							dispatch: dispatch,
+							color: 'error'
+						});
+					})
+			},
+			dispatch,
+		});
+	}
 
 	const countUnreadMessages = () => {
 		const readMessages = chatSession?.messages.filter(
@@ -220,7 +246,7 @@ const QnaItem = (props: Props) => {
 								color='secondary'
 								startIcon={<Delete />}
 								disabled={isDeletingQuestion}
-								onClick={() => deleteQuestion(qna.id)}
+								onClick={() => handleDeleteQuestion(qna.id)}
 							>
 								Delete
 							</Button>
@@ -246,7 +272,7 @@ const QnaItem = (props: Props) => {
 							>
 								Edit Question
 							</Button>
-						) : qna.chatSession ?(
+						) : qna.chatSession ? (
 							<Button
 								variant='contained'
 								color='secondary'

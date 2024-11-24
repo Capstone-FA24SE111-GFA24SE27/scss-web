@@ -15,7 +15,7 @@ import {
 import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
 import { useGetDemandByIdQuery } from './demand-api';
-import { StudentAppointmentItem, StudentAppointmentReport } from '../student';
+import { StudentAppointmentReport, StudentDetailAppointmentItem } from '../student';
 import { useAppDispatch } from '@shared/store';
 
 const DemandDetail = ({ id }: { id?: string }) => {
@@ -172,7 +172,7 @@ const DemandDetail = ({ id }: { id?: string }) => {
           {
             !demand?.appointments?.length
               ? <Typography color='textSecondary'>No appointments found</Typography>
-              : demand?.appointments?.map(appointment => <StudentAppointmentItem appointment={appointment} />
+              : demand?.appointments?.map(appointment => <StudentDetailAppointmentItem appointment={appointment} />
               )
           }
         </Box>

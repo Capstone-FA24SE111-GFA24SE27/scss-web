@@ -4,32 +4,43 @@ import {
 	SearchField,
 	SelectField,
 } from '@/shared/components';
-import { Psychology } from '@mui/icons-material';
+import { Psychology, Sell, Style } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useEffect, useState } from 'react';
 import StudentListFilterButton from './StudentListFilterButton';
 import {
 	selectFilter,
-	setIsIncludeBehavior,
+	setBehaviorList,
+	setIsUsingPrompt,
 	setPromptForBehavior,
 	setSemesterIdForBehavior,
 	setTab,
 } from './student-list-slice';
 import { useGetSemestersQuery } from '@/shared/services';
+import clsx from 'clsx';
+import { useGetProblemTagsQuery } from '@/features/admin/resouces/problem-tag/problem-tag-api';
+import { Autocomplete, Chip, InputAdornment, TextField } from '@mui/material';
+import { ProblemTag } from '@/shared/types/admin';
+
 
 const StudentListHeader = ({ isShowingTab = false }) => {
 	const filter = useAppSelector(selectFilter);
 	const [tabValue, setTabValue] = useState(0);
-	const dispatch = useAppDispatch();
 
-	const handleIsIncludeBehavior = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		if (filter.tab !== 'RECOMMENDED') {
-			dispatch(setIsIncludeBehavior(!filter.isIncludeBehavior));
-			dispatch(setPromptForBehavior(''));
-		}
-	};
+	const dispatch = useAppDispatch();
+	const { data: problemTagsData } = useGetProblemTagsQuery({
+		size: 9999
+	})
+	const problemTags = problemTagsData?.content.data || []
+
+	// const handleIsIncludeBehavior = (
+	// 	event: React.ChangeEvent<HTMLInputElement>
+	// ) => {
+	// 	if (filter.tab !== 'RECOMMENDED') {
+	// 		dispatch(setIsUsingPrompt(!filter.isUsingPrompt));
+	// 		dispatch(setPromptForBehavior(''));
+	// 	}
+	// };
 
 	const handlePromptForBehavior = (searchTerm) => {
 		dispatch(setPromptForBehavior(searchTerm));
@@ -73,21 +84,37 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 		// dispatch(setPromptForBehavior(''));
 	};
 
+	const handleSwitchChange = (checked: boolean) => {
+		dispatch(setIsUsingPrompt(checked));
+		dispatch(setBehaviorList(``))
+	};
+
+	const handleTagsSelect = (value: string[]) => {
+		dispatch(setBehaviorList(value.join(`,`)))
+	}
 	return (
 		<div className='flex items-center flex-1 bg-background'>
 			<div className='flex flex-col w-full gap-16 p-24'>
-				<div className='flex gap-32'>
-					<SearchField
-						onSearch={handlePromptForBehavior}
-						label='Behavior tags'
-						className='Student behavior'
-						startIcon={<Psychology />}
-						placeholder='Student behavior'
-						disabled={
-							filter.tab !== 'RECOMMENDED' &&
-							!filter.isIncludeBehavior
-						}
-					/>
+				<div className='flex gap-32 items-start'>
+					{
+						filter.isUsingPrompt
+							? <SearchField
+								onSearch={handlePromptForBehavior}
+								label='Behavior tags'
+								className='Student behavior'
+								startIcon={<Psychology />}
+								placeholder='Student behavior'
+								disabled={
+									filter.tab !== 'RECOMMENDED' &&
+									!filter.isUsingPrompt
+								}
+							/> :
+							<TagsSelect
+								data={problemTags}
+								selectedValues={filter.behaviorList ? filter.behaviorList.split(',') : []}
+								onChange={handleTagsSelect}
+							/>
+					}
 					<SelectField
 						label='Semester'
 						options={semesterOptions}
@@ -95,18 +122,17 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 						onChange={handleSelectSemester}
 						showClearOptions
 						className='w-256'
-						disabled={
-							filter.tab !== 'RECOMMENDED' &&
-							!filter.isIncludeBehavior
-						}
 					/>
-					{filter.tab !== 'RECOMMENDED' && (
-						<CheckboxField
-							label='Including Behavior'
-							checked={filter.isIncludeBehavior}
-							onChange={handleIsIncludeBehavior}
-						/>
-					)}
+					{/* <CheckboxField
+						label='Use Prompt'
+						checked={filter.isUsingPrompt}
+						onChange={handleIsIncludeBehavior}
+					/> */}
+
+					<ToggleSwitch
+						checked={filter.isUsingPrompt}
+						onChange={handleSwitchChange}
+					/>
 					<div className='pl-16'>
 						{!filter.open && <StudentListFilterButton />}
 					</div>
@@ -124,3 +150,95 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 };
 
 export default StudentListHeader;
+
+interface ToggleSwitchProps {
+	checked: boolean;
+	onChange: (checked: boolean) => void;
+}
+
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
+	return (
+		<div className="flex flex-col mx-8 gap-4 mt-4">
+			<div
+				className={clsx(
+					'relative w-72 h-28 flex items-center rounded-full cursor-pointer bg-primary-main',
+					checked ? 'bg-primary-main' : 'bg-primary-light',
+				)}
+				onClick={() => onChange(!checked)}
+			>
+				<div
+					className={clsx(
+						'absolute w-20 h-20 rounded-full bg-white shadow transform transition-transform',
+						checked ? 'translate-x-44' : 'translate-x-4',
+					)}
+				>
+					{checked ? (
+						<Psychology className=" text-primary-main " fontSize='small' />
+					) : (
+						<Sell className=" text-primary-light pt-3" fontSize='small' />
+					)}
+				</div>
+			</div>
+			<span
+				className={clsx(
+					'transition-all	w-96', // Added text size for consistency
+					checked ? 'text-primary-light' : 'text-primary-light'
+				)}
+			>
+				{checked ? 'Using Prompt' : 'Using Tags'}
+			</span>
+		</div>
+	);
+};
+
+
+interface Props {
+	data: ProblemTag[];
+	selectedValues: string[];
+	onChange: (selected: string[]) => void;
+}
+
+const TagsSelect: React.FC<Props> = ({ data, selectedValues, onChange }) => {
+	const flatOptions = data.map((item) => item.name);
+
+	return (
+		<Autocomplete
+			className="w-full"
+			multiple
+			options={flatOptions}
+			value={selectedValues}
+			onChange={(event, value) => onChange(value)}
+			groupBy={(option) => {
+				const item = data.find((d) => d.name === option);
+				return item?.category.name || 'Other';
+			}}
+			renderTags={(value, getTagProps) =>
+				value.map((option, index) => (
+					<Chip
+						key={index}
+						label={option}
+						{...getTagProps({ index })}
+					/>
+				))
+			}
+			renderInput={(params) => (
+				<TextField
+					{...params}
+					label="Select Tags"
+					variant="outlined"
+					placeholder="Search or select tags"
+					
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<Sell />
+							</InputAdornment>
+						),
+					}}
+				/>
+			)}
+
+
+		/>
+	);
+};

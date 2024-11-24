@@ -11,7 +11,7 @@ import { openStudentView } from '../counselors-layout-slice'
 import { useAppSelector } from '@shared/store'
 import { selectAccount } from '@shared/store'
 import { useAppointmentsSocketListener, useRequestsSocketListener, useQuestionsSocketListener } from '@/shared/context'
-import { groupAppointmentsByDate } from '@/shared/utils'
+import { getCurrentMonthYear, groupAppointmentsByDate } from '@/shared/utils'
 import { useGetMyCounselorQuestionsQuery } from '../qna/qna-api'
 import MyQnaItem from '../qna/my-qna/MyQnaItem'
 import { motion } from 'framer-motion';
@@ -46,13 +46,17 @@ const HomeContent = () => {
  
   const { data: totalAppointments } = useGetCounselorCounselingAppointmentQuery({});
   const { data: completedAppointments } = useGetCounselorCounselingAppointmentQuery({
-    status: `ATTEND`
+    status: `ATTEND`,
+    size: 9999
   });
   const { data: canceledAppointments } = useGetCounselorCounselingAppointmentQuery({
-    status: `CANCELED`
+    status: `CANCELED`,
+    size: 9999
   });
 
   const { data: pendingAppointments } = useGetCounselorAppointmentRequestsQuery({
+    status: `WAITING`,
+    size: 9999
   })
 
   useAppointmentsSocketListener(account?.profile.id, refetchAppointments)
@@ -84,7 +88,7 @@ const HomeContent = () => {
     <section className='w-full container mx-auto'>
 
       <div className='p-16 flex flex-col gap-16 '>
-        <Typography className='text-xl font-bold text-text-disabled'>Counseling Overview</Typography>
+        <Typography className='text-xl font-bold text-text-disabled'>Counseling Overview - {getCurrentMonthYear()}</Typography>
         <Box className='flex justify-between w-full gap-16'>
 
           <StatsCard
@@ -198,7 +202,7 @@ const HomeContent = () => {
 
       </div >
       <div className='p-16 flex flex-col gap-16 mt-8'>
-        <Typography className='text-2xl font-bold text-text-disabled'>Question & Answer Overview</Typography>
+        <Typography className='text-2xl font-bold text-text-disabled'>Question & Answer Overview - {getCurrentMonthYear()}</Typography>
         <Box className='flex justify-between w-full gap-16'>
           <StatsCard
             title="Total Questions"

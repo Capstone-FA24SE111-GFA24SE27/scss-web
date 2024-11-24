@@ -9,7 +9,7 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { Breadcrumbs, ContentLoading } from '@shared/components';
-import { selectAccount, useAppSelector } from '@shared/store';
+import { getApiErrorMessage, selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { useCreateAppointmentMutation, useGetStudentDetailQuery } from './student-api';
 import { useGetCounselorDailySlotsQuery } from '@/features/students/services/counseling/counseling-api';
 import { navigateUp } from '@/shared/utils';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 
 /**
  * The contact view.
@@ -87,20 +88,39 @@ function CounselorBooking() {
   const location = useLocation();
   const studentUrl = navigateUp(location, 1);
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
 
   const onSubmit = () => {
-    bookCounselor({
-      studentId: studentId,
-      body: {
-        ...formData,
-        meetURL,
-        address,
-      }
+    useConfirmDialog({
+      dispatch,
+      title: 'Confirm booking',
+      content: `Are you sure to book ${counselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
+      confirmButtonFucntion: () => bookCounselor({
+        studentId: student?.id.toString(),
+        body: {
+          ...formData,
+          meetURL,
+          address,
+        }
+      })
+        .unwrap()
+        .then(() => {
+          useAlertDialog({
+            dispatch,
+            title: 'Booking success',
+            confirmFunction: () => navigate(-1)
+          })
+        })
+        .catch(error => {
+          useAlertDialog({
+            dispatch,
+            title: `Booking failed ${getApiErrorMessage(error)}`,
+            color: 'error',
+          })
+        })
     })
-    .unwrap()
-    .then(() => navigate('../'))
-  }
 
+  }
   const handleDateChange = (selectedDate) => {
     const previousDate = formData.date
     const currentDate = dayjs(selectedDate).format('YYYY-MM-DD')
@@ -268,6 +288,12 @@ function CounselorBooking() {
                       ))
               }
             </div>
+              {
+                errors?.slotCode && (
+                  <Typography className='mt-16' color='error'>Please select a counseling slot</Typography>
+                )
+              }
+
           </div>
 
           <Divider className="mt-16 mb-24" />

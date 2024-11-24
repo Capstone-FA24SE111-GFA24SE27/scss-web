@@ -15,21 +15,23 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 
 type Props = {
 	title?: string;
+	content?: ReactNode;
 	cancelButtonTitle?: string;
 	confirmButtonTitle?: string;
 	confirmButtonFucntion: any;
-  dispatch: ThunkDispatch<any,any,any>
+	dispatch: ThunkDispatch<any, any, any>
 };
 
 const useConfirmDialog = (props: Props) => {
 	const {
 		title = 'Are you sure?',
+		content = '',
 		cancelButtonTitle = 'Cancel',
 		confirmButtonTitle = 'Confirm',
 		confirmButtonFucntion,
-    dispatch
+		dispatch
 	} = props;
-	
+
 
 	const handleClose = () => {
 		dispatch(closeDialog());
@@ -45,7 +47,9 @@ const useConfirmDialog = (props: Props) => {
 	const customChildren = (
 		<div className='flex flex-col bg-background-paper p-4'>
 			<DialogTitle id='alert-dialog-title'>{title}</DialogTitle>
-			
+			<DialogContent >
+				{content}
+			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose} color='primary'>{cancelButtonTitle}</Button>
 				<Button onClick={handleConfirm} autoFocus color='secondary' variant='contained'>

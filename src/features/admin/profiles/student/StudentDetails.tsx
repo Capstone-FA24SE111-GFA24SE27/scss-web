@@ -8,7 +8,7 @@ import {
 	SelectField,
 } from '@/shared/components';
 import {
-	StudentAppointmentList,
+	StudentDetailAppointmentList,
 	useGetStudentBehaviorAssessmentMutation,
 	useGetStudentDocumentDetailQuery,
 	useGetStudentProblemTagDetailsQuery,
@@ -371,7 +371,7 @@ const StudentDetails = (props: Props) => {
                         History of couseling
                       </Typography>
                     </Box>
-                    <StudentAppointmentList id={studentId} />
+                    <StudentDetailAppointmentList id={studentId} />
                   </div>
                 </div>
               )

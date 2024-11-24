@@ -16,10 +16,11 @@ export const requestsApi = api
           dateFrom = '',
           dateTo = '',
           meetingType = '',
-          sortBy = '',
+          sortBy = 'id',
           status = '',
           sortDirection = 'DESC',
-          page = 1
+          page = 1,
+          size = 10
         }) => ({
           url: `/api/booking-counseling/appointment-request`,
           params: {
@@ -29,7 +30,8 @@ export const requestsApi = api
             sortBy,
             sortDirection,
             status,
-            page
+            page,
+            size
           },
         }),
         providesTags: ['appointments']
@@ -51,4 +53,5 @@ export type GetCounselingAppointmentRequestApiArg = {
   sortDirection?: 'ASC' | 'DESC' | '';
   page?: number;
   status?: string;
+  size?: number;
 };

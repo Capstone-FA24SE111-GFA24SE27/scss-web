@@ -27,8 +27,8 @@ import {
 	RemoveCircle,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@shared/store';
-import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
-import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import { useConfirmDialog } from '@/shared/hooks';
+import { useAlertDialog } from '@/shared/hooks';
 import QnaFlagForm from './QnaFlagFormDialog';
 
 const QnaDetails = () => {
