@@ -9,7 +9,7 @@ import { filterClose, selectFilter } from './student-list-slice';
 import StudentListSidebarContent from './StudentListSidebarContent';
 import StudentViewSidebar from './StudentViewSidebar';
 
-function StudentList({isShowingTab = false}) {
+function StudentList({ isShowingTab = false }) {
   const pageLayout = useRef(null);
   const dispatch = useAppDispatch();
   const filter = useAppSelector(selectFilter)
@@ -32,19 +32,21 @@ function StudentList({isShowingTab = false}) {
       }
       rightSidebarContent={<StudentViewSidebar />}
       rightSidebarOpen={rightSidebarOpen}
-      rightSidebarOnClose={() => setRightSidebarOpen(false)}
+      rightSidebarOnClose={() => {
+        navigate('.')
+        setRightSidebarOpen(false)
+      }}
       rightSidebarVariant="temporary"
       scroll={isMobile ? 'normal' : 'content'}
       content={
         <PageSimple
           className='!min-h-screen'
-          header={<StudentListHeader isShowingTab={isShowingTab}  />}
+          header={<StudentListHeader isShowingTab={isShowingTab} />}
           content={<StudentListContent />}
           ref={pageLayout}
           rightSidebarContent={<StudentListSidebarContent />}
           rightSidebarOpen={filter.open}
           rightSidebarOnClose={() => {
-            navigate('.')
             dispatch(filterClose())
           }}
           rightSidebarVariant="permanent"

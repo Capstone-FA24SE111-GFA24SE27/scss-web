@@ -162,7 +162,8 @@ function SignInPage() {
 						<div>Student Counseling and Support System</div>
 					</div>
 					<div className="mt-24 text-lg leading-6 tracking-tight text-gray-300">
-						The Student Counseling and Support System (SCSS) is designed to offer comprehensive support services to students at FPT University HCM Campus, including academic counseling service and easy to access event.
+						{/* The Student Counseling and Support System (SCSS) is designed to offer comprehensive support services to students at FPT University HCM Campus, including academic counseling service and easy to access event. */}
+						The Student Counseling and Support System (SCSS) is designed to offer comprehensive support services to students at FPT University HCM Campus, including academic counseling service. To enhance the user experience, an advanced search functionality is integrated, allowing students and staff to quickly locate counseling services.
 					</div>
 					<div className='flex justify-between mt-32'>
 						<SupportAgent className='size-96 rounded-full p-8 text-primary-light' />

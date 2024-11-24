@@ -37,6 +37,7 @@ export const studentListApi = api
 					toForAttendanceCount = '',
 					fromForAttendancePercentage = '',
 					toForAttendancePercentage = '',
+					minSubjectForAttendance = '',
 				}) => {
 					if (tab === '') {
 						// Call the first API endpoint if the condition is met
@@ -65,6 +66,7 @@ export const studentListApi = api
 								toForAttendanceCount,
 								fromForAttendancePercentage,
 								toForAttendancePercentage,
+								minSubjectForAttendance
 							},
 						};
 					} else if (tab === 'RECOMMENDED') {
@@ -88,6 +90,7 @@ export const studentListApi = api
 								toForAttendanceCount,
 								fromForAttendancePercentage,
 								toForAttendancePercentage,
+								minSubjectForAttendance
 							},
 						};
 					}
@@ -170,6 +173,7 @@ export type GetStudentsFilterApiArg = {
 	toForAttendanceCount?: number | '';
 	fromForAttendancePercentage?: number | '';
 	toForAttendancePercentage?: number | '';
+	minSubjectForAttendance?: number | '';
 };
 type PutExcludeStudentProblemTagsArgs = number | string;
 type PutExcludeStudentProblemTagsResponse = ApiResponse<string>;

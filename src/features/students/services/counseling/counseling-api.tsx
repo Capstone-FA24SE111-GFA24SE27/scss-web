@@ -19,8 +19,8 @@ export const counselingApi = api
       getCounselorsAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({
           page = 1,
-          ratingFrom = '',
-          ratingTo = '',
+          ratingFrom = undefined,
+          ratingTo = undefined,
           search = '',
           sortBy = '',
           sortDirection = '',
@@ -39,6 +39,8 @@ export const counselingApi = api
             departmentId,
             majorId,
             specializationId,
+            ratingFrom,
+            ratingTo,
           }
         }),
         providesTags: ['counselors']
@@ -46,15 +48,14 @@ export const counselingApi = api
       getCounselorsNonAcademic: build.query<GetCounselorApiAcademicResponse, GetCounselorsApiArg>({
         query: ({
           page = 1,
-          ratingFrom = '',
-          ratingTo = '',
+          ratingFrom = undefined,
+          ratingTo = undefined,
           search = '',
           sortBy = '',
           sortDirection = '',
           availableFrom = '',
           availableTo = '',
           expertiseId,
-
         }) => ({
           url: `/api/counselors/non-academic`,
           params: {
@@ -63,6 +64,8 @@ export const counselingApi = api
             availableFrom,
             availableTo,
             expertiseId,
+            ratingFrom,
+            ratingTo,
           }
         }),
         providesTags: ['counselors']
@@ -152,9 +155,9 @@ export type GetCounselorsApiArg = {
   search?: string,
   sortDirection?: 'ASC' | 'DESC',
   sortBy?: string,
-  page?: number,
-  ratingFrom?: number,
-  ratingTo?: number,
+  page?: number | '',
+  ratingFrom?: number | '',
+  ratingTo?: number | '',
   availableFrom?: string,
   availableTo?: string,
   specializationId?: number | '';

@@ -89,7 +89,7 @@ function CounselorBooking() {
       dispatch,
       title: 'Confirm booking',
       content: `Are you sure to book ${counselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
-      confirmButtonFucntion: () => bookCounselor({
+      confirmButtonFunction: () => bookCounselor({
         counselorId: Number(counselorId),
         appointmentRequest: formData
       })

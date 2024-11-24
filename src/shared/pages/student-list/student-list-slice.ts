@@ -26,6 +26,7 @@ interface StudentListState {
   toForAttendanceCount: number | ''; // New state
   fromForAttendancePercentage: number | ''; // New state
   toForAttendancePercentage: number | ''; // New state
+  minSubjectForAttendance: number | ''; // New state
 }
 
 const initialState: StudentListState = {
@@ -53,6 +54,7 @@ const initialState: StudentListState = {
   toForAttendanceCount: '', // Default value
   fromForAttendancePercentage: '', // Default value
   toForAttendancePercentage: '', // Default value
+  minSubjectForAttendance: '', // Default value
 };
 
 /**
@@ -143,6 +145,9 @@ export const studentListSlice = createSlice({
     setToForAttendancePercentage: (state, action: PayloadAction<number | ''>) => {
       state.toForAttendancePercentage = action.payload;
     },
+    setMinSubjectForAttendance: (state, action: PayloadAction<number | ''>) => {
+      state.minSubjectForAttendance = action.payload;
+    },
   },
   selectors: {
     selectFilter: (filter: StudentListState) => filter,
@@ -185,6 +190,7 @@ export const {
   setToForAttendanceCount,
   setFromForAttendancePercentage,
   setToForAttendancePercentage,
+  setMinSubjectForAttendance
 } = studentListSlice.actions;
 
 export const {

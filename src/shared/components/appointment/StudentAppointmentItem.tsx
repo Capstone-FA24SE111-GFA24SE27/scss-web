@@ -165,11 +165,14 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
                 <Button
                   // variant='outlined'
                   size='large'
-                  onClick={() => dispatch(openDialog({
-                    children: (
-                      <SendFeedbackDialog appointment={appointment} />
-                    )
-                  }))}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    dispatch(openDialog({
+                      children: (
+                        <SendFeedbackDialog appointment={appointment} />
+                      )
+                    }))
+                  }}
                 >
                   Leave a review
                 </Button>

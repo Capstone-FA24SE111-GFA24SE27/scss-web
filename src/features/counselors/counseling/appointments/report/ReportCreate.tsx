@@ -11,6 +11,7 @@ import { useParams, useNavigate } from 'react-router';
 import { renderHTML } from '@/shared/components';
 import { Scrollbar, closeDialog, openDialog } from '@/shared/components';
 import { useAppDispatch } from '@shared/store';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 
 // Zod schema for validation
 const formSchema = z.object({
@@ -42,7 +43,6 @@ const steps = ['Goal', 'Content', 'Conclusion', 'Intervention'];
 const ReportCreate = () => {
   const routeParams = useParams();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch()
   const { handleSubmit, control, formState: { errors }, watch } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,14 +70,37 @@ const ReportCreate = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   };
 
+  const dispatch = useAppDispatch()
   const [createCounselingMutation] = useCreateAppointmentReportMutation();
 
   const onSubmit = (data: FormValues) => {
-    createCounselingMutation({
-      appointmentId: routeParams.id,
-      report: data,
-    });
-    navigate('..');
+    useConfirmDialog({
+      dispatch,
+      title: 'Confirm creating appointment report?',
+      confirmButtonFunction: () => {
+        createCounselingMutation({
+          appointmentId: routeParams.id,
+          report: data,
+        })
+          .unwrap()
+          .then(() => {
+            navigate('..');
+            useAlertDialog({
+              dispatch,
+              title: 'Report created successfully!',
+              color: 'success',
+            })
+          })
+          .catch(()=> {
+            useAlertDialog({
+              dispatch,
+              title: 'Failed to create report',
+              color: 'error',
+            })
+          })
+      }
+    })
+
   };
 
   console.log(activeStep === steps.length - 1 ? 'submit' : 'next')

@@ -41,6 +41,7 @@ function StudentListContent() {
 		toForAttendanceCount,
 		fromForAttendancePercentage,
 		toForAttendancePercentage,
+		minSubjectForAttendance
 	} = filter;
 
 	const { data: data, isLoading: isLoadingStudents } = useGetStudentsFilterQuery({
@@ -63,6 +64,7 @@ function StudentListContent() {
 		toForAttendanceCount,
 		fromForAttendancePercentage,
 		toForAttendancePercentage,
+		minSubjectForAttendance
 	});
 
 	const students = data?.data;

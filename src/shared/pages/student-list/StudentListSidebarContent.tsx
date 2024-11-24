@@ -1,4 +1,4 @@
-import { Box, Divider, Typography, ToggleButton, ToggleButtonGroup, Slider, IconButton } from '@mui/material';
+import { Box, Divider, Typography, ToggleButton, ToggleButtonGroup, Slider, IconButton, TextField } from '@mui/material';
 import { useState } from 'react';
 import CounselorListFilterButton from './StudentListFilterButton';
 import { AcademicFilter, SearchField, SelectField } from '@/shared/components';
@@ -18,6 +18,7 @@ import {
   setFromForAttendancePercentage,
   setToForAttendancePercentage,
   setSemesterIdForAttendance,
+  setMinSubjectForAttendance,
 } from './student-list-slice';
 import { Numbers } from '@mui/icons-material';
 import { useGetSemestersQuery } from '@/shared/services';
@@ -91,6 +92,10 @@ const CounselorListSidebarContent = () => {
     dispatch(setSemesterIdForAttendance(Number(event.target.value)));
   };
 
+  const handleMinSubjectForAttendanceChange = (value: string) => {
+    dispatch(setMinSubjectForAttendance(Number(value) || ''));
+  };
+
   const { data: semesterData, isLoading: isLoadingSemesterData } = useGetSemestersQuery();
   const semesterOptions = semesterData?.map((semester) => ({
     label: semester.name,
@@ -159,14 +164,35 @@ const CounselorListSidebarContent = () => {
             onChange={handleAttendanceTypeChange}
             aria-label="Attendance Type"
             size='small'
+            className=''
           >
-            <ToggleButton value="COUNT" aria-label="Count">
+            <ToggleButton value="COUNT" aria-label="Count" className='w-144'>
               <FilterAltIcon /> Count
             </ToggleButton>
-            <ToggleButton value="PERCENTAGE" aria-label="Percentage">
+            <ToggleButton value="PERCENTAGE" aria-label="Percentage" className='w-144'>
               <PercentIcon /> Percentage
             </ToggleButton>
           </ToggleButtonGroup>
+
+        </Box>
+        <Box className="flex items-center gap-16">
+
+          <TextField
+            fullWidth
+            type="number"
+            label="Min Subjects for Attendance"
+            placeholder="Enter minimum subjects"
+            size="small"
+            value={filter.minSubjectForAttendance || ''}
+            onChange={(e) => handleMinSubjectForAttendanceChange(e.target.value)}
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              }
+            }}
+          />
+        </Box>
+        <Box className="flex items-center gap-16">
           <SelectField
             label="Semester"
             options={semesterOptions}
@@ -179,48 +205,85 @@ const CounselorListSidebarContent = () => {
         </Box>
         {attendanceType === 'COUNT' && (
           <Box className="flex gap-16">
-            <SearchField
-              onSearch={(value) => handleAttendanceCountChange('fromForAttendanceCount', value)}
+            {/* From (Count) Field */}
+            <TextField
               label="From (Count)"
               placeholder="0"
               type="number"
-              showClearButton={false}
               size="small"
-              startIcon={<Numbers />}
+              value={filter.fromForAttendanceCount || ''}
+              onChange={(e) => {
+                const fromValue = Number(e.target.value) || 0;
+                const toValue = filter.toForAttendanceCount || 1;
+                // Ensure `fromForAttendanceCount` is less than or equal to `toForAttendanceCount`
+                if (fromValue >= toValue) {
+                  dispatch(setToForAttendanceCount(fromValue + 1));
+                }
+                dispatch(setFromForAttendanceCount(fromValue));
+              }}
+              InputProps={{
+                startAdornment: <Numbers />,
+              }}
             />
-            <SearchField
-              onSearch={(value) => handleAttendanceCountChange('toForAttendanceCount', value)}
+            {/* To (Count) Field */}
+            <TextField
               label="To (Count)"
               placeholder="100"
               type="number"
-              showClearButton={false}
               size="small"
-              startIcon={<Numbers />}
+              value={filter.toForAttendanceCount || ''}
+              onChange={(e) => {
+                const toValue = Number(e.target.value) || 1;
+                const fromValue = filter.fromForAttendanceCount || 0;
+                // Ensure `toForAttendanceCount` is greater than or equal to `fromForAttendanceCount`
+                if (toValue <= fromValue) {
+                  dispatch(setFromForAttendanceCount(toValue - 1));
+                }
+                dispatch(setToForAttendanceCount(toValue));
+              }}
+              InputProps={{
+                startAdornment: <Numbers />,
+              }}
             />
           </Box>
         )}
         {attendanceType === 'PERCENTAGE' && (
           <Box className="flex flex-col gap-16">
-            <Slider
-              valueLabelDisplay="auto"
-              min={0}
-              max={100}
-              value={filter.fromForAttendancePercentage || 0}
-              onChange={(_, value) =>
-                handleAttendancePercentageChange('fromForAttendancePercentage', value)
-              }
-              aria-labelledby="From Percentage"
-            />
-            <Slider
-              valueLabelDisplay="auto"
-              min={0}
-              max={100}
-              value={filter.toForAttendancePercentage || 100}
-              onChange={(_, value) =>
-                handleAttendancePercentageChange('toForAttendancePercentage', value)
-              }
-              aria-labelledby="To Percentage"
-            />
+            {/* Slider for "From Percentage" */}
+            <Box className="flex gap-8 items-center">
+              <Typography variant="subtitle2" className='w-96'>
+                From (%)
+              </Typography>
+              <Slider
+                valueLabelDisplay="on"
+                min={0}
+                max={100}
+                value={filter.fromForAttendancePercentage || 0}
+                onChange={(_, value) => {
+                  const newValue = Math.min(value as number, filter.toForAttendancePercentage || 100 - 1);
+                  handleAttendancePercentageChange('fromForAttendancePercentage', newValue);
+                }}
+                aria-labelledby="From Percentage"
+              />
+            </Box>
+
+            <Box className="flex gap-8 items-center">
+              <Typography variant="subtitle2" className='w-96'>
+                To (%)
+              </Typography>
+              <Slider
+                valueLabelDisplay="on"
+                min={0}
+                max={100}
+                value={filter.toForAttendancePercentage || 100}
+                onChange={(_, value) => {
+                  const newValue = Math.max(value as number, filter.fromForAttendancePercentage || 0 + 1);
+                  handleAttendancePercentageChange('toForAttendancePercentage', newValue);
+                }}
+                aria-labelledby="To Percentage"
+              />
+            </Box>
+
           </Box>
         )}
       </div>
