@@ -52,7 +52,7 @@ const QnaFlagForm = (props: Props) => {
 			enqueueSnackbar(result.data.message, {
 				variant: 'success',
 				key: result.data.message,
-				autoHideDuration: 50000,
+				autoHideDuration: 5000,
 				content: (
 					<ToastTemplate
 						variant='success'
@@ -65,7 +65,6 @@ const QnaFlagForm = (props: Props) => {
 			});
 		}
 
-		navigate(-1);
 	};
 
 	return (

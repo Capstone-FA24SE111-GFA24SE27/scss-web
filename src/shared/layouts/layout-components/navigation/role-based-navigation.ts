@@ -401,6 +401,18 @@ const adminNavigation: NavigationOptions = {
 const supportStaffNavigation: NavigationOptions = {
     list: [
         {
+            name: "Questions",
+            description: "Manage Q&A",
+            route: '',
+            items: [
+                {
+                    icon: QuestionAnswer,
+                    name: 'Question List',
+                    route: 'questions',
+                },
+            ]
+        },
+        {
             name: "Demand",
             description: "Manage demands",
             route: '',

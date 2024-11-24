@@ -79,14 +79,14 @@ export const studentQnasApi = api
         }),
         providesTags: ['qna']
       }),
-      closeQuestionStudent: build.mutation<void, number>({
+      closeQuestionStudent: build.mutation<CloseQuestionApiResponse, number>({
         query: (questionCardId) => ({
           url: `/api/question-cards/student/close/${questionCardId}`,
           method: 'POST'
         }),
         invalidatesTags: ['qna']
       }),
-      deleteQuestionStudent: build.mutation<void, number>({
+      deleteQuestionStudent: build.mutation<ApiMessage, number>({
         query: (questionCardId) => ({
           url: `/api/question-cards/delete/${questionCardId}`,
           method: 'DELETE'
@@ -142,6 +142,7 @@ export type EditQuestionApiArg = {
   question: QuestionPayload
 }
 
+type CloseQuestionApiResponse = ApiMessage
 
 export type GetBanInfoApiResponse = BanInfo
 export type BanInfo = {

@@ -12,7 +12,6 @@ const CreateAccount = () => {
   const createAccountTabs = [
     { label: 'Academic Counselor', value: roles.ACADEMIC_COUNSELOR },
     { label: 'Non-academic Counselor', value: roles.NON_ACADEMIC_COUNSELOR },
-    { label: 'Student', value: roles.STUDENT },
     { label: 'Manager', value: roles.MANAGER },
     { label: 'Support Staffs', value: roles.SUPPORT_STAFF },
   ];
@@ -47,7 +46,7 @@ const CreateAccount = () => {
   return (
     <div className='p-32'>
       <div className='flex items-center justify-between '>
-        <Heading title='Create Account' description='Enter the required information for new account creatation'/>
+        <Heading title={`Create ${createAccountTabs[tabValue].label}`} description='Enter the required information for new account creatation'/>
       </div>
       <div className='py-16'>
         <FilterTabs tabs={createAccountTabs} tabValue={tabValue} onChangeTab={handleChangeTab}/>

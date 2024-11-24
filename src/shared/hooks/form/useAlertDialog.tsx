@@ -37,8 +37,8 @@ const useAlertDialog = (props: Props) => {
 		<div className='flex flex-col bg-background-paper'>
 			<DialogTitle id='alert-dialog-title'>{title}</DialogTitle>
 			
-			<DialogActions>
-				<Button onClick={handleClose} autoFocus color='success'>
+			<DialogActions className='flex items-center justify-center'>
+				<Button variant='outlined' onClick={handleClose} autoFocus color='success'>
 					{confirmButtonTitle}
 				</Button>
 			</DialogActions>

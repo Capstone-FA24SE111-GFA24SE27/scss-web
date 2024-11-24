@@ -42,20 +42,21 @@ const useChatNotification = (qnaList: Question[]) => {
 					),
 				});
 				dispatch(chatApi.util.invalidateTags(['chat']));
-			
 			};
 
 			dispatch(setPassiveChatCallback(cb));
 
 			let listenersList = new Set<number>();
 
-			console.log(qnaList)
+			console.log(qnaList);
 
 			qnaList.forEach((qnaItem) => {
-				if (
-					qnaItem.chatSession &&
-					!qnaItem.closed 
-				) {
+				if (qnaItem.chatSession && !qnaItem.closed) {
+					if (chatListeners.has(qnaItem.chatSession.id)) {
+						const result = socket.off(
+							`/user/${qnaItem.chatSession.id}/chat`
+						);
+					}
 					const result = socket.on(
 						`/user/${qnaItem.chatSession.id}/chat`,
 						(data) => cb(data, qnaItem)
@@ -67,7 +68,7 @@ const useChatNotification = (qnaList: Question[]) => {
 					listenersList.add(qnaItem.chatSession?.id);
 				}
 			});
-			console.log('listeners', listenersList)
+			console.log('listeners', listenersList);
 			dispatch(setChatListeners(listenersList));
 		}
 		return () => {

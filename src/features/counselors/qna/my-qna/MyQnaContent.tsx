@@ -2,7 +2,7 @@ import { CheckboxField, ContentLoading, Heading, NavLinkAdapter, Pagination, Sea
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useAnswerQuestionMutation, useGetMyCounselorQuestionsQuery } from '../qna-api';
+import { counselorQnaApi, useAnswerQuestionMutation, useGetMyCounselorQuestionsQuery } from '../qna-api';
 import MyQnaItem from './MyQnaItem';
 import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/shared/services';
 import { selectAccount, useAppSelector } from '@shared/store';
@@ -73,6 +73,7 @@ const MyQnaContent = () => {
 				console.log('asdasdw' , data);
 				if (data) {
 					refetch();
+					counselorQnaApi.util.invalidateTags(['qna'])
 				}
 			};
 
@@ -129,7 +130,7 @@ const MyQnaContent = () => {
 
 
   return (
-    <div className='w-full h-full container mx-auto'>
+    <div className='container w-full h-full mx-auto'>
       <motion.div
         variants={container}
         initial="hidden"
