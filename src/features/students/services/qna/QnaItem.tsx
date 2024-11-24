@@ -72,28 +72,6 @@ const QnaItem = (props: Props) => {
 		}
 	};
 
-	const handleDeleteQuestion = async () => {
-
-		useConfirmDialog(
-			{
-				title: 'Are you sure you want to delete the question?',
-				confirmButtonFunction: async ()=>{
-					const result = await deleteQuestion(qna.id)
-					console.log('delete qna', result)
-					// if(result?.data?.status === 200) {
-						useAlertDialog({
-							title: result.data.message,
-							dispatch
-						})
-					// }
-				},
-				dispatch
-			}
-		)
-		
-		
-	}
-
 	const handleCloseQuestion = async () => {
 
 		useConfirmDialog(
@@ -131,12 +109,12 @@ const QnaItem = (props: Props) => {
 		}
 	};
 
-	const handleDeleteQuestion = (id) => {
+	const handleDeleteQuestion = () => {
 		useConfirmDialog({
 			title: 'Confirm deleting the question?',
 			content: 'This action will permanently delete the question and cannnot be undone',
-			confirmButtonFucntion: () => {
-				deleteQuestion(id)
+			confirmButtonFunction: () => {
+				deleteQuestion(qna.id)
 					.unwrap()
 					.then(() => {
 						useAlertDialog({
