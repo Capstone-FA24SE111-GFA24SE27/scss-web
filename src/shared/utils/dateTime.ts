@@ -53,3 +53,13 @@ export const getCurrentMonthYear = () => {
 
 	return `${currentMonth}, ${currentYear}`;
 }
+
+
+export const getMonthYearFromDate = (date: string) => {
+  const dayjsDate = dayjs(date);
+
+  const currentMonth = monthsOfYear[dayjsDate.month()];
+  const currentYear = dayjsDate.year(); 
+
+  return `${currentMonth}, ${currentYear}`;
+};

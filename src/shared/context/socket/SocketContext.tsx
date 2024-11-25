@@ -15,7 +15,6 @@ const SocketContext = createContext<Socket | null>(null);
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
-	console.log(SOCKET_BASE_URL, API_BASE_URL)
 	const [socketState, setSocketState] = useState<Socket | null>(null);
 	const account = useAppSelector(selectAccount);
 	// console.log('Socket context: ', socketRef?.current);

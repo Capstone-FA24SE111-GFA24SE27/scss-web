@@ -8,6 +8,7 @@ import {
   Profile,
   Student,
   Counselor,
+  CounselingDemand,
 } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store';
 
@@ -41,13 +42,17 @@ export const supportStaffsMangementApi = api
         providesTags: (result, error, id) => [{ type: 'supportStaffs', id }],
       }),
       getSupportStaffFollowing: build.query<GetSupportStaffFollowingApiResponse, GetSupportStaffFollowingApiArg>({
-        query: ({ staffId }) => ({
+        query: ({ staffId, page = 1, size = 10 }) => ({
           url: `/api/support-staff/following/${staffId}`,
+          params: {
+            page,
+            size,
+          }
         }),
         providesTags: (result, error, { staffId }) => [{ type: 'supportStaffs', id: staffId }],
       }),
       geSupportStafftCounselingDemandFilter: build.query<GetSuppportStaffCounselingDemandFilterApiResponse, GetSupportStaffCounselingDemandFilterApiArg>({
-        query: ({ staffId, status = 'PROCESSING', sortBy = 'createdDate', sortDirection = 'DESC', page = 1, keyword = '' }) => ({
+        query: ({ staffId, status = '', sortBy = '', sortDirection = 'DESC', page = 1, keyword = '' }) => ({
           url: `/api/support-staff/counseling-demand/filter/${staffId}`,
           params: {
             status,
@@ -83,36 +88,20 @@ export type GetSupportStaffManagementApiResponse = ApiResponse<SupportStaff>;
 export type GetSupportStaffManagementApiArg = string;
 
 
-export type GetSupportStaffFollowingApiResponse = ApiResponse<
-  {
-    student: Student;
-    followNote: string;
-    followDate: string;
-  }[]
->;
+export type GetSupportStaffFollowingApiResponse = ApiResponse<PaginationContent<FollowingStudent>>;
 export type GetSupportStaffFollowingApiArg = {
   staffId: string;
+  page?: number;
+  size?: number;
 };
 
-export type GetSuppportStaffCounselingDemandFilterApiResponse = ApiResponse<
-  {
-    id: number;
-    status: string;
-    student: Student;
-    supportStaff: SupportStaff;
-    contactNote: string | null;
-    summarizeNote: string | null;
-    counselor: Counselor;
-    startDateTime: string;
-    endDateTime: string | null;
-    appointments: Appointment[];
-    priorityLevel: string;
-    additionalInformation: string | null;
-    issueDescription: string | null;
-    causeDescription: string | null;
-    demandType: string;
-  }[]
->;
+export type FollowingStudent = {
+  student: Student;
+  followNote: string;
+  followDate: string;
+}
+
+export type GetSuppportStaffCounselingDemandFilterApiResponse = ApiResponse<PaginationContent<CounselingDemand>>;
 export type GetSupportStaffCounselingDemandFilterApiArg = {
   staffId: number;
   status?: string;

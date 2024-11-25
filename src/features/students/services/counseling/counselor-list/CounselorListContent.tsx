@@ -55,10 +55,6 @@ function CounselorListContent() {
         setPage(value);
     };
 
-    if (isFetchingAcademicCounselors || isFetchingNonAcademicCounselors) {
-        return <ContentLoading />;
-    }
-
 
     return (
         <div className='flex-1'>
@@ -68,27 +64,31 @@ function CounselorListContent() {
                 className="flex flex-col flex-auto w-full max-h-full gap-16 pb-16"
             >
                 <List className="w-full m-0 p-0">
-                    {!counselors?.length
-                        ? <div className="flex flex-1 items-center justify-center">
-                            <Typography
-                                color="text.secondary"
-                                variant="h5"
-                            >
-                                There are no counselors!
-                            </Typography>
-                        </div>
-                        : counselors.map(item =>
-                            <CounselorListItem
-                                key={item.profile.id}
-                                counselor={item} />
-                        )}
+                    {
+                        (isFetchingAcademicCounselors || isFetchingNonAcademicCounselors)
+                            ? <ContentLoading className='h-screen'/>
+                            : !counselors?.length
+                                ? <div className="flex flex-1 items-center justify-center">
+                                    <Typography
+                                        color="text.secondary"
+                                        variant="h5"
+                                    >
+                                        There are no counselors!
+                                    </Typography>
+                                </div>
+                                : counselors.map(item =>
+                                    <CounselorListItem
+                                        key={item.profile.id}
+                                        counselor={item} />
+                                )}
                 </List>
-                <Pagination
-                    page={page}
-                    count={pageCount}
-                    handleChange={handlePageChange}
-                />
+
             </motion.div>
+            <Pagination
+                page={page}
+                count={pageCount}
+                handleChange={handlePageChange}
+            />
         </div>
     );
 }

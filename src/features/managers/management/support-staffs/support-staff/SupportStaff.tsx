@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useGetSupportStaffManagementQuery, useGetSupportStaffsManagementQuery } from '../support-staffs-api';
 import OverviewTab from './OverviewTab';
-import DemandsTab from './DemandsTab';
+import DemandsTab from './DemandTab';
 import FollowingStudentsTab from './FollowingStudentsTab';
 
 
@@ -111,17 +111,17 @@ function SupportStaff() {
             scrollButtons="auto"
             classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
           >
-            <Tab
+            {/* <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Overview"
-            />
+            /> */}
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Demands"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Following SupportStaffs"
+              label="Following students"
             />
             {/* <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
@@ -134,9 +134,9 @@ function SupportStaff() {
         <div className="w-full p-16 h-full" >
           <Paper className='p-16 h-full shadow'>
             <div className="w-full pr-8">
-              {tabValue === 0 && <OverviewTab />}
-              {tabValue === 1 && <DemandsTab />}
-              {tabValue === 2 && <FollowingStudentsTab />}
+              {/* {tabValue === 0 && <OverviewTab />} */}
+              {tabValue === 0 && <DemandsTab />}
+              {tabValue === 1 && <FollowingStudentsTab />}
             </div>
           </Paper>
         </div >

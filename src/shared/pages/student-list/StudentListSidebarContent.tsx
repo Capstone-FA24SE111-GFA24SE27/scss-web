@@ -24,6 +24,7 @@ import { Numbers } from '@mui/icons-material';
 import { useGetSemestersQuery } from '@/shared/services';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import PercentIcon from '@mui/icons-material/Percent';
+import { debounce } from 'lodash';
 
 const CounselorListSidebarContent = () => {
   const filter = useAppSelector(selectFilter);
@@ -268,10 +269,10 @@ const CounselorListSidebarContent = () => {
                 min={0}
                 max={100}
                 value={filter.fromForAttendancePercentage || 0}
-                onChange={(_, value) => {
+                onChangeCommitted={((_, value) => {
                   const newValue = Math.min(value as number, filter.toForAttendancePercentage || 100 - 1);
                   handleAttendancePercentageChange('fromForAttendancePercentage', newValue);
-                }}
+                })}
                 aria-labelledby="From Percentage"
                 disabled={!filter.semesterIdForAttendance}
 
@@ -287,7 +288,7 @@ const CounselorListSidebarContent = () => {
                 min={0}
                 max={100}
                 value={filter.toForAttendancePercentage || 100}
-                onChange={(_, value) => {
+                onChangeCommitted={(_, value) => {
                   const newValue = Math.max(value as number, filter.fromForAttendancePercentage || 0 + 1);
                   handleAttendancePercentageChange('toForAttendancePercentage', newValue);
                 }}

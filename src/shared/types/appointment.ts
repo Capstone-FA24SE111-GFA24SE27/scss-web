@@ -68,14 +68,10 @@ export type Appointment = {
 	address?: string;
 	counselorInfo:
 	| null
-	| ({
-		rating: string;
-	} & Account);
+	| Counselor;
 	studentInfo:
 	| null
-	| ({
-		studentCode: string;
-	} & Account);
+	| Student;
 	appointmentFeedback: AppointmentFeedback;
 	havingReport: boolean;
 	cancelReason?: string;

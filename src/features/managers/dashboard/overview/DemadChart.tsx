@@ -5,14 +5,14 @@ import { Paper, Typography, Select, MenuItem } from '@mui/material';
 import { counselingTypeColor } from '@/shared/constants';
 import { chartData } from './chartData';
 
-const AppointmentChart = () => {
+const DemandChart = () => {
   // Mock data for appointments
   const appointmentData = chartData
 
   const [granularity, setGranularity] = useState('month');
   const [selectedData, setSelectedData] = useState({
     period: `November`,
-    data: { appointments: 140, canceled: 7, completed: 130, expired: 3 },
+    data:{ appointments: 140, canceled: 7, completed: 130, expired: 3 },
     category: 'Academic',
   });
 
@@ -53,7 +53,7 @@ const AppointmentChart = () => {
     },
     yaxis: {
       title: {
-        text: 'Number of Appointments',
+        text: 'Number of appointment requests',
       },
     },
   };
@@ -116,7 +116,7 @@ const AppointmentChart = () => {
     <div className="gap-16 flex">
       <Paper className="p-16 w-fit space-y-8">
         <div className='flex justify-between'>
-          <Typography className="font-semibold text-xl">Appointments Overview</Typography>
+          <Typography className="font-semibold text-xl">Demand Overview</Typography>
           <Select value={granularity} onChange={handleGranularityChange} size='small' className='font-semibold'>
             <MenuItem value="month">Month</MenuItem>
             <MenuItem value="week">Week</MenuItem>
@@ -156,11 +156,6 @@ const AppointmentChart = () => {
               series={pieChartSeriesForLocation}
               type="pie"
             />
-            <ReactApexChart
-              options={pieChartOptionsForCounselingState}
-              series={pieChartSeriesForCounselingState}
-              type="pie"
-            />
           </div>
         )}
       </Paper>
@@ -168,4 +163,4 @@ const AppointmentChart = () => {
   );
 };
 
-export default AppointmentChart;
+export default DemandChart;
