@@ -23,7 +23,7 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
 
   return (
     <Paper
-      className="p-16 flex gap-16 shadow"
+      className="flex gap-16 p-16 shadow"
       sx={{ bgcolor: 'background.paper' }}
     >
       <div className='flex flex-col w-full'>
@@ -76,7 +76,7 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
             />
           }
         >
-          <div className='flex gap-24 items-center'>
+          <div className='flex items-center gap-24'>
             <div className='flex items-center gap-8 '>
               <CalendarMonth />
               <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
@@ -88,7 +88,7 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
             <Chip
               label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
               icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
-              className='font-semibold items-center'
+              className='items-center font-semibold'
               size='small'
             />
             {
@@ -133,8 +133,8 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
         <div className='mt-16'>
           {appointment.cancelReason && (
             <div className='flex items-center gap-8'>
-              <Typography className='font-semibold italic' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
-              <Typography className='font-semibold italic' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
+              <Typography className='italic font-semibold' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
+              <Typography className='italic font-semibold' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
             </div>
           )}
         </div>
@@ -232,9 +232,16 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
               )
             }
             {
-              appointment.status === 'WAITING' && (
+              appointment.status === 'WAITING' && dayjs().isAfter(
+                dayjs(appointment.startDateTime)
+              ) && (
                 <div className='mt-16'>
-                  <Button className='mt-4' variant='contained' color='secondary'
+                  <Button className='mt-4' variant='contained' color='secondary' 
+                  disabled={
+											dayjs().isBefore(
+												dayjs(appointment.startDateTime)
+											) 
+										}
                     onClick={() => dispatch(openDialog({
                       children: <CheckAttendanceDialog appointment={appointment} />
                     }
@@ -375,7 +382,7 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
               value={attendanceStatus}
               onChange={handleRadioChange}
             >
-              <div className='flex gap-16 justify-between '>
+              <div className='flex justify-between gap-16 '>
                 <FormControlLabel value="ATTEND" control={<Radio color='success' />} label="Attended" className='text-black' />
                 <FormControlLabel value="ABSENT" control={<Radio color='error' />} label="Absent" className='text-black' />
                 <Tooltip title='Clear selection'>

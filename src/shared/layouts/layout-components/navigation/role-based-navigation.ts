@@ -417,6 +417,11 @@ const supportStaffNavigation: NavigationOptions = {
             route: '',
             items: [
                 {
+                    icon: BookmarkIcon,
+                    name: 'Followed Students',
+                    route: 'students/followed',
+                },
+                {
                     icon: FmdBadIcon,
                     name: 'Demand',
                     route: 'demand',
@@ -438,12 +443,8 @@ const supportStaffNavigation: NavigationOptions = {
                     name: 'Recommended Students',
                     route: 'recommended',
                 },
-                {
-                    icon: BookmarkIcon,
-                    name: 'Followed Students',
-                    route: 'followed',
-                },
-
+                
+                
             ]
         },
     ],

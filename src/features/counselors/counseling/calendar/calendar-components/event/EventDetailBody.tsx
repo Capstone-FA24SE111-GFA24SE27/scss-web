@@ -60,7 +60,7 @@ export const EventDetailBody = (props: Props) => {
 	const [selectedAppointment, setSelectedAppointment] =
 		useState<Appointment | null>(null); // Track selected appointment
 	const navigate = useNavigate();
-	const location = useLocation()
+	const location = useLocation();
 	const dispatch = useAppDispatch();
 
 	const statusColor = {
@@ -83,8 +83,8 @@ export const EventDetailBody = (props: Props) => {
 		// Create a new path using the first two segments
 		const newPath = `/${pathSegments[0]}/${pathSegments[1]}/${route}`;
 
-		return newPath
-	}
+		return newPath;
+	};
 
 	if (!appointment) {
 		return (

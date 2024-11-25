@@ -18,10 +18,17 @@ import { studentQnasApi } from '@/features/students/services/qna/qna-api';
 import { counselorQnaApi } from '@/features/counselors/qna/qna-api';
 import { chatApi } from './chat-api';
 
-const useChatNotification = (qnaList: Question[]) => {
+const useChatNotification = (fetchData: any) => {
 	const socket = useSocket();
 	const dispatch = useAppDispatch();
 	const chatListeners = useAppSelector(selectChatListeners);
+
+	if(!fetchData) return;
+
+	const { data: qnaData, refetch, isLoading } = fetchData({})
+	const qnaList = qnaData?.content?.data
+
+	console.log(qnaList)
 
 	useEffect(() => {
 		if (socket && qnaList && qnaList.length > 0) {
@@ -55,6 +62,7 @@ const useChatNotification = (qnaList: Question[]) => {
 					const result = socket.off(
 						`/user/${item.chatSession.id}/chat`
 					);
+					console.log('stop listener due to question status', result)
 					dispatch(removeChatListener(item))
 				}
 			})
@@ -62,7 +70,7 @@ const useChatNotification = (qnaList: Question[]) => {
 			console.log(qnaList);
 
 			qnaList.forEach((qnaItem) => {
-				if (qnaItem.chatSession && !qnaItem.closed && chatListeners.findIndex(item => item.id === qnaItem.id) < 0) {
+				if (qnaItem.chatSession && chatListeners.findIndex(item => item.id === qnaItem.id) < 0) {
 					
 					const result = socket.on(
 						`/user/${qnaItem.chatSession.id}/chat`,

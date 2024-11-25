@@ -25,6 +25,7 @@ import { selectAccount, useAppSelector } from '@shared/store';
 import { extractCounselingTypeFromRole } from '@/shared/utils';
 import { Typography } from '@mui/material';
 import { useSocket } from '@/shared/context';
+import { QuestionCardStatus } from '@/shared/types';
 
 const container = {
 	show: {
@@ -58,10 +59,6 @@ const MyQnaContent = () => {
 
 	const [tabValue, setTabValue] = useState(0);
 
-	const [searchStudentCode, setSearchStudentCode] = useState('');
-
-	// const [selectedTopic, setSelectedTopic] = useState('');
-
 	const [isClosed, setIsClosed] = useState(false);
 
 	const [page, setPage] = useState(1);
@@ -70,26 +67,30 @@ const MyQnaContent = () => {
 		setSearchTerm(searchTerm);
 	};
 
+	
+
+	const socket = useSocket();
+
+	const statusTabs = [
+		{ label: 'All', value: undefined },
+		{ label: 'Verified', value: 'VERIFIED' },
+		{ label: 'Flagged', value: 'FLAGGED' },
+		{ label: 'Rejected', value: 'REJECTED' },
+	];
+
 	const {
 		data: qnaData,
 		isLoading,
 		refetch,
 	} = useGetMyCounselorQuestionsQuery({
-		isClosed: isClosed || '',
-		studentCode: searchStudentCode,
+		isClosed: isClosed || undefined,
+		status: statusTabs[tabValue].value as QuestionCardStatus || undefined,
 		keyword: searchTerm,
 		page: page,
 	});
 	const qnaList = qnaData?.content?.data || [];
 
-	const socket = useSocket();
-
-	const statusTabs = [
-		{ label: 'All', value: '' },
-		{ label: 'Verified', value: 'VERIFIED' },
-		{ label: 'Flagged', value: 'FLAGGED' },
-		{ label: 'Rejected', value: 'REJECTED' },
-	];
+	console.log(qnaData)
 
 	useEffect(() => {
 		if (socket && account) {
@@ -220,7 +221,7 @@ const MyQnaContent = () => {
 							</Typography>
 						</div>
 					) : (
-						qnaList.map((qna) => qna.status === statusTabs[tabValue].value && (
+						qnaList.map((qna) => (
 							<MyQnaItem key={qna.id} qna={qna} />
 						))
 					)}

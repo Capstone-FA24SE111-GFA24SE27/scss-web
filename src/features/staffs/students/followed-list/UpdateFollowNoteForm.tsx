@@ -45,23 +45,23 @@ const UpdateFollowNoteForm = (props: Props) => {
 	const handleSubmitForm = (data: FormValues) => {
 		updateFollowNote({id, followNote: data.followNote}).unwrap().then((result) => {
 			console.log('update res', result)
-			// if (result.error.originalStatus === 200) {
-			// 	dispatch(closeDialog());
-			// 	enqueueSnackbar(result.error.data, {
-			// 		variant: 'success',
-			// 		key: result.error.data,
-			// 		autoHideDuration: 5000,
-			// 		content: (
-			// 			<ToastTemplate
-			// 				variant='success'
-			// 				message={result.error.data}
-			// 				onClose={() => {
-			// 					closeSnackbar(result.error.data);
-			// 				}}
-			// 			/>
-			// 		),
-			// 	});
-			// }
+			if (result) {
+				enqueueSnackbar(result, {
+					variant: 'success',
+					key: result,
+					autoHideDuration: 5000,
+					content: (
+						<ToastTemplate
+							variant='success'
+							message={result}
+							onClose={() => {
+								closeSnackbar(result);
+							}}
+						/>
+					),
+				});
+			}
+			dispatch(closeDialog());
 		}).catch(err => console.log(err))
 
 

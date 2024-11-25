@@ -25,7 +25,7 @@ const StudentLayout = () => {
 	const studentCounselingDocument =
 		studentDocumentData?.content?.counselingProfile;
 
-	useChatNotification(qnaList);
+	useChatNotification(useGetMyStudentQuestionsQuery);
 
 	useEffect(() => {
 		if (studentDocumentData && !studentCounselingDocument)

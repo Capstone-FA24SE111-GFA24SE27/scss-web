@@ -51,30 +51,24 @@ export const counselorQnaApi = api
       }),
       getMyCounselorQuestions: build.query<GetMyQuestionsApiResponse, GetMyQuestionsApiArg>({
         query: ({
-          keyword = '',
-          isClosed = '',
-          isChatSessionClosed = '',
+          keyword,
+          isClosed,
           sortBy = 'createdDate',
           status = 'VERIFIED',
-          // studentCode = null,
           sortDirection = 'DESC',
           page = 1,
-          size = `10`
-          // topicId
+          size = 10
         }) => ({
           url: `/api/question-cards/counselor/filter`,
           method: 'GET',
           params: {
             keyword,
             isClosed,
-            isChatSessionClosed,
             sortBy,
             size,
             status,
-            // studentCode,
             sortDirection,
             page,
-            // topicId
           },
         }),
         providesTags: ['qna']
@@ -189,15 +183,15 @@ export type PostReviewQuestionArg = {
 	status: 'PENDING' | 'VERIFIED' | 'FLAGGED' | 'REJECTED';
 };
 export type PostReviewQuestionResponse = {
-	message: string;
-	status: number;
-};
+  data:ApiMessage;
+  status: number
+}
 
 export type PostFlagQuestionArg = {
 	id: number;
 	body: string;
 };
 export type PostFlagQuestionResponse = {
-	message: string;
-	status: number;
-};
+  data:ApiMessage;
+  status: number
+}

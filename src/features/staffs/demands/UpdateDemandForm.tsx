@@ -12,9 +12,7 @@ import CounselorPicker from '../counselors/CounselorPicker';
 import CounselorListItem from '../counselors/CounselorListItem';
 import { Counselor } from '@/shared/types';
 import { useDispatch } from 'react-redux';
-import {
-	setSelectedCounselor,
-} from '../counselors/counselor-list-slice';
+import { setSelectedCounselor } from '../counselors/counselor-list-slice';
 
 const schema = z.object({
 	counselorId: z.number().min(1, 'Please pick a counselor'),
@@ -22,7 +20,9 @@ const schema = z.object({
 	priorityLevel: z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']),
 	additionalInformation: z
 		.string()
-		.min(1, 'Please enter additional information'),
+		.min(2, 'Please enter additional information')
+		.optional()
+		.or(z.literal('')),
 	issueDescription: z.string().min(1, 'Please enter issue description'),
 	causeDescription: z.string().min(1, 'Please enter cause description'),
 });
@@ -45,16 +45,15 @@ const UpdateDemandForm = () => {
 		counselorId: demandData ? demandData.counselor.id : '',
 		contactNote: demandData ? demandData.contactNote : '',
 		priorityLevel: demandData ? demandData.priorityLevel : 'MEDIUM',
-		additionalInformation: demandData ? demandData.additionalInformation : '',
+		additionalInformation: demandData
+			? demandData.additionalInformation
+			: '',
 		issueDescription: demandData ? demandData.issueDescription : '',
 		causeDescription: demandData ? demandData.causeDescription : '',
 		// demandType: demandData ? demandData.demandType : 'ACADEMIC',
 	};
 
-	
-
 	const counselor = demandData?.counselor;
-
 
 	const { control, formState, watch, handleSubmit, setValue, reset } =
 		useForm<FormType>({

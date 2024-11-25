@@ -25,9 +25,9 @@ import ConversationSidebarContent from './ConversationSidebarContent';
 
 const Conversation = () => {
 	const { data: qnaData, refetch } = useGetMyCounselorQuestionsQuery({});
-	const qnaList = qnaData?.content?.data.filter(item => item.chatSession) || [];
+	const qnaList =
+		qnaData?.content?.data.filter((item) => item.chatSession) || [];
 	// const account = useAppSelector(selectAccount);
-
 	const routeParams = useParams();
 	const pageRef = useRef(null);
 	const listRef = useRef<HTMLDivElement>(null);
@@ -85,7 +85,10 @@ const Conversation = () => {
 			rightSidebarContent={<ConversationSidebarContent />}
 			header={<></>}
 			rightSidebarOpen={rightSidebarOpen}
-			rightSidebarOnClose={() => setRightSidebarOpen(false)}
+			rightSidebarOnClose={() => {
+				setRightSidebarOpen(false);
+				navigate(-1);
+			}}
 			rightSidebarVariant={isSmallScreen ? 'temporary' : 'permanent'}
 			scroll={isMobile ? 'normal' : 'content'}
 			rightSidebarWidth={chatWidth}
@@ -112,20 +115,25 @@ const Conversation = () => {
 	</Paper> */}
 						<Scrollbar className='space-y-8 overflow-y-auto !h-[calc(100vh-212px)]'>
 							{qnaList.length === 0 ? (
-								<Typography className='w-full text-lg text-center' color='textSecondary' >
+								<Typography
+									className='w-full text-lg text-center'
+									color='textSecondary'
+								>
 									No conversations found
 								</Typography>
-							):qnaList.map(
-								(qnaItem) =>
-									qnaItem.chatSession && (
-										<ConversationItem
-											key={qnaItem.id}
-											onClick={() =>
-												handleSelectChat(qnaItem)
-											}
-											qnaItem={qnaItem}
-										/>
-									)
+							) : (
+								qnaList.map(
+									(qnaItem) =>
+										qnaItem.chatSession && (
+											<ConversationItem
+												key={qnaItem.id}
+												onClick={() =>
+													handleSelectChat(qnaItem)
+												}
+												qnaItem={qnaItem}
+											/>
+										)
+								)
 							)}
 						</Scrollbar>
 					</div>

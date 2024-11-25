@@ -28,7 +28,7 @@ const schema = z.object({
 	departmentId: z.string().optional(),
 	additionalInformation: z
 		.string()
-		.min(4, 'Please enter a valid value')
+		.min(2, 'Please enter valid infomation')
 		.optional()
 		.or(z.literal('')),
 	issueDescription: z.string().min(1, 'Please enter issue description'),

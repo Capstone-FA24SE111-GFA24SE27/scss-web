@@ -165,7 +165,7 @@ const QnaList = () => {
 			const cb = (data) => {
 				console.log('qna socket receive data', data);
 				if (data) {
-					refetch
+					refetch()
 					studentQnasApi.util.invalidateTags(['qna'])
 				}
 			};
@@ -197,15 +197,15 @@ const QnaList = () => {
 	}
 
 	// if (!qnaData?.content.data.length) {
-	// 	return <div className='flex justify-center gap-4 items-center'>
+	// 	return <div className='flex items-center justify-center gap-4'>
 	// 		<Typography
 	// 			color="textDisabled"
-	// 			className='text-center text-lg'
+	// 			className='text-lg text-center'
 	// 		>
 	// 			You have not asked any questions
 	// 		</Typography>
 	// 		<Button
-	// 			className='w-fit text-lg'
+	// 			className='text-lg w-fit'
 	// 			variant='text'
 	// 			component={NavLinkAdapter}
 	// 			to={`create`}
