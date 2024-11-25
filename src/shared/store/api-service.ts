@@ -7,14 +7,11 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 import { RootState } from '../store'
 import { logout, setAccessToken, setAccount } from './user-slice'
 import { SerializedError } from '@reduxjs/toolkit'
+import { API_BASE_URL } from '../constants/base-url'
 
-
-const BASE_URL = 'http://localhost:8080'
-// const BASE_URL = 'http://102.37.21.11:8080'
-// const BASE_URL = 'http://scss-server.southafricanorth.cloudapp.azure.com:8080'
 
 const baseQuery = fetchBaseQuery({
-	baseUrl: BASE_URL,
+	baseUrl: API_BASE_URL,
 	// credentials: 'include',
 	prepareHeaders: (headers, { getState }) => {
 		const token = (getState() as RootState).user.accessToken

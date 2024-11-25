@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Divider, Box, Avatar } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { useGetAppointmentReportManagementQuery } from '../counselors-api';
+import { useGetAppointmentReportManagementQuery } from '@/features/managers/management/counselors/counselors-api';
 import { ContentLoading } from '@/shared/components';
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import dayjs from 'dayjs';

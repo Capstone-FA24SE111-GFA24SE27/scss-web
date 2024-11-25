@@ -21,6 +21,7 @@ import { useConfirmDialog } from '@/shared/hooks';
 import { useAlertDialog } from '@/shared/hooks';
 import { isApiSuccess, useAppDispatch } from '@shared/store';
 import QnaTab from './QnaTab';
+import ProfileTab from './ProfileTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -41,6 +42,8 @@ function Counseling() {
 
   const { data, isLoading } = useGetCounselorManagementQuery(Number(id));
   const counselorData = data?.content
+
+  console.log(counselorData)
 
   const { data: counselingSlotsData, isLoading: isLoadingCounselingSlotsData } = useGetCounselingSlotsQuery()
   const { data: counselorCounselingSlotsData, isLoading: isLoadingCounselorCounselingSlotsData } = useGetCounselorCounselingSlotsQuery(Number(id))
@@ -374,6 +377,7 @@ function Counseling() {
               {tabValue === 3 && <ScheduleTab />}
               {tabValue === 4 && <FeedbackTab />}
               {tabValue === 5 && <QnaTab />}
+              {tabValue === 6 && <ProfileTab />}
             </div>
           </Paper>
         </div >

@@ -26,7 +26,7 @@ function AppointmentTab() {
   const dispatch = useAppDispatch()
   const { data, isLoading } = useGetCounselorAppointmentsManagementQuery({
     counselorId: Number(id),
-    page: pagination.pageIndex,
+    page: pagination.pageIndex + 1,
   })
   console.log(data)
 

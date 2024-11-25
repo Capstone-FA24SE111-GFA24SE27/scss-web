@@ -1,54 +1,63 @@
 import { StatsCard } from '@/shared/components'
-import { Archive, AssignmentLate, Class, Description, Handshake, Save, School, SupportAgent, TagFaces } from '@mui/icons-material'
+import { Archive, AssignmentLate, Class, Description, EmojiPeople, Face, Handshake, Save, School, SupportAgent, TagFaces } from '@mui/icons-material'
 import React from 'react'
 import AppointmentChart from './AppointmentChart';
 import RequestChart from './RequestChart';
 import QnaChart from './QnaChart';
+import { Typography } from '@mui/material';
+import { getCurrentMonthYear } from '@/shared/utils';
 
 const Overview = () => {
   return (
     <div className='p-32'>
-      <div className='grid grid-cols-4 gap-16'>
+      <Typography className='text-xl font-bold text-text-disabled'>Users Overview</Typography>
+      <div className='grid grid-cols-4 gap-16 mt-8'>
         <StatsCard
           title={'Students'}
           total={20}
-          statChange={{
-            prefixText: 'Last month',
-            current: 1234,
-            previous: 12553
-          }}
-          icon={<TagFaces />}
+          // statChange={{
+          //   prefixText: 'Last month',
+          //   current: 1234,
+          //   previous: 12553
+          // }}
+          icon={<Face />}
         />
         <StatsCard
           title={'Academic Counselors'}
           total={20}
-          statChange={{
-            prefixText: 'Last month',
-            current: 1234,
-            previous: 24
-          }}
+          // statChange={{
+          //   prefixText: 'Last month',
+          //   current: 1234,
+          //   previous: 24
+          // }}
           icon={<School />}
         />
         <StatsCard
           title={'Non-academic Counselors'}
           total={20}
-          statChange={{
-            prefixText: 'Last month',
-            current: 1234,
-            previous: 12553
-          }}
+          // statChange={{
+          //   prefixText: 'Last month',
+          //   current: 1234,
+          //   previous: 12553
+          // }}
           icon={<Handshake />}
         />
         <StatsCard
           title={'Support Staffs'}
           total={20}
-          statChange={{
-            prefixText: 'Last month',
-            current: 123234,
-            previous: 1553
-          }}
-          icon={<SupportAgent />}
-        />
+          // statChange={{
+          //   prefixText: 'Last month',
+          //   current: 123234,
+          //   previous: 1553
+          // }}
+          icon={<EmojiPeople />}
+        />  
+      </div>
+      <Typography className='text-xl font-bold text-text-disabled mt-24'>Activities Overview - {getCurrentMonthYear()}</Typography>
+
+      <div className='grid grid-cols-4 gap-16 mt-8'>
+
+
         <StatsCard
           title={'Requests'}
           total={21}

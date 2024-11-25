@@ -131,9 +131,9 @@ const AppointmentDetail = ({ id }: { id?: string }) => {
         {appointment.meetingType === 'ONLINE' ? (
           <div className='flex items-center gap-24'>
             {appointment.meetUrl && (
-              <div className='flex flex-col items-center gap-8'>
+              <div className='flex flex-col gap-8'>
                 <Typography className='text-lg font-semibold text-primary-light'>Location:</Typography>
-                <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline -ml-32'>
+                <Link to={appointment.meetUrl} target='_blank' className='py-4 px-8 rounded !text-secondary-main !underline'>
                   {appointment.meetUrl}
                 </Link>
               </div>
@@ -142,7 +142,7 @@ const AppointmentDetail = ({ id }: { id?: string }) => {
         ) : appointment.address && (
           <div className='flex flex-col items-center gap-8'>
             <Typography className='text-lg font-semibold text-primary-light'>Address:</Typography>
-            <Typography className='font-semibold -ml-32'>{appointment.address || ''}</Typography>
+            <Typography className='font-semibold'>{appointment.address || ''}</Typography>
           </div>
         )}
       </div>

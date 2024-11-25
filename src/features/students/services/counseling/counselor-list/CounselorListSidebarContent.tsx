@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import CounselorListFilterButton from './CounselorListFilterButton'
-import { Typography } from '@mui/material'
+import { Box, Rating, Slider, Typography } from '@mui/material'
 import { AcademicFilter, DateRangePicker, SelectField } from '@/shared/components'
 import dayjs from 'dayjs'
 import { useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setSpecializationId } from './counselor-list-slice'
+import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSpecializationId } from './counselor-list-slice'
 import { useGetCounselorExpertisesQuery, useGetNonAcademicTopicsQuery } from '@/shared/services'
 
 const CounselorListSidebarContent = () => {
@@ -48,6 +48,21 @@ const CounselorListSidebarContent = () => {
   const handleExpertiseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setExpertiseId(Number(event.target.value)))
   };
+
+  const handleRatingChange = (value: number | number[]) => {
+    if (Array.isArray(value)) {
+      dispatch(setRatingFrom(value[0])); // Update ratingFrom
+    }
+  };
+
+  const handleRatingFromChange = (value: number | null) => {
+    dispatch(setRatingFrom(value || ''));
+    dispatch(setRatingTo(5));
+  };
+
+
+
+
   return (
     <div className='p-24 flex flex-col gap-16'>
       <div className='flex justify-start items-center gap-16'>
@@ -89,7 +104,23 @@ const CounselorListSidebarContent = () => {
         }
 
       </div>
-    </div>
+      <div>
+        <Typography className="font-semibold text-lg mb-8">Filter by Rating</Typography>
+        <Box className="flex flex-col gap-8">
+          {/* Rating From */}
+          <Box className="flex gap-16 items-center  ">
+            <Typography className='text-lg text-text-secondary'>From</Typography>
+            <Rating
+              size='medium'
+              name="rating-from"
+              value={filter.ratingFrom || null}
+              onChange={(_, value) => handleRatingFromChange(value)}
+            />
+            <Typography className='text-lg text-text-secondary'>and up</Typography>
+          </Box>
+        </Box>
+      </div>
+    </div >
   )
 }
 

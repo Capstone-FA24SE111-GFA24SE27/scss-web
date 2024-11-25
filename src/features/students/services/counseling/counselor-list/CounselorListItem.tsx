@@ -26,48 +26,49 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 		<>
 			<ListItemButton
 				selected={counselor?.id == Number(id)}
-				className="p-8 flex gap-24 items-center px-24 py-16"
+				className="p-8 flex gap-24 items-start px-24 py-16 justify-between"
 				sx={{ bgcolor: 'background.paper' }}
 				component={NavLinkAdapter}
 				to={`counselor/${counselor.profile.id}`}
 			>
-				<ListItemAvatar>
-					<Avatar
-						alt={counselor.profile.fullName}
-						src={counselor.profile.avatarLink}
-						className='size-80'
-					/>
-				</ListItemAvatar>
-				<Box className='flex flex-col gap-8 justify-between'>
-					<ListItemText
-						classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate text-lg' }}
-						primary={counselor.profile.fullName}
-						secondary={counselor.expertise?.name || counselor.specialization?.name}
-					/>
-					{/* <div className='flex gap-8'>
-						<Rating
-							name="simple-controlled"
-							size='small'
-							value={counselor.rating}
-							readOnly
-							precision={0.5}
+				<div className='flex gap-24 items-center'>
+					<ListItemAvatar>
+						<Avatar
+							alt={counselor.profile.fullName}
+							src={counselor.profile.avatarLink}
+							className='size-80'
 						/>
-						<Typography color='text.secondary'>(160)</Typography>
-					</div> */}
-
-					<div className="flex items-center gap-16">
-						<div className="flex items-center w-120">
-							<LocalPhoneOutlined fontSize='small' />
-							<div className="ml-8 text-text-secondary leading-6">{counselor.profile.phoneNumber}</div>
+					</ListItemAvatar>
+					<Box className='flex flex-col gap-8 justify-between'>
+						<ListItemText
+							classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate text-lg' }}
+							primary={counselor.profile.fullName}
+							secondary={counselor.expertise?.name || counselor.specialization?.name}
+						/>
+						<div className="flex items-center gap-16">
+							<div className="flex items-center w-120">
+								<LocalPhoneOutlined fontSize='small' />
+								<div className="ml-8 text-text-secondary leading-6">{counselor.profile.phoneNumber}</div>
+							</div>
+							<div className="flex items-center">
+								<EmailOutlined fontSize='small' />
+								<div className="ml-8 text-text-secondary leading-6">{counselor.email}</div>
+							</div>
 						</div>
-						<div className="flex items-center">
-							<EmailOutlined fontSize='small' />
-							<div className="ml-8 text-text-secondary leading-6">{counselor.email}</div>
-						</div>
-					</div>
+					</Box>
 
-				</Box>
-			</ListItemButton>
+				</div>
+
+				<div className='flex gap-8'>
+					<Rating
+						name="simple-controlled"
+						size='small'
+						value={counselor.rating}
+						readOnly
+						precision={0.5}
+					/>
+				</div>
+			</ListItemButton >
 			<Divider />
 		</>
 	);

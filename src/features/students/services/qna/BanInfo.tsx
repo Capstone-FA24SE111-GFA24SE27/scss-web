@@ -11,7 +11,7 @@ import { ArrowBack, ArrowLeft, HelpOutlineOutlined, Warning } from '@mui/icons-m
 import { NavLinkAdapter } from '@/shared/components';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, FormControl, FormControlLabel, FormHelperText, MenuItem, Radio, RadioGroup } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { BanInfo, useEditQuestionMutation, useGetBanInfoQuery, useGetStudentQuestionQuery, usePostQuestionMutation } from './qna-api';
+import { BanInfo as BanInfoType, useEditQuestionMutation, useGetBanInfoQuery, useGetStudentQuestionQuery, usePostQuestionMutation } from './qna-api';
 import { formatDateTime } from '@/shared/utils';
 import dayjs from 'dayjs';
 import { statusColor } from '@/shared/constants';
@@ -37,7 +37,7 @@ type FormValues = {
 /**
  * The help center support.
  */
-function BanInfo({ banInfo }: { banInfo: BanInfo }) {
+function BanInfo({ banInfo }: { banInfo: BanInfoType }) {
   return (
     <div className="flex flex-col items-center p-32 container">
       <div className="flex flex-col w-full max-w-4xl gap-16">

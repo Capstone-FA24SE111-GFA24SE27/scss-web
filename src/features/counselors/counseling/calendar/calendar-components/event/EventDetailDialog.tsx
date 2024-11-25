@@ -44,10 +44,12 @@ const EventDetailDialog = () => {
 			component='div'
 		>
 			{
+				// @ts-ignore
 				eventDialog.props.type === 'holiday' ? (
 					<EventHolidayBody holiday={eventDialog.data as HolidayScheduleType} />
 				) : (
-					<EventDetailBody appointment={eventDialog.data as AppointmentScheduleType} onNavClicked={()=>closeDialog()}/>
+					// @ts-ignore
+					<EventDetailBody appointment={eventDialog.data as AppointmentScheduleType} onNavClicked={() => closeDialog()} />
 
 				)
 			}

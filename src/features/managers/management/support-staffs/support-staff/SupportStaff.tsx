@@ -5,6 +5,9 @@ import { AppLoading, Breadcrumbs, Gender, Heading, PageSimple } from '@shared/co
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useGetSupportStaffManagementQuery, useGetSupportStaffsManagementQuery } from '../support-staffs-api';
+import OverviewTab from './OverviewTab';
+import DemandsTab from './DemandsTab';
+import FollowingStudentsTab from './FollowingStudentsTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -88,7 +91,7 @@ function SupportStaff() {
                       role="button"
                     >
                       <Mail fontSize='small' />
-                      <Typography className="ml-8">{supportStaffData?.email || `why no email?`}</Typography>
+                      <Typography className="ml-8">{supportStaffData?.profile?.email || ``}</Typography>
                     </div>
                   </div>
                 </div>
@@ -120,10 +123,10 @@ function SupportStaff() {
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Following SupportStaffs"
             />
-            <Tab
+            {/* <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Profile"
-            />
+            /> */}
           </Tabs>
         </div>
       }
@@ -131,8 +134,9 @@ function SupportStaff() {
         <div className="w-full p-16 h-full" >
           <Paper className='p-16 h-full shadow'>
             <div className="w-full pr-8">
-              {/* {tabValue === 0 && <AppointmentsTable />}
-              {tabValue === 1 && <RequestsTable />} */}
+              {tabValue === 0 && <OverviewTab />}
+              {tabValue === 1 && <DemandsTab />}
+              {tabValue === 2 && <FollowingStudentsTab />}
             </div>
           </Paper>
         </div >

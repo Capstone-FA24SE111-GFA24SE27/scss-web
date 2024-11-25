@@ -137,9 +137,9 @@ const MarkReport = ({ id }: { id?: string }) => {
                           Grade: {report.grade ?? "N/A"}
                         </p>
                         {
-                          !report.grade && (
+                          report.grade ? (
                             <Chip color={report.grade >= 5 ? `success` : `error`} label={report.grade >= 5 ? `Passed` : `Not passed`} size='small' />
-                          )
+                          ) : <Chip label={`In Process`} size='small' />
                         }
                       </div>
                     </Paper>

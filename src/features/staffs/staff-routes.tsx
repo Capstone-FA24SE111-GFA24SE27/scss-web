@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import { specialRoutes } from '@shared/configs';
 import { demandRoutes } from './demands';
 import { staffStudentRoutes } from './students';
@@ -13,6 +13,10 @@ export const supportStaffRoutes: RouteObject[] = [
 		path: '/',
 		element: <StaffLayout />,
 		children: [
+			{
+				path: '',
+				element: <Navigate to={`questions`} />
+			},
 			...specialRoutes,
 			...demandRoutes,
 			...staffStudentRoutes,

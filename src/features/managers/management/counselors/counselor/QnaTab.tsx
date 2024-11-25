@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { ContentLoading, DataTable, NavLinkAdapter, openDialog } from '@shared/components';
+import { ContentLoading, DataTable, NavLinkAdapter, Pagination, QuestionCardItem, openDialog } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -28,10 +28,9 @@ function QnaTab() {
     counselorId: Number(id),
     page: pagination.pageIndex,
   })
-
-
-  const removeProducts = (ids: string[]) => {
-
+  const [page, setPage] = useState(1);
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   };
 
   const columns = useMemo<MRT_ColumnDef<Question>[]>(() => [
@@ -67,7 +66,7 @@ function QnaTab() {
       header: 'Is answered',
       Cell: ({ row }) => (
         <div>
-          {Boolean(row.original.answer) ? `true`: `false` }
+          {Boolean(row.original.answer) ? `true` : `false`}
         </div>
       )
     },
@@ -76,63 +75,78 @@ function QnaTab() {
   // if (isLoading) {
   //   return <ContentLoading />;
   // }
-
+  const questions = data?.content?.data
 
   return (
-    <DataTable
-      data={data?.content.data || []}
-      columns={columns}
-      manualPagination
-      rowCount={data?.content.totalElements || 0}
-      onPaginationChange={setPagination}
-      state={{ pagination }}
-      enableColumnFilterModes={false}
-      enableGlobalFilter={false} // Disable global search
-      renderRowActionMenuItems={({ closeMenu, row, table }) => [
-        <MenuItem
-          key={0}
-          onClick={() => {
-            dispatch(openDialog({
-              children: <AppointmentDetail id={row.original.id.toString()} />
-            }))
-            closeMenu();
-            table.resetRowSelection();
-          }}
-        >
-          <ListItemIcon>
-            <Visibility />
-          </ListItemIcon>
-          View Detail
-        </MenuItem>,
-        <MenuItem
-          key={1}
-          onClick={() => {
-            navigate(`report/${row.original.id}`)
-            closeMenu();
-            table.resetRowSelection();
-          }}
-        >
-          <ListItemIcon>
-            <Summarize />
-          </ListItemIcon>
-          View Report
-        </MenuItem>
+    // <DataTable
+    //   data={data?.content.data || []}
+    //   columns={columns}
+    //   manualPagination
+    //   rowCount={data?.content.totalElements || 0}
+    //   onPaginationChange={setPagination}
+    //   state={{ pagination }}
+    //   enableColumnFilterModes={false}
+    //   enableGlobalFilter={false} // Disable global search
+    //   renderRowActionMenuItems={({ closeMenu, row, table }) => [
+    //     <MenuItem
+    //       key={0}
+    //       onClick={() => {
+    //         dispatch(openDialog({
+    //           children: <AppointmentDetail id={row.original.id.toString()} />
+    //         }))
+    //         closeMenu();
+    //         table.resetRowSelection();
+    //       }}
+    //     >
+    //       <ListItemIcon>
+    //         <Visibility />
+    //       </ListItemIcon>
+    //       View Detail
+    //     </MenuItem>,
+    //     <MenuItem
+    //       key={1}
+    //       onClick={() => {
+    //         navigate(`report/${row.original.id}`)
+    //         closeMenu();
+    //         table.resetRowSelection();
+    //       }}
+    //     >
+    //       <ListItemIcon>
+    //         <Summarize />
+    //       </ListItemIcon>
+    //       View Report
+    //     </MenuItem>
 
-      ]}
-      renderTopToolbarCustomActions={({ table }) => {
-        const { rowSelection } = table.getState();
+    //   ]}
+    //   renderTopToolbarCustomActions={({ table }) => {
+    //     const { rowSelection } = table.getState();
 
-        if (Object.keys(rowSelection).length === 0) {
-          return null;
+    //     if (Object.keys(rowSelection).length === 0) {
+    //       return null;
+    //     }
+
+    //     return (
+    //       <div>
+    //       </div>
+    //     );
+    //   }}
+    // />
+    <div>
+      <div>
+        {
+          !questions?.length
+            ? <div className='text-center p-32'>
+              <Typography variant='h5' className='text-text-disabled'>No qna found</Typography>
+            </div>
+            : data?.content?.data.map(qna => <QuestionCardItem qna={qna} />)
         }
-
-        return (
-          <div>
-          </div>
-        );
-      }}
-    />
-
+      </div>
+      {/* <Pagination
+        page={page}
+        count={data?.content?.totalPages}
+        handleChange={handlePageChange}
+      /> */}
+    </div>
   );
 }
 

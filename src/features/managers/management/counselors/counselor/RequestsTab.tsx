@@ -24,7 +24,10 @@ function RequestsTable() {
     pageSize: 10,
   });
 
-  const { data, isLoading } = useGetCounselorAppointmentRequestsManagementQuery(Number(id))
+  const { data, isLoading } = useGetCounselorAppointmentRequestsManagementQuery({
+    counselorId: Number(id),
+    page: pagination.pageIndex + 1,
+  })
   console.log(data)
 
   const dispatch = useAppDispatch()

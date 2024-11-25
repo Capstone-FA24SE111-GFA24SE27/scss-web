@@ -10,6 +10,7 @@ import { useAppSelector } from '@shared/store';
 import { useState } from 'react';
 import { useGetCounselorCounselingAppointmentQuery } from '../counseling/appointments/appointments-api';
 import dayjs from 'dayjs';
+import { useGetMyCounselorQuestionsQuery } from '../qna/qna-api';
 
 /**
  * The ProjectDashboardAppHeader page.
@@ -20,6 +21,10 @@ function HomeHeader() {
     fromDate: today,
     status: `WAITING`,
   });
+
+  const { data: qnaData, isLoading: isLoadingQuestions, refetch: refetchQna } = useGetMyCounselorQuestionsQuery({})
+  const unansweredQuestionList = qnaData?.content?.data?.filter(question => !question.answer) || []
+
   const user = useAppSelector(selectAccount)?.profile
   return (
 
@@ -42,7 +47,7 @@ function HomeHeader() {
               {`Welcome back, ${user?.fullName} !`}
             </Typography>
             <Typography className='text-lg'>
-              {`You have ${upcomingAppointmentsData?.content.totalElements} upcoming appointemtns and 4 questions to answer`}
+              {`You have ${upcomingAppointmentsData?.content.totalElements} upcoming appointemtns and ${unansweredQuestionList.length} questions to answer`}
             </Typography>
           </div>
         </div>

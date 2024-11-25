@@ -34,7 +34,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
     const counselorCounselingSlots = counselorCounselingSlotsData?.content
 
     if (isLoading) {
-        return <ContentLoading className='m-32' />
+        return <ContentLoading className='p-32 min-w-lg' />
     }
 
     if (!counselor) {
