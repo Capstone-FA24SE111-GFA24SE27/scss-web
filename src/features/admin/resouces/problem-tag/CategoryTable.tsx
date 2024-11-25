@@ -8,27 +8,26 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { useGetProblemTagsQuery } from './problem-tag-api';
+import { useGetProblemTagsCategoriesQuery, useGetProblemTagsQuery } from './problem-tag-api';
 import { ManagementCounselor } from '@/features/managers/management/counselors/counselors-api';
-import { ProblemTag } from '@/shared/types/admin';
-function ProblemTagTable() {
+import { ProblemTag, ProblemTagCategory } from '@/shared/types/admin';
+function CategoryTable() {
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
   console.log(pagination)
+  const [tableData, setTableData] = useState([])
 
-  const { data, isLoading } = useGetProblemTagsQuery({
+  const { data, isLoading } = useGetProblemTagsCategoriesQuery({
     page: pagination.pageIndex + 1
   })
 
+  console.log(data)
 
-  const removeProducts = (ids: string[]) => {
 
-  };
-
-  const columns = useMemo<MRT_ColumnDef<ProblemTag>[]>(() => [
+  const columns = useMemo<MRT_ColumnDef<ProblemTagCategory>[]>(() => [
     {
       id: 'avatarLink',
       header: 'ID',
@@ -47,29 +46,15 @@ function ProblemTagTable() {
         </Typography>
       )
     },
- 
-    {
-      accessorKey: 'point',
-      header: 'Point',
-      Cell: ({ row }) => (
-        <Typography
-        >
-          {row.original.point}
-        </Typography>
-      )
-    },
-    {
-      accessorKey: 'category.name',
-      header: 'Category',
-      Cell: ({ row }) => (
-        <Typography className='w-fit'
-        >
-          {row.original.category.name}
-        </Typography>
-      )
-    },
 
   ], []);
+
+  useEffect(() => {
+    if(data){
+         setTableData(data.slice((pagination.pageIndex)*(pagination.pageSize), (pagination.pageIndex+1)*(pagination.pageSize)))
+    }
+  },[data])
+
 
   if (isLoading) {
     return <ContentLoading />;
@@ -81,10 +66,10 @@ function ProblemTagTable() {
       className="flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0"
     >
       <DataTable
-        data={data?.content.data || []}
+        data={tableData}
         columns={columns}
         manualPagination
-        rowCount={data?.content.totalElements || 1}
+        rowCount={data ? data.length : 1}
         onPaginationChange={setPagination}
         state={{ pagination }}
         renderRowActionMenuItems={({ closeMenu, row, table }) => [
@@ -132,5 +117,5 @@ function ProblemTagTable() {
   );
 }
 
-export default ProblemTagTable;
+export default CategoryTable;
 

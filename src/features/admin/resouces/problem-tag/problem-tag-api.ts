@@ -43,7 +43,9 @@ export const problemTagsApi = apiService
 					url: `/api/problem-tags/problem-tag`,
 					method: 'POST',
 					body: {
-						args,
+						name: args.name,
+						point: args.point,
+						categoryId: args.categoryId
 					},
 				}),
 				invalidatesTags: ['tags'],
@@ -56,8 +58,8 @@ export const problemTagsApi = apiService
 					url: `/api/problem-tags/problem-category`,
 					method: 'POST',
 					body: {
-						args,
-					},
+						name: args.name
+					}
 				}),
 				invalidatesTags: ['tag-categories'],
 			}),
