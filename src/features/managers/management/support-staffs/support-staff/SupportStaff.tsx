@@ -88,7 +88,7 @@ function SupportStaff() {
                       role="button"
                     >
                       <Mail fontSize='small' />
-                      <Typography className="ml-8">{supportStaffData?.email || `why no email?`}</Typography>
+                      <Typography className="ml-8">{supportStaffData?.profile?.email || ``}</Typography>
                     </div>
                   </div>
                 </div>

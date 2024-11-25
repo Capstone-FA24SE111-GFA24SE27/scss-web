@@ -39,7 +39,7 @@ import dayjs from 'dayjs';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	AppointmentAttendanceStatus,
-	AppointmentScheduleType,
+	Appointment,
 } from '@/shared/types';
 import {
 	useTakeAppointmentAttendanceMutation,
@@ -48,7 +48,7 @@ import {
 import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 
 type Props = {
-	appointment: AppointmentScheduleType;
+	appointment: Appointment;
 	onNavClicked: () => void;
 };
 
@@ -58,7 +58,7 @@ export const EventDetailBody = (props: Props) => {
 	const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State for the anchor element
 	const [selectedAppointment, setSelectedAppointment] =
-		useState<AppointmentScheduleType | null>(null); // Track selected appointment
+		useState<Appointment | null>(null); // Track selected appointment
 	const navigate = useNavigate();
 	const location = useLocation()
 	const dispatch = useAppDispatch();

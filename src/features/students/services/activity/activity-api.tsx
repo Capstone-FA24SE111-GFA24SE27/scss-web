@@ -91,7 +91,7 @@ export type GetCounselingAppointmentRequestApiArg = {
   meetingType?: 'ONLINE' | 'OFFLINE' | '';
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC' | '';
-  status: string;
+  status?: string;
   page?: number;
 };
 

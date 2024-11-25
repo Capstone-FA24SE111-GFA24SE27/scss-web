@@ -169,7 +169,7 @@ function CounselorBooking() {
 
 
   if (isLoading) {
-    return <ContentLoading className='m-32' />
+    return <ContentLoading className='p-32 min-w-lg' />
   }
 
   if (!counselor) {

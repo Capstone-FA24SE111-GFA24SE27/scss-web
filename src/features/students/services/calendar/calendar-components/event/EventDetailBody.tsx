@@ -36,7 +36,7 @@ type Props = {
 export const EventDetailBody = (props: Props) => {
 	const { appointment, onNavClicked } = props;
 	const dispatch = useAppDispatch();
-	
+
 	const statusColor = {
 		REJECTED: 'error',
 		ABSENT: 'error',
@@ -58,7 +58,8 @@ export const EventDetailBody = (props: Props) => {
 
 	return (
 		<div onClick={handleNavClicked}>
-		<StudentAppointmentItem appointment={appointment}/>
+			{/* @ts-ignore */}
+			<StudentAppointmentItem appointment={appointment} />
 		</div>
 	);
 };

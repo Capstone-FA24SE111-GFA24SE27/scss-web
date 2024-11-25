@@ -154,7 +154,7 @@ function QuickBooking() {
       dispatch,
       title: 'Confirm booking',
       content: `Are you sure to book ${randomMatchedCounselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
-      confirmButtonFucntion: () => bookCounselor({
+      confirmButtonFunction: () => bookCounselor({
         counselorId: randomMatchedCounselor?.profile.id,
         appointmentRequest: {
           slotCode: formData.slotCode,

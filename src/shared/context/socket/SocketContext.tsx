@@ -8,19 +8,22 @@ import React, {
 import io, { Socket } from 'socket.io-client';
 import { useAppSelector } from '../../store/hooks';
 import { selectAccount } from '../../store/user-slice';
+import { API_BASE_URL, SOCKET_BASE_URL } from '@/shared/constants';
 
 const SocketContext = createContext<Socket | null>(null);
 
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
+	console.log(SOCKET_BASE_URL, API_BASE_URL)
 	const [socketState, setSocketState] = useState<Socket | null>(null);
 	const account = useAppSelector(selectAccount);
 	// console.log('Socket context: ', socketRef?.current);
 	useEffect(() => {
 		if (account) {
 			setSocketState(
-				io('http://localhost:9092', { transports: ['websocket'] })
+				io(SOCKET_BASE_URL, { transports: ['websocket'] })
+				// io('http://localhost:9092', { transports: ['websocket'] })
 				// io('http://scss-server.southafricanorth.cloudapp.azure.com:9092', { transports: ['websocket'] })
 			);
 			console.log('connecting');
