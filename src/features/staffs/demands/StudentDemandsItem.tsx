@@ -16,7 +16,7 @@ import {
 	Rating,
 	Tooltip,
 } from '@mui/material';
-import { AccessTime, Add, ChevronRight } from '@mui/icons-material';
+import { AccessTime, Add, ChevronRight, Visibility } from '@mui/icons-material';
 import { CounselingDemand, Student } from '@shared/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -45,6 +45,13 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 						secondaryAction={
 							<ItemMenu
 								menuItems={[
+									{
+										label: 'View details',
+										onClick: () => {
+											navigate(`${demand.id}`)
+										},
+										icon: <Visibility fontSize='small' />
+									},
 									{
 										label: 'Update demand detail',
 										icon: <Add fontSize='small' />,

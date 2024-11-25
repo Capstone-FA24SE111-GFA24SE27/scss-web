@@ -46,13 +46,13 @@ const SidebarFilter = () => {
         </Typography>
       </div>
       <div className='flex flex-col w-full gap-16'>
-        <SearchField
+        {/* <SearchField
           onSearch={handleSearch}
           label='Name'
           placeholder='John Doe'
           size='small'
-        />
-        <Divider />
+        /> */}
+        {/* <Divider /> */}
         <Typography className='font-semibold'>Filter by acadamic details</Typography>
         <AcademicFilter
           size='small'
@@ -61,7 +61,7 @@ const SidebarFilter = () => {
           onSpecializationChange={handleSpecializationChange}
           showClearOptions={true}
         />
-        <Divider />
+        {/* <Divider /> */}
         {/* <Typography className='font-semibold'>Filter by GPA</Typography> */}
         {/* <Box className='flex gap-16'>
           <SearchField

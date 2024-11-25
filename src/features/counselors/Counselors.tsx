@@ -16,7 +16,7 @@ const Counselors = () => {
   const { data: qnaData, refetch, isLoading } = useGetMyCounselorQuestionsQuery({})
   const qnaList = qnaData?.content?.data
 
-	useChatNotification(qnaList);
+	useChatNotification(useGetMyCounselorQuestionsQuery);
 
   return (
     <PageSimple

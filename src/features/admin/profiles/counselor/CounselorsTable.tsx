@@ -3,7 +3,7 @@ import { type MRT_ColumnDef } from 'material-react-table';
 import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
@@ -19,6 +19,7 @@ function CounselorsTable({ type }: { type: CounselingType }) {
 		pageSize: 10,
 	});
 	console.log(pagination);
+	const navigate = useNavigate()
 
 	const { data, isLoading } = useGetCounselorsAdminQuery({
 		page: pagination.pageIndex + 1,
@@ -171,7 +172,7 @@ function CounselorsTable({ type }: { type: CounselingType }) {
 					<MenuItem
 						key={0}
 						onClick={() => {
-							// removeProducts([row.original.id]);
+							navigate(`${row.original.profile.profile.id}`)
 							closeMenu();
 							table.resetRowSelection();
 						}}
@@ -179,36 +180,37 @@ function CounselorsTable({ type }: { type: CounselingType }) {
 						<ListItemIcon>
 							<Delete />
 						</ListItemIcon>
-						Block
+						View Details
 					</MenuItem>,
 				]}
-				renderTopToolbarCustomActions={({ table }) => {
-					const { rowSelection } = table.getState();
+				enableRowSelection={false}
+				// renderTopToolbarCustomActions={({ table }) => {
+				// 	const { rowSelection } = table.getState();
 
-					if (Object.keys(rowSelection).length === 0) {
-						return null;
-					}
+				// 	if (Object.keys(rowSelection).length === 0) {
+				// 		return null;
+				// 	}
 
-					return (
-						<Button
-							variant='contained'
-							size='small'
-							onClick={() => {
-								const selectedRows =
-									table.getSelectedRowModel().rows;
-								// removeProducts(selectedRows.map((row) => row.original.id));
-								table.resetRowSelection();
-							}}
-							className='flex shrink min-w-40 ltr:mr-8 rtl:ml-8'
-							color='secondary'
-						>
-							<Delete />
-							<span className='hidden mx-8 sm:flex'>
-								Delete selected items
-							</span>
-						</Button>
-					);
-				}}
+				// 	return (
+				// 		<Button
+				// 			variant='contained'
+				// 			size='small'
+				// 			onClick={() => {
+				// 				const selectedRows =
+				// 					table.getSelectedRowModel().rows;
+				// 				// removeProducts(selectedRows.map((row) => row.original.id));
+				// 				table.resetRowSelection();
+				// 			}}
+				// 			className='flex shrink min-w-40 ltr:mr-8 rtl:ml-8'
+				// 			color='secondary'
+				// 		>
+				// 			<Delete />
+				// 			<span className='hidden mx-8 sm:flex'>
+				// 				Delete selected items
+				// 			</span>
+				// 		</Button>
+				// 	);
+				// }}
 			/>
 		</Paper>
 	);

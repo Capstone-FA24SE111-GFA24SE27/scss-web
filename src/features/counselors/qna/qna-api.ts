@@ -1,4 +1,4 @@
-import { Account, Counselor, PaginationContent, Question, Student, User } from '@shared/types';
+import { Account, Counselor, PaginationContent, Question, QuestionCardStatus, Student, User } from '@shared/types';
 import { ApiMessage, ApiResponse, apiService as api } from '@shared/store'
 import { Role } from '@/shared/constants';
 import { Topic } from '@/shared/services';
@@ -51,28 +51,24 @@ export const counselorQnaApi = api
       }),
       getMyCounselorQuestions: build.query<GetMyQuestionsApiResponse, GetMyQuestionsApiArg>({
         query: ({
-          keyword = '',
-          isClosed = '',
-          isChatSessionClosed = '',
+          keyword,
+          isClosed,
           sortBy = 'createdDate',
-          // studentCode = null,
+          status = 'VERIFIED',
           sortDirection = 'DESC',
           page = 1,
-          size = `10`
-          // topicId
+          size = 10
         }) => ({
           url: `/api/question-cards/counselor/filter`,
           method: 'GET',
           params: {
             keyword,
             isClosed,
-            isChatSessionClosed,
             sortBy,
             size,
-            // studentCode,
+            status,
             sortDirection,
             page,
-            // topicId
           },
         }),
         providesTags: ['qna']
@@ -150,6 +146,7 @@ export type GetQuestionApiResponse = ApiResponse<Question>
 type GetQuestionsApiArg = {
   role: Role,
   keyword?: string;
+  status?: QuestionCardStatus;
   isClosed?: boolean | string;
   isChatSessionClosed?: boolean;
   sortBy?: string;
@@ -167,6 +164,7 @@ export type GetMyQuestionsApiArg = {
   keyword?: string;
   isClosed?: boolean | string;
   isChatSessionClosed?: boolean;
+  status?: QuestionCardStatus;
   sortBy?: string;
   studentCode?: string;
   sortDirection?: 'ASC' | 'DESC';
@@ -185,15 +183,15 @@ export type PostReviewQuestionArg = {
 	status: 'PENDING' | 'VERIFIED' | 'FLAGGED' | 'REJECTED';
 };
 export type PostReviewQuestionResponse = {
-	message: string;
-	status: number;
-};
+  data:ApiMessage;
+  status: number
+}
 
 export type PostFlagQuestionArg = {
 	id: number;
 	body: string;
 };
 export type PostFlagQuestionResponse = {
-	message: string;
-	status: number;
-};
+  data:ApiMessage;
+  status: number
+}

@@ -1,20 +1,20 @@
 import { Message, Question } from '@/shared/types';
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import { rootReducer } from '@shared/store';
-import { removeListener } from 'process';
+import { listeners, removeListener } from 'process';
 
 type initialStateType = {
 	openedChatId: number | null;
 	currentChatMessages: Message[];
-	listeners: Set<number>;
+	listeners: Question[];
 	passiveCallBack?: (data: Message, qna: Question) => void;
 };
 
 const initialState: initialStateType = {
 	openedChatId: null,
 	currentChatMessages: [],
-	listeners: new Set(),
-	passiveCallBack: null
+	listeners: [],
+	passiveCallBack: null,
 };
 
 export const chatSessionSlice = createSlice({
@@ -38,31 +38,40 @@ export const chatSessionSlice = createSlice({
 		addChatMessages: (state, action) => {
 			state.currentChatMessages.push(action.payload);
 		},
-		addChatListener: (state, action) => {
-			if (!state.listeners.has(action.payload)) {
-				state.listeners.add(action.payload);
+		addChatListener: (state, action: PayloadAction<Question>) => {
+			const index = state.listeners.findIndex(
+				(item) => item.id === action.payload.id
+			);
+			if (index < 0) {
+				state.listeners.push(action.payload);
 			}
 		},
-		removeChatListener: (state, action) => {
-			if (state.listeners.has(action.payload)) {
-				state.listeners.delete(action.payload);
+		removeChatListener: (state, action: PayloadAction<Question>) => {
+			const index = state.listeners.findIndex(
+				(item) => item.id === action.payload.id
+			);
+			if (index > -1) {
+				state.listeners.splice(index, 1);
 			}
 		},
-		setChatListeners: (state, action: PayloadAction<Set<number>>) => {
+		setChatListeners: (state, action: PayloadAction<Question[]>) => {
 			state.listeners = action.payload;
 		},
+		addChatListeners: (state, action: PayloadAction<Question[]>) => {
+			state.listeners = state.listeners.concat(action.payload);
+		},
 		clearChatListeners: (state) => {
-			state.listeners = initialState.listeners
+			state.listeners = initialState.listeners;
 		},
 		setPassiveChatCallback: (state, action) => {
-			state.passiveCallBack = action.payload
-		}
+			state.passiveCallBack = action.payload;
+		},
 	},
 	selectors: {
 		selectOpenedChatId: (state) => state.openedChatId,
 		selectCurrentChatMessages: (state) => state.currentChatMessages,
 		selectChatListeners: (state) => state.listeners,
-		selectPassiveChatCallback: (state) => state.passiveCallBack
+		selectPassiveChatCallback: (state) => state.passiveCallBack,
 	},
 });
 
@@ -79,17 +88,18 @@ export const {
 	addChatMessages,
 	closeChatSession,
 	addChatListener,
+	addChatListeners,
 	setChatListeners,
 	removeChatListener,
 	clearChatListeners,
-	setPassiveChatCallback
+	setPassiveChatCallback,
 } = chatSessionSlice.actions;
 
 export const {
 	selectOpenedChatId,
 	selectCurrentChatMessages,
 	selectChatListeners,
-	selectPassiveChatCallback
+	selectPassiveChatCallback,
 } = injectedSlice.selectors;
 
 export default chatSessionSlice.reducer;

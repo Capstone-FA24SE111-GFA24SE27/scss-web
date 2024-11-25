@@ -127,56 +127,58 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 		useConfirmDialog({
 			dispatch: dispatch,
 			title: 'Are you sure you want to reject this question?',
-			confirmButtonFunction: async () => {
-				const result = await reviewQuestion({
+			confirmButtonFunction: () => {
+				reviewQuestion({
 					id: id,
 					status: 'REJECTED',
-				});
-				if (result?.data?.status === 200) {
-					useAlertDialog({
-						title: 'Question is rejected successfully',
-						dispatch: dispatch,
-					});
-					setExpanded(false);
-				} else {
-					useAlertDialog({
-						title: result.data.message,
-						dispatch: dispatch,
-					});
-				}
+				})
+					.unwrap()
+					.then((result) => {
+						console.log(result);
+						if (result?.data?.status === 200) {
+							useAlertDialog({
+								title: 'Question is rejected successfully',
+								dispatch: dispatch,
+							});
+							setExpanded(false);
+						} else {
+							useAlertDialog({
+								title: result.data.message,
+								color: 'error',
+								dispatch: dispatch,
+							});
+						}
+					})
+					.catch((err) => console.log(err));
 			},
 		});
 	};
 
-	const handleCloseQuestion = async () => {
+	const handleCloseQuestion = () => {
 		useConfirmDialog({
 			title: 'Are you sure you want to close the question?',
 			confirmButtonFunction: async () => {
-				const result = await closeQuestion(qna.id);
-				console.log('close qna', result);
-				if (result?.data?.status === 200) {
-					useAlertDialog({
-						title: result.data.message,
-						dispatch,
-					});
-					setExpanded(false);
-				} else {
-					useAlertDialog({
-						title: result.data.message,
-						dispatch: dispatch,
-					});
-				}
+				closeQuestion(qna.id)
+					.unwrap()
+					.then((result) => {
+						console.log('close qna', result);
+						// if (result?.data?.status === 200) {
+						// 	useAlertDialog({
+						// 		title: result.data.message,
+						// 		dispatch,
+						// 	});
+						// 	setExpanded(false);
+						// } else {
+						// 	useAlertDialog({
+						// 		title: result.data.message,
+						// 		dispatch: dispatch,
+						// 	});
+						// }
+					})
+					.catch((err) => console.log(err));
 			},
 			dispatch,
 		});
-	};
-
-	const handleFlagQuestion = (id: number) => {
-		dispatch(
-			openDialog({
-				children: <QnaFlagForm id={id} />,
-			})
-		);
 	};
 
 	const dispatch = useAppDispatch();
@@ -394,21 +396,21 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								Close
 							</Button>
 						)}
-						{!qna?.answer &&
+						{/* {!qna?.answer &&
 							!qna.closed &&
 							(qna.status === 'PENDING' ||
 								qna.status === 'VERIFIED') && (
-								<Button
-									variant='outlined'
-									color='primary'
-									startIcon={<Close />}
-									onClick={() => {
-										handleFlagQuestion(qna.id);
-									}}
-								>
-									Flag Question
-								</Button>
-							)}
+								// <Button
+								// 	variant='outlined'
+								// 	color='primary'
+								// 	startIcon={<Close />}
+								// 	onClick={() => {
+								// 		handleFlagQuestion(qna.id);
+								// 	}}
+								// >
+								// 	Flag Question
+								// </Button>
+							)} */}
 						{!qna?.answer &&
 							!qna.closed &&
 							(qna.status === 'PENDING' ||

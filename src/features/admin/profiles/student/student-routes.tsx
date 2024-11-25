@@ -1,7 +1,6 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
-import { specialRoutes } from '@shared/configs';
-import StudentDetails from './StudentDetails';
+import { studentRoutes } from './details';
 
 const Students = lazy(() => import('./Students'));
 
@@ -11,8 +10,5 @@ export const adminStudentsRoutes: RouteObject[] = [
 		element: <Students />,
 		children: [],
 	},
-	{
-		path: 'students/:id',
-		element: <StudentDetails />,
-	},
-];
+	...studentRoutes
+]

@@ -19,7 +19,6 @@ export const studentQnasApi = api
           status = '',
           isTaken = '',
           isClosed = '',
-          isChatSessionClosed = '',
           type = '',
           sortBy = 'createdDate',
           sortDirection = 'DESC',
@@ -33,7 +32,6 @@ export const studentQnasApi = api
             status,
             isTaken,
             isClosed,
-            isChatSessionClosed,
             type,
             sortBy,
             sortDirection,
@@ -46,6 +44,14 @@ export const studentQnasApi = api
       getMyStudentQuestions: build.query<GetStudentQuestionsApiResponse, GetStudentQuestionsApiArg>({
         query: ({ }) => ({
           url: `/api/question-cards/student/filter`,
+          params: {
+            status: 'VERIFIED',
+            isClosed: false,
+            sortBy: 'createdDate',
+            sortDirection: 'DESC',
+            page: 1,
+            size: 999,
+          },
           method: 'GET',
         }),
         providesTags: ['qna']
@@ -125,7 +131,6 @@ export type GetStudentQuestionsApiArg = {
   status?: string;
   isTaken?: boolean | string;
   isClosed?: boolean | string;
-  isChatSessionClosed?: boolean;
   type?: string;
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC';

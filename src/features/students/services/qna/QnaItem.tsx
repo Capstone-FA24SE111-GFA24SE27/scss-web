@@ -1,4 +1,4 @@
-import { NavLinkAdapter, UserLabel } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel } from '@/shared/components';
 import React, { SyntheticEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -241,9 +241,11 @@ const QnaItem = (props: Props) => {
 							) : qna.answer ? (
 								<div>
 									{/* <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
-									<Typography className='px-8'>
-										{qna.answer}
-									</Typography>
+									<ExpandableText
+												className='flex flex-wrap w-full overflow-hidden break-all text-wrap'
+												text={qna.answer}
+												limit={100}
+											/>
 								</div>
 							) : (
 								<div>

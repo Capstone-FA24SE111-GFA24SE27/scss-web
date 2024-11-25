@@ -10,7 +10,7 @@ import { ApiResponse, apiService as api } from '@shared/store';
 
 export const addTagTypes = ['qna'] as const;
 
-export const usersApi = api
+export const staffQnaApi = api
 	.enhanceEndpoints({
 		addTagTypes,
 	})
@@ -65,6 +65,16 @@ export const usersApi = api
 				}),
 				invalidatesTags: ['qna'],
 			}),
+			getAllQuestionCards: build.query<GetAllQuestionsResponse, GetAllQuestionsArgs>({
+				query: (args) => ({
+					url: `/api/question-cards/manage/find-all`,
+					params: {
+						from: args.from,
+						to: args.to
+					}
+				}),
+				providesTags: ['qna']
+			})
 		}),
 	});
 
@@ -72,12 +82,20 @@ export const {
 	useGetQuestionsQuery,
 	useGetQuestionQuery,
 	usePostReviewQuestionStatusMutation,
-	usePostFlagQuestionStatusMutation
-} = usersApi;
+	usePostFlagQuestionStatusMutation,
+	useGetAllQuestionCardsQuery
+} = staffQnaApi;
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>;
 
 export type GetQuestionApiResponse = ApiResponse<Question>;
+
+type GetAllQuestionsResponse = ApiResponse<Question[]>
+
+type GetAllQuestionsArgs = {
+	from: string;
+	to: string
+}
 
 export type GetQuestionsApiArgs = {
 	sortBy?: string;

@@ -208,7 +208,7 @@ function AppointmentCreate() {
 
 
   return (
-    <div className="flex flex-col items-center p-32 container">
+    <div className="container flex flex-col items-center p-32">
       <div className="flex flex-col w-full max-w-4xl">
         <div className="">
           <Button
@@ -219,18 +219,18 @@ function AppointmentCreate() {
             Back to appointment list
           </Button>
         </div>
-        <div className="mt-8 text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+        <div className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
           Create an appointment
         </div>
-        <Paper className="flex flex-col container flex-auto gap-32 p-32 mt-32">
+        <Paper className="container flex flex-col flex-auto gap-32 p-32 mt-32">
           <div className="">
             <Typography className="text-2xl font-bold tracking-tight">Submit your appointment</Typography>
             <Typography color="text.secondary">
               The appointment will be automatically added to your schedule
             </Typography>
           </div>
-          <div className="w-full flex flex-col gap-16">
-            <div className='flex flex-col gap-16 items-center'>
+          <div className="flex flex-col w-full gap-16">
+            <div className='flex flex-col items-center gap-16'>
               <Controller
                 control={control}
                 name="studentCode"
@@ -269,7 +269,7 @@ function AppointmentCreate() {
             </div>
 
             <div>
-              <Typography className='font-semibold text-primary text-lg'>Counseling Date</Typography>
+              <Typography className='text-lg font-semibold text-primary'>Counseling Date</Typography>
               <DateCalendar
                 views={['day']}
                 className='w-full'
@@ -286,7 +286,7 @@ function AppointmentCreate() {
             </div>
 
             <div className=''>
-              <Typography className='font-semibold text-primary text-lg'>Available slots</Typography>
+              <Typography className='text-lg font-semibold text-primary'>Available slots</Typography>
               <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography>
               <div className='flex flex-wrap gap-16 mt-16'>
                 {
@@ -322,7 +322,7 @@ function AppointmentCreate() {
             }
 
             <div className=''>
-              <Typography className='font-semibold text-primary text-lg'>Meeting Type</Typography>
+              <Typography className='text-lg font-semibold text-primary'>Meeting Type</Typography>
               {/* <FormControl>
                             <RadioGroup
                                 aria-labelledby="demo-radio-buttons-group-label"
