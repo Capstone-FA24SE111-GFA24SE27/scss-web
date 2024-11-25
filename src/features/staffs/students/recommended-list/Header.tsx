@@ -1,9 +1,10 @@
-import React from 'react'
+import React from 'react';
 import { useEffect, useState } from 'react';
 import {
-    filterToggle,
+	filterToggle,
 	selectFilter,
 	setPromptForBehavior,
+	setSearchTerm,
 	setSemesterIdForBehavior,
 } from './recommended-list-slice';
 import { useGetSemestersQuery } from '@/shared/services';
@@ -13,7 +14,7 @@ import { Psychology } from '@mui/icons-material';
 import StaffStudentListFilterButton from '../StaffStudentListFilterButton';
 
 const Header = () => {
-    const filter = useAppSelector(selectFilter);
+	const filter = useAppSelector(selectFilter);
 	const dispatch = useAppDispatch();
 
 	const handlePromptForBehavior = (searchTerm) => {
@@ -31,11 +32,13 @@ const Header = () => {
 	// 	{ label: '9', value: '9' },
 	// ];
 
-	const { data: semesterData, isLoading: isLoadingSemesterData } = useGetSemestersQuery();
+	const { data: semesterData, isLoading: isLoadingSemesterData } =
+		useGetSemestersQuery();
 
 	const semesterOptions = semesterData?.map((semester) => ({
-		label: semester.name, value: semester.id
-	}))
+		label: semester.name,
+		value: semester.id,
+	}));
 
 	const handleSelectSemester = (
 		event: React.ChangeEvent<HTMLInputElement>
@@ -48,33 +51,32 @@ const Header = () => {
 		// dispatch(setPromptForBehavior(''));
 	};
 
+	const handleSearch = (searchTerm: string) => {
+		dispatch(setSearchTerm(searchTerm));
+	};
+
 	return (
 		<div className='flex items-center flex-1 bg-background'>
 			<div className='flex flex-col w-full gap-16 p-24'>
 				<div className='flex gap-32'>
 					<SearchField
-						onSearch={handlePromptForBehavior}
-						label='Behavior tags'
-						className='Student behavior'
-						startIcon={<Psychology />}
-						placeholder='Student behavior'
+						onSearch={handleSearch}
+						label='Name'
+						placeholder='John Doe'
+						size='medium'
 					/>
-					<SelectField
-						label='Semester'
-						options={semesterOptions}
-						value={filter.semesterIdForBehavior?.toString()}
-						onChange={handleSelectSemester}
-						showClearOptions
-						className='w-256'
-					/>
+
 					<div className='pl-16'>
-						{!filter.open && <StaffStudentListFilterButton onClick={() => dispatch(filterToggle())} />}
+						{!filter.open && (
+							<StaffStudentListFilterButton
+								onClick={() => dispatch(filterToggle())}
+							/>
+						)}
 					</div>
 				</div>
-				
 			</div>
 		</div>
 	);
 };
 
-export default Header
+export default Header;

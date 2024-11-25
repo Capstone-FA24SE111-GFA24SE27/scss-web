@@ -15,7 +15,15 @@ import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 import { AppointmentDetail } from '@/shared/pages';
 import { splitUserAndReason } from '@/shared/utils';
 
-const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
+
+type Props = {
+  appointment: Appointment,
+  handleCloseDialog: ()=>void
+}
+
+const CounselorAppointmentItem = (props: Props) => {
+
+  const {appointment, handleCloseDialog} = props
 
   const dispatch = useAppDispatch();
 
@@ -29,8 +37,35 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
       <div className='flex flex-col w-full'>
         <ListItem
           className='flex justify-between p-0'
-          secondaryAction={
-            <ItemMenu
+          // secondaryAction={
+           
+          // }
+        >
+          <div className='flex items-center gap-24'>
+            <div className='flex items-center gap-8 '>
+              <CalendarMonth />
+              <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
+            </div>
+            <div className='flex items-center gap-8'>
+              <AccessTime />
+              <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+            </div>
+            <Chip
+              label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+              icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+              className='items-center font-semibold'
+              size='small'
+            />
+            {
+              ['CANCELED'].includes(appointment?.status) && <Chip
+                label={appointment.status}
+                variant='filled'
+                color={statusColor[appointment.status]}
+                size='small'
+              />
+            }
+          </div>
+          <ItemMenu
               menuItems={[
                 // {
                 //   label: 'View details',
@@ -74,32 +109,6 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
                 ] : [])
               ]}
             />
-          }
-        >
-          <div className='flex items-center gap-24'>
-            <div className='flex items-center gap-8 '>
-              <CalendarMonth />
-              <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
-            </div>
-            <div className='flex items-center gap-8'>
-              <AccessTime />
-              <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-            </div>
-            <Chip
-              label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
-              icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
-              className='items-center font-semibold'
-              size='small'
-            />
-            {
-              ['CANCELED'].includes(appointment?.status) && <Chip
-                label={appointment.status}
-                variant='filled'
-                color={statusColor[appointment.status]}
-                size='small'
-              />
-            }
-          </div>
           {/* <div className='relative'>
           {
             !appointment.havingReport && ['ATTEND'].includes(appointment.status) && (
@@ -177,7 +186,11 @@ const CounselorAppointmentItem = ({ appointment }: { appointment: Appointment })
         <div className='pl-16 border-l-2'>
           <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
             <ListItemButton
-              onClick={() => dispatch(openStudentView(appointment.studentInfo.id.toString()))}
+              onClick={() => {
+                dispatch(openStudentView(appointment.studentInfo.id.toString()))
+                handleCloseDialog()
+              }
+              }
               className='w-full rounded shadow bg-primary-light/5'
             >
               <UserListItem

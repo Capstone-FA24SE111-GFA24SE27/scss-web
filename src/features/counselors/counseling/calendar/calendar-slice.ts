@@ -69,6 +69,9 @@ export const calendarAppSlice = createSlice({
 		closeEventDetailDialog: (state) => {
 			state.eventDialog = initialState.eventDialog;
 		},
+		clearScheduleData:(state) => {
+			state.data = []
+		},
 		addScheduleData: (state, actions) => {
 			const prev = state.data ? state.data : [];
 			state.data = [...actions.payload, ...prev];
@@ -103,6 +106,7 @@ export const {
 	closeEventDetailDialog,
 	addScheduleData,
 	addHolidays,
+	clearScheduleData
 } = calendarAppSlice.actions;
 
 export type labelsSliceType = typeof calendarAppSlice;

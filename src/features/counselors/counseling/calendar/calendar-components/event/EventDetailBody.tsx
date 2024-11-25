@@ -95,8 +95,8 @@ export const EventDetailBody = (props: Props) => {
 	}
 
 	return (
-		<div onClick={handleNavClicked}>
-			<CounselorAppointmentItem appointment={appointment} />
+		<div >
+			<CounselorAppointmentItem appointment={appointment} handleCloseDialog={handleNavClicked}/>
 		</div>
 	);
 };
