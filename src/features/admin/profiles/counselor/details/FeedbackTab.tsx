@@ -8,8 +8,8 @@ import { SyntheticEvent, useState } from 'react'
 import { ContentLoading, ExpandableText, Heading, ItemMenu, openDialog } from '@/shared/components';
 import { motionVariants } from '@/shared/configs';
 import dayjs from 'dayjs';
-import { AppointmentView } from '@/shared/pages';
 import { useGetCounselorFeedbacksAdminQuery } from '../admin-counselor-api';
+import { AppointmentDetail } from '@/shared/pages';
 
 
 const QuestionBoard = () => {
@@ -77,7 +77,7 @@ const QuestionBoard = () => {
                               label: 'View Appointment',
                               onClick: () => {
                                 dispatch(openDialog({
-                                  children: <AppointmentView id={feedback.appointment.id.toString()}/>
+                                  children: <AppointmentDetail id={feedback.appointment.id.toString()}/>
                                 }))
                               },
                               icon: <Description fontSize='small' />

@@ -89,7 +89,7 @@ function CounselorBooking() {
       dispatch,
       title: 'Confirm booking',
       content: `Are you sure to book ${counselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
-      confirmButtonFucntion: () => bookCounselor({
+      confirmButtonFunction: () => bookCounselor({
         counselorId: Number(counselorId),
         appointmentRequest: formData
       })
@@ -169,7 +169,7 @@ function CounselorBooking() {
 
 
   if (isLoading) {
-    return <ContentLoading className='m-32' />
+    return <ContentLoading className='p-32 min-w-lg' />
   }
 
   if (!counselor) {

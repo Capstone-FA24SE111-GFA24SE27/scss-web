@@ -15,13 +15,15 @@ function CounselorListContent() {
     const search = useAppSelector(selectSearchTerm)
     const filter = useAppSelector(selectFilter)
     const counselorType = useAppSelector(selectCounselorType)
-    const { 
+    const {
         availableFrom,
         availableTo,
         departmentId,
         majorId,
         specializationId,
-        expertiseId
+        expertiseId,
+        ratingFrom,
+        ratingTo,
     } = filter
     console.log(availableFrom, availableTo)
     const { data: academicCounselors, isFetching: isFetchingAcademicCounselors } = useGetCounselorsAcademicQuery({
@@ -32,13 +34,17 @@ function CounselorListContent() {
         departmentId,
         majorId,
         specializationId,
+        ratingFrom,
+        ratingTo,
     })
     const { data: nonAcademicCounselors, isFetching: isFetchingNonAcademicCounselors } = useGetCounselorsNonAcademicQuery({
         search,
         page,
         availableFrom,
         availableTo,
-        expertiseId
+        expertiseId,
+        ratingFrom,
+        ratingTo,
     })
 
     const counselors = (counselorType === 'ACADEMIC' ? academicCounselors?.content?.data : nonAcademicCounselors?.content?.data) || []

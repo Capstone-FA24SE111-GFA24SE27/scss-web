@@ -45,7 +45,7 @@ const initialState: StudentListState = {
  * The filter slice.
  */
 export const adminStudentListSlice = createSlice({
-  name: 'studentList',
+  name: 'adminStudentList',
   initialState,
   reducers: {
     filterClose: (state) => {

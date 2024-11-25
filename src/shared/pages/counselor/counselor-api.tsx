@@ -2,7 +2,7 @@ import { CounselingSlot, Counselor, PaginationContent, Profile } from '@/shared/
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
-export const addTagTypes = [
+const addTagTypes = [
   'counselors',
   'appointments',
   'expertises',

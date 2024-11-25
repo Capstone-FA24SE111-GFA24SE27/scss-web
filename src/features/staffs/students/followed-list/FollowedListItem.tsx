@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import dayjs from 'dayjs';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
-import { useAppDispatch } from '@shared/store';
+import { getApiErrorMessage, isApiError, useAppDispatch } from '@shared/store';
 import UpdateFollowNoteForm from './UpdateFollowNoteForm';
 
 type Props = {
@@ -47,8 +47,8 @@ const FollowedListItem = (props: Props) => {
     const handleUnfollow = async () => {
         const result = await unfollowStudent(item.student.id)
         console.log('awdas',result)
-        if(result.error.data){
-            useAlertDialog({ title: result.error.data, confirmButtonTitle: 'Ok', dispatch })
+        if(isApiError(result)){
+            useAlertDialog({ title: getApiErrorMessage(result.error), confirmButtonTitle: 'Ok', dispatch })
         }
     }
 

@@ -38,8 +38,10 @@ const FollowStudentButton = (props: Props) => {
 		if (isStudentPath) {
 			const result = await followStudent(id);
 			console.log(result);
+			// @ts-ignore
 			if (result.error.data) {
 				useAlertDialog({
+					// @ts-ignore
 					title: result.error.data,
 					confirmButtonTitle: 'Ok',
 					dispatch,

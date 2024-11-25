@@ -70,7 +70,7 @@ function Counseling() {
     useConfirmDialog({
       dispatch: dispatch,
       title: 'Are you you want to update status for this counselor?',
-      confirmButtonFucntion: async () => {
+      confirmButtonFunction: async () => {
         const result = await updateCounselorStatus({
           status: e.target.value,
           counselorId: Number(id),

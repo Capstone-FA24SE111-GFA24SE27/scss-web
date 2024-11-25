@@ -104,7 +104,7 @@ function QnaForm() {
 				useConfirmDialog({
 					dispatch: dispatch,
 					title: 'Confirm editing question?',
-					confirmButtonFucntion: () => {
+					confirmButtonFunction: () => {
 						editQuestion({
 							questionCardId: Number(questionId),
 							question: {
@@ -143,7 +143,7 @@ function QnaForm() {
 							<Typography>{data.content}</Typography>
 						</div>
 					),
-					confirmButtonFucntion: () => {
+					confirmButtonFunction: () => {
 						postQuestion({
 							content: data.content,
 							questionType: data.questionType,
