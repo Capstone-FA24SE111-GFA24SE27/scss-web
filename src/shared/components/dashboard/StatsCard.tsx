@@ -22,7 +22,7 @@ interface StatsCardProps {
   color?: OverridableStringUnion<"primary" | "info" | "disabled" | "action" | "inherit" | "secondary" | "error" | "success" | "warning", SvgIconProps['color']>;
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ title, total, statChange, icon, color = 'inherit' }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ title, total = 0, statChange, icon, color = 'inherit' }) => {
   return (
     <Paper className="w-full flex flex-col gap-4 shadow p-16" elevation={3}>
       <Box className="flex justify-between items-start">

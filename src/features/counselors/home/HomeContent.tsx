@@ -29,39 +29,73 @@ const HomeContent = () => {
   const firstDayPreviousMonth = dayjs().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
   const lastDayOfPreviousMonth = dayjs().subtract(1, 'month').endOf('month').format('YYYY-MM-DD');
 
-  const { data: requestsCurrentMonthData, isLoading: isLoadingRequest, refetch: refetchRequest } = useGetCounselorAppointmentRequestsQuery({
-    dateFrom: firstDayOfMonth,
+  const { data: pendingRequestsData, isLoading: isLoadingRequest, refetch: refetchRequest } = useGetCounselorAppointmentRequestsQuery({
+    dateFrom: today,
     dateTo: lastDayOfMonth,
+    status: `WAITING`,
   })
 
 
 
   const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch: refetchAppointments } = useGetCounselorCounselingAppointmentQuery({
     fromDate: today,
-    // toDate: lastDayOfMonth,
+    toDate: lastDayOfMonth,
     status: `WAITING`,
   });
 
 
- 
-  const { data: totalAppointments } = useGetCounselorCounselingAppointmentQuery({});
+
+  const { data: totalAppointments } = useGetCounselorCounselingAppointmentQuery({
+    size: 9999,
+    fromDate: firstDayOfMonth,
+    toDate: lastDayOfMonth,
+  });
   const { data: completedAppointments } = useGetCounselorCounselingAppointmentQuery({
     status: `ATTEND`,
-    size: 9999
+    size: 9999,
+    fromDate: firstDayOfMonth,
+    toDate: lastDayOfMonth,
   });
   const { data: canceledAppointments } = useGetCounselorCounselingAppointmentQuery({
     status: `CANCELED`,
-    size: 9999
+    size: 9999,
+    fromDate: firstDayOfMonth,
+    toDate: lastDayOfMonth,
   });
 
-  const { data: pendingAppointments } = useGetCounselorAppointmentRequestsQuery({
-    status: `WAITING`,
-    size: 9999
+  const { data: appointmentRequests, refetch: refetchAppointmentRequests } = useGetCounselorAppointmentRequestsQuery({
+    size: 9999,
+    dateFrom: firstDayOfMonth,
+    dateTo: lastDayOfMonth,
   })
 
-  useAppointmentsSocketListener(account?.profile.id, refetchAppointments)
 
-  const pendingRequests = requestsCurrentMonthData?.content.data.filter(request => request.status === 'WAITING')
+  const { data: totalAppointmentsPreviousMonth } = useGetCounselorCounselingAppointmentQuery({
+    size: 9999,
+    fromDate: firstDayPreviousMonth,
+    toDate: lastDayOfPreviousMonth,
+  });
+  const { data: completedAppointmentsPreviousMonth } = useGetCounselorCounselingAppointmentQuery({
+    status: `ATTEND`,
+    size: 9999,
+    fromDate: firstDayPreviousMonth,
+    toDate: lastDayOfPreviousMonth,
+  });
+  const { data: canceledAppointmentsPreviousMonth } = useGetCounselorCounselingAppointmentQuery({
+    status: `CANCELED`,
+    size: 9999,
+    fromDate: firstDayPreviousMonth,
+    toDate: lastDayOfPreviousMonth,
+  });
+
+  const { data: appointmentRequestsPreviousMonth } = useGetCounselorAppointmentRequestsQuery({
+    size: 9999,
+    dateFrom: firstDayPreviousMonth,
+    dateTo: lastDayOfPreviousMonth,
+  })
+
+
+  const pendingRequests = pendingRequestsData?.content.data
   const upcomingAppointments = upcomingAppointmentsData?.content.data
 
 
@@ -73,15 +107,22 @@ const HomeContent = () => {
     size: 9999,
   })
 
-  const { data: completedQuestions, isLoading: isLoadingCompletedQuestions, refetch: refetchCompletedQuestions } = useGetMyCounselorQuestionsQuery({
-    isClosed: true,
-    size: 9999,
-  })
+  // const { data: completedQuestions, isLoading: isLoadingCompletedQuestions, refetch: refetchCompletedQuestions } = useGetMyCounselorQuestionsQuery({
+  //   size: 9999,
+  // })
+
+  const completedQuestions = totalQuestions?.content?.data.filter(qna => qna.answer) || []
 
   const unansweredQuestionList = qnaData?.content?.data?.filter(question => !question.answer) || []
 
   useQuestionsSocketListener(account?.profile.id, refetchQna)
-  useRequestsSocketListener(account?.profile.id, refetchRequest)
+  useRequestsSocketListener(account?.profile.id, () => {
+    refetchRequest()
+    refetchAppointmentRequests()
+  })
+  useAppointmentsSocketListener(account?.profile.id, refetchAppointments)
+
+  console.log(appointmentRequests)
 
   const navigate = useNavigate()
   return (
@@ -96,8 +137,8 @@ const HomeContent = () => {
             total={totalAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
-              current: 40,
-              previous: 48,
+              current: totalAppointments?.content?.data.length,
+              previous: totalAppointmentsPreviousMonth?.content?.data.length,
             }}
             icon={<Description />}
             color="primary"  // You can set color to primary, secondary, success, error, etc.
@@ -108,8 +149,8 @@ const HomeContent = () => {
             total={completedAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
-              current: 52,
-              previous: 48,
+              current: completedAppointments?.content?.data.length,
+              previous: completedAppointmentsPreviousMonth?.content?.data.length,
             }}
             icon={<CheckCircle />}
             color="success"  // You can set color to primary, secondary, success, error, etc.
@@ -119,19 +160,19 @@ const HomeContent = () => {
             total={canceledAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
-              current: 52,
-              previous: 14,
+              current: canceledAppointments?.content?.data.length,
+              previous: canceledAppointmentsPreviousMonth?.content?.data.length,
             }}
             icon={<DoDisturbOn />}
             color="error"  // You can set color to primary, secondary, success, error, etc.
           />
           <StatsCard
             title="Appointment Requests"
-            total={pendingAppointments?.content?.data.length}
+            total={appointmentRequests?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
-              current: 18,
-              previous: 14,
+              current: appointmentRequests?.content?.data.length,
+              previous: appointmentRequestsPreviousMonth?.content?.data.length,
             }}
             icon={<Pending />}
             color="warning"  // You can set color to primary, secondary, success, error, etc.
@@ -206,24 +247,24 @@ const HomeContent = () => {
         <Box className='flex justify-between w-full gap-16'>
           <StatsCard
             title="Total Questions"
-            total={completedQuestions?.content?.data?.length}
-            // statChange={{
-            //   prefixText: 'Last month',
-            //   current: 40,
-            //   previous: 48,
-            // }}
+            total={totalQuestions?.content?.data?.length}
+            statChange={{
+              prefixText: 'Last month',
+              current: totalQuestions?.content?.data?.length,
+              previous: 0,
+            }}
             icon={<Class />}
             color="primary"  // You can set color to primary, secondary, success, error, etc.
           />
 
           <StatsCard
             title="Answered Questions"
-            total={totalQuestions?.content?.data?.length}
-            // statChange={{
-            //   prefixText: 'Last month',
-            //   current: 40,
-            //   previous: 48,
-            // }}
+            total={completedQuestions.length}
+            statChange={{
+              prefixText: 'Last month',
+              current: completedQuestions.length,
+              previous: 0,
+            }}
             icon={<CheckCircle fontSize='large' />}
             color="success"  // You can set color to primary, secondary, success, error, etc.
           />

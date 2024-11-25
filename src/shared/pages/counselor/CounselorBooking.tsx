@@ -169,7 +169,7 @@ function CounselorBooking() {
 
 
   if (isLoading) {
-    return <ContentLoading className='p-32 min-w-lg' />
+    return <ContentLoading className='p-32 w-lg' />
   }
 
   if (!counselor) {
@@ -186,7 +186,7 @@ function CounselorBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col items-center flex-auto p-24 sm:p-48 min-w-lg">
+      <div className="relative flex flex-col items-center flex-auto p-24 sm:p-48 w-lg">
         <div className="w-full max-w-3xl">
           <Breadcrumbs
             parents={[

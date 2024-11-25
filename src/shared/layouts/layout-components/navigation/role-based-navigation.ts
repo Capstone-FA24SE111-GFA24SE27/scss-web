@@ -86,7 +86,7 @@ const studentNavigation: NavigationOptions = {
                     name: 'Appointments',
                     route: 'activity'
                 },
-                
+
 
             ]
         },
@@ -287,21 +287,23 @@ const managerNavigation: NavigationOptions = {
         },
     ],
     shortcuts: [
-        {
-            icon: CalendarMonth,
-            name: 'Schedule',
-        },
-        {
-            icon: Mail,
-            name: 'Mail',
-        },
+        // {
+        //     icon: CalendarMonth,
+        //     name: 'Schedule',
+        // },
+        // {
+        //     icon: Mail,
+        //     name: 'Mail',
+        // },
     ],
     userMenu: [
         {
+            icon: AccountBox,
             name: 'Profile',
             route: 'profile'
         },
         {
+            icon: Settings,
             name: 'Settings',
             route: 'settings'
         },
@@ -325,7 +327,7 @@ const adminNavigation: NavigationOptions = {
                     name: 'Create Account',
                     route: 'create'
                 },
-                
+
             ]
         },
         {
@@ -383,10 +385,12 @@ const adminNavigation: NavigationOptions = {
     ],
     userMenu: [
         {
+            icon: AccountBox,
             name: 'Profile',
             route: 'profile'
         },
         {
+            icon: Settings,
             name: 'Settings',
             route: 'settings'
         },
@@ -439,26 +443,28 @@ const supportStaffNavigation: NavigationOptions = {
                     name: 'Followed Students',
                     route: 'followed',
                 },
-                
+
             ]
         },
     ],
     shortcuts: [
-        {
-            icon: CalendarMonth,
-            name: 'Calendar',
-        },
-        {
-            icon: Mail,
-            name: 'Mail',
-        },
+        // {
+        //     icon: CalendarMonth,
+        //     name: 'Calendar',
+        // },
+        // {
+        //     icon: Mail,
+        //     name: 'Mail',
+        // },
     ],
     userMenu: [
         {
+            icon: AccountBox,
             name: 'Profile',
             route: 'profile'
         },
         {
+            icon: Settings,
             name: 'Settings',
             route: 'settings'
         },
