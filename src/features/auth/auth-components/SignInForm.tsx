@@ -53,10 +53,10 @@ function SignInForm() {
 
 	const { isValid, dirtyFields, errors } = formState;
 
-	useEffect(() => {
-		setValue('email', 'sm1', { shouldDirty: true, shouldValidate: true });
-		setValue('password', 's', { shouldDirty: true, shouldValidate: true });
-	}, [setValue]);
+	// useEffect(() => {
+	// 	setValue('email', 'sm1', { shouldDirty: true, shouldValidate: true });
+	// 	setValue('password', 's', { shouldDirty: true, shouldValidate: true });
+	// }, [setValue]);
 
 	function onSubmit(formData: FormType) {
 		const { email, password } = formData

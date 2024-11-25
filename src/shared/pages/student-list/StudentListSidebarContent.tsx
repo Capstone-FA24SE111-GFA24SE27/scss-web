@@ -62,7 +62,7 @@ const CounselorListSidebarContent = () => {
   };
 
   const handleSelectSemester = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSemesterIdForGPA(Number(event.target.value)));
+    dispatch(setSemesterIdForGPA(Number(event.target.value) || ''));
   };
 
   const handleAttendanceTypeChange = (_: any, newType: 'COUNT' | 'PERCENTAGE') => {
@@ -93,6 +93,9 @@ const CounselorListSidebarContent = () => {
   };
 
   const handleMinSubjectForAttendanceChange = (value: string) => {
+    if (Number(value) < 0 || Number(value) > 30) {
+      return
+    }
     dispatch(setMinSubjectForAttendance(Number(value) || ''));
   };
 
@@ -175,34 +178,36 @@ const CounselorListSidebarContent = () => {
           </ToggleButtonGroup>
 
         </Box>
-        <Box className="flex items-center gap-16">
+        <div className='flex gap-16 w-full'>
+          <Box className="flex items-center gap-16 w-full flex-1">
+            <TextField
+              fullWidth
+              type="number"
+              label="Min Subjects for Attendance"
+              placeholder="0 - 30"
+              size="small"
+              value={filter.minSubjectForAttendance || ''}
+              onChange={(e) => handleMinSubjectForAttendanceChange(e.target.value)}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                }
+              }}
+            />
+          </Box>
+          <Box className="flex items-center gap-16 w-full flex-1">
+            <SelectField
+              label="Semester"
+              options={semesterOptions}
+              value={filter.semesterIdForAttendance?.toString()}
+              onChange={handleSemesterAttendanceChange}
+              showClearOptions
+              className="min-w-full"
+              size="small"
+            />
+          </Box>
+        </div>
 
-          <TextField
-            fullWidth
-            type="number"
-            label="Min Subjects for Attendance"
-            placeholder="Enter minimum subjects"
-            size="small"
-            value={filter.minSubjectForAttendance || ''}
-            onChange={(e) => handleMinSubjectForAttendanceChange(e.target.value)}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              }
-            }}
-          />
-        </Box>
-        <Box className="flex items-center gap-16">
-          <SelectField
-            label="Semester"
-            options={semesterOptions}
-            value={filter.semesterIdForAttendance?.toString()}
-            onChange={handleSemesterAttendanceChange}
-            showClearOptions
-            className="w-400"
-            size="small"
-          />
-        </Box>
         {attendanceType === 'COUNT' && (
           <Box className="flex gap-16">
             {/* From (Count) Field */}
@@ -224,6 +229,8 @@ const CounselorListSidebarContent = () => {
               InputProps={{
                 startAdornment: <Numbers />,
               }}
+              disabled={!filter.semesterIdForAttendance}
+
             />
             {/* To (Count) Field */}
             <TextField
@@ -244,6 +251,8 @@ const CounselorListSidebarContent = () => {
               InputProps={{
                 startAdornment: <Numbers />,
               }}
+              disabled={!filter.semesterIdForAttendance}
+
             />
           </Box>
         )}
@@ -264,6 +273,8 @@ const CounselorListSidebarContent = () => {
                   handleAttendancePercentageChange('fromForAttendancePercentage', newValue);
                 }}
                 aria-labelledby="From Percentage"
+                disabled={!filter.semesterIdForAttendance}
+
               />
             </Box>
 
@@ -281,6 +292,8 @@ const CounselorListSidebarContent = () => {
                   handleAttendancePercentageChange('toForAttendancePercentage', newValue);
                 }}
                 aria-labelledby="To Percentage"
+                disabled={!filter.semesterIdForAttendance}
+
               />
             </Box>
 
