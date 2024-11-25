@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import { specialRoutes } from '@shared/configs';
 import { problemTagsRoutes } from './resouces/problem-tag/problem-tag-routes';
 import { resourcesRoutes } from './resouces';
@@ -14,6 +14,10 @@ export const adminRoutes: RouteObject[] = [
     path: '/',
     element: <AdminLayout />,
     children: [
+      // {
+			// 	path: '',
+			// 	element: <Navigate to={`accounts/table`} />
+			// },
         ...specialRoutes,
         ...resourcesRoutes,
         ...adminAccountsRoutes,

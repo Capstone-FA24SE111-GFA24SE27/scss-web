@@ -86,8 +86,26 @@ export const counselorsMangementApi = api
         invalidatesTags: ['counselors']
       }),
       getCounselorAppointmentsManagement: build.query<GetCounselorAppointmentsApiResponse, GetCounselorAppointmentsApiArg>({
-        query: ({ counselorId }) => ({
+        query: ({
+          fromDate = '',
+          toDate = '',
+          status = '',
+          sortBy = 'id',
+          sortDirection = 'DESC',
+          page = 1,
+          size = 10,
+          counselorId
+        }) => ({
           url: `/api/manage/counselors/appointment/filter/${counselorId}`,
+          params: {
+            fromDate,
+            toDate,
+            status,
+            sortBy,
+            sortDirection,
+            page,
+            size,
+          }
         }),
         providesTags: ['counselors', 'appointments']
       }),
@@ -97,9 +115,29 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselors', 'appointments']
       }),
-      getCounselorAppointmentRequestsManagement: build.query<GetCounselingAppointmentApiResponse, number>({
-        query: (counselorId) => ({
+      getCounselorAppointmentRequestsManagement: build.query<GetCounselingAppointmentApiResponse, GetCounselorAppointmentRequestsApiArg>({
+        query: ({
+          dateFrom = '',
+          dateTo = '',
+          status = '',
+          sortBy = 'id',
+          sortDirection = 'DESC',
+          page = 1,
+          size = 10,
+          meetingType = undefined,
+          counselorId
+        }) => ({
           url: `/api/manage/counselors/appointment-request/${counselorId}`,
+          params: {
+            dateFrom,
+            dateTo,
+            status,
+            sortBy,
+            sortDirection,
+            page,
+            meetingType,
+            size,
+          }
         }),
         providesTags: ['counselors', 'appointments',]
       }),
@@ -128,13 +166,13 @@ export const counselorsMangementApi = api
         GetCounselorScheduleAppointmentsApiResponse,
         GetCounselorScheduleAppointmentsApiArg
       >({
-        query: ({ 
+        query: ({
           id,
           fromDate,
           toDate
-         }) => ({
+        }) => ({
           url: `/api/manage/counselors/schedule/appointment/counselor/${id}`,
-          params: {fromDate, toDate },
+          params: { fromDate, toDate },
         }),
         providesTags: ['counselors', 'appointments'],
       }),
@@ -217,8 +255,23 @@ export type GetCounselorAppointmentsApiArg = {
   sortBy?: string,
   page?: number,
   counselorId: number,
+  fromDate?: string,
+  toDate?: string,
+  status?: string;
+  size?: number;
 }
 
+export type GetCounselorAppointmentRequestsApiArg = {
+  sortDirection?: 'ASC' | 'DESC',
+  sortBy?: string,
+  page?: number,
+  counselorId: number,
+  dateFrom?: string,
+  dateTo?: string,
+  meetingType?: string;
+  status?: string;
+  size?: number;
+}
 export type GetCounselorQuestionCardsManagementApiArg = ApiResponse<PaginationContent<Question>>
 
 export type GetCounselorQuestionCardsManagementApiResponse = {
@@ -228,7 +281,9 @@ export type GetCounselorQuestionCardsManagementApiResponse = {
   studentCode?: string;
   sortDirection?: 'ASC' | 'DESC';
   page?: number;
-  counselorId: number
+  counselorId: number,
+  status?: string;
+  size?: number;
 }
 
 export type GetCounselorAppointmentsApiResponse = ApiResponse<PaginationContent<Appointment>>
@@ -256,6 +311,6 @@ export type GetCounselorFeedbacksApiArg = {
 export type GetCounselorScheduleAppointmentsApiResponse = ApiResponse<Appointment>
 export type GetCounselorScheduleAppointmentsApiArg = {
   id: number,
-  fromDate : string,
+  fromDate: string,
   toDate: string,
 }
