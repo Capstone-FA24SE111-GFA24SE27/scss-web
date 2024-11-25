@@ -1,5 +1,5 @@
 import { StatsCard } from '@/shared/components'
-import { Archive, AssignmentLate, Class, Description, Handshake, Save, School, SupportAgent, TagFaces } from '@mui/icons-material'
+import { Archive, AssignmentLate, Class, Description, EmojiPeople, Face, Handshake, Save, School, SupportAgent, TagFaces } from '@mui/icons-material'
 import React from 'react'
 import AppointmentChart from './AppointmentChart';
 import RequestChart from './RequestChart';
@@ -20,7 +20,7 @@ const Overview = () => {
           //   current: 1234,
           //   previous: 12553
           // }}
-          icon={<TagFaces />}
+          icon={<Face />}
         />
         <StatsCard
           title={'Academic Counselors'}
@@ -50,7 +50,7 @@ const Overview = () => {
           //   current: 123234,
           //   previous: 1553
           // }}
-          icon={<SupportAgent />}
+          icon={<EmojiPeople />}
         />  
       </div>
       <Typography className='text-xl font-bold text-text-disabled mt-24'>Activities Overview - {getCurrentMonthYear()}</Typography>
