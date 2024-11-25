@@ -154,7 +154,7 @@ function QuickBooking() {
       dispatch,
       title: 'Confirm booking',
       content: `Are you sure to book ${randomMatchedCounselor.profile.fullName} at \n ${formData.slotCode}, ${formData.date}`,
-      confirmButtonFucntion: () => bookCounselor({
+      confirmButtonFunction: () => bookCounselor({
         counselorId: randomMatchedCounselor?.profile.id,
         appointmentRequest: {
           slotCode: formData.slotCode,
@@ -241,13 +241,13 @@ function QuickBooking() {
 
   return (
     <>
-      <div className="relative flex flex-col flex-auto p-16 min-h-screen container mx-auto">
+      <div className="container relative flex flex-col flex-auto min-h-screen p-16 mx-auto">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <Box className='w-full flex mt-8 gap-16'>
+        <Box className='flex w-full gap-16 mt-8'>
           <div className='w-full'>
-            <div className="flex flex-1 flex-col gap-16">
-              <Paper className='shadow p-32'>
-                <Typography className='font-semibold text-primary text-lg'>Select counseling type</Typography>
+            <div className="flex flex-col flex-1 gap-16">
+              <Paper className='p-32 shadow'>
+                <Typography className='text-lg font-semibold text-primary'>Select counseling type</Typography>
                 <FormControl className='w-full'>
                   <RadioGroup
                     aria-labelledby="counselingType"
@@ -257,11 +257,11 @@ function QuickBooking() {
                     className='flex flex-1 pt-16'
                   >
                     <FormControlLabel
-                      className='w-full hover:bg-primary-main/5 rounded-md'
+                      className='w-full rounded-md hover:bg-primary-main/5'
                       value="ACADEMIC"
                       control={<Radio />}
                       label={
-                        <Box display="flex" flexDirection="column" alignItems="flex-start" className="p-8 flex-1 w-full">
+                        <Box display="flex" flexDirection="column" alignItems="flex-start" className="flex-1 w-full p-8">
                           <Box display="flex" alignItems="center">
                             <School fontSize="large" /> {/* Large Icon */}
                             <Typography variant="h6" sx={{ marginLeft: 1 }}>Academic</Typography>
@@ -273,11 +273,11 @@ function QuickBooking() {
                       }
                     />
                     <FormControlLabel
-                      className='w-full hover:bg-primary-main/5 rounded-md'
+                      className='w-full rounded-md hover:bg-primary-main/5'
                       value="NON_ACADEMIC"
                       control={<Radio />}
                       label={
-                        <Box display="flex" flexDirection="column" alignItems="flex-start" className="p-8 flex-1 w-full">
+                        <Box display="flex" flexDirection="column" alignItems="flex-start" className="flex-1 w-full p-8">
                           <Box display="flex" alignItems="center">
                             <Handshake fontSize="large" /> {/* Large Icon */}
                             <Typography variant="h6" sx={{ marginLeft: 1 }}>Non-academic</Typography>
@@ -291,9 +291,9 @@ function QuickBooking() {
                   </RadioGroup>
                 </FormControl>
               </Paper>
-              <Paper className='shadow p-32'>
+              <Paper className='p-32 shadow'>
                 <div className='w-fit'>
-                  <Typography className='font-semibold text-primary text-lg'>Select date</Typography>
+                  <Typography className='text-lg font-semibold text-primary'>Select date</Typography>
                   <DateCalendar
                     views={['day']}
                     className='w-full'
@@ -315,7 +315,7 @@ function QuickBooking() {
 
 
                 <div className=''>
-                  <Typography className='font-semibold text-primary text-lg'>Select time</Typography>
+                  <Typography className='text-lg font-semibold text-primary'>Select time</Typography>
                   {/* <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography> */}
                   <div className='flex flex-wrap gap-16 mt-8'>
                     {
@@ -350,11 +350,11 @@ function QuickBooking() {
                   }
                 </div>
               </Paper>
-              <Paper className='shadow p-32'>
+              <Paper className='p-32 shadow'>
                 {
                   counselingType === 'ACADEMIC'
                     ? < div className=''>
-                      <Typography className='font-semibold text-primary text-lg'>Select Department (optional)</Typography>
+                      <Typography className='text-lg font-semibold text-primary'>Select Department (optional)</Typography>
                       <Controller
                         name="department"
                         control={control}
@@ -384,7 +384,7 @@ function QuickBooking() {
                       />
 
                       {/* Major Selection */}
-                      <Typography className='font-semibold text-primary text-lg mt-16'>Select Major (optional)</Typography>
+                      <Typography className='mt-16 text-lg font-semibold text-primary'>Select Major (optional)</Typography>
                       <Controller
                         name="major"
                         control={control}
@@ -412,7 +412,7 @@ function QuickBooking() {
                       />
 
                       {/* Specialization Selection */}
-                      <Typography className='font-semibold text-primary text-lg mt-16'>Select Specialization (optional)</Typography>
+                      <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization (optional)</Typography>
                       <Controller
                         name="specialization"
                         control={control}
@@ -437,7 +437,7 @@ function QuickBooking() {
                       />
                     </div>
                     : < div className=''>
-                      <Typography className='font-semibold text-primary text-lg'>Select counselor's expertise (optional)</Typography>
+                      <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise (optional)</Typography>
                       <Controller
                         name="expertise"
                         control={control}
@@ -463,14 +463,14 @@ function QuickBooking() {
                     </div>
                 }
               </Paper>
-              <Paper className='shadow p-32 pb-16'>
-                <Typography className='font-semibold text-primary text-lg'>Select couselor's gender (optional)</Typography>
+              <Paper className='p-32 pb-16 shadow'>
+                <Typography className='text-lg font-semibold text-primary'>Select couselor's gender (optional)</Typography>
                 <div className="mt-8">
                   <Controller
                     name="gender"
                     control={control}
                     render={({ field }) => (
-                      <div className="flex gap-8 items-center">
+                      <div className="flex items-center gap-8">
                         {/* Male Icon */}
                         <Tooltip title="Male">
                           <IconButton
@@ -504,7 +504,7 @@ function QuickBooking() {
                         </Tooltip>
 
                         {/* Clear Button */}
-                        <div className='flex-1 flex justify-end'>
+                        <div className='flex justify-end flex-1'>
                           {
                             selectedGender &&
                             <Tooltip title="Clear gender selection">
@@ -528,15 +528,15 @@ function QuickBooking() {
                     )}
                   />
                   {errors.gender && (
-                    <p className="text-red-500 mt-2">{errors.gender.message}</p>
+                    <p className="mt-2 text-red-500">{errors.gender.message}</p>
                   )}
                 </div>
               </Paper>
 
-              <div className='flex justify-end w-md self-end gap-16'>
+              <div className='flex self-end justify-end gap-16 w-md'>
                 <Button variant='outlined'
                   size='large'
-                  className='text-lg w-1/5'
+                  className='w-1/5 text-lg'
                   onClick={() => reset()}
                 >
                   Reset
@@ -546,7 +546,7 @@ function QuickBooking() {
                   variant='contained'
                   fullWidth
                   color='secondary'
-                  className='text-lg w-4/5 py-12'
+                  className='w-4/5 py-12 text-lg'
                   onClick={handleSubmit(onSubmitMatching)}
                   disabled={isLoadingRandomMatchedCounselor}
                   component="a" href={`#found_counselor`}
@@ -558,33 +558,33 @@ function QuickBooking() {
             </div>
 
           </div >
-          <Paper className='w-lg shadow' id={'found_counselor'}>
+          <Paper className='shadow w-lg' id={'found_counselor'}>
             <div className='p-32'>
               <div className=''>
                 {
                   isErrorGettingRandomMatchedCounselor ?
-                    <Box className="flex flex-col w-full items-center">
+                    <Box className="flex flex-col items-center w-full">
                       <SentimentVeryDissatisfied className='size-224 text-text-disabled' />
-                      <Typography className='text-text-disabled text-2xl'>No counselor matched!</Typography>
+                      <Typography className='text-2xl text-text-disabled'>No counselor matched!</Typography>
                     </Box>
                     : randomMatchedCounselor
                       ?
                       progress < 100 || isLoadingRandomMatchedCounselor
                         ? <div className='flex flex-col items-center gap-16'>
-                          <Typography color='secondary' className='font-semibold text-center text-lg'>Matching the most suitable counselor for you.</Typography>
+                          <Typography color='secondary' className='text-lg font-semibold text-center'>Matching the most suitable counselor for you.</Typography>
                           <CircularProgressWithLabel value={progress} />
                         </div>
                         : <div>
-                          <Typography color='secondary' className='font-semibold text-center text-lg'>Best counselor that fits your criteria.</Typography>
+                          <Typography color='secondary' className='text-lg font-semibold text-center'>Best counselor that fits your criteria.</Typography>
                           <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`} className='mt-16'>
                             <ListItemButton
                               component={NavLinkAdapter}
                               to={`counselor/${randomMatchedCounselor.profile.id}`}
-                              className=' w-full rounded'
+                              className='w-full rounded '
                             >
-                              <div className='w-full flex flex-col items-center'>
+                              <div className='flex flex-col items-center w-full'>
                                 <Avatar
-                                  className='size-96 border-2 '
+                                  className='border-2 size-96 '
                                   alt={randomMatchedCounselor.profile.fullName}
                                   src={randomMatchedCounselor.profile.avatarLink}
                                 />
@@ -600,7 +600,7 @@ function QuickBooking() {
 
                           <div className='px-16'>
                             <Divider className='mt-16' />
-                            <Typography className='font-semibold text-primary text-lg mt-16'>Meeting Type</Typography>
+                            <Typography className='mt-16 text-lg font-semibold text-primary'>Meeting Type</Typography>
 
                             <Controller
                               name="isOnline"
@@ -652,7 +652,7 @@ function QuickBooking() {
                           </div>
 
 
-                          <div className='flex justify-center mt-24 px-32'>
+                          <div className='flex justify-center px-32 mt-24'>
                             <Button
                               variant='contained'
                               color='secondary'
@@ -734,7 +734,7 @@ function CircularProgressWithLabel(
           <Typography
             variant="caption"
             component="div"
-            className='text-center text-lg p-8'
+            className='p-8 text-lg text-center'
             sx={{ color: 'text.secondary' }}
           >{`${Math.round(props.value)}%`}</Typography>
         </div>

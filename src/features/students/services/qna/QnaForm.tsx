@@ -104,7 +104,7 @@ function QnaForm() {
 				useConfirmDialog({
 					dispatch: dispatch,
 					title: 'Confirm editing question?',
-					confirmButtonFucntion: () => {
+					confirmButtonFunction: () => {
 						editQuestion({
 							questionCardId: Number(questionId),
 							question: {
@@ -143,7 +143,7 @@ function QnaForm() {
 							<Typography>{data.content}</Typography>
 						</div>
 					),
-					confirmButtonFucntion: () => {
+					confirmButtonFunction: () => {
 						postQuestion({
 							content: data.content,
 							questionType: data.questionType,
@@ -187,7 +187,7 @@ function QnaForm() {
 		return <BanInfo banInfo={banInfo} />
 	}
 	return (
-		<div className="flex flex-col items-center p-32 container">
+		<div className="container flex flex-col items-center p-32">
 			<div className="flex flex-col w-full max-w-4xl">
 				<Typography variant="h4"></Typography>
 				<div className="">
@@ -199,10 +199,10 @@ function QnaForm() {
 						Back to QnA
 					</Button>
 				</div>
-				<div className="mt-8 text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+				<div className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
 					{editMode ? 'Edit your question' : 'Ask a question'}
 				</div>
-				<Paper className="mt-32 p-24 rounded-2xl shadow">
+				<Paper className="p-24 mt-32 shadow rounded-2xl">
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						<div className="mb-24">
 							<Typography variant="h6">Submit your question</Typography>

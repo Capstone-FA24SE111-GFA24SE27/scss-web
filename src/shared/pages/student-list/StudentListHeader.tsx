@@ -95,7 +95,7 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 	return (
 		<div className='flex items-center flex-1 bg-background'>
 			<div className='flex flex-col w-full gap-16 p-24'>
-				<div className='flex gap-32 items-start'>
+				<div className='flex items-start gap-32'>
 					{
 						filter.isUsingPrompt
 							? <SearchField
@@ -158,7 +158,7 @@ interface ToggleSwitchProps {
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
 	return (
-		<div className="flex flex-col mx-8 gap-4 mt-4">
+		<div className="flex flex-col gap-4 mx-8 mt-4">
 			<div
 				className={clsx(
 					'relative w-72 h-28 flex items-center rounded-full cursor-pointer bg-primary-main',
@@ -173,9 +173,9 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
 					)}
 				>
 					{checked ? (
-						<Psychology className=" text-primary-main " fontSize='small' />
+						<Psychology className=" text-primary-main" fontSize='small' />
 					) : (
-						<Sell className=" text-primary-light pt-3" fontSize='small' />
+						<Sell className="pt-3  text-primary-light" fontSize='small' />
 					)}
 				</div>
 			</div>

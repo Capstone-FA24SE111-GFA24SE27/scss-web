@@ -3,8 +3,10 @@ import { Message, Question } from '@/shared/types';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import React, { useEffect } from 'react';
 import {
+	addChatListeners,
 	chatSessionSlice,
 	clearChatListeners,
+	removeChatListener,
 	selectChatListeners,
 	selectOpenedChatId,
 	setChatListeners,
@@ -46,17 +48,22 @@ const useChatNotification = (qnaList: Question[]) => {
 
 			dispatch(setPassiveChatCallback(cb));
 
-			let listenersList = new Set<number>();
+			let listenersList = [];
+
+			chatListeners.forEach((item) => {
+				if(item.closed) {
+					const result = socket.off(
+						`/user/${item.chatSession.id}/chat`
+					);
+					dispatch(removeChatListener(item))
+				}
+			})
 
 			console.log(qnaList);
 
 			qnaList.forEach((qnaItem) => {
-				if (qnaItem.chatSession && !qnaItem.closed) {
-					if (chatListeners.has(qnaItem.chatSession.id)) {
-						const result = socket.off(
-							`/user/${qnaItem.chatSession.id}/chat`
-						);
-					}
+				if (qnaItem.chatSession && !qnaItem.closed && chatListeners.findIndex(item => item.id === qnaItem.id) < 0) {
+					
 					const result = socket.on(
 						`/user/${qnaItem.chatSession.id}/chat`,
 						(data) => cb(data, qnaItem)
@@ -65,16 +72,16 @@ const useChatNotification = (qnaList: Question[]) => {
 						`passive /user/${qnaItem.chatSession.id}/chat`,
 						result
 					);
-					listenersList.add(qnaItem.chatSession?.id);
+					listenersList.push(qnaItem);
 				}
 			});
 			console.log('listeners', listenersList);
-			dispatch(setChatListeners(listenersList));
+			dispatch(addChatListeners(listenersList));
 		}
 		return () => {
 			if (socket && chatListeners) {
-				chatListeners.forEach((id) => {
-					socket.off(`/user/${id}/chat`);
+				chatListeners.forEach((item) => {
+					socket.off(`/user/${item.chatSession.id}/chat`);
 				});
 				dispatch(clearChatListeners());
 			}

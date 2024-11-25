@@ -1,4 +1,4 @@
-import { Account, Counselor, PaginationContent, Question, Student, User } from '@shared/types';
+import { Account, Counselor, PaginationContent, Question, QuestionCardStatus, Student, User } from '@shared/types';
 import { ApiMessage, ApiResponse, apiService as api } from '@shared/store'
 import { Role } from '@/shared/constants';
 import { Topic } from '@/shared/services';
@@ -55,6 +55,7 @@ export const counselorQnaApi = api
           isClosed = '',
           isChatSessionClosed = '',
           sortBy = 'createdDate',
+          status = 'VERIFIED',
           // studentCode = null,
           sortDirection = 'DESC',
           page = 1,
@@ -69,6 +70,7 @@ export const counselorQnaApi = api
             isChatSessionClosed,
             sortBy,
             size,
+            status,
             // studentCode,
             sortDirection,
             page,
@@ -150,6 +152,7 @@ export type GetQuestionApiResponse = ApiResponse<Question>
 type GetQuestionsApiArg = {
   role: Role,
   keyword?: string;
+  status?: QuestionCardStatus;
   isClosed?: boolean | string;
   isChatSessionClosed?: boolean;
   sortBy?: string;
@@ -167,6 +170,7 @@ export type GetMyQuestionsApiArg = {
   keyword?: string;
   isClosed?: boolean | string;
   isChatSessionClosed?: boolean;
+  status?: QuestionCardStatus;
   sortBy?: string;
   studentCode?: string;
   sortDirection?: 'ASC' | 'DESC';

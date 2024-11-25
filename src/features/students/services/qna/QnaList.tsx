@@ -53,7 +53,7 @@ const QnaList = () => {
 
 	const [isClosed, setIsClosed] = useState(false);
 
-	const [isTaken, setIsTaken] = useState(false);
+	// const [isTaken, setIsTaken] = useState(false);
 
 	const [page, setPage] = useState(1);
 
@@ -101,25 +101,25 @@ const QnaList = () => {
 		{ label: 'Non-Academic', value: 'NON_ACADEMIC' },
 	];
 
-	const { data: academicTopicsData } = useGetAcademicTopicsQuery();
-	const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
-	const academicTopics = academicTopicsData?.content;
-	const nonAcademicTopics = nonacademicTopicsData?.content;
+	// const { data: academicTopicsData } = useGetAcademicTopicsQuery();
+	// const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
+	// const academicTopics = academicTopicsData?.content;
+	// const nonAcademicTopics = nonacademicTopicsData?.content;
 
-	const academicTopicOptions = academicTopics?.map((topic) => ({
-		label: topic.name,
-		value: topic.id,
-	}));
+	// const academicTopicOptions = academicTopics?.map((topic) => ({
+	// 	label: topic.name,
+	// 	value: topic.id,
+	// }));
 
-	const nonAcademicTopicOptions = nonAcademicTopics?.map((topic) => ({
-		label: topic.name,
-		value: topic.id,
-	}));
+	// const nonAcademicTopicOptions = nonAcademicTopics?.map((topic) => ({
+	// 	label: topic.name,
+	// 	value: topic.id,
+	// }));
 
-	const topicOptions =
-		selectedType == 'ACADEMIC'
-			? academicTopicOptions
-			: nonAcademicTopicOptions || [];
+	// const topicOptions =
+	// 	selectedType == 'ACADEMIC'
+	// 		? academicTopicOptions
+	// 		: nonAcademicTopicOptions || [];
 
 	const handleSelectTopic = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedTopic(event.target.value);
@@ -131,11 +131,11 @@ const QnaList = () => {
 		setIsClosed(event.target.checked);
 	};
 
-	const handleCheckboxTaken = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
-		setIsTaken(event.target.checked);
-	};
+	// const handleCheckboxTaken = (
+	// 	event: React.ChangeEvent<HTMLInputElement>
+	// ) => {
+	// 	setIsTaken(event.target.checked);
+	// };
 
 	const {
 		data: qnaData,
@@ -147,7 +147,7 @@ const QnaList = () => {
 		type: selectedType,
 		topicId: selectedTopic,
 		isClosed: isClosed || '',
-		isTaken: isTaken || '',
+		// isTaken: isTaken || '',
 		page: page,
 	});
 	const qnaList = qnaData?.content?.data || ([] as Question[]);
@@ -221,7 +221,7 @@ const QnaList = () => {
 			variants={container}
 			initial='hidden'
 			animate='show'
-			className='w-full p-32 space-y-16 container mx-auto'
+			className='container w-full p-32 mx-auto space-y-16'
 		>
 			<div className='flex gap-16'>
 				<SearchField onSearch={handleSearch} className='w-xs' />
@@ -263,11 +263,11 @@ const QnaList = () => {
 						onChangeTab={handleChangeTab}
 					/>
 					<div className='flex gap-16'>
-						<CheckboxField
+						{/* <CheckboxField
 							label='Is Taken'
 							checked={isTaken}
 							onChange={handleCheckboxTaken}
-						/>
+						/> */}
 						<CheckboxField
 							label='Is Close'
 							checked={isClosed}
