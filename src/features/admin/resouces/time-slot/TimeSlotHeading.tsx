@@ -20,8 +20,9 @@ const TimeSlotHeading = () => {
 				description='Manage time slots'
 			/>
 			<Button
-				color='secondary'
-				variant='outlined'
+				color='primary'
+				sx={{ color: 'white' }}
+				variant='contained'
 				onClick={navigateCreateForm}
 				className='flex items-center gap-8 px-16 '
 			>

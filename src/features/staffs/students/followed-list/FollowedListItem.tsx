@@ -8,6 +8,7 @@ import {
 	UserLabel,
 	UserListItem,
 } from '@/shared/components';
+import EditIcon from '@mui/icons-material/Edit';
 import {
 	Chip,
 	ListItem,
@@ -44,12 +45,14 @@ const FollowedListItem = (props: Props) => {
         navigate(`${item.student.id}/create-demand`)
     }
 
-    const handleUnfollow = async () => {
-        const result = await unfollowStudent(item.student.id)
-        console.log('awdas',result)
-        if(isApiError(result)){
-            useAlertDialog({ title: getApiErrorMessage(result.error), confirmButtonTitle: 'Ok', dispatch })
-        }
+    const handleUnfollow = () => {
+        unfollowStudent(item.student.id).unwrap().then((result) => {
+			console.log('awdas',result)
+			if(result){
+				useAlertDialog({ title: result, confirmButtonTitle: 'Ok', dispatch })
+			}
+		}).catch(err => console.log(err))
+        
     }
 
 	const handleUpdateFollowNote = () => {
@@ -92,7 +95,7 @@ const FollowedListItem = (props: Props) => {
 								},
 								{
 									label: 'Update Follow Note',
-									icon: <ReplayCircleFilledIcon fontSize='small' />,
+									icon: <EditIcon fontSize='small' />,
 									onClick: () => {
 										handleUpdateFollowNote()
 									},

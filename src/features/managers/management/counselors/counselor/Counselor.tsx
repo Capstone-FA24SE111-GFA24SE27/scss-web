@@ -181,22 +181,22 @@ function Counseling() {
             />
             <div className='flex gap-16 lg:gap-64'>
               <div className='flex w-[42rem] mt-12'>
-                <div className='w-full h-full relative'>
-                  <img src={counselorData?.profile.profile.avatarLink} className='size-144 border rounded-full' />
-                  <div className='absolute top-112 bg-white rounded-full border left-112'>
+                <div className='relative w-full h-full'>
+                  <img src={counselorData?.profile.profile.avatarLink} className='border rounded-full size-144' />
+                  <div className='absolute bg-white border rounded-full top-112 left-112'>
                     <Gender gender={counselorData?.profile.profile.gender} />
                   </div>
                 </div>
-                <div className='flex flex-col gap-8 w-full'>
+                <div className='flex flex-col w-full gap-8'>
                   <Heading
                     title={counselorData?.profile.profile.fullName}
                     description={counselorData?.profile.specialization?.name || counselorData?.profile.expertise?.name}
                   />
                   <Rating readOnly value={counselorData?.profile.rating} />
-                  <div className='flex justify-between divide-x-1 border-t mt-16'>
+                  <div className='flex justify-between mt-16 border-t divide-x-1'>
                     <Tooltip title={`Call`}>
                       <a
-                        className="flex flex-1 items-center p-8"
+                        className="flex items-center flex-1 p-8"
                         href={`tel${counselorData?.profile.profile.phoneNumber}`}
                         role="button"
                       >
@@ -206,7 +206,7 @@ function Counseling() {
                     </Tooltip>
                     <Tooltip title={`Mail`}>
                       <a
-                        className="flex flex-1 items-center p-8 justify-end"
+                        className="flex items-center justify-end flex-1 p-8"
                         href={`mailto:${counselorData?.profile.email}`}
                         role="button"
                       >
@@ -219,9 +219,9 @@ function Counseling() {
               </div>
 
 
-              <div className='flex-1 flex flex-col gap-16 '>
+              <div className='flex flex-col flex-1 gap-16 '>
                 <div className='flex items-center'>
-                  <Typography className='w-224 font-semibold '>Availability Status </Typography>
+                  <Typography className='font-semibold w-224 '>Availability Status </Typography>
                   <TextField
                     size='small'
                     className='w-full'
@@ -241,9 +241,9 @@ function Counseling() {
 
                 </div>
                 <div className='flex items-start'>
-                  <Typography className='w-224 font-semibold'>Assign Slots</Typography>
-                  <div className='flex flex-col gap-16 w-full'>
-                    <Box className='flex w-full justify-between'>
+                  <Typography className='font-semibold w-224'>Assign Slots</Typography>
+                  <div className='flex flex-col w-full gap-16'>
+                    <Box className='flex justify-between w-full'>
                       <TextField
                         size="small"
                         select
@@ -300,8 +300,8 @@ function Counseling() {
                   </div>
                 </div>
                 <div className='flex items-center'>
-                  <Typography className='w-224 font-semibold '>Available date range</Typography>
-                  <div className='flex w-full gap-32 items-start'>
+                  <Typography className='font-semibold w-224 '>Available date range</Typography>
+                  <div className='flex items-start w-full gap-32'>
                     <DatePicker
                       className='h-12'
                       label="Basic date picker"
@@ -310,7 +310,7 @@ function Counseling() {
                       maxDate={dayjs(counselorData?.availableDateRange.endDate)}
                       disabled={counselorData?.profile.status === 'UNAVAILABLE' || isLoadingUpdateCounselorAvailableDateRange}
                     />
-                    <div className='font-semibold pt-8'>to</div>
+                    <div className='pt-8 font-semibold'>to</div>
                     <DatePicker
                       className='h-12'
                       label="Basic date picker"
@@ -336,31 +336,31 @@ function Counseling() {
             classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
           >
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Overview"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Appointments"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Requests"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Schedule"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Feedbacks"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Q&A"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Profile"
             />
           </Tabs>
@@ -368,8 +368,8 @@ function Counseling() {
         </div>
       }
       content={
-        < div className="w-full p-16 h-full" >
-          <Paper className='p-16 min-h-full shadow'>
+        < div className="w-full h-full p-16" >
+          <Paper className='min-h-full p-16 shadow'>
             <div className="w-full pr-8">
               {tabValue === 0 && <OverviewTab />}
               {tabValue === 1 && <AppointmentsTable />}

@@ -28,7 +28,7 @@ function AppointmentsHeader() {
     //     return null;
     // }
     return (
-        <div className='p-32 flex justify-between'>
+        <div className='flex justify-between p-32'>
             <Heading
                 title='My Appointments'
                 description='Counseling appointments that forwarded to the user'
@@ -41,7 +41,7 @@ function AppointmentsHeader() {
                     color='primary'
                     startIcon={<CalendarMonth />}
                 >
-                    View chedule
+                    View schedule
                 </Button>
                 <Button
                     component={NavLinkAdapter}

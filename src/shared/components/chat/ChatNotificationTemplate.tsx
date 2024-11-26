@@ -45,14 +45,12 @@ const ChatNotificationTemplate = forwardRef(
 
 		const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
 			if (account?.role === roles.STUDENT) {
-				navigate(`services/qna/conversations/${qna.id}`, {
-					replace: true,
-				});
+				navigate(`services/qna/conversations/${qna.id}`);
 			} else if (
 				account?.role === roles.ACADEMIC_COUNSELOR ||
 				account?.role === roles.NON_ACADEMIC_COUNSELOR
 			) {
-				navigate(`/qna/conversations/${qna.id}`, { replace: true });
+				navigate(`/qna/conversations/${qna.id}`);
 			}
 			handleClose(ev);
 		};

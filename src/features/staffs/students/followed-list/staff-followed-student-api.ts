@@ -30,6 +30,7 @@ export const staffFollowedStudentsApi = api
 				query: (arg) => ({
 					url: `/api/support-staff/follow/${arg}`,
 					method: 'POST',
+					responseHandler: (response) => response.text()
 				}),
 				invalidatesTags: ['students'],
 			}),
@@ -49,6 +50,7 @@ export const staffFollowedStudentsApi = api
 				query: (arg) => ({
 					url: `/api/support-staff/unfollow/${arg}`,
 					method: 'DELETE',
+					responseHandler: (response) => response.text()
 				}),
 				invalidatesTags: ['students'],
 			}),
@@ -59,9 +61,10 @@ export const staffFollowedStudentsApi = api
 				}) => ({
 					url: `/api/support-staff/update-follow-note/${id}`,
 					method: 'PUT',
+					responseHandler: (response) => response.text(),
 					body: {
 						followNote
-					}
+					},
 				}),
 				invalidatesTags: ['students']
 			})

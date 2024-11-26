@@ -14,6 +14,7 @@ import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import {
 	addHolidays,
 	addScheduleData,
+	clearScheduleData,
 	openEventDetailDialog,
 	selectHolidays,
 	selectScheduleData,
@@ -114,6 +115,9 @@ const CalendarBody = (props: Props) => {
 				console.log('newdata', newData);
 				dispatch(addScheduleData(newData));
 			}
+		}
+		return () => {
+			dispatch(clearScheduleData())
 		}
 	}, [data]);
 

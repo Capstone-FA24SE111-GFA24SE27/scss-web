@@ -11,7 +11,13 @@ import { useAppDispatch } from '@shared/store';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) => {
+
+type Props = {
+  appointment: Appointment,
+  handleCloseDialog: ()=>void
+}
+const StudentAppointmentItem = (props: Props) => {
+  const {appointment, handleCloseDialog} = props
 
   const dispatch = useAppDispatch()
 
@@ -25,25 +31,39 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
   return (
     <Paper
       key={appointment.id}
-      className="p-16 flex gap-16 shadow"
+      className="flex gap-16 p-16 shadow"
       sx={{ bgcolor: 'background.paper' }}
     >
-      <div className='flex flex-col gap-16 w-full'>
+      <div className='flex flex-col w-full gap-16'>
         <ListItem className='flex gap-24 p-0'
-          secondaryAction={
-            <ItemMenu
+          // secondaryAction={
+            
+          // }
+        >
+          <div className='flex items-center gap-8'>
+            <CalendarMonth />
+            <Typography className='' >{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
+          </div>
+          <div className='flex items-center gap-8'>
+            <AccessTime />
+            <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+          </div>
+          <Chip
+            label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+            icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+            className='items-center font-semibold'
+            size='small'
+          />
+          <Chip
+            label={appointment.status}
+            variant='filled'
+            color={statusColor[appointment.status]}
+            size='small'
+          />
+
+<ItemMenu
               menuItems={[
-                ...(['WAITING'].includes(appointment?.status) ? [{
-                  label: 'Cancel',
-                  onClick: () => {
-                    dispatch(
-                      openDialog({
-                        children: <CancelAppointmentDialog appointment={appointment} />
-                      })
-                    )
-                  },
-                  icon: <Clear fontSize='small' />
-                }] : []),
+                
                 // {
                 //   label: 'View details',
                 //   onClick: () => {
@@ -60,34 +80,23 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
                   },
                   icon: <Visibility fontSize='small' />
                 },
+                ...(['WAITING'].includes(appointment?.status) ? [{
+                  label: 'Cancel',
+                  onClick: () => {
+                    dispatch(
+                      openDialog({
+                        children: <CancelAppointmentDialog appointment={appointment} />
+                      })
+                    )
+                  },
+                  icon: <Clear fontSize='small' />
+                }] : []),
               ]}
             />
-          }
-        >
-          <div className='flex gap-8 items-center'>
-            <CalendarMonth />
-            <Typography className='' >{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
-          </div>
-          <div className='flex gap-8 items-center'>
-            <AccessTime />
-            <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-          </div>
-          <Chip
-            label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
-            icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
-            className='font-semibold items-center'
-            size='small'
-          />
-          <Chip
-            label={appointment.status}
-            variant='filled'
-            color={statusColor[appointment.status]}
-            size='small'
-          />
         </ListItem>
 
         {/* {
-                    appointment.meetingType === 'OFFLINE' && appointment.address && (<div className='flex gap-16 items-center'>
+                    appointment.meetingType === 'OFFLINE' && appointment.address && (<div className='flex items-center gap-16'>
                       <Typography className='w-68' color='textSecondary'>Address:</Typography>
                       <Typography className='font-semibold'>{appointment.address || ''}</Typography>
                     </div>)
@@ -95,8 +104,8 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
 
         {appointment.cancelReason && (
           <div className='flex items-center gap-8'>
-            <Typography className='font-semibold italic' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
-            <Typography className='font-semibold italic' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
+            <Typography className='italic font-semibold' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
+            <Typography className='italic font-semibold' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
           </div>
         )}
         <div className='flex gap-4'>
@@ -123,9 +132,10 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
             // component={NavLinkAdapter}
             // to={`counselor/${appointment.counselorInfo.profile.id}`}
             onClick={() => {
+              handleCloseDialog()
               dispatch(openCounselorView(appointment.counselorInfo.profile.id.toString()))
             }}
-            className='bg-primary-light/5 flex-1 rounded shadow'
+            className='flex-1 rounded shadow bg-primary-light/5'
           >
             <UserListItem
               fullName={appointment.counselorInfo.profile.fullName}
@@ -140,7 +150,7 @@ const StudentAppointmentItem = ({ appointment }: { appointment: Appointment }) =
           <div className='w-full'>
             <Divider className='border' />
             <div className='flex items-start gap-16 mt-8'>
-              <Typography color='textSecondary' className='w-96 pt-2'>Your feedback:</Typography>
+              <Typography color='textSecondary' className='pt-2 w-96'>Your feedback:</Typography>
               <div className='flex-1'>
                 <div>
                   <div className='flex items-center gap-8'>

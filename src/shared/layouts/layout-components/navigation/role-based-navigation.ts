@@ -331,25 +331,25 @@ const adminNavigation: NavigationOptions = {
             ]
         },
         {
-            name: "Profiles",
-            description: "Manage users' profiles",
+            name: "Management",
+            description: "Manage profiles",
             route: 'profiles',
             items: [
-                {
-                    icon: SupervisedUserCircle,
-                    name: 'Manager',
-                    route: 'managers'
-                },
+                // {
+                //     icon: SupervisedUserCircle,
+                //     name: 'Manager',
+                //     route: 'managers'
+                // },
                 {
                     icon: AccountBox,
                     name: 'Counselor',
                     route: 'counselors'
                 },
-                {
-                    icon: EmojiPeople,
-                    name: 'Support Staff',
-                    route: 'staffs'
-                },
+                // {
+                //     icon: EmojiPeople,
+                //     name: 'Support Staff',
+                //     route: 'staffs'
+                // },
                 {
                     icon: BadgeIcon,
                     name: 'Student',
@@ -417,6 +417,11 @@ const supportStaffNavigation: NavigationOptions = {
             route: '',
             items: [
                 {
+                    icon: BookmarkIcon,
+                    name: 'Followed Students',
+                    route: 'students/followed',
+                },
+                {
                     icon: FmdBadIcon,
                     name: 'Demand',
                     route: 'demand',
@@ -438,12 +443,8 @@ const supportStaffNavigation: NavigationOptions = {
                     name: 'Recommended Students',
                     route: 'recommended',
                 },
-                {
-                    icon: BookmarkIcon,
-                    name: 'Followed Students',
-                    route: 'followed',
-                },
-
+                
+                
             ]
         },
     ],

@@ -32,7 +32,7 @@ function ProblemTagTable() {
     {
       id: 'avatarLink',
       header: 'ID',
-      size: 64,
+      size: 32,
       Cell: ({ row }) => (
           <Typography >{row.original.id}</Typography>
       )
@@ -102,6 +102,7 @@ function ProblemTagTable() {
             Delete
           </MenuItem>
         ]}
+        enableRowSelection={false}
         renderTopToolbarCustomActions={({ table }) => {
           const { rowSelection } = table.getState();
 

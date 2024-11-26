@@ -93,7 +93,7 @@ const ChatBox = (props: Props) => {
 		// console.log('chat box', qna, socket, chatListeners, passiveCallback);
 		if (!qna.closed && socket && chatListeners && passiveCallback) {
 			// console.log('asdawd2');
-			if (chatListeners.has(qna.chatSession.id)) {
+			if (chatListeners.findIndex(item => item.chatSession.id === qna.chatSession.id) > -1) {
 				// console.log('asdawd3	');
 				socket.off(`/user/${qna.chatSession.id}/chat`);
 				const cb = (data: Message) => {
@@ -116,7 +116,7 @@ const ChatBox = (props: Props) => {
 				socket.off(`/user/${qna.chatSession?.id}/chat`);
 				if (
 					!qna.closed &&
-					chatListeners.has(qna.chatSession?.id) &&
+					chatListeners.findIndex(item => item.chatSession.id === qna.chatSession.id) > -1 &&
 					passiveCallback
 				) {
 					socket.on(

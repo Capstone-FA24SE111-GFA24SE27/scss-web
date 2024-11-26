@@ -82,19 +82,16 @@ function NotificationCard(props: NotificationCardProps) {
 			// role={item.link && 'button'}
 		>
 
-			<div className='flex flex-col flex-auto pr-24'>
+			<div className='flex flex-col flex-auto w-full gap-2 pr-24'>
 				{item.title && (
-					<Typography className='font-semibold line-clamp-1'>
+					<Typography className='font-semibold break-words line-clamp-1 text-wrap'>
 						{item.title}
 					</Typography>
 				)}
 
 				{item.message && (
-					<div
-						className='line-clamp-2'
-						// eslint-disable-next-line react/no-danger
-						dangerouslySetInnerHTML={{ __html: item.message }}
-					/>
+					
+						<Typography className='w-full break-words line-clamp-1 text-wrap'>{item.message}</Typography>
 				)}
 
 				{item.createdDate && (
