@@ -1,4 +1,4 @@
-import { ExpandableText, NavLinkAdapter, UserLabel } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, renderHTML } from '@/shared/components';
 import React, { SyntheticEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -197,7 +197,8 @@ const QnaItem = (props: Props) => {
 								)}
 
 								<Typography className='w-full pr-8 font-semibold'>
-									{qna.content}
+									{/* {qna.content} */}
+									{renderHTML(qna.content)}
 								</Typography>
 							</div>
 						</div>

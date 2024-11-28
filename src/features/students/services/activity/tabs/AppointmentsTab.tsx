@@ -90,6 +90,7 @@ const AppointmentsTab = () => {
           !appointments?.length
             ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
             : appointments.map(appointment =>
+              // @ts-ignored
               <StudentAppointmentItem appointment={appointment} key={appointment.id} />
             )}
       </List >
