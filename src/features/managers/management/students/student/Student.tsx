@@ -8,6 +8,8 @@ import AppointmentsTable from './AppointmentsTab';
 import RequestsTable from './RequestsTab';
 import { useGetStudentDetailQuery } from '@/shared/pages';
 import ScheduleTab from './ScheduleTab';
+import GeneralInformation from './GeneralTab';
+import LearningProcess from './LearningProcessTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -144,42 +146,21 @@ function Student() {
           >
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Overview"
+              label="Counseling Profile"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Appointments"
-            />
-            <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Requests"
-            />
-            <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Schedule"
-            />
-            <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Q&A"
-            />
-            <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Behavior Tags"
-            />
-            <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Profile"
+              label="Learning Process"
             />
           </Tabs>
         </div>
       }
       content={
-        <div className="w-full p-16 h-full" >
-          <Paper className='p-16 h-full shadow'>
+        <div className="w-full p-16 h-fit" >
+          <Paper className='p-16 h-fit shadow'>
             <div className="w-full pr-8">
-              {tabValue === 0 && <AppointmentsTable />}
-              {tabValue === 1 && <RequestsTable />}
-              {tabValue === 3 && <ScheduleTab />}
+              {tabValue === 0 && <GeneralInformation />}
+              {tabValue === 1 && <LearningProcess />}
             </div>
           </Paper>
         </div >

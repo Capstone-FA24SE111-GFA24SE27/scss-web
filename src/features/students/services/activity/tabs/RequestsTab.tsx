@@ -113,7 +113,9 @@ const RequestsTab = () => {
                 className="flex gap-16 shadow w-full"
                 sx={{ bgcolor: 'background.paper' }}
               >
-                <RequestItem appointment={appointment} />
+                <RequestItem appointment={appointment} onUserClick={() => {
+                  dispatch(openCounselorView(appointment?.counselor?.profile.id.toString()))
+                }}/>
               </Paper>
             )}
       </List >

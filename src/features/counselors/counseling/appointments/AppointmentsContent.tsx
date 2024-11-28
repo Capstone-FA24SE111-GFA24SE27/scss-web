@@ -123,6 +123,7 @@ const AppointmentsContent = () => {
             ? <ContentLoading />
             : !appointments?.length
               ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointments</Typography>
+              // @ts-ignored
               : appointments.map(appointment => <CounselorAppointmentItem appointment={appointment} />
               )}
       </List>

@@ -2,6 +2,7 @@ import {
 	ExpandableText,
 	NavLinkAdapter,
 	openDialog,
+	renderHTML,
 	UserLabel,
 } from '@/shared/components';
 import {
@@ -236,7 +237,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								)}
 
 								<Typography className='w-full pr-8 font-semibold'>
-									{qna.content}
+									{renderHTML(qna.content)}
 								</Typography>
 							</div>
 						</div>

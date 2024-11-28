@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
 	Button,
 	Paper,
@@ -9,12 +9,15 @@ import {
 	FormControlLabel,
 	Radio,
 	CircularProgress,
+	LinearProgress,
+	Box,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
+	uploadFile,
 	useGetDepartmentsQuery,
 	useGetMajorsByDepartmentQuery,
 	useGetSpecializationsByMajorQuery,
@@ -28,6 +31,10 @@ import { ArrowBack } from '@mui/icons-material';
 import { useAppDispatch } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { quillModules } from '@/shared/configs';
+import { ref } from 'firebase/storage';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -63,12 +70,13 @@ function QnaForm() {
 
 	const { data: banInfoData } = useGetBanInfoQuery()
 	const banInfo = banInfoData
+	const quillRef = useRef(null);
 
 
 	const question = questionData?.content
 	const defaultValues: FormValues = { questionType: 'ACADEMIC', content: '' };
 
-	const { control, handleSubmit, watch, formState, reset } = useForm<FormValues>({
+	const { control, handleSubmit, watch, formState, reset, register, setValue } = useForm<FormValues>({
 		mode: 'onChange',
 		defaultValues,
 		resolver: zodResolver(formSchema),
@@ -92,6 +100,77 @@ function QnaForm() {
 	);
 	const { data: counselorExpertisesData, isLoading: loadingExpertises } = useGetCounselorExpertisesQuery();
 	const counselorExpertises = counselorExpertisesData?.content;
+
+	console.log(watch())
+
+
+	const [uploadProgress, setUploadProgress] = useState(0);
+
+	const handleQuillChange = (value: string) => {
+		setValue('content', value);
+	};
+	const handleQuillBlur = () => {
+
+	};
+
+	// Image upload handler
+	const handleImageUpload = useCallback(() => {
+		const input = document.createElement("input");
+		input.setAttribute("type", "file");
+		input.setAttribute("accept", "image/*");
+		input.click();
+
+		input.onchange = async () => {
+			if (input && input.files && input.files[0]) {
+				const file = input.files[0];
+				const path = `images/${Date.now()}_${file.name}`;
+				console.log(`Image`, path)
+
+				try {
+					const downloadURL = await uploadFile(file, path, (progress) => {
+						setUploadProgress(progress);
+					});
+
+
+					// Now insert the image into the Quill editor
+					const quill = quillRef.current?.getEditor(); // Get the Quill editor instance
+
+					console.log(`Quill: `, quill)
+
+					if (quill) {
+						const range = quill.getSelection(); // Get the current selection (position) in the editor
+						console.log(`Range: `, range)
+
+						if (range) {
+							quill.insertEmbed(range.index, 'image', downloadURL); // Insert the image URL at the cursor position
+							const image = quill.root.querySelector('img[src="' + downloadURL + '"]');
+							if (image) {
+								image.style.maxWidth = '48rem';
+								image.style.height = 'auto';
+							}
+						}
+					}
+				} catch (error) {
+					console.error("Image upload failed:", error);
+				}
+			}
+		};
+	}, []);
+
+	const modules = {
+		toolbar: {
+			container: [
+				[{ header: '1' }, { header: '2' }],
+				['bold', 'italic', 'underline'],
+				[{ list: 'ordered' }, { list: 'bullet' }],
+				['link'],
+				['image'], // Image button in the toolbar
+			],
+			handlers: {
+				image: handleImageUpload, // Custom handler for image upload
+			},
+		},
+	};
 
 	// Mutations for posting and editing questions
 	const [postQuestion, { isLoading: isPosting }] = usePostQuestionMutation();
@@ -186,9 +265,10 @@ function QnaForm() {
 	if (banInfo?.ban) {
 		return <BanInfo banInfo={banInfo} />
 	}
+
 	return (
 		<div className="container flex flex-col items-center p-32">
-			<div className="flex flex-col w-full max-w-4xl">
+			<div className="flex flex-col w-full max-w-6xl">
 				<Typography variant="h4"></Typography>
 				<div className="">
 					<Button
@@ -349,7 +429,7 @@ function QnaForm() {
 							}
 
 							{/* Content Field */}
-							<Controller
+							{/* <Controller
 								name="content"
 								control={control}
 								render={({ field }) => (
@@ -364,10 +444,56 @@ function QnaForm() {
 										helperText={errors.content?.message}
 									/>
 								)}
+							/> */}
+
+							{/* <Controller
+								name="content"
+								control={control}
+								render={({ field }) => (
+									<ReactQuill
+										ref={quillRef}
+										{...field}
+										value={field.value || ''}
+										onChange={field.onChange}
+										className='h-sm'
+										theme="snow"
+										placeholder="Write your question content here..."
+										modules={modules}
+									/>
+								)}
+							/> */}
+
+							<ReactQuill
+								ref={quillRef}
+								className='h-sm'
+								theme="snow"
+								placeholder="Write your question content here..."
+								modules={modules}
+								// {...register('content')}
+								// {...register('content', { required: 'Content is required' })}  // Register using `register`
+								onChange={handleQuillChange}
+								value={watch(`content`)}
 							/>
+
+							{
+								(uploadProgress !== 0 && uploadProgress !== 100) && (
+									<Box className={`w-full pt-36`}>
+										<Typography >Uploading image...</Typography>
+										<LinearProgress variant="determinate" value={uploadProgress} />
+									</Box>
+								)
+							}
+							{/* <div>
+								<progress value={uploadProgress} max={100} />
+								<span>{Math.round(uploadProgress)}%</span>
+							</div> */}
+							{errors.content && (
+								<Typography color="error" className='pt-16'>{errors.content.message}</Typography>
+							)}
+
 						</div>
 
-						<div className="flex items-center justify-end mt-32">
+						<div className="flex items-center justify-end mt-32 pt-24">
 							<Button onClick={() => navigate('.')} color="primary">
 								Cancel
 							</Button>
@@ -375,7 +501,10 @@ function QnaForm() {
 								type="submit"
 								variant="contained"
 								color="secondary"
-								disabled={!isValid || isPosting || isEditing || _.isEmpty(dirtyFields)}
+								disabled={
+									!isValid || isPosting || isEditing
+									//_.isEmpty(dirtyFields)
+								}
 							>
 								{editMode ? 'Save' : 'Submit'}
 							</Button>
@@ -383,7 +512,7 @@ function QnaForm() {
 					</form>
 				</Paper>
 			</div>
-		</div>
+		</div >
 	);
 }
 

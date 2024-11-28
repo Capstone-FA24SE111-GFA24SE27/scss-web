@@ -29,6 +29,7 @@ export const counselingApi = api
           departmentId = '',
           majorId = '',
           specializationId = '',
+          size = 10,
         }) => ({
           url: `/api/counselors/academic`,
           params: {
@@ -41,6 +42,7 @@ export const counselingApi = api
             specializationId,
             ratingFrom,
             ratingTo,
+            size,
           }
         }),
         providesTags: ['counselors']
@@ -56,6 +58,7 @@ export const counselingApi = api
           availableFrom = '',
           availableTo = '',
           expertiseId,
+          size = 10,
         }) => ({
           url: `/api/counselors/non-academic`,
           params: {
@@ -66,6 +69,7 @@ export const counselingApi = api
             expertiseId,
             ratingFrom,
             ratingTo,
+            size
           }
         }),
         providesTags: ['counselors']
@@ -164,6 +168,7 @@ export type GetCounselorsApiArg = {
   departmentId?: number | '';
   majorId?: number | '';
   expertiseId?: number | '';
+  size?: number;
 }
 
 export type GetCounselorApiResponse = ApiResponse<Counselor>

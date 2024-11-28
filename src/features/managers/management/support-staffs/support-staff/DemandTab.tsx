@@ -4,9 +4,9 @@ import { Chip, MenuItem, ListItemIcon, Tooltip, Typography } from '@mui/material
 import { NavLinkAdapter, DataTable } from '@shared/components';
 import { useAppDispatch } from '@shared/store';
 import { openDialog } from '@shared/components';
-import { AppointmentDetail, StudentView } from '@/shared/pages';
+import { AppointmentDetail } from '@/shared/pages';
 import dayjs from 'dayjs';
-import { FollowingStudent, useGeSupportStafftCounselingDemandFilterQuery, useGetSupportStaffFollowingQuery } from '../support-staffs-api';
+import { useGeSupportStafftCounselingDemandFilterQuery } from '../support-staffs-api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CounselingDemand } from '@/shared/types';
 import { statusColor } from '@/shared/constants';
@@ -25,13 +25,28 @@ function DemandTab() {
   const dispatch = useAppDispatch();
 
   // Fetch data
-  const { data, isLoading } = useGetSupportStaffFollowingQuery({
-    staffId: id,
+  const { data, isLoading } = useGeSupportStafftCounselingDemandFilterQuery({
+    staffId: Number(id),
+    page: pagination.pageIndex + 1,
   });
 
   console.log(data)
 
-  const columns = useMemo<MRT_ColumnDef<FollowingStudent>[]>(() => [
+  const columns = useMemo<MRT_ColumnDef<CounselingDemand>[]>(() => [
+    {
+      accessorFn: (row) => row.counselor?.profile?.fullName || 'N/A', // Counselor Full Name
+      header: 'Counselor',
+      Cell: ({ row }) => (
+        <Typography
+          component={NavLinkAdapter}
+          to={`/management/counselor/${row.original.counselor.profile.id}`}
+          className="!underline !text-secondary-main"
+          color="secondary"
+        >
+          {row.original.counselor.profile.fullName}
+        </Typography>
+      )
+    },
     {
       accessorFn: (row) => row.student?.profile?.fullName || 'N/A', // Student Full Name
       header: 'Student',
@@ -47,12 +62,36 @@ function DemandTab() {
       )
     },
     {
-      accessorFn: (row) => dayjs(row.followDate).format('YYYY-MM-DD HH:mm'), // Start DateTime
-      header: 'Follow Date',
+      accessorKey: 'priorityLevel', // Priority Level
+      header: 'Priority',
+      Cell: ({ row }) => (
+        <Chip
+          label={row.original.priorityLevel}
+          variant='filled'
+          color={row.original.priorityLevel === 'HIGH' ? 'error' : 'info'}
+          size='small'
+        />
+      ),
     },
     {
-      accessorFn: (row) => row.followNote,
-      header: 'Follow note',
+      accessorKey: 'status', // Status
+      header: 'Status',
+      Cell: ({ row }) => (
+        <Chip
+          label={row.original.status}
+          variant='filled'
+          color={statusColor[row.original.status]} // Adjust color mapping as needed
+          size='small'
+        />
+      ),
+    },
+    {
+      accessorFn: (row) => dayjs(row.startDateTime).format('YYYY-MM-DD HH:mm'), // Start DateTime
+      header: 'Start Date/Time',
+    },
+    {
+      accessorFn: (row) => row.endDateTime ? dayjs(row.endDateTime).format('YYYY-MM-DD HH:mm') : 'N/A', // End DateTime
+      header: 'End Date/Time',
     },
   ], []);
 
@@ -73,7 +112,7 @@ function DemandTab() {
           key={0}
           onClick={() => {
             dispatch(openDialog({
-              children: <StudentView id={row.original.student.profile.id.toString()} actionButton={null} />
+              children: <DemandDetail id={row.original.id.toString()} />
             }));
             closeMenu();
             table.resetRowSelection();

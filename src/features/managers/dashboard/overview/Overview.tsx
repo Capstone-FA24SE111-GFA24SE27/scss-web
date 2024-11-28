@@ -6,15 +6,56 @@ import RequestChart from './RequestChart';
 import QnaChart from './QnaChart';
 import { Typography } from '@mui/material';
 import { getCurrentMonthYear } from '@/shared/utils';
+import { useGetAllAppointmentRequestsQuery, useGetAllAppointmentsQuery, useGetAllCounselingDemandsQuery, useGetAllQuestionCardsQuery } from './overview-api';
+import { firstDayOfMonth, lastDayOfMonth } from '@/shared/constants';
+import DemandChart from './DemadChart';
+import { useGetStudentsFilterQuery } from '@/shared/pages';
+import { useGetCounselorsAcademicQuery, useGetCounselorsNonAcademicQuery } from '@/features/students/services/counseling/counseling-api';
+import { useGetSupportStaffManagementQuery, useGetSupportStaffsManagementQuery } from '../../management/support-staffs/support-staffs-api';
+import AppointmentOverview from './AppointmentOverview';
 
 const Overview = () => {
+  const { data: appointmentRequestsOverview, isLoading: isLoadingAppoitnmentRequestsOverview } = useGetAllAppointmentRequestsQuery({
+    from: firstDayOfMonth,
+    to: lastDayOfMonth
+  })
+
+  const { data: appointmentsOverview, isLoading: isLoadingAppoitnmentsOverview } = useGetAllAppointmentsQuery({
+    from: firstDayOfMonth,
+    to: lastDayOfMonth
+  })
+
+  const { data: questionCardsOverview, isLoading: isLoadingQuestionCardsOverview } = useGetAllQuestionCardsQuery({
+    from: firstDayOfMonth,
+    to: lastDayOfMonth
+  })
+
+  const { data: counselingDemandsOverview, isLoading: isLoadingCounselingDemandsOverview } = useGetAllCounselingDemandsQuery({
+    from: firstDayOfMonth,
+    to: lastDayOfMonth
+  })
+
+  const { data: students } = useGetStudentsFilterQuery({
+    size: 9999
+  })
+
+  const { data: academicCounselors } = useGetCounselorsAcademicQuery({
+  })
+
+  const { data: nonAcademicCounselors } = useGetCounselorsNonAcademicQuery({
+  })
+
+  const { data: supportStaffs } = useGetSupportStaffsManagementQuery({
+    size: 9999,
+  })
+
   return (
     <div className='p-32'>
       <Typography className='text-xl font-bold text-text-disabled'>Users Overview</Typography>
       <div className='grid grid-cols-4 gap-16 mt-8'>
         <StatsCard
           title={'Students'}
-          total={20}
+          total={students?.data.length}
           // statChange={{
           //   prefixText: 'Last month',
           //   current: 1234,
@@ -24,7 +65,7 @@ const Overview = () => {
         />
         <StatsCard
           title={'Academic Counselors'}
-          total={20}
+          total={academicCounselors?.content.totalElements}
           // statChange={{
           //   prefixText: 'Last month',
           //   current: 1234,
@@ -34,7 +75,7 @@ const Overview = () => {
         />
         <StatsCard
           title={'Non-academic Counselors'}
-          total={20}
+          total={nonAcademicCounselors?.content.totalElements}
           // statChange={{
           //   prefixText: 'Last month',
           //   current: 1234,
@@ -44,68 +85,68 @@ const Overview = () => {
         />
         <StatsCard
           title={'Support Staffs'}
-          total={20}
+          total={supportStaffs?.content.totalElements}
           // statChange={{
           //   prefixText: 'Last month',
           //   current: 123234,
           //   previous: 1553
           // }}
           icon={<EmojiPeople />}
-        />  
+        />
       </div>
       <Typography className='text-xl font-bold text-text-disabled mt-24'>Activities Overview - {getCurrentMonthYear()}</Typography>
 
       <div className='grid grid-cols-4 gap-16 mt-8'>
-
-
         <StatsCard
           title={'Requests'}
-          total={21}
+          total={appointmentRequestsOverview?.content?.length}
           statChange={{
             prefixText: 'Last month',
-            current: 1234,
-            previous: 13
+            current: appointmentRequestsOverview?.content?.length,
+            previous: 0
           }}
           icon={<Archive />}
         />
 
         <StatsCard
           title={'Appointments'}
-          total={20}
+          total={appointmentsOverview?.content?.length}
           statChange={{
             prefixText: 'Last month',
-            current: 1234,
-            previous: 12553
+            current: appointmentsOverview?.content?.length,
+            previous: 0
           }}
           icon={<Description />}
         />
 
         <StatsCard
           title={'Q&As'}
-          total={20}
+          total={questionCardsOverview?.content?.length}
           statChange={{
             prefixText: 'Last month',
-            current: 1234,
-            previous: 12553
+            current: questionCardsOverview?.content?.length,
+            previous: 0
           }}
           icon={<Class />}
         />
 
         <StatsCard
           title={'Demands'}
-          total={20}
+          total={counselingDemandsOverview?.content?.length}
           statChange={{
             prefixText: 'Last month',
-            current: 1234,
-            previous: 12553
+            current: counselingDemandsOverview?.content?.length,
+            previous: 0
           }}
           icon={<AssignmentLate />}
         />
       </div>
       <div className='mt-16 flex flex-col gap-16'>
-        <AppointmentChart />
+        <AppointmentOverview />
+        {/* <AppointmentChart /> */}
         <RequestChart />
         <QnaChart />
+        <DemandChart />
       </div>
     </div>
   )

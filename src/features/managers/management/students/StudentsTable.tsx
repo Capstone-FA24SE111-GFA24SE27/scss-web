@@ -10,6 +10,8 @@ import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { CounselingType, Student } from '@/shared/types';
 import { useGetStudentsFilterQuery } from '@/shared/pages';
+import { useAppSelector } from '@shared/store';
+import { selectFilter } from '@/shared/pages/student-list/student-list-slice';
 function StudentsTable() {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -17,13 +19,60 @@ function StudentsTable() {
   });
 
 
-  const { data, isLoading } = useGetStudentsFilterQuery({
-    page: pagination.pageIndex + 1
-  })
+  // const { data, isLoading } = useGetStudentsFilterQuery({
+  //   page: pagination.pageIndex + 1
+  // })
 
-  const removeProducts = (ids: string[]) => {
+  const filter = useAppSelector(selectFilter);
 
-  };
+  const {
+    searchTerm,
+    isUsingPrompt,
+    promptForBehavior,
+    semesterIdForBehavior,
+    departmentId,
+    majorId,
+    specializationId,
+    minGPA,
+    maxGPA,
+    semesterIdForGPA,
+    tab,
+    behaviorList,
+    typeOfAttendanceFilter,
+    semesterIdForAttendance,
+    fromForAttendanceCount,
+    toForAttendanceCount,
+    fromForAttendancePercentage,
+    toForAttendancePercentage,
+    minSubjectForAttendance
+  } = filter;
+
+  const { data: data, isLoading: isLoadingStudents } = useGetStudentsFilterQuery({
+    keyword: searchTerm,
+    isUsingPrompt,
+    promptForBehavior,
+    semesterIdForBehavior,
+    departmentId,
+    majorId,
+    specializationId,
+    minGPA,
+    maxGPA,
+    semesterIdForGPA,
+    page: pagination.pageIndex + 1,
+    tab,
+    behaviorList,
+    typeOfAttendanceFilter,
+    semesterIdForAttendance,
+    fromForAttendanceCount,
+    toForAttendanceCount,
+    fromForAttendancePercentage,
+    toForAttendancePercentage,
+    minSubjectForAttendance
+  });
+
+  const students = data?.data;
+
+
 
   const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
     {
@@ -78,7 +127,7 @@ function StudentsTable() {
         </Typography>
       )
     },
-    
+
     // {
     //   accessorKey: 'specialization',
     //   header: 'Specialization',

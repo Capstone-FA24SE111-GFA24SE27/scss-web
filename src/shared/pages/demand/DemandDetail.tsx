@@ -137,6 +137,18 @@ const DemandDetail = ({ id }: { id?: string }) => {
       <div className="flex flex-col gap-16">
         <div>
           <Typography className="font-semibold text-text-secondary">
+            Summarize Note
+          </Typography>
+          <Typography>{demand.summarizeNote || 'N/A'}</Typography>
+        </div>
+        <div>
+          <Typography className="font-semibold text-text-secondary">
+            Contact Note
+          </Typography>
+          <Typography>{demand.contactNote || 'N/A'}</Typography>
+        </div>
+        <div>
+          <Typography className="font-semibold text-text-secondary">
             Additional Information
           </Typography>
           <Typography>{demand.additionalInformation || 'N/A'}</Typography>
