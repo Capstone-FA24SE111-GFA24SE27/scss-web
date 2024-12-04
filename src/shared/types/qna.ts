@@ -9,6 +9,7 @@ export type QuestionPayload = {
   departmentId?: string,
   majorId?: string,
   expertiseId?: string,
+  title: string,
 }
 export type SendMessageApiArg = {
   content: string,

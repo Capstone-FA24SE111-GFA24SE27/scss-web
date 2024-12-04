@@ -19,30 +19,29 @@ const CounselorListSidebarContent = () => {
   const expertiseOptions = expertises?.map((expertise) => ({ value: expertise.id, label: expertise.name }))
 
   const handleStartDateChange = (date: string) => {
-
-    dispatch(setAvailableFrom(date))
+    dispatch(setAvailableFrom(date || undefined))
   };
   const handleEndDateChange = (date: string) => {
-    dispatch(setAvailableTo(date))
+    dispatch(setAvailableTo(date || undefined))
   };
 
   const handleDepartmentChange = (departmentId: string) => {
-    dispatch(setDepartmentId(Number(departmentId) || ''))
+    dispatch(setDepartmentId(Number(departmentId) || undefined))
     if (!departmentId) {
-      dispatch(setMajorId(''))
-      dispatch(setSpecializationId(''))
+      dispatch(setMajorId(undefined))
+      dispatch(setSpecializationId(undefined))
     }
   };
 
   const handleMajorChange = (majorId: string) => {
-    dispatch(setMajorId(Number(majorId) || ''))
+    dispatch(setMajorId(Number(majorId) || undefined))
     if (!majorId) {
-      dispatch(setSpecializationId(''))
+      dispatch(setSpecializationId(undefined))
     }
   };
 
   const handleSpecializationChange = (specializationId: string) => {
-    dispatch(setSpecializationId(Number(specializationId) || ''))
+    dispatch(setSpecializationId(Number(specializationId) || undefined))
   };
 
   const handleExpertiseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,9 +54,9 @@ const CounselorListSidebarContent = () => {
     }
   };
 
-  const handleRatingFromChange = (value: number | null) => {
-    dispatch(setRatingFrom(value || ''));
-    dispatch(setRatingTo(5));
+  const handleRatingFromChange = (valueFrom: number | null) => {
+    dispatch(setRatingFrom(valueFrom || undefined));
+    dispatch(setRatingTo(valueFrom ? 5 : undefined));
   };
 
 
@@ -97,7 +96,7 @@ const CounselorListSidebarContent = () => {
               className='mt-8 w-full'
               label="Expertise"
               options={expertiseOptions}
-              value={filter.expertiseId.toString()}
+              value={filter.expertiseId?.toString()}
               onChange={handleExpertiseChange}
               showClearOptions
             />

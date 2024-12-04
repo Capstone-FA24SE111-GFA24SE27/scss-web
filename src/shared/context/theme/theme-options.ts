@@ -211,8 +211,8 @@ export const defaultThemeOptions = {
 		},
 		MuiRadio: {
 			defaultProps: {
-				color: 'primary'
-				// color: 'secondary'
+				// color: 'primary'
+				color: 'secondary'
 			}
 		},
 		MuiSwitch: {

@@ -35,10 +35,17 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { quillModules } from '@/shared/configs';
 import { ref } from 'firebase/storage';
+import { QuillEditor } from '@/shared/components';
+import { validateHTML } from '@/shared/utils';
 
 // Define schema with validation
 const formSchema = z.object({
-	content: z.string().min(1, 'You must enter content'),
+	title: z.string().min(1, 'You must enter title'),
+	content: z.string().min(1, 'You must enter content')
+		.refine(
+			validateHTML,
+			{ message: 'Content must not be empty', }
+		),
 	questionType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
 		errorMap: () => ({ message: 'Please select a question type' }),
 	}),
@@ -48,14 +55,7 @@ const formSchema = z.object({
 	expertiseId: z.string().optional(),
 });
 
-type FormValues = {
-	questionType: 'ACADEMIC' | 'NON_ACADEMIC';
-	content: string;
-	departmentId?: string;
-	majorId?: string;
-	specializationId?: string;
-	expertiseId?: string;
-};
+type FormValues = z.infer<typeof formSchema>;
 
 function QnaForm() {
 	const { questionId } = useParams();
@@ -98,19 +98,13 @@ function QnaForm() {
 			skip: !watch('majorId'),
 		}
 	);
-	const { data: counselorExpertisesData, isLoading: loadingExpertises } = useGetCounselorExpertisesQuery();
-	const counselorExpertises = counselorExpertisesData?.content;
-
-	console.log(watch())
-
 
 	const [uploadProgress, setUploadProgress] = useState(0);
 
 	const handleQuillChange = (value: string) => {
-		setValue('content', value);
-	};
-	const handleQuillBlur = () => {
-
+		setValue('content', value, {
+			shouldValidate: true
+		});
 	};
 
 	// Image upload handler
@@ -134,8 +128,6 @@ function QnaForm() {
 
 					// Now insert the image into the Quill editor
 					const quill = quillRef.current?.getEditor(); // Get the Quill editor instance
-
-					console.log(`Quill: `, quill)
 
 					if (quill) {
 						const range = quill.getSelection(); // Get the current selection (position) in the editor
@@ -161,7 +153,7 @@ function QnaForm() {
 		toolbar: {
 			container: [
 				[{ header: '1' }, { header: '2' }],
-				['bold', 'italic', 'underline'],
+				// ['bold', 'italic', 'underline'],
 				[{ list: 'ordered' }, { list: 'bullet' }],
 				['link'],
 				['image'], // Image button in the toolbar
@@ -187,6 +179,7 @@ function QnaForm() {
 						editQuestion({
 							questionCardId: Number(questionId),
 							question: {
+								title: data.title,
 								content: data.content,
 								questionType: data.questionType,
 								departmentId: data.departmentId,
@@ -201,7 +194,7 @@ function QnaForm() {
 									color: 'success',
 									title: 'Question was edit successfully!',
 								})
-								navigate('.');
+								navigate(`../my-qna`);
 							})
 							.catch(error => useAlertDialog({
 								dispatch,
@@ -224,6 +217,7 @@ function QnaForm() {
 					),
 					confirmButtonFunction: () => {
 						postQuestion({
+							title: data.title,
 							content: data.content,
 							questionType: data.questionType,
 							departmentId: data.departmentId,
@@ -237,7 +231,7 @@ function QnaForm() {
 									color: 'success',
 									title: 'Question was created successfully!',
 								})
-								navigate('.');
+								navigate(`../my-qna`);
 							})
 							.catch(error => useAlertDialog({
 								dispatch,
@@ -267,22 +261,28 @@ function QnaForm() {
 	}
 
 	return (
-		<div className="container flex flex-col items-center p-32">
-			<div className="flex flex-col w-full max-w-6xl">
+		<div className="container flex flex-col items-center p-32 w-xl">
+			<div className="flex flex-col w-full ">
 				<Typography variant="h4"></Typography>
 				<div className="">
 					<Button
 						component={NavLinkAdapter}
-						to="."
+						to="../my-qna"
 						startIcon={<ArrowBack />}
 					>
-						Back to QnA
+						Back to My Q&A
 					</Button>
 				</div>
 				<div className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
 					{editMode ? 'Edit your question' : 'Ask a question'}
 				</div>
-				<Paper className="p-24 mt-32 shadow rounded-2xl">
+				<Paper className='p-16 mt-16 bg-secondary-main/10 text-secondary-main shadow-0 text-lg'>
+					<Typography className='font-semibold text-lg'>Tips on getting good answers quickly</Typography>
+					<li>Ensure your question hasn't been asked before</li>
+					<li>Keep your question concise and straightforward</li>
+					<li>Double-check your grammar and spelling</li>
+				</Paper>
+				<Paper className="p-16 mt-16 shadow rounded-2xl">
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						<div className="mb-24">
 							<Typography variant="h6">Submit your question</Typography>
@@ -301,200 +301,35 @@ function QnaForm() {
 								)}
 							/>
 							{errors.questionType && <Typography color="error">{errors.questionType.message}</Typography>}
-							{!editMode && <>
-								{selectedType === 'ACADEMIC' ? (
-									<div className='flex gap-16'>
-										{/* Department Dropdown */}
-										<Controller
-											name="departmentId"
-											control={control}
-											render={({ field }) => (
-												<TextField
-													{...field}
-													select
-													label="Department"
-													fullWidth
-													variant="outlined"
-													disabled={loadingDepartments}
-													error={!!errors.departmentId}
-													helperText={errors.departmentId?.message}
-												>
-													{loadingDepartments ? (
-														<MenuItem disabled>
-															<CircularProgress size={24} />
-														</MenuItem>
-													) : (
-														departments?.map((department) => (
-															<MenuItem key={department.id} value={department.id.toString()}>
-																{department.name}
-															</MenuItem>
-														))
-													)}
-												</TextField>
-											)}
-										/>
 
-										{/* Major Dropdown */}
-										<Controller
-											name="majorId"
-											control={control}
-											render={({ field }) => (
-												<TextField
-													{...field}
-													select
-													label="Major"
-													fullWidth
-													variant="outlined"
-													disabled={!watch('departmentId') || loadingMajors}
-													error={!!errors.majorId}
-													helperText={errors.majorId?.message}
-												>
-													{loadingMajors ? (
-														<MenuItem disabled>
-															<CircularProgress size={24} />
-														</MenuItem>
-													) : (
-														majors?.map((major) => (
-															<MenuItem key={major.id} value={major.id.toString()}>
-																{major.name}
-															</MenuItem>
-														))
-													)}
-												</TextField>
-											)}
-										/>
-
-										{/* Specialization Dropdown */}
-										<Controller
-											name="specializationId"
-											control={control}
-											render={({ field }) => (
-												<TextField
-													{...field}
-													select
-													label="Specialization"
-													fullWidth
-													variant="outlined"
-													disabled={!watch('majorId') || loadingSpecializations}
-													error={!!errors.specializationId}
-													helperText={errors.specializationId?.message}
-												>
-													{loadingSpecializations ? (
-														<MenuItem disabled>
-															<CircularProgress size={24} />
-														</MenuItem>
-													) : (
-														specializations?.map((specialization) => (
-															<MenuItem key={specialization.id} value={specialization.id.toString()}>
-																{specialization.name}
-															</MenuItem>
-														))
-													)}
-												</TextField>
-											)}
-										/>
-									</div>
-								) : (
-									<Controller
-										name="expertiseId"
-										control={control}
-										render={({ field }) => (
-											<TextField
-												{...field}
-												select
-												label="Expertise"
-												fullWidth
-												variant="outlined"
-												disabled={loadingExpertises}
-												error={!!errors.expertiseId}
-												helperText={errors.expertiseId?.message}
-											>
-
-												{loadingExpertises ? (
-													<MenuItem disabled>
-														<CircularProgress size={24} />
-													</MenuItem>
-												) : (
-													counselorExpertises?.map((expertise) => (
-														<MenuItem key={expertise.id} value={expertise.id.toString()}>
-															{expertise.name}
-														</MenuItem>
-													))
-												)}
-											</TextField>
-										)}
-									/>
-								)}
-							</>
-							}
-
-							{/* Content Field */}
-							{/* <Controller
-								name="content"
+							<Controller
 								control={control}
+								name="title"
 								render={({ field }) => (
 									<TextField
+										className="mt-32"
 										{...field}
-										label="Content"
+										label="Title"
+										placeholder="Title"
+										id="Title"
+										error={!!errors.title}
+										helperText={errors?.title?.message}
 										fullWidth
-										variant="outlined"
-										multiline
-										minRows={8}
-										error={!!errors.content}
-										helperText={errors.content?.message}
+
 									/>
 								)}
-							/> */}
-
-							{/* <Controller
-								name="content"
-								control={control}
-								render={({ field }) => (
-									<ReactQuill
-										ref={quillRef}
-										{...field}
-										value={field.value || ''}
-										onChange={field.onChange}
-										className='h-sm'
-										theme="snow"
-										placeholder="Write your question content here..."
-										modules={modules}
-									/>
-								)}
-							/> */}
-
-							<ReactQuill
-								ref={quillRef}
-								className='h-sm'
-								theme="snow"
-								placeholder="Write your question content here..."
-								modules={modules}
-								// {...register('content')}
-								// {...register('content', { required: 'Content is required' })}  // Register using `register`
-								onChange={handleQuillChange}
-								value={watch(`content`)}
 							/>
-
-							{
-								(uploadProgress !== 0 && uploadProgress !== 100) && (
-									<Box className={`w-full pt-36`}>
-										<Typography >Uploading image...</Typography>
-										<LinearProgress variant="determinate" value={uploadProgress} />
-									</Box>
-								)
-							}
-							{/* <div>
-								<progress value={uploadProgress} max={100} />
-								<span>{Math.round(uploadProgress)}%</span>
-							</div> */}
-							{errors.content && (
-								<Typography color="error" className='pt-16'>{errors.content.message}</Typography>
-							)}
+							<QuillEditor
+								value={watch('content')}
+								onChange={(value) => setValue('content', value, { shouldValidate: true })}
+								error={errors.content?.message}
+								label="Question"
+							/>
 
 						</div>
 
 						<div className="flex items-center justify-end mt-32 pt-24">
-							<Button onClick={() => navigate('.')} color="primary">
+							<Button onClick={() => navigate(-1)} color="primary" type='button'>
 								Cancel
 							</Button>
 							<Button
@@ -503,7 +338,6 @@ function QnaForm() {
 								color="secondary"
 								disabled={
 									!isValid || isPosting || isEditing
-									//_.isEmpty(dirtyFields)
 								}
 							>
 								{editMode ? 'Save' : 'Submit'}

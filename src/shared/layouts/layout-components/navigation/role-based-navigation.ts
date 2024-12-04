@@ -156,11 +156,11 @@ const counselorNavigation: NavigationOptions = {
             description: "Questions and answer",
             route: 'qna',
             items: [
-                // {
-                //     icon: Assignment,
-                //     name: 'Question Board',
-                //     route: 'question-board'
-                // },
+                {
+                    icon: Assignment,
+                    name: 'Question Board',
+                    route: 'question-board'
+                },
                 {
                     icon: Class,
                     name: 'My Q&A',

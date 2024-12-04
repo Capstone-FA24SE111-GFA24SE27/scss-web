@@ -125,7 +125,7 @@ const QuestionCardItem = (props: Props) => {
               ) : (
                 <div>
                   <Typography
-                    className='px-8 italic'
+                    className='italic'
                     color='textDisabled'
                   >
                     {'The counselor has not answer yet'}

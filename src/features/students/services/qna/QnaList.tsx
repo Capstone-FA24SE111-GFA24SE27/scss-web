@@ -2,33 +2,26 @@ import {
 	CheckboxField,
 	ContentLoading,
 	FilterTabs,
-	NavLinkAdapter,
 	Pagination,
 	SearchField,
-	SelectField,
+	SelectField
 } from '@/shared/components';
 
+import { useSocket } from '@/shared/context';
+import { Question } from '@/shared/types';
 import {
-	Button,
 	FormControlLabel,
 	Switch,
-	Typography,
+	Typography
 } from '@mui/material';
+import { selectAccount, useAppSelector } from '@shared/store';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
+import QnaItem from './QnaItem';
 import {
 	studentQnasApi,
 	useGetStudentQuestionsQuery,
 } from './qna-api';
-import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import {
-	useGetAcademicTopicsQuery,
-	useGetNonAcademicTopicsQuery,
-} from '@/shared/services';
-import { Question } from '@/shared/types';
-import { useSocket } from '@/shared/context';
-import QnaItem from './QnaItem';
-import { addChatListener, selectChatListeners, selectPassiveChatCallback } from '@/shared/components/chat';
 
 const container = {
 	show: {
@@ -221,7 +214,7 @@ const QnaList = () => {
 			variants={container}
 			initial='hidden'
 			animate='show'
-			className='container w-full p-32 mx-auto space-y-16'
+			className='container w-full p-32 max-w-xl mx-auto space-y-16'
 		>
 			<div className='flex gap-16'>
 				<SearchField onSearch={handleSearch} className='w-xs' />

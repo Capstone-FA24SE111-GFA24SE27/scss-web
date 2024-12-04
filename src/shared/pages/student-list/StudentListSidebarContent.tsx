@@ -129,7 +129,7 @@ const CounselorListSidebarContent = () => {
           showClearOptions={true}
         />
         <Divider />
-        <Typography className="font-semibold">Filter by GPA</Typography>
+        <Typography className="font-semibold">Filter by average grade</Typography>
         <Box className="flex gap-16">
           <SearchField
             onSearch={handleSearchMinGPA}

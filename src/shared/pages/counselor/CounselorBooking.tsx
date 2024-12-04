@@ -339,13 +339,6 @@ function CounselorBooking() {
           <Divider className="mt-16 " />
 
           <div className='px-32'>
-            {/* <TextField
-                            label=" for counseling"
-                            multiline
-                            rows={4}
-                            defaultValue=""
-                            className='w-full mt-16'
-                        /> */}
             <Controller
               control={control}
               name="reason"

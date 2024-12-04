@@ -34,8 +34,8 @@ const DateRangePicker = ({
   };
 
   const handleClearFilter = () => {
-    onStartDateChange('');
-    onEndDateChange('');
+    onStartDateChange(undefined);
+    onEndDateChange(undefined);
   };
 
   return (

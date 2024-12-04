@@ -1,1 +1,1 @@
-export { questionBoardRoutes } from './question-board-routes'
+export * from './counselors-question-board-routes'

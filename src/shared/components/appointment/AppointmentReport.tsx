@@ -1,4 +1,4 @@
-import { renderHTML } from '@/shared/components';
+import { RenderHTML } from '@/shared/components';
 import { AppointmentReportType } from '@/shared/types';
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { Avatar, Box, Divider, Paper, Typography, styled } from '@mui/material';
@@ -104,7 +104,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Specific Goal:
                 </Typography>
-                {renderHTML(report.consultationGoal.specificGoal)}
+                {RenderHTML(report.consultationGoal.specificGoal)}
               </div>
             )}
             {report.consultationGoal?.reason && (
@@ -112,7 +112,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Reason:
                 </Typography>
-                {renderHTML(report.consultationGoal.reason)}
+                {RenderHTML(report.consultationGoal.reason)}
               </div>
             )}
           </div>
@@ -129,7 +129,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Summary of Discussion:
                 </Typography>
-                {renderHTML(report.consultationContent.summaryOfDiscussion)}
+                {RenderHTML(report.consultationContent.summaryOfDiscussion)}
               </div>
             )}
             {report.consultationContent?.mainIssues && (
@@ -137,7 +137,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Main Issues:
                 </Typography>
-                {renderHTML(report.consultationContent.mainIssues)}
+                {RenderHTML(report.consultationContent.mainIssues)}
               </div>
             )}
             {report.consultationContent?.studentEmotions && (
@@ -145,7 +145,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Student Emotions:
                 </Typography>
-                {renderHTML(report.consultationContent.studentEmotions)}
+                {RenderHTML(report.consultationContent.studentEmotions)}
               </div>
             )}
             {report.consultationContent?.studentReactions && (
@@ -153,7 +153,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Student Reactions:
                 </Typography>
-                {renderHTML(report.consultationContent.studentReactions)}
+                {RenderHTML(report.consultationContent.studentReactions)}
               </div>
             )}
           </div>
@@ -170,7 +170,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Counselor Conclusion:
                 </Typography>
-                {renderHTML(report.consultationConclusion.counselorConclusion)}
+                {RenderHTML(report.consultationConclusion.counselorConclusion)}
               </div>
             )}
             <div className='flex gap-8'>
@@ -184,7 +184,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Follow-up Notes:
                 </Typography>
-                {renderHTML(report.consultationConclusion.followUpNotes)}
+                {RenderHTML(report.consultationConclusion.followUpNotes)}
               </div>
             )}
           </div>
@@ -201,7 +201,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Type:
                 </Typography>
-                {renderHTML(report.intervention.type)}
+                {RenderHTML(report.intervention.type)}
               </div>
             )}
             {report.intervention?.description && (
@@ -209,7 +209,7 @@ const AppointmentReport = ({ report }: { report: AppointmentReportType }) => {
                 <Typography className="text-lg font-semibold text-primary-light">
                   Description:
                 </Typography>
-                {renderHTML(report.intervention.description)}
+                {RenderHTML(report.intervention.description)}
               </div>
             )}
           </div>
