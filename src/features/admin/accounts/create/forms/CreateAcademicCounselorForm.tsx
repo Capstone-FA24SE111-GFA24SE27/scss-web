@@ -43,10 +43,42 @@ import { useAppDispatch, useAppSelector } from '@shared/store';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import clsx from 'clsx';
 import CertificationAppendForm from './CertificationAppendForm';
-import { Certification } from '@/shared/types';
 import QualificationAppendForm from './QualificationAppendForm';
 
 type Props = {};
+
+const steps = [
+	{
+		id: 'Step 1',
+		name: 'Account Information',
+		fields: [
+			'fullName',
+			'email',
+			'gender',
+			'phoneNumber',
+			'dateOfBirth',
+			'password',
+		],
+	},
+	{
+		id: 'Step 2',
+		name: 'Department Information',
+		fields: ['departmentId', 'majorId', 'specializationId'],
+	},
+	{
+		id: 'Step 3',
+		name: 'Relevant Skills',
+		fields: [
+			'otherSkills',
+			'workHistory',
+			'achievements',
+			'qualifications',
+			'certifications'
+		],
+	},
+];
+
+const currentYear = dayjs().year()
 
 const schema = z.object({
 	email: z.string().email('Invalid email address'), // Validates email format
@@ -57,10 +89,14 @@ const schema = z.object({
 		.regex(/^\d{10,15}$/, 'Phone number must be between 10 and 15 digits'),
 	dateOfBirth: z
 		.string()
-		.refine(
-			(date) => !isNaN(new Date(date).getTime()),
-			'Invalid date format'
-		), // Validates date string
+		.refine((date) => {
+			return dayjs(date, 'YYYY-MM-DD', true).isValid();
+		}, 'Birth date must be a valid date')
+		.refine((date) => {
+			const year = dayjs(date).year()
+			return year >= 1900 && year <= currentYear;
+		}, `Year must be between 1900 and ${currentYear}`),
+
 	fullName: z.string().min(1, 'Full name is required'), // Full name validation
 	departmentId: z.number().gt(0, 'Department ID must be selected'),
 	majorId: z.number().gt(0, 'Major ID must be selected'),
@@ -115,7 +151,7 @@ const schema = z.object({
 
 type FormType = Required<z.infer<typeof schema>>;
 
-const steps = ['Account Info', 'Department Info', 'Experience'];
+// const steps = ['Account Info', 'Department Info', 'Experience'];
 
 const ClearMenuItem = styled(MenuItem)(({ theme }) => ({
 	color: theme.palette.error.main,
@@ -135,14 +171,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 
 	const [activeStep, setActiveStep] = useState(0);
 
-	const handleNext = (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-	};
-	const handleBack = (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-		setActiveStep((prevActiveStep) => prevActiveStep - 1);
-	};
+	
 
 	const {
 		control,
@@ -152,6 +181,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 		handleSubmit,
 		setValue,
 		reset,
+		trigger,
 		getValues,
 	} = useForm<FormType>({
 		// @ts-ignore
@@ -184,6 +214,25 @@ const CreateAcademicCounselorForm = (props: Props) => {
 	});
 
 	const isSubmittable = !!isDirty && !!isValid;
+
+	type FieldName = keyof FormType
+	
+
+	const handleNext = async (e: MouseEvent<HTMLButtonElement>) => {
+		const fields = steps[activeStep].fields
+		const result = await trigger(fields as FieldName[], { shouldFocus: true })
+
+		if (!result) return
+
+		if (activeStep < steps.length - 1) {
+			setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		}
+
+	};
+	const handleBack = (e: MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+	};
 
 	// Fetch departments
 	const { data: departments, isLoading: loadingDepartments } =
@@ -239,7 +288,6 @@ const CreateAcademicCounselorForm = (props: Props) => {
 	};
 
 	const handleOpenQualificationAppendDialog = () => {
-		console.log('123wdawd');
 		dispatch(
 			openDialog({
 				children: (
@@ -269,7 +317,6 @@ const CreateAcademicCounselorForm = (props: Props) => {
 	};
 
 	const handleOpenCertificationAppendDialog = () => {
-		console.log('123wdawd');
 		dispatch(
 			openDialog({
 				children: (
@@ -301,20 +348,20 @@ const CreateAcademicCounselorForm = (props: Props) => {
 	const [createAccount] = usePostCreateAcademicCounselorAccountMutation();
 
 	const onSubmit = () => {
-		// createAccount(formData)
-		// 	.unwrap()
-		// 	.then((res) => {
-		// 		if(res){
+		createAccount(formData)
+			.unwrap()
+			.then((res) => {
+				if(res){
 
-		// 			useAlertDialog({dispatch, title: res.message})
-		// 			if(res.status === 200) {
+					useAlertDialog({dispatch, title: res.message})
+					if(res.status === 200) {
 
-		// 				dispatch(clearEnteredValueByTab('ACADEMIC_COUNSELOR'))
-		// 				reset(initialValues['ACADEMIC_COUNSELOR'])
-		// 			}
-		// 		}
-		// 	})
-		// 	.catch((err) => console.log(err));
+						dispatch(clearEnteredValueByTab('ACADEMIC_COUNSELOR'))
+						reset(initialValues['ACADEMIC_COUNSELOR'])
+					}
+				}
+			})
+			.catch((err) => console.log(err));
 		console.log('formdata', formData);
 		console.log('formdata', isValid);
 	};
@@ -336,12 +383,12 @@ const CreateAcademicCounselorForm = (props: Props) => {
 			<form
 				className='w-full h-full'
 				onSubmit={handleSubmit(onSubmit)}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						handleSubmit(onSubmit)();
-					}
-				}}
+				// onKeyDown={(e) => {
+				// 	if (e.key === 'Enter') {
+				// 		e.preventDefault();
+				// 		handleSubmit(onSubmit)();
+				// 	}
+				// }}
 			>
 				<Paper className='flex flex-col w-full gap-32 p-32 mt-16'>
 					<Stepper
@@ -349,9 +396,9 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						alternativeLabel
 						className='flex mb-16'
 					>
-						{steps.map((label, index) => (
-							<Step key={label} completed={index < activeStep}>
-								<StepLabel>{label}</StepLabel>
+						{steps.map((item, index) => (
+							<Step key={item.id} completed={index < activeStep}>
+								<StepLabel>{item.name}</StepLabel>
 							</Step>
 						))}
 					</Stepper>
@@ -412,29 +459,19 @@ const CreateAcademicCounselorForm = (props: Props) => {
 										<DatePicker
 											className='w-full'
 											label='Date of birth'
-											value={dayjs(field.value)}
+											value={field.value ? dayjs(field.value) : null}
 											minDate={dayjs('1900-01-01')}
 											disableFuture
+											format='YYYY-MM-DD'
 											slotProps={{
 												textField: {
 													helperText:
-														'Please select a valid date of birth',
+														errors.dateOfBirth?.message,
 												},
 											}}
 											views={['year', 'month', 'day']}
 											onChange={(date) => {
-												console.log(
-													'selected dob',
-													dayjs(date).format(
-														'YYYY-MM-DD'
-													)
-												);
-												setValue(
-													'dateOfBirth',
-													dayjs(date).format(
-														'YYYY-MM-DD'
-													)
-												);
+												field.onChange(dayjs(date).format('YYYY-MM-DD'));
 											}}
 										/>
 									)}
@@ -792,18 +829,13 @@ const CreateAcademicCounselorForm = (props: Props) => {
 														index
 													)
 												}
-												className='px-16 mx-32 font-semibold w-fit'
-											/>
-											<IconButton
-												onClick={() => {
+												onDelete={() => {
 													removeCertificationField(
 														index
 													);
 												}}
-												color='primary'
-											>
-												<Delete />
-											</IconButton>
+												className='gap-8 mx-8 font-semibold w-fit'
+											/>
 										</div>
 									)
 								)}
@@ -888,6 +920,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									color='secondary'
 									className='w-96'
 									type='button'
+
 								>
 									Next
 								</Button>

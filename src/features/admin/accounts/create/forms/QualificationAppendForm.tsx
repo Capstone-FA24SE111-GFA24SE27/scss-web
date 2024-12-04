@@ -1,4 +1,4 @@
-import { closeDialog } from '@/shared/components';
+import { closeDialog, ImageLoading } from '@/shared/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
 	Button,
@@ -63,7 +63,7 @@ const QualificationAppendForm = (props: Props) => {
 				degree: '',
 				fieldOfStudy: '',
 				institution: '',
-				yearOfGraduation: 2000,
+				yearOfGraduation: '2000',
 				imageUrl: '',
 		  };
 
@@ -154,6 +154,7 @@ const QualificationAppendForm = (props: Props) => {
 							minDate={dayjs('1900')}
 							maxDate={dayjs()}
 							disableFuture
+							yearsOrder="desc"
 							slotProps={{
 								textField: {
 									helperText:
@@ -182,16 +183,13 @@ const QualificationAppendForm = (props: Props) => {
 						/>
 					)}
 				/>
-
-				<img
-					src={formData.imageUrl}
-          loading='lazy'
-					className={clsx(
-						formData.imageUrl.trim() !== '' && !errors.imageUrl
-							? 'block h-224 overflow-hidden object-cover'
-							: 'hidden'
-					)}
-				/>
+				{formData.imageUrl && !errors.imageUrl && (
+					<ImageLoading
+						src={formData.imageUrl}
+						alt='input image preview'
+						className='object-cover overflow-hidden h-224'
+					/>
+				)}
 			</DialogContent>
 			<DialogActions>
 				{isEdit ? (

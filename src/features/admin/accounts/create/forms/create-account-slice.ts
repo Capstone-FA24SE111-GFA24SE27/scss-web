@@ -20,7 +20,7 @@ const initialState: initialStateType = {
 			password: '',
 			gender: 'MALE',
 			phoneNumber: '',
-			dateOfBirth: '',
+			dateOfBirth: null,
 			fullName: '',
 			departmentId: 0,
 			majorId: 0,

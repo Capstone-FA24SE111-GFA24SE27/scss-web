@@ -1,4 +1,4 @@
-import { closeDialog } from '@/shared/components';
+import { closeDialog, ImageLoading } from '@/shared/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
 	Button,
@@ -121,14 +121,13 @@ const CertificationAppendForm = (props: Props) => {
 						/>
 					)}
 				/>
-				<img
-					src={formData.imageUrl}
-					className={clsx(
-						formData.imageUrl.trim() !== '' && !errors.imageUrl
-							? 'block h-224 overflow-hidden object-cover'
-							: 'hidden'
-					)}
-				/>
+				{formData.imageUrl && !errors.imageUrl && (
+					<ImageLoading
+						src={formData.imageUrl}
+						alt='input image preview'
+						className='object-cover overflow-hidden h-224'
+					/>
+				)}
 			</DialogContent>
 			<DialogActions>
 				{isEdit ? (
