@@ -20,11 +20,31 @@ const initialState: initialStateType = {
 			password: '',
 			gender: 'MALE',
 			phoneNumber: '',
-			dateOfBirth: '',
+			dateOfBirth: null,
 			fullName: '',
 			departmentId: 0,
 			majorId: 0,
 			specializationId: 0,
+			specializedSkills: '',
+			otherSkills: '',
+			workHistory: '',
+			achievements: '',
+			qualifications: [
+				// {
+				// 	degree: '',
+				// 	fieldOfStudy: '',
+				// 	institution: '',
+				// 	yearOfGraduation: '',
+				// 	imageUrl: '',
+				// },
+			],
+			certifications: [
+				// {
+				// 	name: '',
+				// 	organization: '',
+				// 	imageUrl: '',
+				// },
+			],
 		},
 
 		NON_ACADEMIC_COUNSELOR: {
@@ -35,6 +55,16 @@ const initialState: initialStateType = {
 			dateOfBirth: '',
 			fullName: '',
 			expertiseId: 0,
+			specializedSkills: '',
+			otherSkills: '',
+			workHistory: '',
+			achievements: '',
+			qualifications: [
+				
+			],
+			certifications: [
+				
+			],
 		},
 
 		MANAGER: {
@@ -71,7 +101,7 @@ export const chatSessionSlice = createSlice({
 	},
 	selectors: {
 		selectEnteredValues: (state) => state.enteredValues,
-        selectInitialValues: () => initialState.enteredValues
+		selectInitialValues: () => initialState.enteredValues,
 	},
 });
 
@@ -82,8 +112,10 @@ declare module '@shared/store' {
 		extends WithSlice<typeof chatSessionSlice> {}
 }
 
-export const { setEnteredValueByTab, clearEnteredValueByTab } = chatSessionSlice.actions;
+export const { setEnteredValueByTab, clearEnteredValueByTab } =
+	chatSessionSlice.actions;
 
-export const { selectEnteredValues, selectInitialValues } = injectedSlice.selectors;
+export const { selectEnteredValues, selectInitialValues } =
+	injectedSlice.selectors;
 
 export default chatSessionSlice.reducer;

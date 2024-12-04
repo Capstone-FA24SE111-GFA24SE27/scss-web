@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 import { monthsOfYear } from "../constants";
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
 export function isDateRangeOverlapping(
 	startDate1: Date,
@@ -34,8 +36,11 @@ export function dateMsToString(time: number) {
 }
 
 export const formatDateTime = (inputDate) => {
+	dayjs.extend(utc)
+	dayjs.extend(timezone)
 	const today = dayjs();
-	const date = dayjs(inputDate.split('.')[0]);
+	const userTimezone = dayjs.tz.guess()
+	const date = dayjs(inputDate).tz(userTimezone);
 
 	if (date.isSame(today, 'day')) {
 		return date.format('h:mm A');
