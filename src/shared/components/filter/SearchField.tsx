@@ -119,7 +119,9 @@ export const ContentSearch = ({
   };
 
   return (
-    <Paper className="flex items-center gap-16 p-16 py-8 rounded-full shadow-none border-1">
+    <Paper
+      className={clsx("flex items-center gap-16 p-16 py-8 rounded-full shadow-none border-1", className)}
+    >
       <Input
         startAdornment={
           <Search />
@@ -139,7 +141,7 @@ export const ContentSearch = ({
 
         placeholder={placeholder}
         value={searchTerm}
-        className={clsx("flex w-full text-lg gap-8 pl-8", className)}
+        className={"flex w-full text-lg gap-8 pl-8"}
         type={type} // Pass the type prop to TextField
         onChange={handleSearch}
         size={size}

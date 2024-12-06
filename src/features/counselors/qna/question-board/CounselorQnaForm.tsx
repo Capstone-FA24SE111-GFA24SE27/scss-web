@@ -12,6 +12,7 @@ import {
   LinearProgress,
   Box,
   Autocomplete,
+  Divider,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +26,7 @@ import {
 } from '@shared/services';
 import { useGetCounselorExpertisesQuery } from '@shared/services';
 import _ from 'lodash';
-import { NavLinkAdapter, RenderHTML } from '@/shared/components';
+import { BackdropLoading, NavLinkAdapter, QuillEditor, RenderHTML } from '@/shared/components';
 import { ArrowBack } from '@mui/icons-material';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
@@ -35,24 +36,36 @@ import 'react-quill/dist/quill.snow.css';
 import { quillModules } from '@/shared/configs';
 import { ref } from 'firebase/storage';
 import { useCreateContributedQuestionCardMutation, useGetAllCategoriesQuery, useGetCategoryByIdQuery, useGetContributedQuestionCardByIdQuery, useUpdateContributedQuestionCardByIdMutation } from '@/shared/pages';
+import { validateHTML } from '@/shared/utils';
 
 // Define schema with validation
 const formSchema = z.object({
-  question: z.string().min(1, 'You must enter question'),
-  answer: z.string().min(1, 'You must enter answer'),
-  questionType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
-    errorMap: () => ({ message: 'Please select a question type' }),
-  }),
+  title: z.string().min(1, 'You must enter title'),
+  // questionType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
+  //   errorMap: () => ({ message: 'Please select a question type' }),
+  // }),
   category: z.object({
     id: z.number(),
     name: z.string(),
     type: z.string(),
   }).nullable().optional(),
+  // question: z.string().min(1, 'You must enter question')
+  //   .refine(
+  //     validateHTML,
+  //     { message: 'Question must not be empty', }
+  //   ),
+  question: z.string().nullable().optional(),
+  answer: z.string().min(1, 'You must enter answer')
+    .refine(
+      validateHTML,
+      { message: 'Answer must not be empty', }
+    ),
+
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-function QnaForm() {
+function CounselorQnaForm() {
   const { questionId } = useParams();
   const navigate = useNavigate();
   const editMode = Boolean(questionId);
@@ -64,10 +77,9 @@ function QnaForm() {
     }
   )
 
-  const quillRef = useRef(null);
-
   const question = questionData?.content
-  const defaultValues: FormValues = { questionType: 'ACADEMIC', question: '', answer: '' };
+
+  const defaultValues: FormValues = {title: '', question: '', answer: '' };
 
   const { control, handleSubmit, watch, formState, reset, register, setValue } = useForm<FormValues>({
     mode: 'onChange',
@@ -77,119 +89,60 @@ function QnaForm() {
 
   const { errors, isValid, dirtyFields } = formState;
 
-  // Watch the selected type and dynamically render fields
-  const selectedType = watch('questionType');
-
   const { data: categoriesData, isLoading: loadingCategories } = useGetAllCategoriesQuery();
   const categories = categoriesData?.content || []
 
-  const [uploadProgress, setUploadProgress] = useState(0);
 
-  const handleQuestionChange = (value: string) => {
-    setValue('question', value, {
-      shouldValidate: true
-    });
-  };
-
-  const handleAnswerChange = (value: string) => {
-    setValue('answer', value, {
-      shouldValidate: true
-    });
-  };
-
-  // Image upload handler
-  const handleImageUpload = useCallback(() => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click();
-
-    input.onchange = async () => {
-      if (input && input.files && input.files[0]) {
-        const file = input.files[0];
-        const path = `images/${Date.now()}_${file.name}`;
-        console.log(`Image`, path)
-
-        try {
-          const downloadURL = await uploadFile(file, path, (progress) => {
-            setUploadProgress(progress);
-          });
-
-
-          // Now insert the image into the Quill editor
-          const quill = quillRef.current?.getEditor(); // Get the Quill editor instance
-
-          if (quill) {
-            const range = quill.getSelection(); // Get the current selection (position) in the editor
-            console.log(`Range: `, range)
-
-            if (range) {
-              quill.insertEmbed(range.index, 'image', downloadURL); // Insert the image URL at the cursor position
-              const image = quill.root.querySelector('img[src="' + downloadURL + '"]');
-              if (image) {
-                image.style.maxWidth = '48rem';
-                image.style.height = 'auto';
-              }
-            }
-          }
-        } catch (error) {
-          console.error("Image upload failed:", error);
-        }
-      }
-    };
-  }, []);
-
-  const modules = {
-    toolbar: {
-      container: [
-        [{ header: '1' }, { header: '2' }],
-        // ['bold', 'italic', 'underline'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link'],
-        ['image'], // Image button in the toolbar
-      ],
-      handlers: {
-        image: handleImageUpload, // Custom handler for image upload
-      },
-    },
-  };
-
-  // Mutations for posting and editing questions
   const [postQuestion, { isLoading: isPosting }] = useCreateContributedQuestionCardMutation();
   const [editQuestion, { isLoading: isEditing }] = useUpdateContributedQuestionCardByIdMutation();
   const dispatch = useAppDispatch()
   // Form submission handler
+
+  console.log(watch(), isValid)
   const onSubmit = async (data: FormValues) => {
     try {
       if (editMode && questionId) {
         useConfirmDialog({
           dispatch: dispatch,
-          title: 'Confirm editing question?',
+          title: 'Confirm editing question',
+          content: (
+            <div className='flex flex-col gap-8'>
+              <Typography className='font-semibold'>Category</Typography>
+              <Typography>{data.category.name}</Typography>
+              <Typography className='font-semibold'>Title: </Typography>
+              <Typography>{RenderHTML(data.title)}</Typography>
+              <Typography className='font-semibold'>Question: </Typography>
+              <Typography>{RenderHTML(data.question)}</Typography>
+              <Divider />
+              <Typography className='font-semibold'>Answer:</Typography>
+              <Typography>{RenderHTML(data.answer)}</Typography>
+            </div>
+          ),
           confirmButtonFunction: () => {
-            // editQuestion({
-            //   id: Number(questionId),
-            //   data: {
-            //     content: data.content,
-            //     questionType: data.questionType,
-            //     departmentId: data.departmentId,
-            //     majorId: data.majorId,
-            //     specializationId: data.specializationId,
-            //   }
-            // })
-            //   .unwrap()
-            //   .then(() => {
-            //     useAlertDialog({
-            //       dispatch,
-            //       color: 'success',
-            //       title: 'Question was edit successfully!',
-            //     })
-            //     navigate(-1);
-            //   })
-            //   .catch(error => useAlertDialog({
-            //     dispatch,
-            //     color: 'error',
-            //     title: 'Error editing question',
-            //   }))
+            editQuestion({
+              id: Number(questionId),
+              data: {
+                question: data.question,
+                answer: data.answer,
+                categoryId: data.category.id,
+                counselorId: account.profile.id,
+                title: data.title
+              }
+            })
+              .unwrap()
+              .then(() => {
+                useAlertDialog({
+                  dispatch,
+                  color: 'success',
+                  title: 'Question was edited successfully!',
+                })
+                navigate(-1);
+              })
+              .catch(error => useAlertDialog({
+                dispatch,
+                color: 'error',
+                title: 'Error creating question',
+              }))
           }
         })
 
@@ -198,11 +151,15 @@ function QnaForm() {
           dispatch: dispatch,
           title: 'Confirm creating question',
           content: (
-            <div>
-              <Typography>Question type: {data.questionType}</Typography>
-              <Typography>Question:</Typography>
+            <div className='flex flex-col gap-8'>
+              <Typography className='font-semibold'>Category</Typography>
+              <Typography>{data.category.name}</Typography>
+              <Typography className='font-semibold'>Title: </Typography>
+              <Typography>{RenderHTML(data.title)}</Typography>
+              <Typography className='font-semibold'>Question: </Typography>
               <Typography>{RenderHTML(data.question)}</Typography>
-              <Typography>Answer:</Typography>
+              <Divider />
+              <Typography className='font-semibold'>Answer:</Typography>
               <Typography>{RenderHTML(data.answer)}</Typography>
             </div>
           ),
@@ -212,6 +169,7 @@ function QnaForm() {
               answer: data.answer,
               categoryId: data.category.id,
               counselorId: account.profile.id,
+              title: data.title
             })
               .unwrap()
               .then(() => {
@@ -239,11 +197,19 @@ function QnaForm() {
   useEffect(() => {
     if (editMode && questionData) {
       reset({
-        // questionType: question?.questionType || 'ACADEMIC',
-        // content: question?.content || '',
+        question: question.question,
+        answer: question.answer,
+        category: question.category,
+        title: question.title
       });
     }
   }, [editMode, questionData, reset]);
+
+  useEffect(() => {
+    console.log('Form Errors:', errors);
+    console.log('Is form valid?', isValid);
+    console.log('Dirty fields:', dirtyFields);
+  }, [errors, isValid, dirtyFields]);
 
   return (
     <div className="container flex flex-col items-center p-32 w-xl">
@@ -255,7 +221,7 @@ function QnaForm() {
             to="../"
             startIcon={<ArrowBack />}
           >
-            Back to My Q&A
+            Back
           </Button>
         </div>
         <div className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
@@ -268,20 +234,6 @@ function QnaForm() {
               <Typography color='textSecondary'>Your questions will be added to question board. </Typography>
             </div>
             <div className="space-y-32">
-              {/* Question Type Radio Group */}
-              <Controller
-                name="questionType"
-                control={control}
-                render={({ field }) => (
-                  <RadioGroup {...field} row>
-                    <FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
-                    <FormControlLabel value="NON_ACADEMIC" control={<Radio />} label="Non-academic" />
-                  </RadioGroup>
-                )}
-              />
-              {errors.questionType && <Typography color="error">{errors.questionType.message}</Typography>}
-
-
               <Controller
                 name="category"
                 control={control}
@@ -309,55 +261,40 @@ function QnaForm() {
                 )}
               />
 
-              <Typography className='font-semibold'>Question</Typography>
+              <Controller
+                control={control}
+                name="title"
+                defaultValue={question?.title || ''}
+                render={({ field }) => (
+                  <TextField
+                    className="mt-32"
+                    {...field}
+                    label="Title"
+                    placeholder="Title"
+                    id="title"
+                    error={!!errors.title}
+                    helperText={errors?.title?.message}
+                    fullWidth
 
-              <ReactQuill
-                ref={quillRef}
-                className='h-sm'
-                theme="snow"
-                placeholder="Write your question question here..."
-                modules={modules}
-                onChange={handleQuestionChange}
-                value={watch(`question`)}
+                  />
+                )}
               />
 
-              {
-                (uploadProgress > 0 && uploadProgress < 100) && (
-                  <Box className={`w-full pt-36`}>
-                    <Typography >Uploading image...</Typography>
-                    <LinearProgress variant="determinate" value={uploadProgress} color='secondary' />
-                  </Box>
-                )
-              }
-
-              {errors.question && (
-                <Typography color="error" className='pt-16'>{errors.question.message}</Typography>
-              )}
-
-              <Typography className='font-semibold pt-32'>Answer</Typography>
-
-              <ReactQuill
-                ref={quillRef}
-                className='h-sm -pt-32'
-                theme="snow"
-                placeholder="Write your question question here..."
-                modules={modules}
-                onChange={handleAnswerChange}
-                value={watch(`answer`)}
+              <QuillEditor
+                label='Content'
+                value={watch('question')}
+                onChange={(value) => setValue('question', value, { shouldValidate: true })}
+                error={errors.question?.message}
+                placeholder='Enter the question...'
               />
 
-              {
-                (uploadProgress > 0 && uploadProgress < 100) && (
-                  <Box className={`w-full pt-36`}>
-                    <Typography >Uploading image...</Typography>
-                    <LinearProgress variant="determinate" value={uploadProgress} color='secondary' />
-                  </Box>
-                )
-              }
-
-              {errors.answer && (
-                <Typography color="error" className='pt-16'>{errors.answer.message}</Typography>
-              )}
+              <QuillEditor
+                label='Answer'
+                value={watch('answer')}
+                onChange={(value) => setValue('answer', value, { shouldValidate: true })}
+                error={errors.answer?.message}
+                placeholder='Enter the answer...'
+              />
 
             </div>
 
@@ -379,8 +316,10 @@ function QnaForm() {
           </form>
         </Paper>
       </div>
+      {(isPosting || isEditing) && <BackdropLoading />}
+
     </div >
   );
 }
 
-export default QnaForm;
+export default CounselorQnaForm;

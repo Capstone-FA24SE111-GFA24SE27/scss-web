@@ -9,6 +9,7 @@ import {
 	Edit,
 	ExpandMore,
 	HelpOutlineOutlined,
+	Lock,
 } from '@mui/icons-material';
 import {
 	Accordion,
@@ -35,6 +36,7 @@ import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 import { openCounselorView } from '../../students-layout-slice';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
+import dayjs from 'dayjs';
 
 
 export const StyledAccordionSummary = styled(AccordionSummary)({
@@ -67,8 +69,7 @@ const QnaItem = (props: Props) => {
 	const account = useAppSelector(selectAccount);
 
 	const [closeQuestion] = useCloseQuestionStudentMutation();
-	const [deleteQuestion, { isLoading: isDeletingQuestion }] =
-		useDeleteQuestionStudentMutation();
+	const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteQuestionStudentMutation();
 	const [createChatSession] = useCreateChatSessionStudentMutation();
 
 	const handleSelectChat = (qna: Question) => {
@@ -162,10 +163,10 @@ const QnaItem = (props: Props) => {
 						expandIcon={<ExpandMore sx={{ fontSize: '3rem', height: '6rem' }} />}
 
 					>
-						<div className='flex flex-col gap-8'>
+						<div className='flex flex-col gap-8 w-full'>
 							<div className='flex gap-8'>
 								{qna.answer ? (
-									<CheckCircleOutlineOutlined color='success' />
+									<Chip icon={<CheckCircleOutlineOutlined />} label='Answered' color='success' size='small' variant='outlined' />
 								) : (
 									<HelpOutlineOutlined color='disabled' />
 								)}
@@ -176,7 +177,8 @@ const QnaItem = (props: Props) => {
 											? 'Academic'
 											: 'Non-Academic'
 									}
-									color={'info'}
+									color={'secondary'}
+									variant='outlined'
 									size='small'
 								/>
 								<Chip
@@ -184,16 +186,22 @@ const QnaItem = (props: Props) => {
 									color={statusColor[qna.status as string]}
 									size='small'
 								/>
-								{/* <Chip label={qna.topic?.name} size='small' /> */}
-								{/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
 								{qna.closed && (
 									<Chip
+										icon={<Lock />}
 										label={'Closed'}
 										variant='outlined'
-										color={'error'}
 										size='small'
 									/>
 								)}
+								<div className='w-full flex justify-end pr-8'>
+									{/* <Chip
+										label={`Created at ${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}
+										size='small'
+										color='default'
+									/> */}
+								</div>
+								
 								{countUnreadMessages() ? (
 									<Chip
 										label={countUnreadMessages()}
@@ -205,6 +213,7 @@ const QnaItem = (props: Props) => {
 									''
 								)}
 							</div>
+							<Typography color='textSecondary' className=''>Created at {dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
 							<div className='flex items-center flex-1 gap-8'>
 
 								<Typography className='w-full pr-8 font-semibold'>
@@ -220,7 +229,7 @@ const QnaItem = (props: Props) => {
 							{
 								qna.counselor && (
 									<UserLabel
-										label='Assigned to'
+										label='Answered by'
 										profile={qna?.counselor.profile}
 										email={qna?.counselor?.email}
 										onClick={() => {
@@ -243,11 +252,7 @@ const QnaItem = (props: Props) => {
 							) : qna.answer ? (
 								<div>
 									{/* <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
-									<ExpandableText
-										className='flex flex-wrap w-full overflow-hidden break-all text-wrap'
-										text={qna.answer}
-										limit={100}
-									/>
+									{RenderHTML(qna.answer)}
 								</div>
 							) : (
 								<div>

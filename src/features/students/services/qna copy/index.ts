@@ -1,1 +1,0 @@
-export { qnaRoutes } from './qna-routes'

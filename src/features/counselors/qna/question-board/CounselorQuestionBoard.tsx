@@ -61,8 +61,8 @@ const CounselorQuestionBoard = () => {
 				<div className='border-b'>
 					<div className='flex items-center justify-between p-32  bg-background-paper'>
 						<Heading
-							title='Questions and Answers'
-							description='Offering a collection of Q&A and resolve student concerns.'
+							title='Frequently Asked Questions'
+							description='List of questions and answers contributed by counselors'
 						/>
 						<div className='flex gap-8'>
 							<Button
@@ -73,7 +73,7 @@ const CounselorQuestionBoard = () => {
 								startIcon={<Add />}
 								size='large'
 							>
-								Contribute an Q&A
+								Contribute to FAQs
 							</Button>
 						</div>
 					</div>

@@ -54,7 +54,7 @@ export const counselorQnaApi = api
           keyword,
           isClosed,
           sortBy = 'createdDate',
-          status = 'VERIFIED',
+          status = '',
           sortDirection = 'DESC',
           page = 1,
           size = 10

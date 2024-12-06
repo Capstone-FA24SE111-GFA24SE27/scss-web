@@ -2,6 +2,7 @@ import React, { useRef, useState, useCallback } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';  
 import './quill-editor.css';  
+import clsx from 'clsx';
 
 import { LinearProgress, Box, Typography } from '@mui/material';
 import { uploadFile } from '@shared/services'; 
@@ -11,13 +12,15 @@ const QuillEditor = ({
   onChange,
   error,
   label,
-  placeholder = "Write your content here..."  
+  placeholder = "Write your content here...",
+  className= "",
 }: {
   value: string;
   onChange: (value: string) => void;
   error?: string;
   label?: string;
   placeholder?: string;
+  className?: string;
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -77,8 +80,8 @@ const QuillEditor = ({
   return (
     <div className="mt-4">
       {
-        label && < Typography className='font-semibold' gutterBottom>
-          {label}
+        label && < Typography className='text-text-secondary' gutterBottom>
+          {label}:  
         </Typography>
       }
       <ReactQuill
@@ -88,7 +91,7 @@ const QuillEditor = ({
         onChange={onChange}
         modules={modules}
         placeholder={placeholder}
-        className='quill-editor'
+        className={clsx(`quill-editor !text-xl`, className)}
         // style={{
         //   borderRadius: '8px',
         //   border: '1px solid #ccc',

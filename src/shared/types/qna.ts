@@ -28,7 +28,9 @@ export type Question = {
   chatSession: ChatSession;
   closed: boolean;
   taken: boolean;
-  topic: Topic
+  topic: Topic,
+  createdDate: string;
+  difficultyLevel: string;
 }
 
 export type ChatSession = {

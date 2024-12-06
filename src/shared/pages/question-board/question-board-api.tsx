@@ -68,7 +68,7 @@ export const contributedQuestionsApi = api
       }),
 
       // Create a new contribution question card
-      createContributedQuestionCard: build.mutation<ApiResponse<ContributedQuestionCard>, ContributedQuestionCardInput>({
+      createContributedQuestionCard: build.mutation<ApiResponse<ContributedQuestionCard>, ContributedQuestionCardPayload>({
         query: (body) => ({
           url: '/api/contribution-question-cards',
           method: 'POST',
@@ -78,7 +78,7 @@ export const contributedQuestionsApi = api
       }),
 
       // Update a contribution question card by ID
-      updateContributedQuestionCardById: build.mutation<ApiResponse<ContributedQuestionCard>, { id: number; data: ContributedQuestionCardInput }>({
+      updateContributedQuestionCardById: build.mutation<ApiResponse<ContributedQuestionCard>, { id: number; data: ContributedQuestionCardPayload }>({
         query: ({ id, data }) => ({
           url: `/api/contribution-question-cards/${id}`,
           method: 'PUT',
@@ -152,20 +152,23 @@ export type ContributedQuestionCard = {
   category: ContributedQuestionCategory;
   counselor: Counselor
   status: string;
+  createdDate: string;
+  title: string;
 };
 
-export type ContributedQuestionCardInput = {
+export type ContributedQuestionCardPayload = {
+  title: string;
   question: string;
   answer: string;
   categoryId: number;
-  counselorId: number
+  counselorId: number,
 };
 
 export type SearchContributedQuestionCardsApiArg = {
   query?: string;
   status?: string;
-  counselorId?: string;
-  categoryId?: string;
+  counselorId?: number;
+  categoryId?: number;
   sortBy?: string;
   sortDirection?: string;
   page?: number;

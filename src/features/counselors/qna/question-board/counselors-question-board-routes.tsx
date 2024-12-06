@@ -2,7 +2,7 @@ import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 // const QuestionBoard = lazy(() => import('@shared/pages/question-board/QuestionBoard'))
 const CounselorQuestionBoard = lazy(() => import('./CounselorQuestionBoard'))
-const PublicQnaForm = lazy(() => import('./PublicQnaForm'))
+const CounselorQnaForm = lazy(() => import('./CounselorQnaForm'))
 export const counselorQuestionBoardRoutes: RouteObject[] = [
   {
     path: 'question-board',
@@ -10,15 +10,15 @@ export const counselorQuestionBoardRoutes: RouteObject[] = [
     children: [
       {
         path: 'create',
-        element: <PublicQnaForm />,
+        element: <CounselorQnaForm />,
       },
       {
         path: 'edit/:questionId',
-        element: <PublicQnaForm />,
+        element: <CounselorQnaForm />,
       },
       {
         path: 'student-qna/edit/:questionId',
-        element: <PublicQnaForm />,
+        element: <CounselorQnaForm />,
       },
     ]
   },

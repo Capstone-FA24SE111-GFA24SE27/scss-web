@@ -5,7 +5,8 @@ import {
 	UserLabel,
 	RenderHTML,
 	QuillEditor,
-	closeDialog
+	closeDialog,
+	BackdropLoading
 } from '@/shared/components';
 import {
 	ArrowForward,
@@ -17,7 +18,9 @@ import {
 	Edit,
 	EditNote,
 	ExpandMore,
+	Flag,
 	HelpOutlineOutlined,
+	Lock,
 	RateReview,
 	ThumbDown,
 	ThumbDownOutlined,
@@ -51,6 +54,7 @@ import {
 	useAnswerQuestionMutation,
 	useCloseQuestionCounselorMutation,
 	useEditAnswerMutation,
+	usePostFlagQuestionStatusMutation,
 	usePostReviewQuestionStatusMutation,
 } from '../qna-api';
 import { Question } from '@/shared/types';
@@ -59,7 +63,7 @@ import { openStudentView } from '../../counselors-layout-slice';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
 import QnaFlagForm from './QnaFlagFormDialog';
-import { statusColor } from '@/shared/constants';
+import { difficultyColor, statusColor } from '@/shared/constants';
 import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 
 const item = {
@@ -94,6 +98,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 
 	const [closeQuestion] = useCloseQuestionCounselorMutation();
 	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
+	const [flagQuestion] = usePostFlagQuestionStatusMutation();
 
 	const handleRejectQuestion = (id: number) => {
 		useConfirmDialog({
@@ -124,6 +129,13 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 					.catch((err) => console.log(err));
 			},
 		});
+	};
+
+
+	const handleFlagQuestion = () => {
+		dispatch(openDialog({
+			children: <QnaFlagForm id={qna.id} />
+		}))
 	};
 
 	const handleCloseQuestion = () => {
@@ -167,17 +179,23 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 			<Paper className='overflow-hidden shadow'>
 				<Accordion
 					className='shadow'
-					expanded={expanded === qna.id || expanded === true}
-					onChange={toggleAccordion(qna.id)}
+				// expanded={expanded === qna.id || expanded === true}
+				// onChange={toggleAccordion(qna.id)}
 				>
 					<AccordionSummary expandIcon={<ExpandMore />} className=''>
 						<div className='flex flex-col gap-8'>
 							<div className='flex gap-8'>
 								{qna.answer ? (
-									<CheckCircleOutlineOutlined color='success' />
+									<Chip icon={<CheckCircleOutlineOutlined />} label='Answered' color='success' size='small' variant='outlined' />
 								) : (
 									<HelpOutlineOutlined color='disabled' />
 								)}
+								<Chip
+									label={qna.difficultyLevel}
+									color={difficultyColor[qna.difficultyLevel as string]}
+									size='small'
+									variant='outlined'
+								/>
 								<Chip
 									label={qna.status}
 									color={statusColor[qna.status as string]}
@@ -187,9 +205,9 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								{/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
 								{qna.closed && (
 									<Chip
+										icon={<Lock />}
 										label={'Closed'}
 										variant='outlined'
-										color={'error'}
 										size='small'
 									/>
 								)}
@@ -204,16 +222,21 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 									''
 								)}
 							</div>
-							<UserLabel
-								profile={qna?.student?.profile}
-								label='Asked by'
-								email={qna?.student.email}
-								onClick={() => {
-									dispatch(
-										openStudentView(qna?.student.id.toString())
-									);
-								}}
-							/>
+							<div className='flex gap-8 items-center'>
+								<UserLabel
+									profile={qna?.student?.profile}
+									label='Asked by'
+									email={qna?.student.email}
+									onClick={() => {
+										dispatch(
+											openStudentView(qna?.student.id.toString())
+										);
+									}}
+								/>
+								<span className='text-text-secondary' >•</span>
+								<Typography color='textSecondary'>{`${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}</Typography>
+							</div>
+
 							<div className='flex items-center flex-1 gap-8'>
 								{/* <Divider orientation='vertical' /> */}
 
@@ -270,21 +293,19 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								Close
 							</Button>
 						)}
-						{/* {!qna?.answer &&
+						{!qna?.answer &&
 							!qna.closed &&
 							(qna.status === 'PENDING' ||
 								qna.status === 'VERIFIED') && (
-								// <Button
-								// 	variant='outlined'
-								// 	color='primary'
-								// 	startIcon={<Close />}
-								// 	onClick={() => {
-								// 		handleFlagQuestion(qna.id);
-								// 	}}
-								// >
-								// 	Flag Question
-								// </Button>
-							)} */}
+								<Button
+									variant='outlined'
+									color='error'
+									startIcon={<Flag />}
+									onClick={handleFlagQuestion}
+								>
+									Flag
+								</Button>
+							)}
 						{!qna?.answer &&
 							!qna.closed &&
 							(qna.status === 'PENDING' ||
@@ -349,6 +370,7 @@ export default MyQnaItem;
 
 import React from 'react'
 import { validateHTML } from '@/shared/utils';
+import dayjs from 'dayjs';
 
 const AnswerQuestionDialog = ({ qna }: { qna: Question }) => {
 	const editMode = Boolean(qna.answer)
@@ -364,10 +386,20 @@ const AnswerQuestionDialog = ({ qna }: { qna: Question }) => {
 
 	const dispatch = useAppDispatch()
 
-	const handleAnswerQuestion = (questionId: number) => {
+
+	const handleAnswerQuestion = () => {
+		useConfirmDialog({
+			title: 'Are you sure you want to submit the answer?',
+			confirmButtonFunction: onSubmitAnswer,
+			dispatch,
+		});
+	}
+
+
+	const onSubmitAnswer = () => {
 		if (editMode) {
 			editAnswer({
-				questionCardId: questionId,
+				questionCardId: qna.id,
 				content: answer,
 			})
 				.unwrap()
@@ -380,7 +412,7 @@ const AnswerQuestionDialog = ({ qna }: { qna: Question }) => {
 				})
 		} else {
 			answerQuestion({
-				questionCardId: questionId,
+				questionCardId: qna.id,
 				content: answer,
 			})
 				.unwrap()
@@ -394,6 +426,9 @@ const AnswerQuestionDialog = ({ qna }: { qna: Question }) => {
 		}
 	};
 
+	if (submitingAnswer || editingAnswer) {
+		return <BackdropLoading />
+	}
 
 	return (
 		<div className=' w-xl '>
@@ -438,14 +473,14 @@ const AnswerQuestionDialog = ({ qna }: { qna: Question }) => {
 				<Button
 					variant='contained'
 					color='secondary'
-					className='mt-8'
+					className='m-8'
 					disabled={
 						submitingAnswer
 						|| !answer.length
 						|| !validateHTML(answer)
 					}
 					onClick={() =>
-						handleAnswerQuestion(qna.id)
+						handleAnswerQuestion()
 					}
 				>
 					Submit Answer

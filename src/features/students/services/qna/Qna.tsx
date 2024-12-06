@@ -1,5 +1,5 @@
 import { Heading, NavLinkAdapter, PageSimple } from '@/shared/components';
-import { Add, Chat, Forum } from '@mui/icons-material';
+import { Add, Chat, Forum, Quiz } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -8,6 +8,7 @@ import QnaList from './QnaList';
 import QnaSidebarContent from './QnaSidebarContent';
 import { Tab, Tabs } from '@mui/material';
 import QuestionBoard from '@/shared/pages/question-board/QuestionBoard';
+import PublicQna from '@/shared/pages/public-qna/PublicQna';
 
 const Qna = () => {
 	const routeParams = useParams();
@@ -45,7 +46,7 @@ const Qna = () => {
 
 	useEffect(() => {
 		setTabValue(
-			location?.pathname.includes('question-board') ? 0
+			location?.pathname.includes('public-qna') ? 0
 				: location?.pathname.includes('question-board') ? 1
 					: 0
 		)
@@ -103,11 +104,15 @@ const Qna = () => {
 					>
 						<Tab
 							className="text-lg font-semibold min-h-40 min-w-64 px-16"
-							label="Question Board"
+							label="My Questions"
 						/>
 						<Tab
 							className="text-lg font-semibold min-h-40 min-w-64 px-16"
-							label="My Q&A"
+							label="Public Q&As"
+						/>
+						<Tab
+							className="text-lg font-semibold min-h-40 min-w-64 px-16"
+							label="FAQs"
 						/>
 					</Tabs>
 				</div>
@@ -125,8 +130,9 @@ const Qna = () => {
 			content={
 				<div className="w-full pr-8">
 					<div className=''>
-						{tabValue === 0 && <QuestionBoard />}
-						{tabValue === 1 && <QnaList />}
+						{tabValue === 0 && <QnaList />}
+						{tabValue === 1 && <PublicQna />}
+						{tabValue === 2 && <QuestionBoard />}
 					</div>
 				</div>
 			}

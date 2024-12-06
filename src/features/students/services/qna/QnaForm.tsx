@@ -26,7 +26,7 @@ import { useGetCounselorExpertisesQuery } from '@shared/services';
 import { usePostQuestionMutation, useEditQuestionMutation, useGetStudentQuestionQuery, useGetBanInfoQuery } from './qna-api';
 import _ from 'lodash';
 import BanInfo from './BanInfo';
-import { NavLinkAdapter } from '@/shared/components';
+import { BackdropLoading, NavLinkAdapter, RenderHTML } from '@/shared/components';
 import { ArrowBack } from '@mui/icons-material';
 import { useAppDispatch } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
@@ -70,7 +70,6 @@ function QnaForm() {
 
 	const { data: banInfoData } = useGetBanInfoQuery()
 	const banInfo = banInfoData
-	const quillRef = useRef(null);
 
 
 	const question = questionData?.content
@@ -84,9 +83,6 @@ function QnaForm() {
 
 	const { errors, isValid, dirtyFields } = formState;
 
-	// Watch the selected type and dynamically render fields
-	const selectedType = watch('questionType');
-
 	// Conditional fields data
 	const { data: departments, isLoading: loadingDepartments } = useGetDepartmentsQuery();
 	const { data: majors, isLoading: loadingMajors } = useGetMajorsByDepartmentQuery(watch('departmentId'), {
@@ -99,70 +95,6 @@ function QnaForm() {
 		}
 	);
 
-	const [uploadProgress, setUploadProgress] = useState(0);
-
-	const handleQuillChange = (value: string) => {
-		setValue('content', value, {
-			shouldValidate: true
-		});
-	};
-
-	// Image upload handler
-	const handleImageUpload = useCallback(() => {
-		const input = document.createElement("input");
-		input.setAttribute("type", "file");
-		input.setAttribute("accept", "image/*");
-		input.click();
-
-		input.onchange = async () => {
-			if (input && input.files && input.files[0]) {
-				const file = input.files[0];
-				const path = `images/${Date.now()}_${file.name}`;
-				console.log(`Image`, path)
-
-				try {
-					const downloadURL = await uploadFile(file, path, (progress) => {
-						setUploadProgress(progress);
-					});
-
-
-					// Now insert the image into the Quill editor
-					const quill = quillRef.current?.getEditor(); // Get the Quill editor instance
-
-					if (quill) {
-						const range = quill.getSelection(); // Get the current selection (position) in the editor
-						console.log(`Range: `, range)
-
-						if (range) {
-							quill.insertEmbed(range.index, 'image', downloadURL); // Insert the image URL at the cursor position
-							const image = quill.root.querySelector('img[src="' + downloadURL + '"]');
-							if (image) {
-								image.style.maxWidth = '48rem';
-								image.style.height = 'auto';
-							}
-						}
-					}
-				} catch (error) {
-					console.error("Image upload failed:", error);
-				}
-			}
-		};
-	}, []);
-
-	const modules = {
-		toolbar: {
-			container: [
-				[{ header: '1' }, { header: '2' }],
-				// ['bold', 'italic', 'underline'],
-				[{ list: 'ordered' }, { list: 'bullet' }],
-				['link'],
-				['image'], // Image button in the toolbar
-			],
-			handlers: {
-				image: handleImageUpload, // Custom handler for image upload
-			},
-		},
-	};
 
 	// Mutations for posting and editing questions
 	const [postQuestion, { isLoading: isPosting }] = usePostQuestionMutation();
@@ -207,13 +139,9 @@ function QnaForm() {
 			} else {
 				useConfirmDialog({
 					dispatch: dispatch,
-					title: 'Confirm creating question',
+					title: 'Confirm asking question',
 					content: (
-						<div>
-							<Typography>Question type: {data.questionType}</Typography>
-							<Typography>Content:</Typography>
-							<Typography>{data.content}</Typography>
-						</div>
+						<div>{data.title}</div>
 					),
 					confirmButtonFunction: () => {
 						postQuestion({
@@ -246,12 +174,12 @@ function QnaForm() {
 			console.error("Failed to submit question:", error);
 		}
 	};
-
 	useEffect(() => {
 		if (editMode && questionData) {
 			reset({
 				questionType: question?.questionType || 'ACADEMIC',
 				content: question?.content || '',
+				title: question?.title || '',
 			});
 		}
 	}, [editMode, questionData, reset]);
@@ -259,7 +187,7 @@ function QnaForm() {
 	if (banInfo?.ban) {
 		return <BanInfo banInfo={banInfo} />
 	}
-
+console.log(watch())
 	return (
 		<div className="container flex flex-col items-center p-32 w-xl">
 			<div className="flex flex-col w-full ">
@@ -305,10 +233,11 @@ function QnaForm() {
 							<Controller
 								control={control}
 								name="title"
+								defaultValue={question?.title || ''}
 								render={({ field }) => (
 									<TextField
-										className="mt-32"
 										{...field}
+										className="mt-32"
 										label="Title"
 										placeholder="Title"
 										id="Title"
@@ -323,7 +252,6 @@ function QnaForm() {
 								value={watch('content')}
 								onChange={(value) => setValue('content', value, { shouldValidate: true })}
 								error={errors.content?.message}
-								label="Question"
 							/>
 
 						</div>
@@ -346,6 +274,7 @@ function QnaForm() {
 					</form>
 				</Paper>
 			</div>
+			{(isPosting || isEditing) && <BackdropLoading />}
 		</div >
 	);
 }

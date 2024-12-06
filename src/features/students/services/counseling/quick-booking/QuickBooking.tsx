@@ -2,7 +2,7 @@ import { useSocket } from '@/shared/context';
 import { CounselingType, Counselor } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronRight, Close, ContactSupport, Female, Handshake, Male, People, PersonPin, School, SentimentVeryDissatisfied } from '@mui/icons-material';
-import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, IconButton, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
+import { Autocomplete, Box, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, IconButton, InputLabel, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -19,9 +19,10 @@ import { useBookCounselorMutation, useGetCounselorSlotsQuery, useGetCounselorSpe
 import { counselingTypeDescription } from '@/shared/constants';
 import { useGetCounselorExpertisesQuery, useGetDepartmentsQuery, useGetMajorsByDepartmentQuery, useGetSpecializationsByMajorQuery } from '@/shared/services';
 import { useConfirmDialog } from '@/shared/hooks';
-import { useAppDispatch } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
 import { getApiErrorMessage } from '@shared/store';
+import { useGetStudentDocumentQuery } from '@/features/students/students-api';
 
 /**
  * The contact view.
@@ -129,8 +130,9 @@ function QuickBooking() {
   // const { data: counserDailySlotsData, isFetching: isFetchingCounselorSlots } = useGetCounselorDailyQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
   const onSubmitMatching = () => {
+    console.log(formData)
     const element = document.getElementById('found_counselor');
-    if (element) {
+    if (element) {  
       element.scrollIntoView({ behavior: 'smooth' });
     }
     navigate('#found_counselor');
@@ -139,9 +141,12 @@ function QuickBooking() {
     getRandomMatchedCounselor({
       date: formData.date,
       slotId: formData.slotId,
-      expertiseId: formData.expertise?.id,
-      specializationId: formData.specialization?.id,
+      // expertiseId: formData.expertise?.id,
+      // specializationId: formData.specialization?.id,
+      departmentId: formData.department.id,
+      majorId: formData.major.id,
       gender: formData.gender,
+      reason: formData.reason
     })
       .unwrap()
       .then(response => {
@@ -238,6 +243,15 @@ function QuickBooking() {
     }
   }, [isGettingRandomMatchedCounselor]); // Start the effect when the condition is met
 
+  const { data: studentDocumentData } = useGetStudentDocumentQuery();
+  const studentProfile = studentDocumentData?.content.studentProfile
+
+  useEffect(() => {
+    reset({
+      department: studentProfile?.department,
+      major: studentProfile?.major,
+    })
+  }, [studentDocumentData]);
 
   return (
     <>
@@ -246,7 +260,7 @@ function QuickBooking() {
         <Box className='flex w-full gap-16 mt-8'>
           <div className='w-full'>
             <div className="flex flex-col flex-1 gap-16">
-              <Paper className='p-32 shadow'>
+              <Paper className='p-24 shadow'>
                 <Typography className='text-lg font-semibold text-primary'>Select counseling type</Typography>
                 <FormControl className='w-full'>
                   <RadioGroup
@@ -291,7 +305,33 @@ function QuickBooking() {
                   </RadioGroup>
                 </FormControl>
               </Paper>
-              <Paper className='p-32 shadow'>
+              <Paper className='p-24 shadow'>
+                <Typography className='text-lg font-semibold text-primary'>Enter reason</Typography>
+                <Controller
+                  control={control}
+                  name="reason"
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      className="mt-16"
+                      label="Reason"
+                      placeholder="Enter your reason"
+                      multiline
+                      rows={8}
+                      id="Reason"
+                      error={!!errors.reason}
+                      helperText={errors?.reason?.message}
+                      fullWidth
+                      slotProps={{
+                        inputLabel: {
+                          shrink: true,
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Paper>
+              <Paper className='p-24 shadow'>
                 <div className='w-fit'>
                   <Typography className='text-lg font-semibold text-primary'>Select date</Typography>
                   <DateCalendar
@@ -350,11 +390,12 @@ function QuickBooking() {
                   }
                 </div>
               </Paper>
-              <Paper className='p-32 shadow'>
-                {
-                  counselingType === 'ACADEMIC'
-                    ? < div className=''>
-                      <Typography className='text-lg font-semibold text-primary'>Select Department (optional)</Typography>
+
+              {
+                counselingType === 'ACADEMIC'
+                  ? <Paper className='p-24 shadow'>
+                    < div className=''>
+                      <Typography className='text-lg font-semibold text-primary'>Select Department</Typography>
                       <Controller
                         name="department"
                         control={control}
@@ -384,7 +425,7 @@ function QuickBooking() {
                       />
 
                       {/* Major Selection */}
-                      <Typography className='mt-16 text-lg font-semibold text-primary'>Select Major (optional)</Typography>
+                      <Typography className='mt-16 text-lg font-semibold text-primary'>Select Major</Typography>
                       <Controller
                         name="major"
                         control={control}
@@ -412,7 +453,7 @@ function QuickBooking() {
                       />
 
                       {/* Specialization Selection */}
-                      <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization (optional)</Typography>
+                      {/* <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization (optional)</Typography>
                       <Controller
                         name="specialization"
                         control={control}
@@ -434,35 +475,36 @@ function QuickBooking() {
                             )}
                           />
                         )}
-                      />
+                      /> */}
                     </div>
-                    : < div className=''>
-                      <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise (optional)</Typography>
-                      <Controller
-                        name="expertise"
-                        control={control}
-                        render={({ field }) => (
-                          <Autocomplete
-                            {...field}
-                            options={expertises}
-                            className='mt-16'
-                            getOptionLabel={(option) => option.name}
-                            onChange={(_, value) => field.onChange(value)}
-                            value={field.value || null}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Expertise "
-                                variant="outlined"
-                                error={!!errors.expertise}
-                              />
-                            )}
-                          />
-                        )}
-                      />
-                    </div>
-                }
-              </Paper>
+                  </Paper>
+                  : < div className=''>
+                    {/* <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise (optional)</Typography>
+                    <Controller
+                      name="expertise"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={expertises}
+                          className='mt-16'
+                          getOptionLabel={(option) => option.name}
+                          onChange={(_, value) => field.onChange(value)}
+                          value={field.value || null}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Expertise "
+                              variant="outlined"
+                              error={!!errors.expertise}
+                            />
+                          )}
+                        />
+                      )}
+                    /> */}
+                  </div>
+              }
+
               <Paper className='p-32 pb-16 shadow'>
                 <Typography className='text-lg font-semibold text-primary'>Select couselor's gender (optional)</Typography>
                 <div className="mt-8">
@@ -566,6 +608,11 @@ function QuickBooking() {
                     <Box className="flex flex-col items-center w-full">
                       <SentimentVeryDissatisfied className='size-224 text-text-disabled' />
                       <Typography className='text-2xl text-text-disabled'>No counselor matched!</Typography>
+                      <div className='text-2xl text-text-disabled'>Find more counselors at
+                        <Button>
+                          Counselor list
+                        </Button>
+                      </div>
                     </Box>
                     : randomMatchedCounselor
                       ?
@@ -628,29 +675,6 @@ function QuickBooking() {
                               )}
                             />
                           </div>
-
-
-                          <div className='px-16'>
-                            <Controller
-                              control={control}
-                              name="reason"
-                              render={({ field }) => (
-                                <TextField
-                                  className="mt-16"
-                                  {...field}
-                                  label="Reason"
-                                  placeholder="Reason"
-                                  multiline
-                                  rows={8}
-                                  id="Reason"
-                                  error={!!errors.reason}
-                                  helperText={errors?.reason?.message}
-                                  fullWidth
-                                />
-                              )}
-                            />
-                          </div>
-
 
                           <div className='flex justify-center px-32 mt-24'>
                             <Button

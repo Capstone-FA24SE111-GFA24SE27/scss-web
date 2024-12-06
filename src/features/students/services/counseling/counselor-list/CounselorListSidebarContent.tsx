@@ -45,7 +45,7 @@ const CounselorListSidebarContent = () => {
   };
 
   const handleExpertiseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setExpertiseId(Number(event.target.value)))
+    dispatch(setExpertiseId(Number(event.target.value) || undefined))
   };
 
   const handleRatingChange = (value: number | number[]) => {

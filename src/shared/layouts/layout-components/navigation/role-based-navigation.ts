@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description, Schedule, Monitor, Plagiarism } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description, Schedule, Monitor, Plagiarism, Inventory, Quiz } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FmdBadIcon from '@mui/icons-material/FmdBad';
 import { Actor } from "@/shared/components";
@@ -153,18 +153,23 @@ const counselorNavigation: NavigationOptions = {
         },
         {
             name: "Q&A",
-            description: "Questions and answer",
+            description: "Questions and answers",
             route: 'qna',
             items: [
                 {
+                    icon: Class,
+                    name: 'Forwarded Questions',
+                    route: 'my-qna'
+                },
+                {
                     icon: Assignment,
-                    name: 'Question Board',
+                    name: 'FAQs',
                     route: 'question-board'
                 },
                 {
-                    icon: Class,
-                    name: 'My Q&A',
-                    route: 'my-qna'
+                    icon: Quiz,
+                    name: 'Public Q&As',
+                    route: 'public-qna'
                 },
                 {
                     icon: Forum,
@@ -443,8 +448,8 @@ const supportStaffNavigation: NavigationOptions = {
                     name: 'Recommended Students',
                     route: 'recommended',
                 },
-                
-                
+
+
             ]
         },
     ],

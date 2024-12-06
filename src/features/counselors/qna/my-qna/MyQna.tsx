@@ -25,7 +25,7 @@ function MyQna() {
     <PageSimple
       header={
         <div className='p-32 bg-background-paper'>
-          <Heading title='My Q&A' description='List of your questions and answers' />
+          <Heading title='Fowarded Questions' description='List of your assigned questions to answer' />
         </div>}
       content={<MyQnaContent />}
       ref={pageLayout}

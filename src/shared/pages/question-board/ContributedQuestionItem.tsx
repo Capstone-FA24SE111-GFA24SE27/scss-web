@@ -1,4 +1,4 @@
-import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML, BackdropLoading } from '@/shared/components';
 import { statusColor } from '@/shared/constants';
 import {
   ChatBubbleOutline,
@@ -19,14 +19,17 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   Paper,
   Typography,
   styled
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import { ContributedQuestionCard } from './question-board-api';
-import { useAppDispatch } from '@shared/store';
+import { ContributedQuestionCard, useDeleteContributedQuestionCardByIdMutation } from './question-board-api';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { CounselorView } from '..';
+import dayjs from 'dayjs';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 
 
 export const StyledAccordionSummary = styled(AccordionSummary)({
@@ -46,6 +49,37 @@ const item = {
 const ContributedQuestionItem = (props: Props) => {
   const { contributedQuestion } = props;
   const dispatch = useAppDispatch()
+  const account = useAppSelector(selectAccount)
+  const isMyQna = account.profile.id === contributedQuestion.counselor.id;
+
+  const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteContributedQuestionCardByIdMutation();
+
+  const handleDeleteQuestion = () => {
+    useConfirmDialog({
+      title: 'Confirm deleting the question?',
+      content: 'This action will permanently delete the question and cannnot be undone',
+      confirmButtonFunction: () => {
+        deleteQuestion(contributedQuestion.id)
+          .unwrap()
+          .then(() => {
+            useAlertDialog({
+              title: 'Question was deleted successfully',
+              dispatch: dispatch,
+              color: 'success'
+            });
+          })
+          .catch(() => {
+            useAlertDialog({
+              title: 'Failed to delete question',
+              dispatch: dispatch,
+              color: 'error'
+            });
+          })
+      },
+      dispatch,
+    });
+  }
+
 
   return (
     <motion.div variants={item}>
@@ -73,14 +107,9 @@ const ContributedQuestionItem = (props: Props) => {
                   color={'secondary'}
                   size='small'
                 />
-                <Chip
-                  label={contributedQuestion.status}
-                  color={statusColor[contributedQuestion.status as string]}
-                  size='small'
-                />
 
               </div>
-              <div>
+              <div className='flex items-center gap-8'>
                 <UserLabel
                   label='Contributed by'
                   profile={contributedQuestion.counselor.profile}
@@ -94,53 +123,51 @@ const ContributedQuestionItem = (props: Props) => {
                     }))
                   }}
                 />
+                <span className='text-text-secondary' >•</span>
+                <Typography color='textSecondary'>{`${dayjs(contributedQuestion.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}</Typography>
               </div>
               <div className='flex items-center flex-1 gap-8'>
                 <Typography className='w-full pr-8 font-semibold'>
                   {/* {contributedQuestion.content} */}
-                  {RenderHTML(contributedQuestion.question)}
+                  {RenderHTML(contributedQuestion.title || `No Title`)}
                 </Typography>
               </div>
             </div>
           </AccordionSummary>
 
-          <AccordionDetails className='flex'>
-            <div className='flex flex-col gap-8'>
-              {!contributedQuestion.counselor ? (
-                <Typography
-                  className='px-8 italic'
-                  color='textDisabled'
-                >
-                  {'No counselor has taken this question'}
-                </Typography>
-              ) : contributedQuestion.answer ? (
-                <div>
-                  {/* <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
-                  <ExpandableText
-                    className='flex flex-wrap w-full overflow-hidden break-all text-wrap'
-                    text={contributedQuestion.answer}
-                    limit={100}
-                  />
-                </div>
-              ) : (
-                <div>
-                  <Typography
-                    className='italic'
-                    color='textDisabled'
-                  >
-                    {'The counselor has not answer yet'}
-                  </Typography>
-                </div>
-              )}
-            </div>
+          <AccordionDetails className='flex flex-col gap-8'>
+            {RenderHTML(contributedQuestion.question)}
+            <Divider />
+            <Typography className='font-semibold' color='textSecondary'>Answer</Typography>
+            {RenderHTML(contributedQuestion.answer)}
           </AccordionDetails>
-          <Box className='flex justify-end w-full gap-8 px-16 py-8 bg-primary-light/5 '>
-            <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
-            <Button variant='outlined' size='small' color='secondary' startIcon={<Share />}>Share</Button>
-            <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button>
-          </Box>
+
+          <div>
+            {
+              isMyQna ?
+                <Box className='flex justify-end w-full gap-8 px-16 py-8 bg-primary-light/5 '>
+                  <Button variant='outlined' size='small' color='secondary' startIcon={<Delete />}
+                    onClick={handleDeleteQuestion}
+                  >
+                    Delete
+                  </Button>
+                  <Button variant='contained' size='small' color='secondary' startIcon={<Edit />}
+                    component={NavLinkAdapter}
+                    to={`edit/${contributedQuestion.id}`}
+                  >
+                    Edit
+                  </Button>
+                </Box>
+                : <Box className='flex justify-end w-full gap-8 px-16 py-8 bg-primary-light/5 '>
+                  <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
+                  <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button>
+                </Box>
+            }
+          </div>
+
         </Accordion>
       </Paper>
+      {isDeletingQuestion && <BackdropLoading />}
     </motion.div>
   );
 };

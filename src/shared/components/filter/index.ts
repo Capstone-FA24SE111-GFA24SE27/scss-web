@@ -6,6 +6,7 @@ import Pagination from "./Pagination";
 import DateRangePicker from "./DateRangePicker";
 import SortingToggle from "./SortingToggle";
 import AcademicFilter from "./AcademicFilter";
+import CategorySelect from "./CategorySelect";
 export {
   FilterTabs,
   SearchField,
@@ -14,5 +15,7 @@ export {
   Pagination,
   DateRangePicker,
   SortingToggle,
-  AcademicFilter
+  AcademicFilter,
+  CategorySelect
 }
+export { ContentSearch } from "./SearchField";
