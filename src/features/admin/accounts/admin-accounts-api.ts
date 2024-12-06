@@ -1,6 +1,6 @@
 import { roles } from '@/shared/constants';
 import { roleBasedNavigation } from '@/shared/layouts/layout-components/navigation';
-import { Account, PaginationContent, Role } from '@/shared/types';
+import { Account, CertificationList, PaginationContent, QualificationList, Role } from '@/shared/types';
 import { apiService, ApiResponse, ApiMessage } from '@shared/store';
 
 const addTagTypes = ['accounts'] as const;
@@ -149,6 +149,7 @@ export const {
 
 type postCreateSupportStaffAccountRepsonse = ApiMessage;
 type postCreateSupportStaffAccountArgs = {
+	avatarLink: string;
 	email: string;
 	password: string;
 	gender: 'MALE' | 'FEMALE';
@@ -159,6 +160,7 @@ type postCreateSupportStaffAccountArgs = {
 
 type postCreateManagerAccountRepsonse = ApiMessage;
 type postCreateManagerAccountArgs = {
+	avatarLink: string;
 	email: string;
 	password: string;
 	gender: 'MALE' | 'FEMALE';
@@ -169,6 +171,7 @@ type postCreateManagerAccountArgs = {
 
 type postCreateAcademicCounselorAccountRepsonse = ApiMessage;
 type postCreateAcademicCounselorAccountArgs = {
+	avatarLink: string;
 	email: string;
 	password: string;
 	gender: 'MALE' | 'FEMALE';
@@ -178,10 +181,17 @@ type postCreateAcademicCounselorAccountArgs = {
 	departmentId: string | number;
 	majorId: string | number;
 	specializationId: string | number;
+	specializedSkills?: string,
+	otherSkills?: string,
+	workHistory?: string,
+	achievements?: string,
+	qualifications?: Omit<QualificationList, 'id'>,
+	certifications?: Omit<CertificationList, 'id'>
 };
 
 type postCreateNonAcademicCounselorAccountRepsonse = ApiMessage;
 type postCreateNonAcademicCounselorAccountArgs = {
+	avatarLink: string;
 	email: string;
 	password: string;
 	gender: 'MALE' | 'FEMALE';
@@ -189,7 +199,12 @@ type postCreateNonAcademicCounselorAccountArgs = {
 	dateOfBirth: string;
 	fullName: string;
 	expertiseId: string | number;
-	
+	specializedSkills?: string,
+	otherSkills?: string,
+	workHistory?: string,
+	achievements?: string,
+	qualifications?: Omit<QualificationList, 'id'>,
+	certifications?: Omit<CertificationList, 'id'>
 };
 
 type postCreateAccountArgs = {
@@ -229,5 +244,5 @@ type getAccountsArgs = {
 
 type getOneAccountResponse = ApiResponse<Account>;
 type getOneAccountArgs = {
-	id: number;
+	id: number | string;
 };

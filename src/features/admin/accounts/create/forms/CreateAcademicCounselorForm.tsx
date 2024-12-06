@@ -1,5 +1,8 @@
-import { AcademicFilter, openDialog } from '@/shared/components';
+import { AcademicFilter, LoadingButton, openDialog } from '@/shared/components';
 import {
+	isValidImage,
+	MAX_FILE_SIZE,
+	uploadFile,
 	useGetDepartmentsQuery,
 	useGetMajorsByDepartmentQuery,
 	useGetSpecializationsByMajorQuery,
@@ -13,7 +16,6 @@ import {
 	CircularProgress,
 	IconButton,
 	MenuItem,
-	Paper,
 	Step,
 	StepLabel,
 	Stepper,
@@ -21,7 +23,7 @@ import {
 	TextField,
 	Typography,
 } from '@mui/material';
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useRef, useState } from 'react';
 import {
 	Controller,
 	FieldArrayWithId,
@@ -44,6 +46,9 @@ import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import clsx from 'clsx';
 import CertificationAppendForm from './CertificationAppendForm';
 import QualificationAppendForm from './QualificationAppendForm';
+import { checkImageUrl } from '@/shared/utils';
+import ImageInput from '@/shared/components/image/ImageInput';
+import Loading from '@/shared/components/loading/AppLoading';
 
 type Props = {};
 
@@ -52,6 +57,7 @@ const steps = [
 		id: 'Step 1',
 		name: 'Account Information',
 		fields: [
+			'avartarLink',
 			'fullName',
 			'email',
 			'gender',
@@ -73,14 +79,22 @@ const steps = [
 			'workHistory',
 			'achievements',
 			'qualifications',
-			'certifications'
+			'certifications',
 		],
 	},
 ];
 
-const currentYear = dayjs().year()
+const currentYear = dayjs().year();
 
 const schema = z.object({
+	avatarLink: z
+		.instanceof(File, { message: 'Image is required' })
+		.refine((file) => isValidImage(file), {
+			message: 'File must be an image',
+		})
+		.refine((file) => file.size <= MAX_FILE_SIZE, {
+			message: 'Image must be less than 5MB',
+		}),
 	email: z.string().email('Invalid email address'), // Validates email format
 	password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
 	gender: z.enum(['MALE', 'FEMALE']), // Enum for gender
@@ -93,7 +107,7 @@ const schema = z.object({
 			return dayjs(date, 'YYYY-MM-DD', true).isValid();
 		}, 'Birth date must be a valid date')
 		.refine((date) => {
-			const year = dayjs(date).year()
+			const year = dayjs(date).year();
 			return year >= 1900 && year <= currentYear;
 		}, `Year must be between 1900 and ${currentYear}`),
 
@@ -117,12 +131,13 @@ const schema = z.object({
 					'Invalid date format'
 				),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					(url) => /\.(jpg|jpeg|png|gif|webp)$/i.test(url),
-					'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
-				),
+				.instanceof(File)
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 	certifications: z.array(
@@ -130,12 +145,13 @@ const schema = z.object({
 			name: z.string().min(1, 'Please enter'),
 			organization: z.string().min(1, 'Please enter'),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					(url) => /\.(jpg|jpeg|png|gif|webp)$/i.test(url),
-					'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
-				),
+				.instanceof(File)
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 });
@@ -163,6 +179,7 @@ const ClearMenuItem = styled(MenuItem)(({ theme }) => ({
 
 const CreateAcademicCounselorForm = (props: Props) => {
 	const [showPassword, setShowPassword] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const enteredValues = useAppSelector(selectEnteredValues);
 	const initialValues = useAppSelector(selectInitialValues);
 	const dispatch = useAppDispatch();
@@ -170,12 +187,10 @@ const CreateAcademicCounselorForm = (props: Props) => {
 	const defaultValues = enteredValues['ACADEMIC_COUNSELOR'];
 
 	const [activeStep, setActiveStep] = useState(0);
-
-	
+	const [errorMsg, setErrorMsg] = useState(null);
 
 	const {
 		control,
-		register,
 		formState,
 		watch,
 		handleSubmit,
@@ -215,19 +230,19 @@ const CreateAcademicCounselorForm = (props: Props) => {
 
 	const isSubmittable = !!isDirty && !!isValid;
 
-	type FieldName = keyof FormType
-	
+	type FieldName = keyof FormType;
 
 	const handleNext = async (e: MouseEvent<HTMLButtonElement>) => {
-		const fields = steps[activeStep].fields
-		const result = await trigger(fields as FieldName[], { shouldFocus: true })
+		const fields = steps[activeStep].fields;
+		const result = await trigger(fields as FieldName[], {
+			shouldFocus: true,
+		});
 
-		if (!result) return
+		if (!result) return;
 
 		if (activeStep < steps.length - 1) {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}
-
 	};
 	const handleBack = (e: MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -347,23 +362,88 @@ const CreateAcademicCounselorForm = (props: Props) => {
 
 	const [createAccount] = usePostCreateAcademicCounselorAccountMutation();
 
-	const onSubmit = () => {
-		createAccount(formData)
-			.unwrap()
-			.then((res) => {
-				if(res){
+	const handleUpload = async (file: File) => {
+		const res = await uploadFile(file, `images/${Date.now()}_${file.name}`);
+		return res;
+	};
 
-					useAlertDialog({dispatch, title: res.message})
-					if(res.status === 200) {
+	const onSubmit = async () => {
+		setIsSubmitting(true);
 
-						dispatch(clearEnteredValueByTab('ACADEMIC_COUNSELOR'))
-						reset(initialValues['ACADEMIC_COUNSELOR'])
-					}
-				}
+		let avatarUrl = null;
+		let certificationsList = [];
+		let qualificationsList = [];
+
+		try {
+			avatarUrl = await handleUpload(formData.avatarLink);
+
+			certificationsList = await Promise.all(
+				formData.certifications.map(async (cert) => {
+					const url = await handleUpload(cert.imageUrl);
+					return {
+						...cert,
+						imageUrl: url,
+					};
+				})
+			);
+
+			qualificationsList = await Promise.all(
+				formData.qualifications.map(async (qual) => {
+					const url = await handleUpload(qual.imageUrl);
+					return {
+						...qual,
+						imageUrl: url,
+					};
+				})
+			);
+
+			createAccount({
+				...formData,
+				avatarLink: avatarUrl,
+				certifications: certificationsList,
+				qualifications: qualificationsList,
 			})
-			.catch((err) => console.log(err));
-		console.log('formdata', formData);
+				.unwrap()
+				.then((res) => {
+					if (res) {
+						if (res.status === 200) {
+							useAlertDialog({
+								dispatch,
+								title: res.message,
+								color: 'success',
+							});
+							dispatch(
+								clearEnteredValueByTab('ACADEMIC_COUNSELOR')
+							);
+							reset(initialValues['ACADEMIC_COUNSELOR']);
+						} else {
+							useAlertDialog({
+								dispatch,
+								title: res.message,
+								color: 'error',
+							});
+						}
+					}
+				})
+				.catch((err) => console.log('error submiting form', err))
+				.finally();
+			setErrorMsg('');
+		} catch (err) {
+			console.error('Image upload failed:', err);
+			setErrorMsg('Error while uploading images');
+			setIsSubmitting(false);
+		}
+
+		console.log('formdata', {
+			...formData,
+			avatarLink: avatarUrl,
+			certifications: certificationsList,
+			qualifications: qualificationsList,
+		});
+
 		console.log('formdata', isValid);
+
+		setIsSubmitting(false);
 	};
 
 	useEffect(() => {
@@ -379,7 +459,6 @@ const CreateAcademicCounselorForm = (props: Props) => {
 	}, [dispatch, getValues]);
 
 	return (
-		<div className='flex flex-wrap w-full h-full gap-16'>
 			<form
 				className='w-full h-full'
 				onSubmit={handleSubmit(onSubmit)}
@@ -390,7 +469,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 				// 	}
 				// }}
 			>
-				<Paper className='flex flex-col w-full gap-32 p-32 mt-16'>
+				<div className='flex flex-col w-full gap-32 p-32 mt-16'>
 					<Stepper
 						activeStep={activeStep}
 						alternativeLabel
@@ -409,11 +488,11 @@ const CreateAcademicCounselorForm = (props: Props) => {
 								: 'flex flex-wrap flex-1 w-full h-full gap-16'
 						)}
 					>
-						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+						<div className='flex flex-col flex-1 gap-16 '>
 							<Typography className='text-lg font-semibold leading-tight'>
 								Enter basic account info:
 							</Typography>
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='fullName'
@@ -431,7 +510,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									)}
 								/>
 							</div>
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='phoneNumber'
@@ -451,7 +530,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 								/>
 							</div>
 
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='dateOfBirth'
@@ -459,26 +538,35 @@ const CreateAcademicCounselorForm = (props: Props) => {
 										<DatePicker
 											className='w-full'
 											label='Date of birth'
-											value={field.value ? dayjs(field.value) : null}
+											value={
+												field.value
+													? dayjs(field.value)
+													: null
+											}
 											minDate={dayjs('1900-01-01')}
 											disableFuture
 											format='YYYY-MM-DD'
 											slotProps={{
 												textField: {
 													helperText:
-														errors.dateOfBirth?.message,
+														errors.dateOfBirth
+															?.message,
 												},
 											}}
 											views={['year', 'month', 'day']}
 											onChange={(date) => {
-												field.onChange(dayjs(date).format('YYYY-MM-DD'));
+												field.onChange(
+													dayjs(date).format(
+														'YYYY-MM-DD'
+													)
+												);
 											}}
 										/>
 									)}
 								/>
 							</div>
 
-							<div className='min-w-320'>
+							<div className=''>
 								<Controller
 									control={control}
 									name='gender'
@@ -511,7 +599,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 								/>
 							</div>
 
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='email'
@@ -527,7 +615,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									)}
 								/>
 							</div>
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='password'
@@ -568,6 +656,33 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									)}
 								/>
 							</div>
+
+							<div className='flex items-start flex-1 gap-8 '>
+								<Typography>Avatar: </Typography>
+								<Controller
+									control={control}
+									name='avatarLink'
+									render={({ field }) => (
+										<div className='flex-1 aspect-square max-w-256'>
+											<ImageInput
+												error={!!errors.avatarLink}
+												onFileChange={(file: File) =>
+													field.onChange(file)
+												}
+												file={field.value}
+											/>
+										</div>
+									)}
+								/>
+								{errors.avatarLink && (
+									<Typography
+										color='error'
+										className='text-sm'
+									>
+										{errors.avatarLink.message}
+									</Typography>
+								)}
+							</div>
 						</div>
 					</div>
 
@@ -575,13 +690,13 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						className={clsx(
 							activeStep !== 1
 								? 'hidden'
-								: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 min-w-320'
+								: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 '
 						)}
 					>
 						<Typography className='text-lg font-semibold leading-tight'>
 							Select counselor's info:
 						</Typography>
-						<div className='min-w-320'>
+						<div className=''>
 							<Controller
 								control={control}
 								name='departmentId'
@@ -627,7 +742,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 							/>
 						</div>
 
-						<div className='min-w-320'>
+						<div className=''>
 							{/* Major Select */}
 							<Controller
 								control={control}
@@ -675,7 +790,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 							/>
 						</div>
 
-						<div className='min-w-320'>
+						<div className=''>
 							{/* Specialization Select */}
 							<Controller
 								control={control}
@@ -740,7 +855,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						<Typography className='text-lg font-semibold leading-tight'>
 							Enter counselor's additional informations:
 						</Typography>
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='specializedSkills'
@@ -749,6 +864,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 										{...field}
 										label='Specialized Skills'
 										fullWidth
+										multiline
 										variant='outlined'
 										error={!!errors.specializedSkills}
 										helperText={
@@ -758,7 +874,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 								)}
 							/>
 						</div>
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='otherSkills'
@@ -766,6 +882,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									<TextField
 										{...field}
 										label='Other Skills'
+										multiline
 										fullWidth
 										variant='outlined'
 										error={!!errors.otherSkills}
@@ -775,7 +892,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 							/>
 						</div>
 
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='achievements'
@@ -783,6 +900,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									<TextField
 										{...field}
 										label='Achievements'
+										multiline
 										fullWidth
 										variant='outlined'
 										error={!!errors.achievements}
@@ -794,7 +912,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 							/>
 						</div>
 
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='workHistory'
@@ -802,6 +920,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									<TextField
 										{...field}
 										label='Work History'
+										multiline
 										fullWidth
 										variant='outlined'
 										error={!!errors.workHistory}
@@ -811,18 +930,20 @@ const CreateAcademicCounselorForm = (props: Props) => {
 							/>
 						</div>
 
-						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+						<div className='flex flex-col flex-1 gap-16 '>
 							<div className='flex flex-wrap items-center gap-8'>
 								<Typography className='font-semibold'>
 									Certifications:{' '}
 								</Typography>
 								{certificationFields.map(
 									(certification, index) => (
-										<div className='flex flex-wrap items-center space-y-8'>
+										<div
+											key={certification.id}
+											className='flex flex-wrap items-center space-y-8'
+										>
 											<Chip
 												variant='filled'
 												label={certification.name}
-												key={certification.id}
 												onClick={() =>
 													handleUpdateCertification(
 														certification,
@@ -851,7 +972,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 							</Button>
 						</div>
 
-						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+						<div className='flex flex-col flex-1 gap-16 '>
 							<div className='flex flex-wrap items-center space-y-8'>
 								<Typography className='font-semibold'>
 									Qualifications:{' '}
@@ -859,11 +980,13 @@ const CreateAcademicCounselorForm = (props: Props) => {
 
 								{qualificationsFields.map(
 									(qualification, index) => (
-										<div className='flex items-center'>
+										<div
+											key={qualification.id}
+											className='flex items-center'
+										>
 											<Chip
 												variant='filled'
 												label={qualification.degree}
-												key={qualification.id}
 												onClick={() =>
 													handleUpdateQualification(
 														qualification,
@@ -893,7 +1016,13 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						</div>
 					</div>
 
-					<Box display='flex' justifyContent='space-between' mt={8}>
+					{errorMsg && errorMsg.trim() !== '' && (
+						<Typography color='error' className='font-semibold'>
+							{errorMsg}
+						</Typography>
+					)}
+
+					<Box display='flex' justifyContent='space-between'>
 						<Button
 							disabled={activeStep === 0}
 							onClick={handleBack}
@@ -910,8 +1039,13 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									variant='contained'
 									color='secondary'
 									type='submit'
+									disabled={isSubmitting}
 								>
-									Confirm
+									{isSubmitting ? (
+										<CircularProgress />
+									) : (
+										'Confirm'
+									)}
 								</Button>
 							) : (
 								<Button
@@ -920,16 +1054,14 @@ const CreateAcademicCounselorForm = (props: Props) => {
 									color='secondary'
 									className='w-96'
 									type='button'
-
 								>
 									Next
 								</Button>
 							)}
 						</div>
 					</Box>
-				</Paper>
+				</div>
 			</form>
-		</div>
 	);
 };
 

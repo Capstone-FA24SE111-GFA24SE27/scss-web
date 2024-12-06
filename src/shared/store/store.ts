@@ -15,8 +15,8 @@ export const store = configureStore({
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: {
-        ignoredActions: ['dialog/openDialog', 'chatSessionSlice/setChatListeners', 'chatSessionSlice/setPassiveChatCallback'],
-				ignoredPaths: ['dialog.children', 'chatSessionSlice.listeners', 'chatSessionSlice.passiveCallBack']
+       			ignoredActions: ['dialog/openDialog', 'chatSessionSlice/setChatListeners', 'chatSessionSlice/setPassiveChatCallback', 'createAccountAdminSlice'],
+				ignoredPaths: ['dialog.children', 'chatSessionSlice.listeners', 'chatSessionSlice.passiveCallBack', 'createAccountAdminSlice']
 			},
 		}).concat(middlewares),
 });
