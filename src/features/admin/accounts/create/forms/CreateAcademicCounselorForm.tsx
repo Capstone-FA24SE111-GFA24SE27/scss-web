@@ -1,36 +1,84 @@
-import { AcademicFilter } from '@/shared/components';
+import { AcademicFilter, openDialog } from '@/shared/components';
 import {
 	useGetDepartmentsQuery,
 	useGetMajorsByDepartmentQuery,
 	useGetSpecializationsByMajorQuery,
 } from '@/shared/services';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Add, Delete, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
+	Box,
 	Button,
+	Chip,
 	CircularProgress,
 	IconButton,
 	MenuItem,
 	Paper,
+	Step,
+	StepLabel,
+	Stepper,
 	styled,
 	TextField,
 	Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import {
-	usePostCreateAcademicCounselorAccountMutation,
-	usePostCreateAccountMutation,
-} from '../../admin-accounts-api';
+	Controller,
+	FieldArrayWithId,
+	useFieldArray,
+	useForm,
+} from 'react-hook-form';
+import { z } from 'zod';
+import { usePostCreateAcademicCounselorAccountMutation } from '../../admin-accounts-api';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers';
-import { isNaN } from 'lodash';
-import { clearEnteredValueByTab, selectEnteredValues, selectInitialValues, setEnteredValueByTab } from './create-account-slice';
+import { findIndex, isNaN } from 'lodash';
+import {
+	clearEnteredValueByTab,
+	selectEnteredValues,
+	selectInitialValues,
+	setEnteredValueByTab,
+} from './create-account-slice';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import clsx from 'clsx';
+import CertificationAppendForm from './CertificationAppendForm';
+import QualificationAppendForm from './QualificationAppendForm';
 
 type Props = {};
+
+const steps = [
+	{
+		id: 'Step 1',
+		name: 'Account Information',
+		fields: [
+			'fullName',
+			'email',
+			'gender',
+			'phoneNumber',
+			'dateOfBirth',
+			'password',
+		],
+	},
+	{
+		id: 'Step 2',
+		name: 'Department Information',
+		fields: ['departmentId', 'majorId', 'specializationId'],
+	},
+	{
+		id: 'Step 3',
+		name: 'Relevant Skills',
+		fields: [
+			'otherSkills',
+			'workHistory',
+			'achievements',
+			'qualifications',
+			'certifications'
+		],
+	},
+];
+
+const currentYear = dayjs().year()
 
 const schema = z.object({
 	email: z.string().email('Invalid email address'), // Validates email format
@@ -41,17 +89,69 @@ const schema = z.object({
 		.regex(/^\d{10,15}$/, 'Phone number must be between 10 and 15 digits'),
 	dateOfBirth: z
 		.string()
-		.refine(
-			(date) => !isNaN(new Date(date).getTime()),
-			'Invalid date format'
-		), // Validates date string
+		.refine((date) => {
+			return dayjs(date, 'YYYY-MM-DD', true).isValid();
+		}, 'Birth date must be a valid date')
+		.refine((date) => {
+			const year = dayjs(date).year()
+			return year >= 1900 && year <= currentYear;
+		}, `Year must be between 1900 and ${currentYear}`),
+
 	fullName: z.string().min(1, 'Full name is required'), // Full name validation
 	departmentId: z.number().gt(0, 'Department ID must be selected'),
 	majorId: z.number().gt(0, 'Major ID must be selected'),
 	specializationId: z.number().gt(0, 'Specialization ID must be selected'),
+	specializedSkills: z.string().min(1, 'Specialized skill is required'),
+	otherSkills: z.string().min(1, 'Other skill is required'),
+	workHistory: z.string().min(1, 'Work history is required'),
+	achievements: z.string().min(1, 'Achievement is required'),
+	qualifications: z.array(
+		z.object({
+			degree: z.string().min(1, 'Degree is required'),
+			fieldOfStudy: z.string().min(1, 'Field of study is required'),
+			institution: z.string().min(1, 'Institution  is required'),
+			yearOfGraduation: z
+				.string()
+				.refine(
+					(date) => !isNaN(new Date(date).getTime()),
+					'Invalid date format'
+				),
+			imageUrl: z
+				.string()
+				.url('Invalid URL')
+				.refine(
+					(url) => /\.(jpg|jpeg|png|gif|webp)$/i.test(url),
+					'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
+				),
+		})
+	),
+	certifications: z.array(
+		z.object({
+			name: z.string().min(1, 'Please enter'),
+			organization: z.string().min(1, 'Please enter'),
+			imageUrl: z
+				.string()
+				.url('Invalid URL')
+				.refine(
+					(url) => /\.(jpg|jpeg|png|gif|webp)$/i.test(url),
+					'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
+				),
+		})
+	),
 });
 
+// async function checkImage(url){
+
+// 	const res = await fetch(url);
+// 	const buff = await res.blob();
+
+// 	return buff.type.startsWith('image/')
+
+// }
+
 type FormType = Required<z.infer<typeof schema>>;
+
+// const steps = ['Account Info', 'Department Info', 'Experience'];
 
 const ClearMenuItem = styled(MenuItem)(({ theme }) => ({
 	color: theme.palette.error.main,
@@ -63,28 +163,83 @@ const ClearMenuItem = styled(MenuItem)(({ theme }) => ({
 
 const CreateAcademicCounselorForm = (props: Props) => {
 	const [showPassword, setShowPassword] = useState(false);
-	const enteredValues = useAppSelector(selectEnteredValues)
-	const initialValues = useAppSelector(selectInitialValues)
-	const dispatch = useAppDispatch()
+	const enteredValues = useAppSelector(selectEnteredValues);
+	const initialValues = useAppSelector(selectInitialValues);
+	const dispatch = useAppDispatch();
 
-	const defaultValues = enteredValues['ACADEMIC_COUNSELOR']
+	const defaultValues = enteredValues['ACADEMIC_COUNSELOR'];
 
-	const { control, formState, watch, handleSubmit, setValue, reset, getValues } =
-		useForm<FormType>({
-			// @ts-ignore
-			defaultValues,
-			resolver: zodResolver(schema),
-		});
+	const [activeStep, setActiveStep] = useState(0);
+
+	
+
+	const {
+		control,
+		register,
+		formState,
+		watch,
+		handleSubmit,
+		setValue,
+		reset,
+		trigger,
+		getValues,
+	} = useForm<FormType>({
+		// @ts-ignore
+		defaultValues,
+		resolver: zodResolver(schema),
+		mode: 'onChange',
+	});
 	const formData = watch();
 
-	const { isValid, dirtyFields, errors } = formState;
+	const { isValid, isDirty, errors } = formState;
+
+	const {
+		fields: certificationFields,
+		append: appendCertificationField,
+		update: updateCertificationField,
+		remove: removeCertificationField,
+	} = useFieldArray({
+		name: 'certifications',
+		control,
+	});
+
+	const {
+		fields: qualificationsFields,
+		append: appendQualificationField,
+		update: updateQualificationField,
+		remove: removeQualificationField,
+	} = useFieldArray({
+		name: 'qualifications',
+		control,
+	});
+
+	const isSubmittable = !!isDirty && !!isValid;
+
+	type FieldName = keyof FormType
+	
+
+	const handleNext = async (e: MouseEvent<HTMLButtonElement>) => {
+		const fields = steps[activeStep].fields
+		const result = await trigger(fields as FieldName[], { shouldFocus: true })
+
+		if (!result) return
+
+		if (activeStep < steps.length - 1) {
+			setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		}
+
+	};
+	const handleBack = (e: MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+	};
 
 	// Fetch departments
 	const { data: departments, isLoading: loadingDepartments } =
 		useGetDepartmentsQuery();
 	// Fetch majors based on selected department
 	const { data: majors, isLoading: loadingMajors } =
-		useGetMajorsByDepartmentQuery(formData.departmentId, {
+		useGetMajorsByDepartmentQuery(formData.departmentId as number, {
 			skip: !formData.departmentId,
 		});
 	// Fetch specializations based on selected major
@@ -132,6 +287,64 @@ const CreateAcademicCounselorForm = (props: Props) => {
 		}
 	};
 
+	const handleOpenQualificationAppendDialog = () => {
+		dispatch(
+			openDialog({
+				children: (
+					<QualificationAppendForm
+						append={appendQualificationField}
+					/>
+				),
+			})
+		);
+	};
+
+	const handleUpdateQualification = (
+		quali: FieldArrayWithId<FormType, 'certifications', 'id'>,
+		index: string | number
+	) => {
+		dispatch(
+			openDialog({
+				children: (
+					<QualificationAppendForm
+						index={index}
+						update={updateQualificationField}
+						qualificationData={quali}
+					/>
+				),
+			})
+		);
+	};
+
+	const handleOpenCertificationAppendDialog = () => {
+		dispatch(
+			openDialog({
+				children: (
+					<CertificationAppendForm
+						append={appendCertificationField}
+					/>
+				),
+			})
+		);
+	};
+
+	const handleUpdateCertification = (
+		certi: FieldArrayWithId<FormType, 'certifications', 'id'>,
+		index: string | number
+	) => {
+		dispatch(
+			openDialog({
+				children: (
+					<CertificationAppendForm
+						index={index}
+						update={updateCertificationField}
+						certificationData={certi}
+					/>
+				),
+			})
+		);
+	};
+
 	const [createAccount] = usePostCreateAcademicCounselorAccountMutation();
 
 	const onSubmit = () => {
@@ -155,25 +368,47 @@ const CreateAcademicCounselorForm = (props: Props) => {
 
 	useEffect(() => {
 		return () => {
-		  const currentValues = getValues(); // Get current form values
-		  dispatch(setEnteredValueByTab({tab: 'ACADEMIC_COUNSELOR', formValues: currentValues})); // Save to Redux
+			const currentValues = getValues(); // Get current form values
+			dispatch(
+				setEnteredValueByTab({
+					tab: 'ACADEMIC_COUNSELOR',
+					formValues: currentValues,
+				})
+			); // Save to Redux
 		};
-	  }, [dispatch, getValues]);
+	}, [dispatch, getValues]);
 
 	return (
 		<div className='flex flex-wrap w-full h-full gap-16'>
 			<form
 				className='w-full h-full'
 				onSubmit={handleSubmit(onSubmit)}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						handleSubmit(onSubmit)();
-					}
-				}}
+				// onKeyDown={(e) => {
+				// 	if (e.key === 'Enter') {
+				// 		e.preventDefault();
+				// 		handleSubmit(onSubmit)();
+				// 	}
+				// }}
 			>
 				<Paper className='flex flex-col w-full gap-32 p-32 mt-16'>
-					<div className='flex flex-wrap flex-1 w-full h-full gap-32'>
+					<Stepper
+						activeStep={activeStep}
+						alternativeLabel
+						className='flex mb-16'
+					>
+						{steps.map((item, index) => (
+							<Step key={item.id} completed={index < activeStep}>
+								<StepLabel>{item.name}</StepLabel>
+							</Step>
+						))}
+					</Stepper>
+					<div
+						className={clsx(
+							activeStep !== 0
+								? 'hidden'
+								: 'flex flex-wrap flex-1 w-full h-full gap-16'
+						)}
+					>
 						<div className='flex flex-col flex-1 gap-16 min-w-320'>
 							<Typography className='text-lg font-semibold leading-tight'>
 								Enter basic account info:
@@ -224,31 +459,54 @@ const CreateAcademicCounselorForm = (props: Props) => {
 										<DatePicker
 											className='w-full'
 											label='Date of birth'
-											value={dayjs(field.value)}
+											value={field.value ? dayjs(field.value) : null}
 											minDate={dayjs('1900-01-01')}
 											disableFuture
+											format='YYYY-MM-DD'
 											slotProps={{
 												textField: {
 													helperText:
-														'Please select a valid date of birth',
+														errors.dateOfBirth?.message,
 												},
 											}}
 											views={['year', 'month', 'day']}
 											onChange={(date) => {
-												console.log(
-													'selected dob',
-													dayjs(date).format(
-														'YYYY-MM-DD'
-													)
-												);
-												setValue(
-													'dateOfBirth',
-													dayjs(date).format(
-														'YYYY-MM-DD'
-													)
-												);
+												field.onChange(dayjs(date).format('YYYY-MM-DD'));
 											}}
 										/>
+									)}
+								/>
+							</div>
+
+							<div className='min-w-320'>
+								<Controller
+									control={control}
+									name='gender'
+									render={({ field }) => (
+										<TextField
+											{...field}
+											select
+											label='Gender'
+											variant='outlined'
+											disabled={!formData.gender}
+											fullWidth
+											error={!!errors.gender}
+											helperText={errors.gender?.message}
+										>
+											<MenuItem
+												key={'Male'}
+												value={'MALE'}
+											>
+												{'Male'}
+											</MenuItem>
+
+											<MenuItem
+												key={'Female'}
+												value={'FEMALE'}
+											>
+												{'Female'}
+											</MenuItem>
+										</TextField>
 									)}
 								/>
 							</div>
@@ -311,224 +569,364 @@ const CreateAcademicCounselorForm = (props: Props) => {
 								/>
 							</div>
 						</div>
-						<div className='flex flex-col flex-1 gap-16 min-w-320'>
-							<Typography className='text-lg font-semibold leading-tight'>
-								Select counselor's info:
-							</Typography>
-							<div className='min-w-320'>
-								<Controller
-									control={control}
-									name='departmentId'
-									render={({ field }) => (
-										<TextField
-											value={
-												field.value ? field.value : ''
-											}
-											select
-											type='number'
-											label='Department'
-											onChange={handleDepartmentChange}
-											variant='outlined'
-											disabled={loadingDepartments}
-											fullWidth
-											error={!!errors.departmentId}
-											helperText={
-												errors.departmentId?.message
-											}
-										>
-											{loadingDepartments ? (
-												<MenuItem disabled>
-													<CircularProgress
-														size={24}
-													/>
-												</MenuItem>
-											) : (
-												departments?.map(
-													(department) => (
-														<MenuItem
-															key={department.id}
-															value={
-																department.id
-															}
-														>
-															{department.name}
-														</MenuItem>
-													)
-												)
-											)}
-											{field.value && (
-												<ClearMenuItem
-													key='clear-department'
-													value={0}
-												>
-													Clear
-												</ClearMenuItem>
-											)}
-										</TextField>
-									)}
-								/>
-							</div>
+					</div>
 
-							<div className='min-w-320'>
-								{/* Major Select */}
-								<Controller
-									control={control}
-									name='majorId'
-									render={({ field }) => (
-										<TextField
-											value={
-												field.value ? field.value : ''
-											}
-											select
-											type='number'
-											label='Major'
-											onChange={handleMajorChange}
-											variant='outlined'
-											disabled={
-												loadingMajors ||
-												!formData.departmentId
-											}
-											fullWidth
-											error={!!errors.majorId}
-											helperText={errors.majorId?.message}
-										>
-											{loadingMajors ? (
-												<MenuItem disabled>
-													<CircularProgress
-														size={24}
-													/>
+					<div
+						className={clsx(
+							activeStep !== 1
+								? 'hidden'
+								: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 min-w-320'
+						)}
+					>
+						<Typography className='text-lg font-semibold leading-tight'>
+							Select counselor's info:
+						</Typography>
+						<div className='min-w-320'>
+							<Controller
+								control={control}
+								name='departmentId'
+								render={({ field }) => (
+									<TextField
+										value={field.value ? field.value : ''}
+										select
+										type='number'
+										label='Department'
+										onChange={handleDepartmentChange}
+										variant='outlined'
+										disabled={loadingDepartments}
+										fullWidth
+										error={!!errors.departmentId}
+										helperText={
+											errors.departmentId?.message
+										}
+									>
+										{loadingDepartments ? (
+											<MenuItem disabled>
+												<CircularProgress size={24} />
+											</MenuItem>
+										) : (
+											departments?.map((department) => (
+												<MenuItem
+													key={department.id}
+													value={department.id}
+												>
+													{department.name}
 												</MenuItem>
-											) : (
-												majors?.map((major) => (
+											))
+										)}
+										{field.value && (
+											<ClearMenuItem
+												key='clear-department'
+												value={0}
+											>
+												Clear
+											</ClearMenuItem>
+										)}
+									</TextField>
+								)}
+							/>
+						</div>
+
+						<div className='min-w-320'>
+							{/* Major Select */}
+							<Controller
+								control={control}
+								name='majorId'
+								render={({ field }) => (
+									<TextField
+										value={field.value ? field.value : ''}
+										select
+										type='number'
+										label='Major'
+										onChange={handleMajorChange}
+										variant='outlined'
+										disabled={
+											loadingMajors ||
+											!formData.departmentId
+										}
+										fullWidth
+										error={!!errors.majorId}
+										helperText={errors.majorId?.message}
+									>
+										{loadingMajors ? (
+											<MenuItem disabled>
+												<CircularProgress size={24} />
+											</MenuItem>
+										) : (
+											majors?.map((major) => (
+												<MenuItem
+													key={major.id}
+													value={major.id}
+												>
+													{major.name}
+												</MenuItem>
+											))
+										)}
+										{field.value && (
+											<ClearMenuItem
+												key='clear-major'
+												value={0}
+											>
+												Clear
+											</ClearMenuItem>
+										)}
+									</TextField>
+								)}
+							/>
+						</div>
+
+						<div className='min-w-320'>
+							{/* Specialization Select */}
+							<Controller
+								control={control}
+								name='specializationId'
+								render={({ field }) => (
+									<TextField
+										value={field.value ? field.value : ''}
+										select
+										type='number'
+										label='Specialization'
+										onChange={handleSpecializationChange}
+										variant='outlined'
+										disabled={
+											!formData.majorId ||
+											loadingSpecializations
+										}
+										fullWidth
+										error={!!errors.specializationId}
+										helperText={
+											errors.specializationId?.message
+										}
+									>
+										{loadingSpecializations ? (
+											<MenuItem disabled>
+												<CircularProgress size={24} />
+											</MenuItem>
+										) : (
+											specializations?.map(
+												(specialization) => (
 													<MenuItem
-														key={major.id}
-														value={major.id}
+														key={specialization.id}
+														value={
+															specialization.id
+														}
 													>
-														{major.name}
+														{specialization.name}
 													</MenuItem>
-												))
-											)}
-											{field.value && (
-												<ClearMenuItem
-													key='clear-major'
-													value={0}
-												>
-													Clear
-												</ClearMenuItem>
-											)}
-										</TextField>
-									)}
-								/>
-							</div>
-
-							<div className='min-w-320'>
-								{/* Specialization Select */}
-								<Controller
-									control={control}
-									name='specializationId'
-									render={({ field }) => (
-										<TextField
-											value={
-												field.value ? field.value : ''
-											}
-											select
-											type='number'
-											label='Specialization'
-											onChange={
-												handleSpecializationChange
-											}
-											variant='outlined'
-											disabled={
-												!formData.majorId ||
-												loadingSpecializations
-											}
-											fullWidth
-											error={!!errors.specializationId}
-											helperText={
-												errors.specializationId?.message
-											}
-										>
-											{loadingSpecializations ? (
-												<MenuItem disabled>
-													<CircularProgress
-														size={24}
-													/>
-												</MenuItem>
-											) : (
-												specializations?.map(
-													(specialization) => (
-														<MenuItem
-															key={
-																specialization.id
-															}
-															value={
-																specialization.id
-															}
-														>
-															{
-																specialization.name
-															}
-														</MenuItem>
-													)
 												)
-											)}
-											{field.value && (
-												<ClearMenuItem
-													key='clear-specialization'
-													value={0}
-												>
-													Clear
-												</ClearMenuItem>
-											)}
-										</TextField>
-									)}
-								/>
-							</div>
-							<div className='min-w-320'>
-								<Controller
-									control={control}
-									name='gender'
-									render={({ field }) => (
-										<TextField
-											{...field}
-											select
-											label='Gender'
-											variant='outlined'
-											disabled={!formData.gender}
-											fullWidth
-											error={!!errors.gender}
-											helperText={errors.gender?.message}
-										>
-											<MenuItem
-												key={'Male'}
-												value={'MALE'}
+											)
+										)}
+										{field.value && (
+											<ClearMenuItem
+												key='clear-specialization'
+												value={0}
 											>
-												{'Male'}
-											</MenuItem>
-
-											<MenuItem
-												key={'Female'}
-												value={'FEMALE'}
-											>
-												{'Female'}
-											</MenuItem>
-										</TextField>
-									)}
-								/>
-							</div>
+												Clear
+											</ClearMenuItem>
+										)}
+									</TextField>
+								)}
+							/>
 						</div>
 					</div>
-					<div className='flex items-center justify-end w-full'>
-						<Button
-							className='max-w-128'
-							variant='contained'
-							color='secondary'
-							// disabled={!isValid}
-							onClick={handleSubmit(onSubmit)}
-						>
-							Confirm
-						</Button>
+
+					<div
+						className={clsx(
+							activeStep !== 2
+								? 'hidden'
+								: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+						)}
+					>
+						<Typography className='text-lg font-semibold leading-tight'>
+							Enter counselor's additional informations:
+						</Typography>
+						<div className='flex-1 min-w-320'>
+							<Controller
+								control={control}
+								name='specializedSkills'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Specialized Skills'
+										fullWidth
+										variant='outlined'
+										error={!!errors.specializedSkills}
+										helperText={
+											errors.specializedSkills?.message
+										}
+									/>
+								)}
+							/>
+						</div>
+						<div className='flex-1 min-w-320'>
+							<Controller
+								control={control}
+								name='otherSkills'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Other Skills'
+										fullWidth
+										variant='outlined'
+										error={!!errors.otherSkills}
+										helperText={errors.otherSkills?.message}
+									/>
+								)}
+							/>
+						</div>
+
+						<div className='flex-1 min-w-320'>
+							<Controller
+								control={control}
+								name='achievements'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Achievements'
+										fullWidth
+										variant='outlined'
+										error={!!errors.achievements}
+										helperText={
+											errors.achievements?.message
+										}
+									/>
+								)}
+							/>
+						</div>
+
+						<div className='flex-1 min-w-320'>
+							<Controller
+								control={control}
+								name='workHistory'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Work History'
+										fullWidth
+										variant='outlined'
+										error={!!errors.workHistory}
+										helperText={errors.workHistory?.message}
+									/>
+								)}
+							/>
+						</div>
+
+						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+							<div className='flex flex-wrap items-center gap-8'>
+								<Typography className='font-semibold'>
+									Certifications:{' '}
+								</Typography>
+								{certificationFields.map(
+									(certification, index) => (
+										<div className='flex flex-wrap items-center space-y-8'>
+											<Chip
+												variant='filled'
+												label={certification.name}
+												key={certification.id}
+												onClick={() =>
+													handleUpdateCertification(
+														certification,
+														index
+													)
+												}
+												onDelete={() => {
+													removeCertificationField(
+														index
+													);
+												}}
+												className='gap-8 mx-8 font-semibold w-fit'
+											/>
+										</div>
+									)
+								)}
+							</div>
+
+							<Button
+								variant='outlined'
+								color='primary'
+								onClick={handleOpenCertificationAppendDialog}
+							>
+								<Add />
+								Add Certification
+							</Button>
+						</div>
+
+						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+							<div className='flex flex-wrap items-center space-y-8'>
+								<Typography className='font-semibold'>
+									Qualifications:{' '}
+								</Typography>
+
+								{qualificationsFields.map(
+									(qualification, index) => (
+										<div className='flex items-center'>
+											<Chip
+												variant='filled'
+												label={qualification.degree}
+												key={qualification.id}
+												onClick={() =>
+													handleUpdateQualification(
+														qualification,
+														index
+													)
+												}
+												onDelete={() => {
+													removeQualificationField(
+														index
+													);
+												}}
+												className='gap-8 mx-8 font-semibold w-fit'
+											/>
+										</div>
+									)
+								)}
+							</div>
+
+							<Button
+								variant='outlined'
+								color='primary'
+								onClick={handleOpenQualificationAppendDialog}
+							>
+								<Add />
+								Add Qualification
+							</Button>
+						</div>
 					</div>
+
+					<Box display='flex' justifyContent='space-between' mt={8}>
+						<Button
+							disabled={activeStep === 0}
+							onClick={handleBack}
+							variant='outlined'
+							color='secondary'
+							className='w-96'
+						>
+							Back
+						</Button>
+						<div className='flex gap-8'>
+							{activeStep === steps.length - 1 ? (
+								<Button
+									className='max-w-128'
+									variant='contained'
+									color='secondary'
+									type='submit'
+								>
+									Confirm
+								</Button>
+							) : (
+								<Button
+									onClick={handleNext}
+									variant='contained'
+									color='secondary'
+									className='w-96'
+									type='button'
+
+								>
+									Next
+								</Button>
+							)}
+						</div>
+					</Box>
 				</Paper>
 			</form>
 		</div>

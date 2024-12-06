@@ -27,6 +27,9 @@ import { clearEnteredValueByTab, selectEnteredValues, selectInitialValues, setEn
 import { useAppDispatch } from '@shared/store';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 
+
+const currentYear = dayjs().year()
+
 const schema = z.object({
 	email: z.string().email('Invalid email address'), // Validates email format
 	password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
@@ -36,10 +39,13 @@ const schema = z.object({
 		.regex(/^\d{10,15}$/, 'Phone number must be between 10 and 15 digits'),
 	dateOfBirth: z
 		.string()
-		.refine(
-			(date) => !isNaN(new Date(date).getTime()),
-			'Invalid date format'
-		), // Validates date string
+	.refine((date) => {
+		return dayjs(date, 'YYYY-MM-DD', true).isValid();
+	}, 'Birth date must be a valid date')
+	.refine((date) => {
+		const year = dayjs(date).year()
+		return year >= 1900 && year <= currentYear;
+	}, `Year must be between 1900 and ${currentYear}`),
 	fullName: z.string().min(1, 'Full name is required'), // Full name validation
 });
 
@@ -161,30 +167,50 @@ const CreateManagerForm = () => {
 							name='dateOfBirth'
 							render={({ field }) => (
 								<DatePicker
-									className='w-full'
-									label='Date of birth'
-									value={dayjs(field.value)}
-									minDate={dayjs('1900-01-01')}
-									slotProps={{
-										textField: {
-											helperText: 	
-												'Please select a valid date of birth',
-										},
-									}}
-									disableFuture
-									maxDate={dayjs()}
-									views={['year', 'month', 'day']}
-									onChange={(date) => {
-										console.log(
-											'selected dob',
-											dayjs(date).format('YYYY-MM-DD')
-										);
-										setValue(
-											'dateOfBirth',
-											dayjs(date).format('YYYY-MM-DD')
-										);
-									}}
+								className='w-full'
+								label='Date of birth'
+								value={field.value ? dayjs(field.value) : null}
+								minDate={dayjs('1900-01-01')}
+								disableFuture
+								format='YYYY-MM-DD'
+								slotProps={{
+									textField: {
+										helperText:
+											errors.dateOfBirth?.message,
+									},
+								}}
+								views={['year', 'month', 'day']}
+								onChange={(date) => {
+									field.onChange(dayjs(date).format('YYYY-MM-DD'));
+								}}
 								/>
+							)}
+						/>
+					</div>
+
+					<div className='min-w-320'>
+						<Controller
+							control={control}
+							name='gender'
+							render={({ field }) => (
+								<TextField
+									{...field}
+									select
+									label='Gender'
+									variant='outlined'
+									disabled={!formData.gender}
+									fullWidth
+									error={!!errors.gender}
+									helperText={errors.gender?.message}
+								>
+									<MenuItem key={'Male'} value={'MALE'}>
+										{'Male'}
+									</MenuItem>
+
+									<MenuItem key={'Female'} value={'FEMALE'}>
+										{'Female'}
+									</MenuItem>
+								</TextField>
 							)}
 						/>
 					</div>
@@ -238,32 +264,7 @@ const CreateManagerForm = () => {
 							)}
 						/>
 					</div>
-					<div className='min-w-320'>
-						<Controller
-							control={control}
-							name='gender'
-							render={({ field }) => (
-								<TextField
-									{...field}
-									select
-									label='Gender'
-									variant='outlined'
-									disabled={!formData.gender}
-									fullWidth
-									error={!!errors.gender}
-									helperText={errors.gender?.message}
-								>
-									<MenuItem key={'Male'} value={'MALE'}>
-										{'Male'}
-									</MenuItem>
-
-									<MenuItem key={'Female'} value={'FEMALE'}>
-										{'Female'}
-									</MenuItem>
-								</TextField>
-							)}
-						/>
-					</div>
+				
 					<div className='flex items-center justify-end w-full'>
 						<Button
 							className='max-w-128'
