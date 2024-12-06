@@ -193,7 +193,8 @@ const QnaItem = (props: Props) => {
 										variant='outlined'
 										size='small'
 									/>
-								)}
+								)
+								}
 								<div className='w-full flex justify-end pr-8'>
 									{/* <Chip
 										label={`Created at ${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}
@@ -281,15 +282,15 @@ const QnaItem = (props: Props) => {
 							>
 								Delete
 							</Button>
-						) : qna.status == 'VERIFIED' && !qna?.closed ? (
-							<Button
-								variant='outlined'
-								color='secondary'
-								startIcon={<Close />}
-								onClick={() => handleCloseQuestion()}
-							>
-								Close
-							</Button>
+						) : qna.status == 'VERIFIED' && !qna?.closed ? (<></>
+							// <Button
+							// 	variant='outlined'
+							// 	color='secondary'
+							// 	startIcon={<Lock />}
+							// 	onClick={() => handleCloseQuestion()}
+							// >
+							// 	Close
+							// </Button>
 						) : (
 							<></>
 						)}

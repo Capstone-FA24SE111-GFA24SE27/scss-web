@@ -158,7 +158,7 @@ const counselorNavigation: NavigationOptions = {
             items: [
                 {
                     icon: Class,
-                    name: 'Forwarded Questions',
+                    name: 'Asked Questions',
                     route: 'my-qna'
                 },
                 {

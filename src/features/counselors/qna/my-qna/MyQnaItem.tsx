@@ -287,7 +287,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 							<Button
 								variant='outlined'
 								color='secondary'
-								startIcon={<Close />}
+								startIcon={<Lock />}
 								onClick={() => handleCloseQuestion()}
 							>
 								Close

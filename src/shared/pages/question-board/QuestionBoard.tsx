@@ -60,7 +60,7 @@ const QuestionBoard = () => {
   return (
     <div>
       <div className='px-32 mt-16'>
-        <Typography className='text-lg font-semibold mb-8'>List of questions and answers contributed by our counselors</Typography>
+        <Typography className='text-lg font-semibold mb-8' color='textSecondary'>List of questions and answers contributed by our counselors</Typography>
       </div>
       <div className='flex justify-center gap-16'>
         <div className='mt-80 flex flex-col '>
