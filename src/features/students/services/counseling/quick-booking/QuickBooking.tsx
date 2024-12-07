@@ -132,7 +132,7 @@ function QuickBooking() {
   const onSubmitMatching = () => {
     console.log(formData)
     const element = document.getElementById('found_counselor');
-    if (element) {  
+    if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
     navigate('#found_counselor');
@@ -608,10 +608,7 @@ function QuickBooking() {
                     <Box className="flex flex-col items-center w-full">
                       <SentimentVeryDissatisfied className='size-224 text-text-disabled' />
                       <Typography className='text-2xl text-text-disabled'>No counselor matched!</Typography>
-                      <div className='text-2xl text-text-disabled'>Find more counselors at
-                        <Button>
-                          Counselor list
-                        </Button>
+                      <div className='text-2xl text-text-disabled'>You can view more counselors at Counselor list
                       </div>
                     </Box>
                     : randomMatchedCounselor

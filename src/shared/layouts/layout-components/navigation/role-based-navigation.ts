@@ -164,7 +164,7 @@ const counselorNavigation: NavigationOptions = {
                 {
                     icon: Assignment,
                     name: 'FAQs',
-                    route: 'question-board'
+                    route: 'faq'
                 },
                 {
                     icon: Quiz,

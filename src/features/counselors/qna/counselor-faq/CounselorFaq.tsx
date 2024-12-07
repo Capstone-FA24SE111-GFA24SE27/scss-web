@@ -3,10 +3,10 @@ import { Add, Chat, Forum } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import QnaSidebarContent from './QnaSidebarContent';
-import QuestionBoard from '@/shared/pages/question-board/QuestionBoard';
+import QnaSidebarContent from './CounselorFaqSidebarContent';
+import { Faq } from '@/shared/pages';
 
-const CounselorQuestionBoard = () => {
+const CounselorFaq = () => {
 	const routeParams = useParams();
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
 	const [tabValue, setTabValue] = useState(0);
@@ -91,11 +91,11 @@ const CounselorQuestionBoard = () => {
 			rightSidebarWidth={480}
 			content={
 				<div className='w-full'>
-					<QuestionBoard />
+					<Faq />
 				</div>
 			}
 		/>
 	);
 };
 
-export default CounselorQuestionBoard;
+export default CounselorFaq;

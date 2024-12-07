@@ -222,7 +222,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 									''
 								)}
 							</div>
-							<div className='flex gap-8 items-center'>
+							<div className='flex gap-8 items-center mt-8'>
 								<UserLabel
 									profile={qna?.student?.profile}
 									label='Asked by'
@@ -271,14 +271,27 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 												Edit your answer
 											</Button>
 										)}
-
 									</div>
-									: <Typography
-										className='italic'
-										color='textDisabled'
-									>
-										{'You have not answered the question'}
-									</Typography>
+									: qna.reviewReason
+										? <div className='flex gap-8'>
+											<Typography
+												className='text-text-secondary'
+											>
+												Flagged reason:
+											</Typography>
+											<Typography
+												className='font-semibold'
+												color='error'
+											>
+												{qna.reviewReason}
+											</Typography>
+										</div>
+										: <Typography
+											className='italic'
+											color='textDisabled'
+										>
+											{'You have not answered the question'}
+										</Typography>
 							}
 						</div>
 					</AccordionDetails>

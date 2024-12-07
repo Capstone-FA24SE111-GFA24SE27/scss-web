@@ -7,7 +7,7 @@ import QnaForm from './QnaForm';
 import QnaList from './QnaList';
 import QnaSidebarContent from './QnaSidebarContent';
 import { Tab, Tabs } from '@mui/material';
-import QuestionBoard from '@/shared/pages/question-board/QuestionBoard';
+import QuestionBoard from '@/shared/pages/faq/Faq';
 import PublicQna from '@/shared/pages/public-qna/PublicQna';
 
 const Qna = () => {
@@ -47,7 +47,7 @@ const Qna = () => {
 	useEffect(() => {
 		setTabValue(
 			location?.pathname.includes('public-qna') ? 0
-				: location?.pathname.includes('question-board') ? 1
+				: location?.pathname.includes('faq') ? 1
 					: 0
 		)
 	}, []);

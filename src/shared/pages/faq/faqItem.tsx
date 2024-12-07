@@ -1,5 +1,5 @@
 import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML, BackdropLoading } from '@/shared/components';
-import { statusColor } from '@/shared/constants';
+import { roles, statusColor } from '@/shared/constants';
 import {
   ChatBubbleOutline,
   CheckCircleOutlineOutlined,
@@ -25,11 +25,12 @@ import {
   styled
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import { ContributedQuestionCard, useDeleteContributedQuestionCardByIdMutation } from './question-board-api';
+import { ContributedQuestionCard, useDeleteContributedQuestionCardByIdMutation } from './faq-api';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { CounselorView } from '..';
 import dayjs from 'dayjs';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
+import { openCounselorView } from '@/features/students/students-layout-slice';
 
 
 export const StyledAccordionSummary = styled(AccordionSummary)({
@@ -37,21 +38,17 @@ export const StyledAccordionSummary = styled(AccordionSummary)({
   alignItems: 'flex-start',  // Align content at the top
 });
 
-type Props = {
-  contributedQuestion: ContributedQuestionCard;
-};
 const item = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
 };
 
 
-const ContributedQuestionItem = (props: Props) => {
-  const { contributedQuestion } = props;
+const FaqItem = ({ contributedQuestion }: { contributedQuestion: ContributedQuestionCard }) => {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
   const isMyQna = account.profile.id === contributedQuestion.counselor.id;
-
+  const isStudent = account.role === roles.STUDENT
   const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteContributedQuestionCardByIdMutation();
 
   const handleDeleteQuestion = () => {
@@ -115,6 +112,10 @@ const ContributedQuestionItem = (props: Props) => {
                   profile={contributedQuestion.counselor.profile}
                   email={contributedQuestion.counselor?.email}
                   onClick={() => {
+                    if (isStudent) {
+                      dispatch(openCounselorView(contributedQuestion?.counselor?.profile.id.toString()))
+                      return
+                    }
                     dispatch(openDialog({
                       children: <CounselorView
                         id={contributedQuestion.counselor.id.toString()}
@@ -172,4 +173,4 @@ const ContributedQuestionItem = (props: Props) => {
   );
 };
 
-export default ContributedQuestionItem;
+export default FaqItem;

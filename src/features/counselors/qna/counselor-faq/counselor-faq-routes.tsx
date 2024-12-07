@@ -1,12 +1,12 @@
 import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
-// const QuestionBoard = lazy(() => import('@shared/pages/question-board/QuestionBoard'))
-const CounselorQuestionBoard = lazy(() => import('./CounselorQuestionBoard'))
+// const Faq = lazy(() => import('@shared/pages/question-board/Faq'))
+const CounselorFaq = lazy(() => import('./CounselorFaq'))
 const CounselorQnaForm = lazy(() => import('./CounselorQnaForm'))
-export const counselorQuestionBoardRoutes: RouteObject[] = [
+export const counselorFaqRoutes: RouteObject[] = [
   {
-    path: 'question-board',
-    element: <CounselorQuestionBoard />,
+    path: 'faq',
+    element: <CounselorFaq />,
     children: [
       {
         path: 'create',

@@ -31,7 +31,7 @@ import {
 } from './qna-api';
 import { useNavigate } from 'react-router-dom';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import { statusColor } from '@/shared/constants';
+import { statusColor, statusLabel } from '@/shared/constants';
 import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 import { openCounselorView } from '../../students-layout-slice';
 import { useAlertDialog } from '@/shared/hooks';
@@ -202,7 +202,7 @@ const QnaItem = (props: Props) => {
 										color='default'
 									/> */}
 								</div>
-								
+
 								{countUnreadMessages() ? (
 									<Chip
 										label={countUnreadMessages()}
@@ -230,7 +230,7 @@ const QnaItem = (props: Props) => {
 							{
 								qna.counselor && (
 									<UserLabel
-										label='Answered by'
+										label={([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status] +  ` by `}
 										profile={qna?.counselor.profile}
 										email={qna?.counselor?.email}
 										onClick={() => {
@@ -250,21 +250,33 @@ const QnaItem = (props: Props) => {
 								>
 									{'No counselor has taken this question'}
 								</Typography>
-							) : qna.answer ? (
-								<div>
-									{/* <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
-									{RenderHTML(qna.answer)}
-								</div>
-							) : (
-								<div>
-									<Typography
-										className='italic'
-										color='textDisabled'
-									>
-										{'The counselor has not answered the question'}
-									</Typography>
-								</div>
-							)}
+							)
+								: qna.answer ? (
+									<div>
+										{RenderHTML(qna.answer)}
+									</div>
+								)
+									: qna.reviewReason
+										? <div className='flex gap-8'>
+											<Typography
+												className='text-text-secondary'
+											>
+												Flagged reason:
+											</Typography>
+											<Typography
+												className='font-semibold'
+												color='error'
+											>
+												{qna.reviewReason}
+											</Typography>
+										</div>
+										: <Typography
+											className='italic'
+											color='textDisabled'
+										>
+											{'You have not answered the question'}
+										</Typography>
+							}
 						</div>
 					</AccordionDetails>
 					<Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5 '>
@@ -322,7 +334,7 @@ const QnaItem = (props: Props) => {
 								onClick={() => handleSelectChat(qna)}
 								disabled={!qna.counselor || qna.closed || qna.status !== 'VERIFIED'}
 							>
-								Initiate Chat
+								Start to Chat
 							</Button>
 						)}
 					</Box>

@@ -70,9 +70,11 @@ const PublicQna = () => {
 
 
   return (
-    <div className='w-full'>
-      <div className='px-32 mt-16'>
-        <Typography className='text-lg font-semibold mb-8 text-text-secondary'>All questions and answers asked by students</Typography>
+    <div className='w-full p-16'>
+      <div className=''>
+        <Typography className='text-lg mb-8 text-text-secondary px-16'>
+          All questions and answers asked by students
+        </Typography>
       </div>
       <div className='w-full mt-16 max-w-xl mx-auto'>
 

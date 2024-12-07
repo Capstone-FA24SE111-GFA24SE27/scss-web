@@ -31,6 +31,7 @@ export type Question = {
   topic: Topic,
   createdDate: string;
   difficultyLevel: string;
+  reviewReason?: string;
 }
 
 export type ChatSession = {

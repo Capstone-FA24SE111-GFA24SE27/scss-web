@@ -8,7 +8,7 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { Breadcrumbs, ContentLoading } from '@shared/components';
+import { BackdropLoading, Breadcrumbs, ContentLoading } from '@shared/components';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -98,8 +98,8 @@ function CounselorBooking() {
           useAlertDialog({
             dispatch,
             title: 'Booking success',
-            confirmFunction: () => navigate('../')
           })
+          navigate('../')
         })
         .catch(error => {
           useAlertDialog({
@@ -197,7 +197,7 @@ function CounselorBooking() {
             ]}
             currentPage={"Booking"}
           />
-          <div className="flex items-end flex-auto gap-32">
+          <div className="flex mt-16 flex-auto gap-32">
             <Avatar
               sx={{
                 borderWidth: 4,
@@ -212,8 +212,8 @@ function CounselorBooking() {
             >
               {counselor?.profile.fullName?.charAt(0)}
             </Avatar>
-            <div >
-              <Typography className="mt-32 text-4xl font-bold truncate">{counselor.profile.fullName}</Typography>
+            <div className='flex flex-col mt-8'>
+              <Typography className="text-4 xl font-bold truncate">{counselor.profile.fullName}</Typography>
               {/* <div className='flex items-end gap-8 text-lg text-gray-500'>
                                 <Rating
                                     name="simple-controlled"
@@ -224,12 +224,19 @@ function CounselorBooking() {
                                 <div>(116)</div>
                             </div> */}
 
-              <div className="flex flex-wrap items-center mt-16">
-                <Chip
-                  label={counselor.expertise?.name || counselor.specialization?.name}
+              <div className="flex flex-wrap mt-8 gap-8">
+                {
+                  counselor.specializedSkills?.split(`\n`).map(item => <Chip
+                    key={item}
+                    label={item}
+                    size="small"
+                  />)
+                }
+                {/* <Chip
+                  label={counselor.expertise?.name || counselor.specialization?.name }
                   className="mb-12 mr-12"
                   size="medium"
-                />
+                /> */}
               </div>
             </div>
           </div>
@@ -373,6 +380,9 @@ function CounselorBooking() {
           </div>
         </div>
       </div>
+      {isBookingCounselor && (
+        <BackdropLoading />
+      )}
     </>
   );
 }

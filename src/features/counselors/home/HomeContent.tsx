@@ -194,10 +194,13 @@ const HomeContent = () => {
                   ? <ContentLoading />
                   : !pendingRequests?.length
                     ? <Typography className='text-center' color='textDisabled'>No pending appointments</Typography>
-                    : pendingRequests.map(request => <div className='rounded shadow' key={request.id} >
-                      <RequestItem appointment={request} onUserClick={() => dispatch(openStudentView(request.student.id.toString()))} />
-                    </div>
-                    )
+                    : pendingRequests.map(request => (
+                      <RequestItem
+                        appointment={request}
+                        key={request.id}
+                        onUserClick={() => dispatch(openStudentView(request.student.id.toString()))}
+                      />
+                    ))
               }
             </Scrollbar>
           </Paper>

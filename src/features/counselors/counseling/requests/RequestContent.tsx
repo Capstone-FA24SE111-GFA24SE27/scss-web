@@ -121,7 +121,10 @@ const RequestsContent = () => {
                   className="shadow"
                   sx={{ bgcolor: 'background.paper' }}
                 >
-                  <RequestItem appointment={appointment} />
+                  <RequestItem
+                    appointment={appointment}
+                    onUserClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
+                  />
                 </Paper >
               )}
       </List >
