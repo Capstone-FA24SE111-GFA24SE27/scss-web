@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { useGetCounselorAdminQuery } from '../../profiles/counselor/admin-counselor-api';
-import { ContentLoading, FilterTabs, Heading } from '@/shared/components';
+import {
+	ContentLoading,
+	FilterTabs,
+	Heading,
+	Scrollbar,
+} from '@/shared/components';
 import { roles } from '@/shared/constants';
 import { Account, Role } from '@/shared/types';
 import { Avatar, Button, Paper, Tab, Tabs, Typography } from '@mui/material';
@@ -13,6 +18,9 @@ import dayjs from 'dayjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Delete } from '@mui/icons-material';
 import { useGetOneAccountQuery } from '../admin-accounts-api';
+import AccountDetailAdminViewHeader from './AccountDetailAdminViewHeader';
+import { checkImageUrl } from '@/shared/utils';
+import DepartmentInfoTab from './tabs/DepartmentInfoTab';
 
 type Props = {
 	id: string;
@@ -22,13 +30,12 @@ const currentYear = dayjs().year();
 
 const schema = z.object({
 	avatarLink: z
-		.instanceof(File, { message: 'Image is required' })
-		.refine((file) => isValidImage(file), {
-			message: 'File must be an image',
-		})
-		.refine((file) => file.size <= MAX_FILE_SIZE, {
-			message: 'Image must be less than 5MB',
-		}),
+		.string()
+		.url('Invalid URL')
+		.refine(
+			async (url) => await checkImageUrl(url),
+			'URL must point to a valid image file (jpeg, png, gif)'
+		),
 	email: z.string().email('Invalid email address'), // Validates email format
 	// password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
 	gender: z.enum(['MALE', 'FEMALE']), // Enum for gender
@@ -46,9 +53,9 @@ const schema = z.object({
 		}, `Year must be between 1900 and ${currentYear}`),
 
 	fullName: z.string().min(1, 'Full name is required'), // Full name validation
-	// departmentId: z.number().gt(0, 'Department ID must be selected'),
-	// majorId: z.number().gt(0, 'Major ID must be selected'),
-	// specializationId: z.number().gt(0, 'Specialization ID must be selected'),
+	departmentId: z.number().gt(0, 'Department ID must be selected'),
+	majorId: z.number().gt(0, 'Major ID must be selected'),
+	specializationId: z.number().gt(0, 'Specialization ID must be selected'),
 	specializedSkills: z.string().min(1, 'Specialized skill is required'),
 	otherSkills: z.string().min(1, 'Other skill is required'),
 	workHistory: z.string().min(1, 'Work history is required'),
@@ -65,13 +72,12 @@ const schema = z.object({
 					'Invalid date format'
 				),
 			imageUrl: z
-				.instanceof(File)
-				.refine((file) => isValidImage(file), {
-					message: 'File must be an image',
-				})
-				.refine((file) => file.size <= MAX_FILE_SIZE, {
-					message: 'Image must be less than 5MB',
-				}),
+				.string()
+				.url('Invalid URL')
+				.refine(
+					async (url) => await checkImageUrl(url),
+					'URL must point to a valid image file (jpeg, png, gif)'
+				),
 		})
 	),
 	certifications: z.array(
@@ -79,13 +85,12 @@ const schema = z.object({
 			name: z.string().min(1, 'Please enter'),
 			organization: z.string().min(1, 'Please enter'),
 			imageUrl: z
-				.instanceof(File)
-				.refine((file) => isValidImage(file), {
-					message: 'File must be an image',
-				})
-				.refine((file) => file.size <= MAX_FILE_SIZE, {
-					message: 'Image must be less than 5MB',
-				}),
+				.string()
+				.url('Invalid URL')
+				.refine(
+					async (url) => await checkImageUrl(url),
+					'URL must point to a valid image file (jpeg, png, gif)'
+				),
 		})
 	),
 });
@@ -99,33 +104,31 @@ const CounselorAccountAdminView = (props: Props) => {
 	const { data: counselorAccountData, isLoading: isLoadingAccount } =
 		useGetOneAccountQuery({ id }, { skip: !id });
 
-	console.log('counselordata', data);
-
 	const counselor = data?.content;
 	const counselorAccount: Account | null = counselorAccountData?.content;
 
 	const defaultValues = {
+		avatarLink: counselorAccount?.profile?.avatarLink,
 		email: counselorAccount?.email,
 		// password: counselorAccount?.,
 		gender: counselorAccount?.profile?.gender,
 		phoneNumber: counselorAccount?.profile?.phoneNumber,
-		dateOfBirth: dayjs(
-			counselorAccount?.profile?.dateOfBirth,
+		dateOfBirth: dayjs(counselorAccount?.profile?.dateOfBirth).format(
 			'YYYY-MM-DD'
 		),
 		fullName: counselorAccount?.profile?.fullName,
 		departmentId: counselor?.profile?.department?.id,
 		majorId: counselor?.profile?.major?.id,
-		specializationId: counselor?.profile?.specialization?.id,
+		// specializationId: counselor?.profile?.specialization?.id,
 		specializedSkills: counselor?.profile?.specializedSkills,
 		otherSkills: counselor?.profile?.otherSkills,
 		workHistory: counselor?.profile?.workHistory,
 		achievements: counselor?.profile?.achievements,
 		qualifications: counselor?.profile?.qualifications,
 		certifications: counselor?.profile?.certifications,
-	}
+	};
 
-	console.log(defaultValues)
+	console.log(defaultValues);
 
 	const methods = useForm({
 		mode: 'onChange',
@@ -145,43 +148,46 @@ const CounselorAccountAdminView = (props: Props) => {
 
 	return (
 		<FormProvider {...methods}>
-			<div className='w-full h-full'>
-				<Tabs
-					value={tabValue}
-					onChange={handleChangeTab}
-					indicatorColor='secondary'
-					textColor='secondary'
-					variant='scrollable'
-					scrollButtons='auto'
-					classes={{
-						root: 'w-full h-32  bg-background-paper mb-16',
-					}}
-				>
-					<Tab
-						className='px-16 text-lg font-semibold min-h-40 min-w-64'
-						label='Account info'
-					/>
-					<Tab
-						className='px-16 text-lg font-semibold min-h-40 min-w-64'
-						label='Specialization'
-					/>
-					<Tab
-						className='px-16 text-lg font-semibold min-h-40 min-w-64'
-						label='Work Experience'
-					/>
-				</Tabs>
-				<div className='w-full p-16'>
-					{tabValue === 0 && (
-						<AccountInfoTab account={counselorAccount} />
-					)}
-					{/* {tabValue === 1 && <AppointmentsTable />}
-              {tabValue === 2 && <RequestsTable />}
+			<AccountDetailAdminViewHeader />
+			<Paper className='flex flex-auto p-16 overflow-hidden'>
+				<Scrollbar className='flex-1'>
+					<Tabs
+						value={tabValue}
+						onChange={handleChangeTab}
+						indicatorColor='secondary'
+						textColor='secondary'
+						variant='scrollable'
+						scrollButtons='auto'
+						classes={{
+							root: 'w-full h-32  bg-background-paper mb-16',
+						}}
+					>
+						<Tab
+							className='px-16 text-lg font-semibold min-h-40 min-w-64'
+							label='Account info'
+						/>
+						<Tab
+							className='px-16 text-lg font-semibold min-h-40 min-w-64'
+							label='Specialization'
+						/>
+						<Tab
+							className='px-16 text-lg font-semibold min-h-40 min-w-64'
+							label='Work Experience'
+						/>
+					</Tabs>
+					<div className='w-full p-16'>
+						{tabValue === 0 && (
+							<AccountInfoTab account={counselorAccount} />
+						)}
+						{tabValue === 1 && <DepartmentInfoTab />}
+              {/* {tabValue === 2 && <RequestsTable />}
               {tabValue === 3 && <ScheduleTab />}
               {tabValue === 4 && <FeedbackTab />}
               {tabValue === 5 && <QnaTab />}
               {tabValue === 6 && <ProfileTab />} */}
-				</div>
-			</div>
+					</div>
+				</Scrollbar>
+			</Paper>
 		</FormProvider>
 	);
 };

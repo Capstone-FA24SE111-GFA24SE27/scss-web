@@ -14,13 +14,14 @@ import { Clear } from '@mui/icons-material';
 
 type Props = {
 	onFileChange: (file: File) => void;
-	file: File;
+	file?: File;
 	error?: boolean;
 };
 
 const ImageInput = (props: Props) => {
-	const { onFileChange, file, error = false } = props;
+	const { onFileChange, file: initialFile, error = false } = props;
 
+	const [file, setFile] = useState(initialFile)
 	const [dragActive, setDragActive] = useState(false);
 	const dispatch = useAppDispatch();
 
@@ -28,6 +29,7 @@ const ImageInput = (props: Props) => {
 
 	const handleFileChange = (file: File) => {
 		if (onFileChange) {
+			setFile(file);
 			onFileChange(file);
 		}
 	};
