@@ -1,11 +1,11 @@
 import React, { useRef, useState, useCallback } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';  
-import './quill-editor.css';  
+import 'react-quill/dist/quill.snow.css';
+import './quill-editor.css';
 import clsx from 'clsx';
 
 import { LinearProgress, Box, Typography } from '@mui/material';
-import { uploadFile } from '@shared/services'; 
+import { uploadFile } from '@shared/services';
 
 const QuillEditor = ({
   value,
@@ -13,7 +13,8 @@ const QuillEditor = ({
   error,
   label,
   placeholder = "Write your content here...",
-  className= "",
+  className = "",
+  customModules
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -21,6 +22,7 @@ const QuillEditor = ({
   label?: string;
   placeholder?: string;
   className?: string;
+  customModules?: object;
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -63,7 +65,8 @@ const QuillEditor = ({
     };
   }, []);
 
-  const modules = {
+  const modules = customModules
+    || {
     toolbar: {
       container: [
         [{ header: '1' }, { header: '2' }],
@@ -81,7 +84,7 @@ const QuillEditor = ({
     <div className="mt-4">
       {
         label && < Typography className='text-text-secondary' gutterBottom>
-          {label}:  
+          {label}:
         </Typography>
       }
       <ReactQuill
@@ -92,11 +95,11 @@ const QuillEditor = ({
         modules={modules}
         placeholder={placeholder}
         className={clsx(`quill-editor !text-xl`, className)}
-        // style={{
-        //   borderRadius: '8px',
-        //   border: '1px solid #ccc',
-        //   padding: '8px',
-        // }}
+      // style={{
+      //   borderRadius: '8px',
+      //   border: '1px solid #ccc',
+      //   padding: '8px',
+      // }}
       />
 
       {

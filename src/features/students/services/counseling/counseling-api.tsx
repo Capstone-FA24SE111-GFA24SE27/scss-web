@@ -151,7 +151,7 @@ export const counselingApi = api
           },
         }),
       }),
-      getRandomMatchedCounselorWithReason: build.mutation<GetRandomMatchedCounselorMeaningApiResponse, { reason: string, studentId: string }>({
+      getRandomMatchedCounselorReasonMeaning: build.mutation<GetRandomMatchedCounselorMeaningApiResponse, { reason: string, studentId: number }>({
         query: ({ reason, studentId }) => ({
           method: 'GET',
           url: `/api/counselors/random/match/reason/meaning/${studentId}?reason=${reason}`,
@@ -173,6 +173,7 @@ export const {
   useGetCounselorSlotsQuery,
   useGetRandomMatchedCousenlorAcademicMutation,
   useGetRandomMatchedCousenlorNonAcademicMutation,
+  useGetRandomMatchedCounselorReasonMeaningMutation
 } = counselingApi
 
 

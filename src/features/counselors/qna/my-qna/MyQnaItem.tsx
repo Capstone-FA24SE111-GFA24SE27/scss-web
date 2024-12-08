@@ -444,7 +444,7 @@ const AnswerQuestionDialog = ({ qna }: { qna: Question }) => {
 	}
 
 	return (
-		<div className=' w-xl '>
+		<div className=' w-xl'>
 			<DialogTitle >{qna.title}</DialogTitle>
 			<DialogContent className='flex flex-col gap-8'>
 				{/* {!qna.closed &&

@@ -230,7 +230,7 @@ const QnaItem = (props: Props) => {
 							{
 								qna.counselor && (
 									<UserLabel
-										label={([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status] +  ` by `}
+										label={`${([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status] } by`}
 										profile={qna?.counselor.profile}
 										email={qna?.counselor?.email}
 										onClick={() => {
@@ -274,7 +274,7 @@ const QnaItem = (props: Props) => {
 											className='italic'
 											color='textDisabled'
 										>
-											{'You have not answered the question'}
+											{'The counselor has not answered the question'}
 										</Typography>
 							}
 						</div>

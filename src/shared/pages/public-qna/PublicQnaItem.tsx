@@ -75,7 +75,7 @@ const PublicQnaItem = (props: Props) => {
                   variant='outlined'
                 />
 
-                <span className='text-text-secondary' >Created at</span>
+                <span className='text-text-secondary'>Created at</span>
                 <Typography color='textSecondary'>{`${dayjs(publicQna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}</Typography>
 
               </div>

@@ -6,13 +6,14 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/system/Box';
-import { BackdropLoading, ContentLoading, Gender, NavLinkAdapter, WeeklySlots } from '@shared/components';
+import { BackdropLoading, ContentLoading, Gender, NavLinkAdapter, WeeklySlots, openDialog } from '@shared/components';
 import dayjs from 'dayjs';
 import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetCounselorDetailQuery, useGetWeeklySlotsQuery } from './counselor-api';
 import { Paper, Rating } from '@mui/material';
 import clsx from 'clsx'
+import { useAppDispatch } from '@shared/store';
 /**
  * The contact view.
  */
@@ -29,10 +30,10 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
     const counselorId = id || counselorRouteId
     const { data, isLoading } = useGetCounselorDetailQuery(counselorId)
     const counselor = data?.content
-
+    const isAcademicCounselor = counselor?.major
     const { data: counselorCounselingSlotsData, isLoading: isLoadingCounselorCounselingSlotsData } = useGetWeeklySlotsQuery(Number(counselorId))
     const counselorCounselingSlots = counselorCounselingSlotsData?.content
-
+    const dispatch = useAppDispatch()
     if (isLoading) {
         return <ContentLoading className='p-32 min-w-lg' />
     }
@@ -47,6 +48,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
             </Typography>
         </div>
     }
+    console.log(counselor)
 
     return (
         <div className={clsx(className, "min-w-lg")}>
@@ -111,9 +113,6 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                         ({counselor?.rating}/5)
                     </div>
 
-
-
-
                     <Divider className="mt-16 mb-24" />
 
                     <div className="flex flex-col space-y-16 pl-8">
@@ -143,7 +142,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                     </div>
 
                     {
-                        counselor?.specialization && <div>
+                        isAcademicCounselor && <div>
                             <Divider className="mt-16 mb-24" />
                             <Typography className='font-semibold'>
                                 Field of study
@@ -155,10 +154,10 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                                     <div className="col-span-2">{counselor?.academicDegree}</div>
                                 </div>
 
-                                <div className="grid grid-cols-3 mb-4 gap-y-2">
-                                    <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
-                                    <div className="col-span-2">{counselor?.specialization?.name}</div>
-                                </div>
+                                {/* <div className="grid grid-cols-3 mb-4 gap-y-2">
+                                        <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
+                                        <div className="col-span-2">{counselor?.specialization?.name}</div>
+                                    </div> */}
 
                                 {/* Department Section */}
                                 <div className="grid grid-cols-3 mb-4 gap-y-2">
@@ -188,13 +187,10 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                         counselor?.expertise && <div>
                             <Divider className="mt-16 mb-24" />
                             <Typography className='font-semibold'>
-                                Experience
+                                Expertise
                             </Typography>
-                            <Box className="p-8 mt-8">
-                                <div className="gap-y-2 mb-4">
-                                    <div className="col-span-1 font-medium text-text-secondary">Expertise:</div>
-                                    <div className="col-span-2">{counselor?.expertise?.name}</div>
-                                </div>
+                            <Box className="mt-8 px-8">
+                                <div >{counselor?.expertise?.name}</div>
                             </Box>
                         </div>
                     }
@@ -207,12 +203,145 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                         </Typography>
                         <WeeklySlots slots={counselorCounselingSlots} />
                     </div>
+
+                    <Divider className="mt-16 mb-24" />
+
+                    <div className="flex flex-col gap-16">
+                        <Typography className='font-semibold'>
+                            Specialized skills
+                        </Typography>
+
+                        <Box className="flex flex-wrap gap-8">
+                            {
+                                counselor.specializedSkills?.split(`\n`).map(item => <Chip
+                                    key={item}
+                                    label={item}
+                                    size="small"
+                                />)
+                            }
+                        </Box>
+                    </div>
+
+                    <Divider className="mt-16 mb-24" />
+
+                    <div className="flex flex-col gap-16">
+                        <Typography className='font-semibold'>
+                            Other skills
+                        </Typography>
+
+                        <Box className="flex flex-wrap gap-8">
+                            {
+                                counselor.otherSkills?.split(`\n`).map(item => <Chip
+                                    key={item}
+                                    label={item}
+                                    size="small"
+                                />)
+                            }
+                        </Box>
+                    </div>
+
+                    <Divider className="mt-16 mb-24" />
+
+                    <div className="flex flex-col gap-16">
+                        <Typography className='font-semibold'>
+                            Achievements
+                        </Typography>
+                        <Box className="flex flex-col gap-8">
+                            {
+                                counselor.achievements?.split(`\n`).map(item => (
+                                    <div>- {item}</div>
+                                ))
+                            }
+                        </Box>
+                    </div>
+
+                    <Divider className="mt-16 mb-24" />
+
+                    <div className="flex flex-col gap-16">
+                        <Typography className='font-semibold'>
+                            Work history
+                        </Typography>
+                        <Box className="flex flex-col gap-8">
+                            {
+                                counselor.workHistory?.split(`\n`).map(item => (
+                                    <div>{item}</div>
+                                ))
+                            }
+                        </Box>
+                    </div>
+
+                    <Divider className="mt-16 mb-24" />
+
+                    <div className="flex flex-col gap-16">
+                        <Typography className='font-semibold'>
+                            Qualifications
+                        </Typography>
+                        <Box className="flex flex-col gap-8">
+                            {counselor.qualifications?.map((qualification) => (
+                                <div key={qualification.id} className="flex items-start p-8 rounded shadow gap-16">
+                                    <img
+                                        onClick={() => {
+                                            dispatch(openDialog({
+                                                children: (
+                                                    <img
+                                                        className='min-h-sm min-w-sm'
+                                                        src={qualification.imageUrl}
+                                                        alt={qualification.institution}
+                                                    />
+                                                )
+                                            }))
+                                        }}
+                                        src={qualification.imageUrl}
+                                        alt={qualification.institution}
+                                        className="size-72 object-cover border hover:opacity-90 cursor-pointer rounded"
+                                    />
+                                    <div className="flex-1">
+                                        <p className="text-lg font-semibold">{qualification.institution}</p>
+                                        <p className="">{qualification.degree} • {qualification.fieldOfStudy}</p>
+                                        <p className="text-text-secondary">Graduated: {qualification.yearOfGraduation}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </Box>
+                    </div>
+
+                    <Divider className="mt-16 mb-24" />
+
+                    <div className="flex flex-col gap-16">
+                        <Typography className='font-semibold'>
+                            Certifications
+                        </Typography>
+                        <Box className="flex flex-col gap-8">
+                            {counselor.certifications?.map((certification) => (
+                                <div key={certification.id} className="flex items-start p-8 rounded shadow gap-16">
+                                    <img
+                                        src={certification.imageUrl}
+                                        alt={certification.organization}
+                                        onClick={() => {
+                                            dispatch(openDialog({
+                                                children: (
+                                                    <img
+                                                        className='min-h-sm min-w-sm'
+                                                        src={certification.imageUrl}
+                                                        alt={certification.organization}
+                                                    />
+                                                )
+                                            }))
+                                        }}
+                                        className="size-72 object-cover border hover:opacity-90 cursor-pointer rounded"
+                                    />
+                                    <div className="flex-1">
+                                        <p className="text-lg font-semibold">{certification.name}</p>
+                                        <p className="">{certification.organization}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </Box>
+                    </div>
                 </div>
 
-
-
             </div >
-        </div>
+        </div >
     );
 }
 

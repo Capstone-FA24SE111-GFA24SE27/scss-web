@@ -39,3 +39,30 @@ export function checkFirebaseImageUrl(url: string): boolean {
   const prefix = 'https://firebasestorage.googleapis.com/v0/b/scss-e9511.firebasestorage.app';
   return url.startsWith(prefix);
 }
+
+export const validateMeetingUrl = (url: string): string | boolean => {
+  // Regular expression for Google Meet URL validation
+  const googleMeetRegex = /^https:\/\/meet\.google\.com\/[a-zA-Z0-9-]+$/;
+
+  // Regular expression for Zoom URL validation
+  const zoomRegex = /^https:\/\/zoom\.us\/j\/\d+$/;
+
+  // Regular expression for Microsoft Teams URL validation
+  const teamsRegex = /^https:\/\/teams\.microsoft\.com\/l\/meetup-join\/[a-zA-Z0-9\-]+\/[a-zA-Z0-9\-]+$/;
+
+  // Check if the URL matches any of the patterns and return the corresponding platform name
+  if (googleMeetRegex.test(url)) {
+    return 'MEET'; // Google Meet
+  }
+
+  if (zoomRegex.test(url)) {
+    return 'ZOOM'; // Zoom
+  }
+
+  if (teamsRegex.test(url)) {
+    return 'TEAMS'; // Microsoft Teams
+  }
+  
+  // Return error message if the URL does not match any pattern
+  return '';
+};

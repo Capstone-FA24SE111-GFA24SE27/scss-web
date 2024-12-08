@@ -17,8 +17,8 @@ const CounselorFaq = () => {
 		location?.pathname.includes('qna/conversations')
 	);
 	const isOpenQnaForm = Boolean(
-		location?.pathname.includes('question-board/create')
-		|| location?.pathname.includes('question-board/edit')
+		location?.pathname.includes('faq/create')
+		|| location?.pathname.includes('faq/edit')
 	);
 
 	function handleChangeTab(event: React.SyntheticEvent, value: number) {

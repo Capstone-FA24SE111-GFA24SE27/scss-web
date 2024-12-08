@@ -95,7 +95,7 @@ const AppointmentsContent = () => {
   }
 
   return (
-    <div className='p-32 w-full flex flex-col gap-16  container mx-auto'>
+    <div className='p-32 w-full flex flex-col gap-16 container mx-auto max-w-screen-lg'>
       <Box className='flex justify-between items-center'>
         <div className='flex gap-32'>
           <DateRangePicker

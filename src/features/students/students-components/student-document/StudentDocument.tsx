@@ -118,13 +118,15 @@ const StudentDocument: React.FC<StudentDocumentProps> = ({ editMode = false }) =
             />
             <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map((label, index) => (
-                <Step key={index} onClick={() => handleStep(index)}>
+                <Step
+                  key={index}
+                  onClick={() => handleStep(index)}
+                >
                   <StepLabel>{label}</StepLabel>
                 </Step>
               ))}
             </Stepper>
             <Box className="mt-16">
-              {/* Render steps based on active step */}
               {activeStep === 0 && (
                 <>
                   <Controller

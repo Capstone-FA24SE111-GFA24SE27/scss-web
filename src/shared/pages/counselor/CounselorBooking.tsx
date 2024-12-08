@@ -213,7 +213,7 @@ function CounselorBooking() {
               {counselor?.profile.fullName?.charAt(0)}
             </Avatar>
             <div className='flex flex-col mt-8'>
-              <Typography className="text-4 xl font-bold truncate">{counselor.profile.fullName}</Typography>
+              <Typography className="text-4xl font-bold truncate">{counselor.profile.fullName}</Typography>
               {/* <div className='flex items-end gap-8 text-lg text-gray-500'>
                                 <Rating
                                     name="simple-controlled"
@@ -232,12 +232,15 @@ function CounselorBooking() {
                     size="small"
                   />)
                 }
-                {/* <Chip
+
+              </div>
+
+              {/* <Chip
                   label={counselor.expertise?.name || counselor.specialization?.name }
                   className="mb-12 mr-12"
                   size="medium"
                 /> */}
-              </div>
+                
             </div>
           </div>
 
@@ -247,7 +250,6 @@ function CounselorBooking() {
 
           <div>
             <Typography className='px-24 text-lg font-semibold text-primary'>Counseling Date</Typography>
-
             <DateCalendar
               views={['day']}
               className='w-full'

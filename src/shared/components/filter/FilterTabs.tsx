@@ -24,11 +24,11 @@ const CustomTabs = ({
         variant="scrollable"
         scrollButtons={false}
         className="min-h-40"
-        classes={{ indicator: 'flex justify-center opacity-10 rounded-full w-full h-full' }}
+        classes={{ indicator: 'flex justify-center opacity-15 rounded-full w-full h-full' }}
         TabIndicatorProps={{
           children: (
             <Box
-              className="w-full h-full rounded-full bg-secondary-main"
+              className="w-full h-full rounded-full"
             />
           )
         }}
