@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
-import CounselorListFilterButton from './CounselorListFilterButton'
 import { Box, IconButton, Rating, Slider, Tooltip, Typography } from '@mui/material'
 import { AcademicFilter, DateRangePicker, SelectField } from '@/shared/components'
 import dayjs from 'dayjs'
 import { useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSpecializationId } from './counselor-list-slice'
+import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSpecializationId } from '../../counselors/table/counselor-list-slice'
 import { useGetCounselorExpertisesQuery, useGetNonAcademicTopicsQuery } from '@/shared/services'
 import { Close, Female, Male } from '@mui/icons-material'
 
-const CounselorListSidebarContent = () => {
+const CounselorsTableFilter = () => {
   const counselingType = useAppSelector(selectCounselorType)
   const availableFrom = useAppSelector(selectFilter).availableFrom
   const availableTo = useAppSelector(selectFilter).availableTo
@@ -65,13 +64,7 @@ const CounselorListSidebarContent = () => {
 
 
   return (
-    <div className='p-24 flex flex-col gap-16'>
-      <div className='flex justify-start items-center gap-16'>
-        <CounselorListFilterButton />
-        <Typography className='text-xl'>
-          Filter Counselors
-        </Typography>
-      </div>
+    <div className='px-16 flex flex-col gap-16 rounded-lg w-sm'>
       <div>
         <Typography className='font-semibold text-lg mb-8'>Select available date range</Typography>
         <DateRangePicker
@@ -183,4 +176,4 @@ const CounselorListSidebarContent = () => {
   )
 }
 
-export default CounselorListSidebarContent
+export default CounselorsTableFilter

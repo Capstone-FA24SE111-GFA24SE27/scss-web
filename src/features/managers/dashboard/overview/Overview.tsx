@@ -142,8 +142,8 @@ const Overview = () => {
         />
       </div>
       <div className='mt-16 flex flex-col gap-16'>
-        <AppointmentOverview />
-        {/* <AppointmentChart /> */}
+        {/* <AppointmentOverview /> */}
+        <AppointmentChart />
         <RequestChart />
         <QnaChart />
         <DemandChart />

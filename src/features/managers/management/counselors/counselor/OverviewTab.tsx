@@ -1,7 +1,7 @@
 import { StatsCard } from '@/shared/components'
 import { useAppointmentsSocketListener, useQuestionsSocketListener, useRequestsSocketListener } from '@/shared/context'
 import { getCurrentMonthYear, groupAppointmentsByDate } from '@/shared/utils'
-import { CheckCircle, Class, Description, DoDisturbOn, Pending } from '@mui/icons-material'
+import { CheckCircle, Class, Description, DoDisturbOn, DoNotDisturb, Pending } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store'
 import dayjs from 'dayjs'
@@ -88,6 +88,8 @@ const OverViewTab = () => {
   })
 
   const completedQuestions = totalQuestions?.content?.data.filter(qna => qna.answer) || []
+  const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED','FLAGGED'].includes(qna.status)) || []
+
 
   console.log(totalAppointments)
   return (
@@ -170,6 +172,18 @@ const OverViewTab = () => {
             }}
             icon={<CheckCircle fontSize='large' />}
             color="success"  // You can set color to primary, secondary, success, error, etc.
+          />
+
+          <StatsCard
+            title="Rejected/Flagged Questions"
+            total={rejectedQuestions.length}
+            statChange={{
+              prefixText: 'Last month',
+              current: rejectedQuestions.length,
+              previous: 0,
+            }}
+            icon={<DoNotDisturb fontSize='large' />}
+            color="error"  // You can set color to primary, secondary, success, error, etc.
           />
         </Box>
       </div >

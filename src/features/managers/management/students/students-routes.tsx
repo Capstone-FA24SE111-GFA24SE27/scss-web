@@ -1,13 +1,16 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
+import { studentsTableRoutes } from './table';
+import {studentOverviewRoutes} from './overview';
 import { studentRoutes } from './student';
 
-const Students = lazy(() => import('./Students'))
-// const Student = lazy(() => import('./student/Student'))
 export const studentsRoutes: RouteObject[] = [
   {
     path: 'students',
-    element: <Students />,
+    children: [
+      ...studentsTableRoutes,
+      ...studentOverviewRoutes,
+      ...studentRoutes
+    ]
   },
-  ...studentRoutes
 ];

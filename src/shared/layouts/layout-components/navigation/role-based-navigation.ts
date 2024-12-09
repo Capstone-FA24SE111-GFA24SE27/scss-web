@@ -1,5 +1,5 @@
 import { roles } from "@/shared/constants";
-import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description, Schedule, Monitor, Plagiarism, Inventory, Quiz } from '@mui/icons-material';
+import { Article, CalendarMonth, EventSeat, Home, Mail, NotStarted, SupportAgent, Archive, SvgIconComponent, TagFaces, Campaign, QuestionAnswer, Assignment, Forum, Class, SupervisedUserCircle, AccountBox, EmojiPeople, Event, LocalOffer, Face, Groups2, PeopleAlt, Settings, AssignmentLate, Description, Schedule, Monitor, Plagiarism, Inventory, Quiz, Dashboard, Analytics, TableChart, ViewList } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FmdBadIcon from '@mui/icons-material/FmdBad';
 import { Actor } from "@/shared/components";
@@ -252,14 +252,14 @@ const counselorNavigation: NavigationOptions = {
 const managerNavigation: NavigationOptions = {
     list: [
         {
-            name: "Dashboard",
+            name: "Overall",
             description: "Data visualization & analytics",
-            route: 'dashboard',
+            route: 'overall',
             items: [
                 {
-                    icon: Plagiarism,
-                    name: 'Overview',
-                    route: 'overview'
+                    icon: Dashboard,
+                    name: 'Dashboard',
+                    route: 'dashboard'
                 },
                 // {
                 //     icon: Description,
@@ -276,17 +276,56 @@ const managerNavigation: NavigationOptions = {
                 {
                     icon: SupportAgent,
                     name: 'Counselors',
-                    route: 'counselors'
+                    route: 'counselors',
+                    children: [
+                        {
+                            icon: Analytics,
+                            name: 'Overview',
+                            route: 'overview',
+                        },
+                        {
+                            icon: ViewList,
+                            name: 'Data Table',
+                            route: 'table',
+                        }
+
+                    ]
                 },
                 {
                     icon: Face,
                     name: 'Students',
-                    route: 'students'
+                    route: 'students',
+                    children: [
+                        {
+                            icon: Analytics,
+                            name: 'Overview',
+                            route: 'overview',
+                        },
+                        {
+                            icon: ViewList,
+                            name: 'Data Table',
+                            route: 'table',
+                        }
+
+                    ]
                 },
                 {
                     icon: EmojiPeople,
                     name: 'Support Staffs',
-                    route: 'support-staffs'
+                    route: 'support-staffs',
+                    children: [
+                        {
+                            icon: Analytics,
+                            name: 'Overview',
+                            route: 'overview',
+                        },
+                        {
+                            icon: ViewList,
+                            name: 'Data Table',
+                            route: 'table',
+                        }
+
+                    ]
                 },
             ]
         },

@@ -234,6 +234,7 @@ function QuickBooking() {
         .unwrap()
         .then(() => {
           reset();
+          setActiveStep(0)
           setRandomMatchedCounselor(null)
           useAlertDialog({
             dispatch,
@@ -280,7 +281,7 @@ function QuickBooking() {
 
   console.log(formData)
 
-  const [progress, setProgress] = useState(20);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (isGettingRandomMatchedCounselor) {
@@ -698,7 +699,7 @@ function QuickBooking() {
                 <div className='p-32'>
                   <div className=''>
                     {
-                      ((progress < 100) || isLoadingRandomMatchedCounselor)
+                      ((progress > 0 && progress < 100) || isLoadingRandomMatchedCounselor)
                         ? <div className='flex flex-col items-center gap-16'>
                           <Typography color='secondary' className='text-lg font-semibold text-center'>Matching the most suitable counselor for you.</Typography>
                           <CircularProgressWithLabel value={progress} />
@@ -731,8 +732,7 @@ function QuickBooking() {
                                         name="isOnline"
                                         control={control}
                                         render={({ field }) => (
-                                          <FormControl
-                                          >
+                                          <FormControl>
                                             <RadioGroup
                                               {...field}
                                               className="Settings-group"

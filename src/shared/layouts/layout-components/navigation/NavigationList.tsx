@@ -61,7 +61,7 @@ function NavigationList() {
                                     onClick={item.children
                                         ? handleOpen :
                                         () => handleNavigation(`${sublist.route}/${item.route}`)}
-                                    selected={pathname.includes(`${sublist.route}/${item.route}`)}
+                                    selected={!item.children && pathname.includes(`${sublist.route}/${item.route}`)}
                                 >
                                     <ListItemIcon>
                                         {<item.icon color={pathname.includes(`${sublist.route}/${item.route}`) ? 'primary' : 'inherit'} />}
@@ -76,8 +76,9 @@ function NavigationList() {
                                                 <ListItemButton
                                                     key={nestedItem.name}
                                                     onClick={() => handleNavigation(`${sublist.route}/${item.route}/${nestedItem.route}`)}
-                                                    sx={{ pl: 4 }}
-                                                    selected={pathname.includes(item.route)} >
+                                                    sx={{ ml: 2 }}
+                                                    className='rounded-md'
+                                                    selected={pathname.includes(`${sublist.route}/${item.route}/${nestedItem.route}`)} >
                                                     <ListItemIcon>
                                                         {<nestedItem.icon />}
                                                     </ListItemIcon>
