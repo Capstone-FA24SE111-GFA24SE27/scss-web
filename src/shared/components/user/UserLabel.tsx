@@ -61,7 +61,9 @@ const UserLabel: React.FC<UserLabelProps> = ({
   };
 
   return (
-    <div className="flex items-center text-sm text-text-secondary gap-4">
+    <div className="flex items-center text-sm text-text-secondary gap-4"
+      onClick={(e) => e.stopPropagation()}
+    >
       {label}
       <Box
         className={`flex gap-4 items-center group hover:cursor-pointer`}

@@ -12,7 +12,7 @@ import { useGetCounselorFeedbacksAdminQuery } from '../admin-counselor-api';
 import { AppointmentDetail } from '@/shared/pages';
 
 
-const QuestionBoard = () => {
+const FeedbackTab = () => {
   const role: Role = useAppSelector(selectAccount)?.role
   const { id } = useParams()
   const { data: counselorFeedbacksData, isLoading } = useGetCounselorFeedbacksAdminQuery({ counselorId: Number(id) })
@@ -101,4 +101,4 @@ const QuestionBoard = () => {
   )
 }
 
-export default QuestionBoard
+export default FeedbackTab

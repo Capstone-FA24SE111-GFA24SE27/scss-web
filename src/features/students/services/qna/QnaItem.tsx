@@ -1,4 +1,4 @@
-import { ExpandableText, NavLinkAdapter, UserLabel, renderHTML } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, RenderHTML } from '@/shared/components';
 import React, { SyntheticEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -9,6 +9,7 @@ import {
 	Edit,
 	ExpandMore,
 	HelpOutlineOutlined,
+	Lock,
 } from '@mui/icons-material';
 import {
 	Accordion,
@@ -20,6 +21,7 @@ import {
 	Chip,
 	Paper,
 	Typography,
+	styled,
 } from '@mui/material';
 import { Question } from '@/shared/types';
 import {
@@ -29,11 +31,18 @@ import {
 } from './qna-api';
 import { useNavigate } from 'react-router-dom';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import { statusColor } from '@/shared/constants';
+import { statusColor, statusLabel } from '@/shared/constants';
 import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 import { openCounselorView } from '../../students-layout-slice';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
+import dayjs from 'dayjs';
+
+
+export const StyledAccordionSummary = styled(AccordionSummary)({
+	display: 'flex',
+	alignItems: 'flex-start',  // Align content at the top
+});
 
 type Props = {
 	expanded: number | boolean;
@@ -51,7 +60,7 @@ const item = {
 const QnaItem = (props: Props) => {
 	const { expanded, toggleAccordion, qna, openAnswers } = props;
 
-	const { data, isLoading } = useGetMessagesQuery(qna.id,  {skip: !qna || qna.closed || !qna.chatSession || qna.status !== 'VERIFIED'});
+	const { data, isLoading } = useGetMessagesQuery(qna.id, { skip: !qna || qna.closed || !qna.chatSession || qna.status !== 'VERIFIED' });
 	const chatSession = data?.content;
 
 	const dispatch = useAppDispatch();
@@ -60,8 +69,7 @@ const QnaItem = (props: Props) => {
 	const account = useAppSelector(selectAccount);
 
 	const [closeQuestion] = useCloseQuestionStudentMutation();
-	const [deleteQuestion, { isLoading: isDeletingQuestion }] =
-		useDeleteQuestionStudentMutation();
+	const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteQuestionStudentMutation();
 	const [createChatSession] = useCreateChatSessionStudentMutation();
 
 	const handleSelectChat = (qna: Question) => {
@@ -77,21 +85,21 @@ const QnaItem = (props: Props) => {
 		useConfirmDialog(
 			{
 				title: 'Are you sure you want to close the question?',
-				confirmButtonFunction: async ()=>{
+				confirmButtonFunction: async () => {
 					const result = await closeQuestion(qna.id)
 					console.log('close qna', result)
 					// if(result?.data?.status === 200) {
-						useAlertDialog({
-							title: result.data.message,
-							dispatch
-						})
+					useAlertDialog({
+						title: result.data.message,
+						dispatch
+					})
 					// }
 				},
 				dispatch
 			}
 		)
-		
-		
+
+
 	}
 
 	const handleCreateChat = async (qna: Question) => {
@@ -150,16 +158,27 @@ const QnaItem = (props: Props) => {
 					expanded={expanded === qna.id || openAnswers}
 					onChange={toggleAccordion(qna.id)}
 				>
-					<AccordionSummary expandIcon={<ExpandMore />}>
-						<div className='flex flex-col gap-8'>
+					<AccordionSummary
+						// expandIcon={<ExpandMore />}
+						expandIcon={<ExpandMore sx={{ fontSize: '3rem', height: '6rem' }} />}
+
+					>
+						<div className='flex flex-col gap-8 w-full'>
 							<div className='flex gap-8'>
+								{qna.answer ? (
+									<Chip icon={<CheckCircleOutlineOutlined />} label='Answered' color='success' size='small' variant='outlined' />
+								) : (
+									<HelpOutlineOutlined color='disabled' />
+								)}
+
 								<Chip
 									label={
 										qna.questionType === 'ACADEMIC'
 											? 'Academic'
 											: 'Non-Academic'
 									}
-									color={'info'}
+									color={'secondary'}
+									variant='outlined'
 									size='small'
 								/>
 								<Chip
@@ -167,16 +186,23 @@ const QnaItem = (props: Props) => {
 									color={statusColor[qna.status as string]}
 									size='small'
 								/>
-								{/* <Chip label={qna.topic?.name} size='small' /> */}
-								{/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
 								{qna.closed && (
 									<Chip
+										icon={<Lock />}
 										label={'Closed'}
 										variant='outlined'
-										color={'error'}
 										size='small'
 									/>
-								)}
+								)
+								}
+								<div className='w-full flex justify-end pr-8'>
+									{/* <Chip
+										label={`Created at ${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}
+										size='small'
+										color='default'
+									/> */}
+								</div>
+
 								{countUnreadMessages() ? (
 									<Chip
 										label={countUnreadMessages()}
@@ -188,17 +214,11 @@ const QnaItem = (props: Props) => {
 									''
 								)}
 							</div>
+							<Typography color='textSecondary' className=''>Created at {dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
 							<div className='flex items-center flex-1 gap-8'>
-								{/* <Divider orientation='vertical' /> */}
-								{qna.answer ? (
-									<CheckCircleOutlineOutlined color='success' />
-								) : (
-									<HelpOutlineOutlined color='disabled' />
-								)}
 
 								<Typography className='w-full pr-8 font-semibold'>
-									{/* {qna.content} */}
-									{renderHTML(qna.content)}
+									{qna.title}
 								</Typography>
 							</div>
 						</div>
@@ -206,10 +226,11 @@ const QnaItem = (props: Props) => {
 
 					<AccordionDetails className='flex'>
 						<div className='flex flex-col gap-8'>
+							{RenderHTML(qna.content)}
 							{
 								qna.counselor && (
 									<UserLabel
-										label='Assigned to'
+										label={`${([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status] } by`}
 										profile={qna?.counselor.profile}
 										email={qna?.counselor?.email}
 										onClick={() => {
@@ -221,16 +242,6 @@ const QnaItem = (props: Props) => {
 										}}
 									/>
 								)
-								// <Button className='flex items-center justify-start gap-16 px-16 w-fit'>
-								//   <Avatar
-								//     className='size-32'
-								//     alt={qna.counselor?.profile.fullName}
-								//     src={qna.counselor?.profile.avatarLink} />
-								//   <div>
-								//     <Typography className='text-sm font-semibold'>{qna.counselor?.profile.fullName}</Typography>
-								//     <Typography className='text-sm text-start' color='textSecondary'>{qna.counselor?.expertise?.name || qna.counselor?.specialization?.name}</Typography>
-								//   </div>
-								// </Button>
 							}
 							{!qna.counselor ? (
 								<Typography
@@ -239,25 +250,33 @@ const QnaItem = (props: Props) => {
 								>
 									{'No counselor has taken this question'}
 								</Typography>
-							) : qna.answer ? (
-								<div>
-									{/* <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
-									<ExpandableText
-												className='flex flex-wrap w-full overflow-hidden break-all text-wrap'
-												text={qna.answer}
-												limit={100}
-											/>
-								</div>
-							) : (
-								<div>
-									<Typography
-										className='px-8 italic'
-										color='textDisabled'
-									>
-										{'The counselor has not answer yet'}
-									</Typography>
-								</div>
-							)}
+							)
+								: qna.answer ? (
+									<div>
+										{RenderHTML(qna.answer)}
+									</div>
+								)
+									: qna.reviewReason
+										? <div className='flex gap-8'>
+											<Typography
+												className='text-text-secondary'
+											>
+												Flagged reason:
+											</Typography>
+											<Typography
+												className='font-semibold'
+												color='error'
+											>
+												{qna.reviewReason}
+											</Typography>
+										</div>
+										: <Typography
+											className='italic'
+											color='textDisabled'
+										>
+											{'The counselor has not answered the question'}
+										</Typography>
+							}
 						</div>
 					</AccordionDetails>
 					<Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5 '>
@@ -275,15 +294,15 @@ const QnaItem = (props: Props) => {
 							>
 								Delete
 							</Button>
-						) : qna.status == 'VERIFIED' && !qna?.closed ? (
-							<Button
-								variant='outlined'
-								color='secondary'
-								startIcon={<Close />}
-								onClick={() => handleCloseQuestion()}
-							>
-								Close
-							</Button>
+						) : qna.status == 'VERIFIED' && !qna?.closed ? (<></>
+							// <Button
+							// 	variant='outlined'
+							// 	color='secondary'
+							// 	startIcon={<Lock />}
+							// 	onClick={() => handleCloseQuestion()}
+							// >
+							// 	Close
+							// </Button>
 						) : (
 							<></>
 						)}
@@ -315,7 +334,7 @@ const QnaItem = (props: Props) => {
 								onClick={() => handleSelectChat(qna)}
 								disabled={!qna.counselor || qna.closed || qna.status !== 'VERIFIED'}
 							>
-								Initiate Chat
+								Start to Chat
 							</Button>
 						)}
 					</Box>

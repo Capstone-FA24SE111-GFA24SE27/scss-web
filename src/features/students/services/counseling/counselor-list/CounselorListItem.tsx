@@ -31,7 +31,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 				component={NavLinkAdapter}
 				to={`counselor/${counselor.profile.id}`}
 			>
-				<div className='flex gap-24 items-center'>
+				<div className='flex gap-24 items-start'>
 					<ListItemAvatar>
 						<Avatar
 							alt={counselor.profile.fullName}
@@ -43,7 +43,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 						<ListItemText
 							classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate text-lg' }}
 							primary={counselor.profile.fullName}
-							secondary={counselor.expertise?.name || counselor.specialization?.name}
+							secondary={counselor.expertise?.name || counselor.major?.name}
 						/>
 						<div className="flex items-center gap-16">
 							<div className="flex items-center w-120">
@@ -55,11 +55,22 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 								<div className="ml-8 text-text-secondary leading-6">{counselor.email}</div>
 							</div>
 						</div>
+						<div className="flex flex-wrap mt-8 gap-8">
+							{
+								counselor.specializedSkills?.split(`\n`).map(item => (
+									<Chip
+										key={item}
+										label={item}
+										size="small"
+									/>
+								))
+							}
+						</div>
 					</Box>
 
 				</div>
 
-				<div className='flex gap-8'>
+				<div className='flex gap-8 text-sm text-text-secondary'>
 					<Rating
 						name="simple-controlled"
 						size='small'
@@ -67,6 +78,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 						readOnly
 						precision={0.5}
 					/>
+					({counselor?.rating}/5)
 				</div>
 			</ListItemButton >
 			<Divider />

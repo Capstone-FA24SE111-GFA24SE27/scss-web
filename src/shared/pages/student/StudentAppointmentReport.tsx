@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { AppointmentReport, Breadcrumbs, ContentLoading } from '@/shared/components';
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import dayjs from 'dayjs';
-import { renderHTML } from '@/shared/components';
+import { RenderHTML } from '@/shared/components';
 import { navigateUp } from '@/shared/utils';
 import { useGetAppointmentReportQuery } from '@/shared/services';
 

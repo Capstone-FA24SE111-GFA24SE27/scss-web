@@ -18,12 +18,12 @@ import { splitUserAndReason } from '@/shared/utils';
 
 type Props = {
   appointment: Appointment,
-  handleCloseDialog: ()=>void
+  handleCloseDialog: () => void
 }
 
 const CounselorAppointmentItem = (props: Props) => {
 
-  const {appointment, handleCloseDialog} = props
+  const { appointment, handleCloseDialog } = props
 
   const dispatch = useAppDispatch();
 
@@ -37,35 +37,8 @@ const CounselorAppointmentItem = (props: Props) => {
       <div className='flex flex-col w-full'>
         <ListItem
           className='flex justify-between p-0'
-          // secondaryAction={
-           
-          // }
-        >
-          <div className='flex items-center gap-24'>
-            <div className='flex items-center gap-8 '>
-              <CalendarMonth />
-              <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
-            </div>
-            <div className='flex items-center gap-8'>
-              <AccessTime />
-              <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-            </div>
-            <Chip
-              label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
-              icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
-              className='items-center font-semibold'
-              size='small'
-            />
-            {
-              ['CANCELED'].includes(appointment?.status) && <Chip
-                label={appointment.status}
-                variant='filled'
-                color={statusColor[appointment.status]}
-                size='small'
-              />
-            }
-          </div>
-          <ItemMenu
+          secondaryAction={
+            <ItemMenu
               menuItems={[
                 // {
                 //   label: 'View details',
@@ -109,6 +82,33 @@ const CounselorAppointmentItem = (props: Props) => {
                 ] : [])
               ]}
             />
+          }
+        >
+          <div className='flex flex-wrap items-center gap-16'>
+            <div className='flex items-center gap-8 '>
+              <CalendarMonth />
+              <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
+            </div>
+            <div className='flex items-center gap-8'>
+              <AccessTime />
+              <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+            </div>
+            <Chip
+              label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+              icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+              className='items-center font-semibold'
+              size='small'
+            />
+            {
+              ['CANCELED'].includes(appointment?.status) && <Chip
+                label={appointment.status}
+                variant='filled'
+                color={statusColor[appointment.status]}
+                size='small'
+              />
+            }
+          </div>
+
           {/* <div className='relative'>
           {
             !appointment.havingReport && ['ATTEND'].includes(appointment.status) && (
@@ -142,8 +142,8 @@ const CounselorAppointmentItem = (props: Props) => {
         <div className='mt-16'>
           {appointment.cancelReason && (
             <div className='flex items-center gap-8'>
-              <Typography className='italic font-semibold' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
-              <Typography className='italic font-semibold' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
+              <Typography className='' color='textSecondary'>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
+              <Typography className='font-semibold' color='error'>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
             </div>
           )}
         </div>
@@ -232,29 +232,25 @@ const CounselorAppointmentItem = (props: Props) => {
               appointment.appointmentFeedback && (
                 <div className='w-full'>
                   <div className='flex'>
-                    <Typography className='w-[13rem]'>Student feedback:</Typography>
+                    <Typography className='w-[13rem]' color='textSecondary'>Student feedback:</Typography>
                     <div className='flex flex-col'>
                       <div className='flex items-center gap-8'>
                         <Rating size='medium' value={appointment.appointmentFeedback.rating} readOnly />
                         <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                       </div>
-                      <Typography className='pl-8 mt-8'>{appointment.appointmentFeedback.comment}</Typography>
+                      <Typography className='pl-4 mt-8'>{appointment.appointmentFeedback.comment}</Typography>
                     </div>
                   </div>
                 </div>
               )
             }
             {
-              appointment.status === 'WAITING' && dayjs().isAfter(
-                dayjs(appointment.startDateTime)
-              ) && (
+              appointment.status === 'WAITING'
+              // && dayjs().isAfter(dayjs(appointment.startDateTime))
+              && (
                 <div className='mt-16'>
-                  <Button className='mt-4' variant='contained' color='secondary' 
-                  disabled={
-											dayjs().isBefore(
-												dayjs(appointment.startDateTime)
-											) 
-										}
+                  <Button className='mt-4' variant='contained' color='secondary' size='small'
+                    // disabled={dayjs().isBefore(dayjs(appointment.startDateTime))}
                     onClick={() => dispatch(openDialog({
                       children: <CheckAttendanceDialog appointment={appointment} />
                     }

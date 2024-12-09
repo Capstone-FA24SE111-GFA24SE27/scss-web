@@ -6,7 +6,7 @@ import { Appointment } from '@/shared/types';
 import { splitUserAndReason } from '@/shared/utils';
 import { useCancelCounselingAppointmentMutation, useSendCouselingAppointmentFeedbackMutation } from '@features/students/services/activity/activity-api';
 import { AccessTime, CalendarMonth, Circle, Clear, Visibility } from '@mui/icons-material';
-import { Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, ListItem, ListItemButton, Paper, Rating, TextField, Tooltip, Typography } from '@mui/material';
 import { useAppDispatch } from '@shared/store';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -14,10 +14,10 @@ import { Link, useNavigate } from 'react-router-dom';
 
 type Props = {
   appointment: Appointment,
-  handleCloseDialog: ()=>void
+  handleCloseDialog: () => void
 }
 const StudentAppointmentItem = (props: Props) => {
-  const {appointment, handleCloseDialog} = props
+  const { appointment, handleCloseDialog } = props
 
   const dispatch = useAppDispatch()
 
@@ -31,14 +31,34 @@ const StudentAppointmentItem = (props: Props) => {
   return (
     <Paper
       key={appointment.id}
-      className="flex gap-16 p-16 shadow"
-      sx={{ bgcolor: 'background.paper' }}
+      className="flex flex-col gap-8 shadow"
     >
-      <div className='flex flex-col w-full gap-16'>
-        <ListItem className='flex gap-24 p-0'
-          // secondaryAction={
-            
-          // }
+      <div className='flex flex-col w-full gap-16 p-16'>
+        <ListItem className='flex flex-wrap gap-16 p-0'
+          secondaryAction={
+            <ItemMenu
+              menuItems={[
+                {
+                  label: 'View details',
+                  onClick: () => {
+                    navigate(`/services/activity/appointment/${appointment.id}`)
+                  },
+                  icon: <Visibility fontSize='small' />
+                },
+                ...(['WAITING'].includes(appointment?.status) ? [{
+                  label: 'Cancel',
+                  onClick: () => {
+                    dispatch(
+                      openDialog({
+                        children: <CancelAppointmentDialog appointment={appointment} />
+                      })
+                    )
+                  },
+                  icon: <Clear fontSize='small' />
+                }] : []),
+              ]}
+            />
+          }
         >
           <div className='flex items-center gap-8'>
             <CalendarMonth />
@@ -60,52 +80,12 @@ const StudentAppointmentItem = (props: Props) => {
             color={statusColor[appointment.status]}
             size='small'
           />
-
-<ItemMenu
-              menuItems={[
-                
-                // {
-                //   label: 'View details',
-                //   onClick: () => {
-                //     dispatch(openDialog({
-                //       children: <AppointmentDetail id={appointment?.id.toString()} />
-                //     }))
-                //   },
-                //   icon: <Visibility fontSize='small' />
-                // },
-                {
-                  label: 'View details',
-                  onClick: () => {
-                    navigate(`/services/activity/appointment/${appointment.id}`)
-                  },
-                  icon: <Visibility fontSize='small' />
-                },
-                ...(['WAITING'].includes(appointment?.status) ? [{
-                  label: 'Cancel',
-                  onClick: () => {
-                    dispatch(
-                      openDialog({
-                        children: <CancelAppointmentDialog appointment={appointment} />
-                      })
-                    )
-                  },
-                  icon: <Clear fontSize='small' />
-                }] : []),
-              ]}
-            />
         </ListItem>
-
-        {/* {
-                    appointment.meetingType === 'OFFLINE' && appointment.address && (<div className='flex items-center gap-16'>
-                      <Typography className='w-68' color='textSecondary'>Address:</Typography>
-                      <Typography className='font-semibold'>{appointment.address || ''}</Typography>
-                    </div>)
-                  } */}
 
         {appointment.cancelReason && (
           <div className='flex items-center gap-8'>
-            <Typography className='italic font-semibold' color=''>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
-            <Typography className='italic font-semibold' color=''>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
+            <Typography className='' color='textSecondary'>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
+            <Typography className='font-semibold' color='error'>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
           </div>
         )}
         <div className='flex gap-4'>
@@ -146,52 +126,52 @@ const StudentAppointmentItem = (props: Props) => {
             {/* <ChevronRight /> */}
           </ListItemButton>
         </Tooltip>
-        {appointment.appointmentFeedback ?
-          <div className='w-full'>
-            <Divider className='border' />
-            <div className='flex items-start gap-16 mt-8'>
-              <Typography color='textSecondary' className='pt-2 w-96'>Your feedback:</Typography>
-              <div className='flex-1'>
-                <div>
-                  <div className='flex items-center gap-8'>
-                    <Rating
-                      size='medium'
-                      value={appointment.appointmentFeedback.rating}
-                      readOnly
-                    />
-                    <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-                  </div>
+      </div>
+      {appointment.appointmentFeedback ?
+        <div className='w-full px-16 pb-16'>
+          <Divider className='border' />
+          <div className='flex items-start gap-16 mt-8'>
+            <Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
+            <div className='flex-1'>
+              <div>
+                <div className='flex items-center gap-8'>
+                  <Rating
+                    size='medium'
+                    value={appointment.appointmentFeedback.rating}
+                    readOnly
+                  />
+                  <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
                 </div>
-                <ExpandableText className='pl-8 mt-8' text={appointment.appointmentFeedback.comment} limit={96} />
-                {/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography> */}
               </div>
+              <ExpandableText className='pl-4 mt-8' text={appointment.appointmentFeedback.comment} limit={96} />
+              {/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography> */}
             </div>
           </div>
-          : appointment.status === 'ATTEND' && <>
-            <div className='flex flex-col w-full gap-4 text-secondary-main '>
-              <Divider />
-              {/* <Typography className='font-semibold'>Send feedback about the appointment!</Typography> */}
-              <div className='flex'>
-                <Button
-                  // variant='outlined'
-                  size='large'
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    dispatch(openDialog({
-                      children: (
-                        <SendFeedbackDialog appointment={appointment} />
-                      )
-                    }))
-                  }}
-                >
-                  Leave a review
-                </Button>
-              </div>
+        </div>
+        : appointment.status === 'ATTEND' && <>
+          <Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5 '>
+            <Divider />
+            {/* <Typography className='font-semibold'>Send feedback about the appointment!</Typography> */}
+            <div className='flex'>
+              <Button
+                variant='contained'
+                color='secondary'
+                size='large'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  dispatch(openDialog({
+                    children: (
+                      <SendFeedbackDialog appointment={appointment} />
+                    )
+                  }))
+                }}
+              >
+                Leave a review
+              </Button>
             </div>
-
-          </>
-        }
-      </div>
+          </Box>
+        </>
+      }
     </Paper>
   )
 }

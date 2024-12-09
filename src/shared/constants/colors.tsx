@@ -25,6 +25,12 @@ export const priorityColor = {
   'URGEN': 'error',
 }
 
+export const difficultyColor = {
+  'Easy': 'success',
+  'Medium': 'warning',
+  'Hard': 'error',
+}
+
 export const counselingTypeColor = {
   'ACADEMIC': 'blue-500',
   'NON_ACADEMIC': 'green-500',

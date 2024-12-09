@@ -7,6 +7,8 @@ import CounselingSidebarContent from './CounselingSidebarContent';
 import CounselingHeader from './CounselingHeader';
 import { Tab, Tabs } from '@mui/material';
 import QuickBooking from './quick-booking';
+import { useAppDispatch, useAppSelector } from '@shared/store';
+import { selectCounselingTab, setCounselingTab } from './counselor-list/counselor-list-slice';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -22,17 +24,18 @@ function Counseling() {
 	const pageLayout = useRef(null);
 	const routeParams = useParams();
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
-	const [tabValue, setTabValue] = useState(0);
 	// const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
 	// useGetContactsListQuery();
 	// useGetContactsCountriesQuery();
 	// useGetContactsTagsQuery();
+	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	const isMobile = false
 
 	function handleChangeTab(event: React.SyntheticEvent, value: number) {
-		setTabValue(value);
+		dispatch(setCounselingTab(value))
 	}
+	const counselingTab = useAppSelector(selectCounselingTab)
 
 	useEffect(() => {
 		setRightSidebarOpen(Boolean(routeParams.id));
@@ -44,7 +47,7 @@ function Counseling() {
 				<div>
 					<CounselingHeader />
 					<Tabs
-						value={tabValue}
+						value={counselingTab}
 						onChange={handleChangeTab}
 						indicatorColor="secondary"
 						textColor="secondary"
@@ -66,8 +69,8 @@ function Counseling() {
 			content={
 				<div className="w-full pr-8">
 					<div className=''>
-						{tabValue === 0 && <QuickBooking />}
-						{tabValue === 1 && <CounselorList />}
+						{counselingTab === 0 && <QuickBooking />}
+						{counselingTab === 1 && <CounselorList />}
 					</div>
 				</div>
 			}

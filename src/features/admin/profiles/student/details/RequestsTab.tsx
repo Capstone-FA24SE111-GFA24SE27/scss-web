@@ -59,7 +59,6 @@ function RequestsTab() {
           color={statusColor[row.original.status]}
           size='small'
         />
-
       )
     },
     {

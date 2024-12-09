@@ -1,6 +1,5 @@
 import { useState, MouseEvent } from 'react';
 import { useForm, Controller, FieldError } from 'react-hook-form';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,8 +7,8 @@ import { Button, Stepper, Step, StepLabel, Typography, Box, Switch, FormControlL
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { useCreateAppointmentReportMutation } from './report-api';
 import { useParams, useNavigate } from 'react-router';
-import { renderHTML } from '@/shared/components';
-import { Scrollbar, closeDialog, openDialog } from '@/shared/components';
+import { RenderHTML } from '@/shared/components';
+import { Scrollbar, closeDialog, openDialog, QuillEditor } from '@/shared/components';
 import { useAppDispatch } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 import ReportPreview from './ReportPreview';
@@ -41,10 +40,21 @@ export type ReportFormValues = z.infer<typeof formSchema>;
 
 const steps = ['Goal', 'Content', 'Conclusion', 'Intervention'];
 
+const customModules = {
+  toolbar: {
+    container: [
+      [{ header: '1' }, { header: '2' }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link'],
+    ],
+  },
+};
+
+
 const ReportCreate = () => {
   const routeParams = useParams();
   const navigate = useNavigate();
-  const { handleSubmit, control, formState: { errors }, watch } = useForm<ReportFormValues>({
+  const { handleSubmit, control, formState: { errors }, watch, setValue } = useForm<ReportFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       consultationGoal: { specificGoal: '', reason: '' },
@@ -71,6 +81,10 @@ const ReportCreate = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   };
 
+  const handleStep = (step: number) => {
+    setActiveStep(step);
+  };
+
   const dispatch = useAppDispatch()
   const [createCounselingMutation] = useCreateAppointmentReportMutation();
 
@@ -92,7 +106,7 @@ const ReportCreate = () => {
               color: 'success',
             })
           })
-          .catch(()=> {
+          .catch(() => {
             useAlertDialog({
               dispatch,
               title: 'Failed to create report',
@@ -125,7 +139,11 @@ const ReportCreate = () => {
       </div>
       <Stepper activeStep={activeStep} alternativeLabel className="mb-16 flex">
         {steps.map((label, index) => (
-          <Step key={label} completed={index < activeStep}>
+          <Step
+            key={label}
+            // completed={index < activeStep}
+            onClick={() => handleStep(index)}
+          >
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
@@ -137,37 +155,22 @@ const ReportCreate = () => {
           <h2 className="text-xl font-semibold mb-4">Consultation Goal</h2>
           <div className="">
             <label className="block font-medium mb-4 pt-16">Specific Goal</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationGoal.specificGoal"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('consultationGoal.specificGoal')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('consultationGoal.specificGoal')}
+                onChange={(value) => setValue('consultationGoal.specificGoal', value, { shouldValidate: true })}
+                error={errors.consultationGoal?.specificGoal?.message}
+                customModules={customModules}
               />
             </div>
-            {errors.consultationGoal?.specificGoal && (
-              <p className="text-red-500 mb-16">{errors.consultationGoal.specificGoal.message}</p>
-            )}
 
             <label className="block font-medium mb-4 pt-16">Reason</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationGoal.reason"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('consultationGoal.reason')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('consultationGoal.reason')}
+                onChange={(value) => setValue('consultationGoal.reason', value, { shouldValidate: true })}
+                error={errors.consultationGoal?.reason?.message}
+                customModules={customModules}
               />
             </div>
             {errors.consultationGoal?.reason && (
@@ -181,80 +184,44 @@ const ReportCreate = () => {
           <h2 className="text-xl font-semibold mb-4">Consultation Content</h2>
           <div className="">
             <label className="block font-medium mb-4 pt-16">Summary of Discussion</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationContent.summaryOfDiscussion"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('consultationContent.summaryOfDiscussion')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('consultationContent.summaryOfDiscussion')}
+                onChange={(value) => setValue('consultationContent.summaryOfDiscussion', value, { shouldValidate: true })}
+                error={errors.consultationContent?.summaryOfDiscussion?.message}
+                customModules={customModules}
               />
             </div>
-            {errors.consultationContent?.summaryOfDiscussion && (
-              <p className="text-red-500 mb-16">{errors.consultationContent.summaryOfDiscussion.message}</p>
-            )}
 
             <label className="block font-medium mb-4 pt-16">Main Issues</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationContent.mainIssues"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('consultationContent.mainIssues')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('consultationContent.mainIssues')}
+                onChange={(value) => setValue('consultationContent.mainIssues', value, { shouldValidate: true })}
+                error={errors.consultationContent?.mainIssues?.message}
+                customModules={customModules}
               />
             </div>
-            {errors.consultationContent?.mainIssues && (
-              <p className="text-red-500 mb-16">{errors.consultationContent.mainIssues.message}</p>
-            )}
 
             <label className="block font-medium mb-4 pt-16">Student Emotions</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationContent.studentEmotions"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('consultationContent.studentEmotions')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('consultationContent.studentEmotions')}
+                onChange={(value) => setValue('consultationContent.studentEmotions', value, { shouldValidate: true })}
+                error={errors.consultationContent?.studentEmotions?.message}
+                customModules={customModules}
               />
             </div>
-            {errors.consultationContent?.studentEmotions && (
-              <p className="text-red-500 mb-16">{errors.consultationContent.studentEmotions.message}</p>
-            )}
 
             <label className="block font-medium mb-4 pt-16">Student Reactions</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationContent.studentReactions"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('consultationContent.studentReactions')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('consultationContent.studentReactions')}
+                onChange={(value) => setValue('consultationContent.studentReactions', value, { shouldValidate: true })}
+                error={errors.consultationContent?.studentReactions?.message}
+                customModules={customModules}
               />
             </div>
-            {errors.consultationContent?.studentReactions && (
-              <p className="text-red-500 mb-16">{errors.consultationContent.studentReactions.message}</p>
-            )}
           </div>
         </div>
 
@@ -263,61 +230,37 @@ const ReportCreate = () => {
           <h2 className="text-xl font-semibold mb-4">Consultation Conclusion</h2>
           <div className="">
             <label className="block font-medium mb-4 pt-16">Counselor Conclusion</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationConclusion.counselorConclusion"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('consultationConclusion.counselorConclusion')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('consultationConclusion.counselorConclusion')}
+                onChange={(value) => setValue('consultationConclusion.counselorConclusion', value, { shouldValidate: true })}
+                error={errors.consultationConclusion?.counselorConclusion?.message}
+                customModules={customModules}
               />
             </div>
-            {errors.consultationConclusion?.counselorConclusion && (
-              <p className="text-red-500 mb-16">{errors.consultationConclusion.counselorConclusion.message}</p>
-            )}
 
             <FormControlLabel
               control={
-                <Controller
-                  name="consultationConclusion.followUpNeeded"
-                  control={control}
-                  render={({ field }) => (
-                    <Switch
-                      {...field}
-                      checked={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
+                <Switch
+                  checked={formData.consultationConclusion.followUpNeeded}
+                  onChange={() => { }}
+                  name="followUpNeeded"
                 />
               }
-              label="Follow-up needed"
+              label="Follow up needed"
             />
-            {errors.consultationConclusion?.followUpNeeded && (
-              <p className="text-red-500 mb-16">{(errors.consultationConclusion.followUpNeeded as FieldError).message}</p>
-            )}
-
-            <label className="block font-medium mb-4 pt-16">Follow-Up Notes</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="consultationConclusion.followUpNotes"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
+            {formData.consultationConclusion.followUpNeeded && (
+              <>
+                <label className="block font-medium mb-4 pt-16">Follow-up Notes</label>
+                <div className="mb-16">
+                  <QuillEditor
                     value={watch('consultationConclusion.followUpNotes')}
-                    onChange={field.onChange}
+                    onChange={(value) => setValue('consultationConclusion.followUpNotes', value, { shouldValidate: true })}
+                    error={errors.consultationConclusion?.followUpNotes?.message}
+                    customModules={customModules}
                   />
-                )}
-              />
-            </div>
-            {errors.consultationConclusion?.followUpNotes && (
-              <p className="text-red-500 mb-16">{errors.consultationConclusion.followUpNotes.message}</p>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -327,42 +270,24 @@ const ReportCreate = () => {
           <h2 className="text-xl font-semibold mb-4">Intervention</h2>
           <div className="">
             <label className="block font-medium mb-4 pt-16">Intervention Type</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="intervention.type"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('intervention.type')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('intervention.type')}
+                onChange={(value) => setValue('intervention.type', value, { shouldValidate: true })}
+                error={errors.intervention?.type ? (errors.intervention.type as FieldError).message : undefined}
+                customModules={customModules}
               />
             </div>
-            {errors.intervention?.type && (
-              <p className="text-red-500 mb-16">{(errors.intervention.type as FieldError).message}</p>
-            )}
 
             <label className="block font-medium mb-4 pt-16">Description</label>
-            <div className="h-96 mb-48">
-              <Controller
-                name="intervention.description"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    className="mb-4 h-full"
-                    value={watch('intervention.description')}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="mb-16">
+              <QuillEditor
+                value={watch('intervention.description')}
+                onChange={(value) => setValue('intervention.description', value, { shouldValidate: true })}
+                error={errors.intervention?.description?.message}
+                customModules={customModules}
               />
             </div>
-            {errors.intervention?.description && (
-              <p className="text-red-500 mb-16">{errors.intervention.description.message}</p>
-            )}
           </div>
         </div>
 
@@ -377,7 +302,7 @@ const ReportCreate = () => {
             Back
           </Button>
           <div className="flex gap-8">
-            <Button variant="outlined" color='secondary'
+            <Button variant="outlined" color="secondary"
               onClick={() => {
                 dispatch(openDialog({
                   children: <ReportPreview report={formData} />
@@ -391,13 +316,14 @@ const ReportCreate = () => {
                 Submit
               </Button>
             ) : (
-              <Button onClick={handleNext} variant="contained" color="secondary" className="w-96" type='button'>
+              <Button onClick={handleNext} variant="contained" color="secondary" className="w-96" type="button">
                 Next
               </Button>
             )}
           </div>
         </Box>
       </form>
+
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { ContentLoading, CounselorAppointmentItem, NavLinkAdapter, RequestItem, Scrollbar, StatChange, StatsCard } from '@/shared/components'
-import { CalendarMonth, Cancel, CheckCircle, Class, Description, DoDisturbOn, Pending } from '@mui/icons-material'
+import { CalendarMonth, Cancel, CheckCircle, Class, Description, DoDisturbOn, DoNotDisturb, Pending } from '@mui/icons-material'
 import { Box, Button, Divider, Paper, Typography } from '@mui/material'
 import React from 'react'
 import { useGetCounselorAppointmentRequestsQuery } from '../counseling/requests/requests-api'
@@ -113,6 +113,9 @@ const HomeContent = () => {
 
   const completedQuestions = totalQuestions?.content?.data.filter(qna => qna.answer) || []
 
+  const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED','FLAGGED'].includes(qna.status)) || []
+
+
   const unansweredQuestionList = qnaData?.content?.data?.filter(question => !question.answer) || []
 
   useQuestionsSocketListener(account?.profile.id, refetchQna)
@@ -194,10 +197,13 @@ const HomeContent = () => {
                   ? <ContentLoading />
                   : !pendingRequests?.length
                     ? <Typography className='text-center' color='textDisabled'>No pending appointments</Typography>
-                    : pendingRequests.map(request => <div className='rounded shadow' key={request.id} >
-                      <RequestItem appointment={request} onUserClick={() => dispatch(openStudentView(request.student.id.toString()))} />
-                    </div>
-                    )
+                    : pendingRequests.map(request => (
+                      <RequestItem
+                        appointment={request}
+                        key={request.id}
+                        onUserClick={() => dispatch(openStudentView(request.student.id.toString()))}
+                      />
+                    ))
               }
             </Scrollbar>
           </Paper>
@@ -268,6 +274,18 @@ const HomeContent = () => {
             }}
             icon={<CheckCircle fontSize='large' />}
             color="success"  // You can set color to primary, secondary, success, error, etc.
+          />
+
+          <StatsCard
+            title="Rejected/Flagged Questions"
+            total={rejectedQuestions.length}
+            statChange={{
+              prefixText: 'Last month',
+              current: rejectedQuestions.length,
+              previous: 0,
+            }}
+            icon={<DoNotDisturb fontSize='large' />}
+            color="error"  // You can set color to primary, secondary, success, error, etc.
           />
 
         </Box>

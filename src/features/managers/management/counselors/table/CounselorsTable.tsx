@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { ManagementCounselor, useGetCounselorsAcademicManagementQuery, useGetCounselorsManagementQuery } from './counselors-api';
+import { ManagementCounselor, useGetCounselorsAcademicManagementQuery, useGetCounselorsManagementQuery } from '../counselors-api';
 import { CounselingType } from '@/shared/types';
 function CounselorsTable({ type }: { type: CounselingType }) {
   const [pagination, setPagination] = useState({
@@ -23,11 +23,6 @@ function CounselorsTable({ type }: { type: CounselingType }) {
     page: pagination.pageIndex + 1
   })
   console.log(data)
-
-
-  const removeProducts = (ids: string[]) => {
-
-  };
 
   const columns = useMemo<MRT_ColumnDef<ManagementCounselor>[]>(() => [
     {
@@ -54,7 +49,7 @@ function CounselorsTable({ type }: { type: CounselingType }) {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/counselor/${row.original.profile.profile.id}`}
+          to={`/management/counselors/counselor/${row.original.profile.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >
@@ -170,7 +165,6 @@ function CounselorsTable({ type }: { type: CounselingType }) {
           <MenuItem
             key={0}
             onClick={() => {
-              // removeProducts([row.original.id]);
               closeMenu();
               table.resetRowSelection();
             }}
@@ -194,7 +188,6 @@ function CounselorsTable({ type }: { type: CounselingType }) {
               size="small"
               onClick={() => {
                 const selectedRows = table.getSelectedRowModel().rows;
-                // removeProducts(selectedRows.map((row) => row.original.id));
                 table.resetRowSelection();
               }}
               className="flex shrink min-w-40 ltr:mr-8 rtl:ml-8"

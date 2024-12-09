@@ -89,7 +89,7 @@ const HomeContent = () => {
                       </div>
                       <div className='space-y-8 border-l-2 px-16 !border-secondary-main ml-16'>
                         {groupedAppointments[dateLabel].map(appointment => (
-                          <div key={appointment.id} className='py-8 '>
+                          <div key={appointment.id} className='my-8'>
                             {/* @ts-ignored */}
                             <StudentAppointmentItem appointment={appointment} />
                           </div>

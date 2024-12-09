@@ -54,7 +54,7 @@ export const counselorQnaApi = api
           keyword,
           isClosed,
           sortBy = 'createdDate',
-          status = 'VERIFIED',
+          status = '',
           sortDirection = 'DESC',
           page = 1,
           size = 10
@@ -85,14 +85,15 @@ export const counselorQnaApi = api
         query: ({ questionCardId, content }) => ({
           url: `/api/question-cards/answer/edit/${questionCardId}`,
           method: 'PUT',
+          body: { content }
         }),
-        invalidatesTags: ['qna']
+        invalidatesTags: (result, error, { questionCardId }) => [{ type: 'qna', id: questionCardId }],
       }),
       getCounselorQuestion: build.query<GetQuestionApiResponse, string>({
         query: (questionCardId) => ({
           url: `/api/question-cards/counselor/${questionCardId}`,
         }),
-        providesTags: (result, error, arg) => [{type: 'qna', id: arg}]
+        providesTags: (result, error, arg) => [{ type: 'qna', id: arg }]
       }),
       closeQuestionCounselor: build.mutation<ApiMessage, number>({
         query: (questionCardId) => ({
@@ -102,28 +103,28 @@ export const counselorQnaApi = api
         invalidatesTags: ['qna']
       }),
       postReviewQuestionStatus: build.mutation<
-				PostReviewQuestionResponse,
-				PostReviewQuestionArg
-			>({
-				query: (args) => ({
-					url: `/api/question-cards/review/${args.id}/${args.status}`,
-					method: 'POST',
-				}),
-				invalidatesTags: ['qna'],
-			}),
-			postFlagQuestionStatus: build.mutation<
-				PostFlagQuestionResponse,
-				PostFlagQuestionArg
-			>({
-				query: (args) => ({
-					url: `/api/question-cards/review/flag/${args.id}`,
-					method: 'POST',
-					body: {
-						'reason': args.body
-					}
-				}),
-				invalidatesTags: ['qna'],
-			}),
+        PostReviewQuestionResponse,
+        PostReviewQuestionArg
+      >({
+        query: (args) => ({
+          url: `/api/question-cards/review/${args.id}/${args.status}`,
+          method: 'POST',
+        }),
+        invalidatesTags: ['qna'],
+      }),
+      postFlagQuestionStatus: build.mutation<
+        PostFlagQuestionResponse,
+        PostFlagQuestionArg
+      >({
+        query: (args) => ({
+          url: `/api/question-cards/review/flag/${args.id}`,
+          method: 'POST',
+          body: {
+            'reason': args.body
+          }
+        }),
+        invalidatesTags: ['qna'],
+      }),
     })
   })
 
@@ -179,19 +180,19 @@ export type AnswerQuestionApiArg = {
 }
 
 export type PostReviewQuestionArg = {
-	id: number;
-	status: 'PENDING' | 'VERIFIED' | 'FLAGGED' | 'REJECTED';
+  id: number;
+  status: 'PENDING' | 'VERIFIED' | 'FLAGGED' | 'REJECTED';
 };
 export type PostReviewQuestionResponse = {
-  data:ApiMessage;
+  data: ApiMessage;
   status: number
 }
 
 export type PostFlagQuestionArg = {
-	id: number;
-	body: string;
+  id: number;
+  body: string;
 };
 export type PostFlagQuestionResponse = {
-  data:ApiMessage;
+  data: ApiMessage;
   status: number
 }

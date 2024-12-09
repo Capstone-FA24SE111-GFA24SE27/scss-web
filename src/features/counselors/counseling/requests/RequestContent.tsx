@@ -84,7 +84,7 @@ const RequestsContent = () => {
 
 
   return (
-    <div className='container mx-auto p-32 flex flex-col gap-16'>
+    <div className='p-32 flex flex-col gap-16 container mx-auto max-w-screen-lg'>
       <Box className='flex gap-32 justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker
@@ -121,7 +121,10 @@ const RequestsContent = () => {
                   className="shadow"
                   sx={{ bgcolor: 'background.paper' }}
                 >
-                  <RequestItem appointment={appointment} />
+                  <RequestItem
+                    appointment={appointment}
+                    onUserClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
+                  />
                 </Paper >
               )}
       </List >

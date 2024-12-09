@@ -99,7 +99,7 @@ function StudentsTable() {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/student/${row.original.profile.id}`}
+          to={`/management/students/student/${row.original.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >

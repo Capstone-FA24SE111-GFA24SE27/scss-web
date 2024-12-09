@@ -3,7 +3,7 @@ import { RouteObject } from 'react-router-dom';
 const Overview = lazy(() => import('./Overview'));
 export const overviewRoutes: RouteObject[] = [
   {
-    path: 'overview',
+    path: 'dashboard',
     element: <Overview />,
     children: [
     ],

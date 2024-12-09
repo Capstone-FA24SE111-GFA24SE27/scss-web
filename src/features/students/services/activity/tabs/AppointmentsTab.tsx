@@ -71,7 +71,7 @@ const AppointmentsTab = () => {
   }
 
   return (
-    <div className='p-16 w-full flex flex-col gap-16 container mx-auto'>
+    <div className='p-16 w-full flex flex-col gap-16 container mx-auto max-w-screen-lg'>
       <Box className='flex gap-32 justify-between'>
         <DateRangePicker
           startDate={startDate ? dayjs(startDate) : null}

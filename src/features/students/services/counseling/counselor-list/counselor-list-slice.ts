@@ -6,31 +6,33 @@ import { rootReducer } from '@shared/store';
  */
 
 interface CounselorListState {
+  counselingTab?: number;
   open: boolean;
   counselorType: 'ACADEMIC' | 'NON_ACADEMIC';
   availableFrom: string;
   availableTo: string;
   searchTerm: string;
-  specializationId: number | '';
-  departmentId: number | '';
-  majorId: number | '';
-  expertiseId: number | '';
-  ratingFrom: number | ''; 
-  ratingTo: number | ''; 
+  specializationId?: number;
+  departmentId?: number;
+  majorId?: number;
+  expertiseId?: number;
+  ratingFrom?: number;
+  ratingTo?: number;
 }
 
 const initialState: CounselorListState = {
+  counselingTab: 0,
   open: true,
   searchTerm: '',
   counselorType: 'ACADEMIC',
   availableFrom: '',
   availableTo: '',
-  specializationId: '',
-  expertiseId: '',
-  departmentId: '',
-  majorId: '',
-  ratingFrom: '', // Default value for new field
-  ratingTo: '', // Default value for new field
+  // specializationId: '',
+  // expertiseId: '',
+  // departmentId: '',
+  // majorId: '',
+  // ratingFrom: '',
+  // ratingTo: '',
 };
 
 /**
@@ -40,6 +42,9 @@ export const counselorListSlice = createSlice({
   name: 'counselorList',
   initialState,
   reducers: {
+    setCounselingTab: (state, action?: PayloadAction<number>) => {
+      state.counselingTab = action.payload;
+    },
     filterClose: (state) => {
       state.open = false;
     },
@@ -61,27 +66,28 @@ export const counselorListSlice = createSlice({
     setAvailableTo: (state, action: PayloadAction<string>) => {
       state.availableTo = action.payload;
     },
-    setSpecializationId: (state, action: PayloadAction<number | ''>) => {
+    setSpecializationId: (state, action: PayloadAction<number>) => {
       state.specializationId = action.payload;
     },
-    setDepartmentId: (state, action: PayloadAction<number | ''>) => {
+    setDepartmentId: (state, action: PayloadAction<number>) => {
       state.departmentId = action.payload;
     },
-    setMajorId: (state, action: PayloadAction<number | ''>) => {
+    setMajorId: (state, action: PayloadAction<number>) => {
       state.majorId = action.payload;
     },
-    setExpertiseId: (state, action: PayloadAction<number | ''>) => {
+    setExpertiseId: (state, action: PayloadAction<number>) => {
       state.expertiseId = action.payload;
     },
-    setRatingFrom: (state, action: PayloadAction<number | ''>) => {
+    setRatingFrom: (state, action: PayloadAction<number>) => {
       state.ratingFrom = action.payload; // New reducer for ratingFrom
     },
-    setRatingTo: (state, action: PayloadAction<number | ''>) => {
+    setRatingTo: (state, action: PayloadAction<number>) => {
       state.ratingTo = action.payload; // New reducer for ratingTo
     },
   },
   selectors: {
     selectFilter: (filter) => filter,
+    selectCounselingTab: (filter) => filter.counselingTab,
     selectSearchTerm: (state) => state.searchTerm,
     selectCounselorType: (state) => state.counselorType,
   },
@@ -94,6 +100,7 @@ rootReducer.inject(counselorListSlice);
 const injectedSlice = counselorListSlice.injectInto(rootReducer);
 
 export const {
+  setCounselingTab,
   filterOpen,
   filterClose,
   filterToggle,
@@ -110,6 +117,7 @@ export const {
 } = counselorListSlice.actions;
 
 export const {
+  selectCounselingTab,
   selectFilter,
   selectSearchTerm,
   selectCounselorType,
@@ -118,5 +126,5 @@ export const {
 export default counselorListSlice.reducer;
 
 declare module '@shared/store' {
-  export interface LazyLoadedSlices extends WithSlice<typeof counselorListSlice> {}
+  export interface LazyLoadedSlices extends WithSlice<typeof counselorListSlice> { }
 }

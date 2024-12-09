@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import CounselorsTable from './CounselorsTable'
 import { Outlet } from 'react-router-dom'
 import { CounselingType } from '@/shared/types'
+import CounselorsTableFilter from './CounselorsTableFilter'
 
 const Counselors = () => {
   const [tabValue, setTabValue] = useState(0)
@@ -26,8 +27,9 @@ const Counselors = () => {
       <div className='p-16'>
         <FilterTabs tabs={counselingTabs} tabValue={tabValue} onChangeTab={handleChangeTab}/>
       </div>
-      <div>
+      <div className='flex gap-16'>
         <CounselorsTable type={(counselingTabs[tabValue].value as CounselingType)}/>
+        <CounselorsTableFilter />
       </div>
     </div>
   )

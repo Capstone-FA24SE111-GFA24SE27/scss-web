@@ -116,7 +116,7 @@ const RequestChart = () => {
     <div className="gap-16 flex">
       <Paper className="p-16 w-fit space-y-8">
         <div className='flex justify-between'>
-          <Typography className="font-semibold text-xl">Appointment requests Overview</Typography>
+          <Typography className="font-semibold text-xl">Appoitnment Requests Overview</Typography>
           <Select value={granularity} onChange={handleGranularityChange} size='small' className='font-semibold'>
             <MenuItem value="month">Month</MenuItem>
             <MenuItem value="week">Week</MenuItem>

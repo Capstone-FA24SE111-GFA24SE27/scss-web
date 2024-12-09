@@ -5,7 +5,7 @@ import { useGetAppointmentReportQuery } from './report-api';
 import { AppointmentReport, ContentLoading } from '@/shared/components';
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import dayjs from 'dayjs';
-import { renderHTML } from '@/shared/components';
+import { RenderHTML } from '@/shared/components';
 
 // Helper function to render HTML
 
