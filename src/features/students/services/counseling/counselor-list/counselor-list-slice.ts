@@ -6,6 +6,7 @@ import { rootReducer } from '@shared/store';
  */
 
 interface CounselorListState {
+  counselingTab?: number;
   open: boolean;
   counselorType: 'ACADEMIC' | 'NON_ACADEMIC';
   availableFrom: string;
@@ -15,11 +16,12 @@ interface CounselorListState {
   departmentId?: number;
   majorId?: number;
   expertiseId?: number;
-  ratingFrom?: number; 
-  ratingTo?: number; 
+  ratingFrom?: number;
+  ratingTo?: number;
 }
 
 const initialState: CounselorListState = {
+  counselingTab: 0,
   open: true,
   searchTerm: '',
   counselorType: 'ACADEMIC',
@@ -40,6 +42,9 @@ export const counselorListSlice = createSlice({
   name: 'counselorList',
   initialState,
   reducers: {
+    setCounselingTab: (state, action?: PayloadAction<number>) => {
+      state.counselingTab = action.payload;
+    },
     filterClose: (state) => {
       state.open = false;
     },
@@ -82,6 +87,7 @@ export const counselorListSlice = createSlice({
   },
   selectors: {
     selectFilter: (filter) => filter,
+    selectCounselingTab: (filter) => filter.counselingTab,
     selectSearchTerm: (state) => state.searchTerm,
     selectCounselorType: (state) => state.counselorType,
   },
@@ -94,6 +100,7 @@ rootReducer.inject(counselorListSlice);
 const injectedSlice = counselorListSlice.injectInto(rootReducer);
 
 export const {
+  setCounselingTab,
   filterOpen,
   filterClose,
   filterToggle,
@@ -110,6 +117,7 @@ export const {
 } = counselorListSlice.actions;
 
 export const {
+  selectCounselingTab,
   selectFilter,
   selectSearchTerm,
   selectCounselorType,
@@ -118,5 +126,5 @@ export const {
 export default counselorListSlice.reducer;
 
 declare module '@shared/store' {
-  export interface LazyLoadedSlices extends WithSlice<typeof counselorListSlice> {}
+  export interface LazyLoadedSlices extends WithSlice<typeof counselorListSlice> { }
 }

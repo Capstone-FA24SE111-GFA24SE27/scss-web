@@ -23,6 +23,7 @@ import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
 import { getApiErrorMessage } from '@shared/store';
 import { useGetStudentDocumentQuery } from '@/features/students/students-api';
+import { setCounselingTab, setCounselorType } from '../counselor-list/counselor-list-slice';
 
 /**
  * The contact view.
@@ -93,79 +94,7 @@ function QuickBooking() {
   const [isGettingRandomMatchedCounselor, setGettingRandomMatchedCounselor] = useState(false)
 
 
-  // const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(null)
-  const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(
-    {
-      "id": 11,
-      "profile": {
-        "id": 11,
-        "fullName": "Trần Minh Tuấn 1",
-        "phoneNumber": "1234567890",
-        "dateOfBirth": 315532800000,
-        "avatarLink": "https://static.vecteezy.com/system/resources/thumbnails/004/899/680/small/beautiful-blonde-woman-with-makeup-avatar-for-a-beauty-salon-illustration-in-the-cartoon-style-vector.jpg",
-        "gender": "FEMALE",
-        "email": "tuanmta"
-      },
-      "rating": 5.00,
-      "email": "tuanmta",
-      "status": "AVAILABLE",
-      "specializedSkills": "Full-stack development\nCareer development for software engineers\nCoding bootcamp organization\nTechnical skill assessment.",
-      "otherSkills": "Project management\nEvent coordination\nFluent in Vietnamese, English, and conversational Japanese.",
-      "workHistory": "Lead IT Career Advisor at Hanoi University of Science and Technology (2021–Present):\n- Created career resources for software engineering students.\n- Guided students through the process of landing their first jobs in tech companies.\n\nJunior Software Developer at TechWorld Solutions (2018–2020):\n- Developed mobile applications using Java and Kotlin.\n- Collaborated with the development team to improve app performance.",
-      "achievements": "Developed a coding bootcamp that has successfully trained 150+ students in full-stack development.\nSpeaker at various tech conferences on career growth and skills in IT.",
-      "qualifications": [
-        {
-          "id": 15,
-          "degree": "Bachelor",
-          "fieldOfStudy": "Software Engineering",
-          "institution": "Hanoi University of Science and Technology",
-          "yearOfGraduation": 2018,
-          "imageUrl": "https://usth.edu.vn/en/wp-content/uploads/sites/2/2023/09/5f299ed7de040b5a5215.jpg"
-        },
-        {
-          "id": 16,
-          "degree": "Master",
-          "fieldOfStudy": "Information Technology",
-          "institution": "University of Tokyo",
-          "yearOfGraduation": 2021,
-          "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlW49dCflH-r7lwPcWD6rnbEENfEi9F1rOfA&s"
-        }
-      ],
-      "certifications": [
-        {
-          "id": 18,
-          "name": "Certified Full-Stack Developer",
-          "organization": "The Coding Academy",
-          "imageUrl": "https://campus.w3schools.com/cdn/shop/files/9_8e3e7b66-2ae4-4b44-987f-d991977af19a_700x700.png?v=1720979589"
-        },
-        {
-          "id": 19,
-          "name": "Certified Java Developer",
-          "organization": "Oracle Corporation",
-          "imageUrl": "https://i0.wp.com/umbrellait.com/wp-content/uploads/2021/04/group-1-min.jpg?ssl=1"
-        },
-        {
-          "id": 20,
-          "name": "Certified Agile Practitioner",
-          "organization": "Scrum Alliance",
-          "imageUrl": "https://www.agile42.com/en/wp-content/uploads/sites/2/2024/07/CSP-SM_grey.png"
-        }
-      ],
-      "specialization": null,
-      "academicDegree": "Thạc sĩ",
-      "department": {
-        "id": 1,
-        "name": "Information Technology",
-        "code": "IT"
-      },
-      "major": {
-        "id": 1,
-        "name": "Software Engineering",
-        "code": "SE",
-        "departmentId": 1
-      }
-    },
-  )
+  const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(null)
 
   const [counselingType, setCounselingType] = useState<CounselingType>('ACADEMIC');
 
@@ -175,11 +104,10 @@ function QuickBooking() {
     setValue('expertise', null)
   };
 
-  console.log(counselingType)
+  console.log(startOfMonth, today)
 
   const defaultValues = {
-    slotId: 0,
-    date: today,
+    date: startOfMonth,
     isOnline: true,
     reason: "",
   }
@@ -286,6 +214,8 @@ function QuickBooking() {
     handleNext()
 
   }
+
+  console.log(counselingType)
 
   const onSubmitBooking = () => {
     useConfirmDialog({
@@ -688,7 +618,6 @@ function QuickBooking() {
                         views={['day']}
                         className='w-full'
                         disablePast
-
                         sx={{
                           '&.Mui-selected': {
                             backgroundColor: '#e67e22'
@@ -769,7 +698,7 @@ function QuickBooking() {
                 <div className='p-32'>
                   <div className=''>
                     {
-                      ((progress > 20 && progress < 100) || isLoadingRandomMatchedCounselor)
+                      ((progress < 100) || isLoadingRandomMatchedCounselor)
                         ? <div className='flex flex-col items-center gap-16'>
                           <Typography color='secondary' className='text-lg font-semibold text-center'>Matching the most suitable counselor for you.</Typography>
                           <CircularProgressWithLabel value={progress} />
@@ -899,7 +828,16 @@ function QuickBooking() {
                             <Box className="flex flex-col items-center w-full">
                               <SentimentVeryDissatisfied className='size-224 text-text-disabled' />
                               <Typography className='text-2xl text-text-disabled'>No counselor matched!</Typography>
-                              <div className='text-2xl text-text-disabled'>You can view more counselors at Counselor List
+                              <div className='text-2xl text-text-disabled'>You can view more counselors at
+                                <span
+                                  className='font-semibold hover:underline pl-8 cursor-pointer'
+                                  onClick={() => {
+                                    dispatch(setCounselorType(counselingType))
+                                    dispatch(setCounselingTab(1))
+                                  }}
+                                >
+                                  Counselor List
+                                </span>
                               </div>
                             </Box>
                           )
