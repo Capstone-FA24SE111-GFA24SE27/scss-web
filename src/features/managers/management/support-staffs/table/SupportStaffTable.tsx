@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { CounselingType, Student, SupportStaff } from '@/shared/types';
 import { useGetStudentsFilterQuery } from '@/shared/pages';
-import { useGetSupportStaffsManagementQuery } from './support-staffs-api';
+import { useGetSupportStaffsManagementQuery } from '../support-staffs-api';
 function StudentsTable() {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -51,7 +51,7 @@ function StudentsTable() {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/support-staff/${row.original.profile.id}`}
+          to={`/management/support-staffs/support-staff/${row.original.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >

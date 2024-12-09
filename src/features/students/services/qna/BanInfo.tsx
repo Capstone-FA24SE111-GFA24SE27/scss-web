@@ -75,7 +75,7 @@ function BanInfo({ banInfo }: { banInfo: BanInfoType }) {
                   <div className='flex flex-col gap-8 w-full'>
                     <div className='flex gap-8'>
                       <Chip label={qna.questionCard.questionType === 'ACADEMIC' ? 'Academic' : 'Non-Academic'} color={'info'} size='small' />
-                      <Chip label={qna.questionCard.topic?.name} variant='outlined' size='small' />
+                      {/* <Chip label={qna.questionCard.topic?.name} variant='outlined' size='small' /> */}
                       {qna.questionCard.closed && <Chip label={'Closed'} color={'warning'} size='small' />}
                     </div>
                     <div className="flex flex-1 items-center gap-8">

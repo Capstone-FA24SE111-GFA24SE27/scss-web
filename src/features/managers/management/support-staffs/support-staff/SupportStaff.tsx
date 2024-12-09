@@ -50,95 +50,92 @@ function SupportStaff() {
 
   return (
     <Root
-      header={
-        <div className=''>
-          <div className='p-16 px-32 space-y-16'>
-            <Breadcrumbs
-              parents={[
-                {
-                  label: "Management",
-                  url: `${location.pathname}`
-                },
-                {
-                  label: "Support Staffs",
-                  url: `/management/supportStaffs`
-                }
-              ]}
-              currentPage={supportStaffData?.profile.fullName}
-            />
-            <div className='flex relative gap-32 md:gap-64'>
-              <div className='flex gap-32'>
-                <div className='w-full h-full relative'>
-                  <img src={supportStaffData?.profile.avatarLink} className='size-144 border rounded-full object-cover' />
-                  <div className='absolute top-112 bg-white rounded-full border left-112'>
-                    <Gender gender={supportStaffData?.profile.gender} />
-                  </div>
-                </div>
-                <div className='flex flex-col gap-8 w-full mt-8 '>
-                  <Heading
-                    title={supportStaffData?.profile.fullName}
-                  />
-                  <div className='flex justify-between divide-x-1 border-t mt-16'>
-                    <div
-                      className="flex flex-1 items-center p-8 min-w-136"
-                      role="button"
-                    >
-                      <Phone fontSize='small' />
-                      <Typography className="ml-8">{supportStaffData?.profile.phoneNumber}</Typography>
-                    </div>
-                    <div
-                      className="flex flex-1 items-center p-8 min-w-136"
-                      role="button"
-                    >
-                      <Mail fontSize='small' />
-                      <Typography className="ml-8">{supportStaffData?.profile?.email || ``}</Typography>
+      content={
+        <div className='w-full'>
+          <div className='bg-white'>
+            <div className='p-16 px-32 space-y-16 '>
+              <Breadcrumbs
+                parents={[
+                  {
+                    label: "Management",
+                    url: `${location.pathname}`
+                  },
+                  {
+                    label: "Support Staffs",
+                    url: `/management/supportStaffs`
+                  }
+                ]}
+                currentPage={supportStaffData?.profile.fullName}
+              />
+              <div className='flex relative gap-32 md:gap-64'>
+                <div className='flex gap-32'>
+                  <div className='w-full h-full relative'>
+                    <img src={supportStaffData?.profile.avatarLink} className='size-144 border rounded-full object-cover' />
+                    <div className='absolute top-112 bg-white rounded-full border left-112'>
+                      <Gender gender={supportStaffData?.profile.gender} />
                     </div>
                   </div>
+                  <div className='flex flex-col gap-8 w-full mt-8 '>
+                    <Heading
+                      title={supportStaffData?.profile.fullName}
+                    />
+                    <div className='flex justify-between divide-x-1 border-t mt-16'>
+                      <div
+                        className="flex flex-1 items-center p-8 min-w-136"
+                        role="button"
+                      >
+                        <Phone fontSize='small' />
+                        <Typography className="ml-8">{supportStaffData?.profile.phoneNumber}</Typography>
+                      </div>
+                      <div
+                        className="flex flex-1 items-center p-8 min-w-136"
+                        role="button"
+                      >
+                        <Mail fontSize='small' />
+                        <Typography className="ml-8">{supportStaffData?.profile?.email || ``}</Typography>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
               </div>
-
-
-
-            </div>
-
-          </ div>
-          <Tabs
-            value={tabValue}
-            onChange={handleChangeTab}
-            indicatorColor="secondary"
-            textColor="secondary"
-            variant="scrollable"
-            scrollButtons="auto"
-            classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
-          >
-            {/* <Tab
+            </ div>
+            <Tabs
+              value={tabValue}
+              onChange={handleChangeTab}
+              indicatorColor="secondary"
+              textColor="secondary"
+              variant="scrollable"
+              scrollButtons="auto"
+              classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
+            >
+              {/* <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Overview"
             /> */}
-            <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Demands"
-            />
-            <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Following students"
-            />
-            {/* <Tab
+              <Tab
+                className="text-lg font-semibold min-h-40 min-w-64 px-16"
+                label="Demands"
+              />
+              <Tab
+                className="text-lg font-semibold min-h-40 min-w-64 px-16"
+                label="Following students"
+              />
+              {/* <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Profile"
             /> */}
-          </Tabs>
-        </div>
-      }
-      content={
-        <div className="w-full p-16 h-full" >
-          <Paper className='p-16 h-full shadow'>
-            <div className="w-full pr-8">
-              {/* {tabValue === 0 && <OverviewTab />} */}
-              {tabValue === 0 && <DemandsTab />}
-              {tabValue === 1 && <FollowingStudentsTab />}
-            </div>
-          </Paper>
+            </Tabs>
+          </div>
+          <div className="w-full p-16 h-full" >
+            <Paper className='p-16 h-full shadow'>
+              <div className="w-full pr-8">
+                {/* {tabValue === 0 && <OverviewTab />} */}
+                {tabValue === 0 && <DemandsTab />}
+                {tabValue === 1 && <FollowingStudentsTab />}
+              </div>
+            </Paper>
+          </div>
         </div >
       }
       ref={pageLayout}

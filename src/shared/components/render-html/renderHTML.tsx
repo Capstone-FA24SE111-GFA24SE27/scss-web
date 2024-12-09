@@ -1,5 +1,7 @@
 
 // Helper function to render HTML
-export const renderHTML = (htmlString: string) => {
-  return <div dangerouslySetInnerHTML={ { __html: htmlString } } />;
+import "./RenderHTML.css"
+
+export const RenderHTML = (htmlString: string) => {
+  return <div className="rendered-html" dangerouslySetInnerHTML={ { __html: htmlString } } />;
 };

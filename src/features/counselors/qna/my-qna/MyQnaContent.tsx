@@ -158,7 +158,7 @@ const MyQnaContent = () => {
 	}
 
 	return (
-		<div className='container w-full h-full mx-auto'>
+		<div className='container w-full h-full max-w-xl mx-auto'>
 			<motion.div
 				variants={container}
 				initial='hidden'

@@ -9,6 +9,7 @@ export type QuestionPayload = {
   departmentId?: string,
   majorId?: string,
   expertiseId?: string,
+  title: string,
 }
 export type SendMessageApiArg = {
   content: string,
@@ -27,7 +28,10 @@ export type Question = {
   chatSession: ChatSession;
   closed: boolean;
   taken: boolean;
-  topic: Topic
+  topic: Topic,
+  createdDate: string;
+  difficultyLevel: string;
+  reviewReason?: string;
 }
 
 export type ChatSession = {

@@ -44,7 +44,7 @@ const RequestsTab = () => {
     setSortDirection(newSortDirection);
   };
 
-  
+
 
   const statusTabs = [
     { label: 'All', value: '' },
@@ -54,7 +54,7 @@ const RequestsTab = () => {
     { label: 'Expired', value: 'EXPIRED' },
   ];
 
-  
+
   const handleChangeStatus = (event: React.SyntheticEvent, newValue: number) => {
     setStatusValue(newValue);
   };
@@ -71,7 +71,7 @@ const RequestsTab = () => {
 
   const appointmentRequests = data?.content.data
 
-  
+
 
   useRequestsSocketListener(account?.profile.id, refetch)
 
@@ -79,7 +79,7 @@ const RequestsTab = () => {
     return <AppLoading />
   }
   return (
-    <div className='p-16 container mx-auto flex flex-col gap-16'>
+    <div className='p-16 container mx-auto flex flex-col gap-16 max-w-screen-lg'>
       <Box className='flex justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker
@@ -102,21 +102,18 @@ const RequestsTab = () => {
           initialSort='DESC'
         />
       </Box>
-      <FilterTabs tabs={statusTabs} tabValue={statusValue} onChangeTab={handleChangeStatus}/>
+      <FilterTabs tabs={statusTabs} tabValue={statusValue} onChangeTab={handleChangeStatus} />
       <List className='flex flex-col gap-16'>
         {
           !appointmentRequests?.length
             ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
             : appointmentRequests.map(appointment =>
-              <Paper
+              <RequestItem
                 key={appointment.id}
-                className="flex gap-16 shadow w-full"
-                sx={{ bgcolor: 'background.paper' }}
-              >
-                <RequestItem appointment={appointment} onUserClick={() => {
+                appointment={appointment}
+                onUserClick={() => {
                   dispatch(openCounselorView(appointment?.counselor?.profile.id.toString()))
-                }}/>
-              </Paper>
+                }} />
             )}
       </List >
       <Pagination

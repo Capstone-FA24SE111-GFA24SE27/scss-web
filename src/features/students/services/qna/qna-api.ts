@@ -1,5 +1,5 @@
-import { Account, Counselor, PaginationContent, Question, QuestionPayload, Student, User } from '@shared/types';
-import { ApiMessage, ApiResponse, apiService as api } from '@shared/store'
+import { ApiMessage, ApiResponse, apiService as api } from '@shared/store';
+import { PaginationContent, Question, QuestionPayload } from '@shared/types';
 
 
 export const addTagTypes = [

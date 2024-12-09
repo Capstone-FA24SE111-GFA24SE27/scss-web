@@ -1,4 +1,4 @@
-import { renderHTML } from '@/shared/components';
+import { RenderHTML } from '@/shared/components';
 import { DialogContent, DialogTitle, Typography } from '@mui/material';
 import 'react-quill/dist/quill.snow.css';
 import { z } from 'zod';
@@ -20,7 +20,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Specific Goal:
                 </Typography>
-                {renderHTML(report.consultationGoal.specificGoal)}
+                {RenderHTML(report.consultationGoal.specificGoal)}
               </div>
             )}
             {report.consultationGoal?.reason && (
@@ -28,7 +28,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Reason:
                 </Typography>
-                {renderHTML(report.consultationGoal.reason)}
+                {RenderHTML(report.consultationGoal.reason)}
               </div>
             )}
           </div>
@@ -45,7 +45,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Summary of Discussion:
                 </Typography>
-                {renderHTML(report.consultationContent.summaryOfDiscussion)}
+                {RenderHTML(report.consultationContent.summaryOfDiscussion)}
               </div>
             )}
             {report.consultationContent?.mainIssues && (
@@ -53,7 +53,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Main Issues:
                 </Typography>
-                {renderHTML(report.consultationContent.mainIssues)}
+                {RenderHTML(report.consultationContent.mainIssues)}
               </div>
             )}
             {report.consultationContent?.studentEmotions && (
@@ -61,7 +61,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Student Emotions:
                 </Typography>
-                {renderHTML(report.consultationContent.studentEmotions)}
+                {RenderHTML(report.consultationContent.studentEmotions)}
               </div>
             )}
             {report.consultationContent?.studentReactions && (
@@ -69,7 +69,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Student Reactions:
                 </Typography>
-                {renderHTML(report.consultationContent.studentReactions)}
+                {RenderHTML(report.consultationContent.studentReactions)}
               </div>
             )}
           </div>
@@ -86,7 +86,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Counselor Conclusion:
                 </Typography>
-                {renderHTML(report.consultationConclusion.counselorConclusion)}
+                {RenderHTML(report.consultationConclusion.counselorConclusion)}
               </div>
             )}
             <div className='flex gap-8'>
@@ -100,7 +100,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Follow-up Notes:
                 </Typography>
-                {renderHTML(report.consultationConclusion.followUpNotes)}
+                {RenderHTML(report.consultationConclusion.followUpNotes)}
               </div>
             )}
           </div>
@@ -117,7 +117,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Type:
                 </Typography>
-                {renderHTML(report.intervention.type)}
+                {RenderHTML(report.intervention.type)}
               </div>
             )}
             {report.intervention?.description && (
@@ -125,7 +125,7 @@ const ReportPreview = ({ report }: { report: ReportFormValues }) => {
                 <Typography className="font-semibold text-lg text-primary-light">
                   Description:
                 </Typography>
-                {renderHTML(report.intervention.description)}
+                {RenderHTML(report.intervention.description)}
               </div>
             )}
           </div>

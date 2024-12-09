@@ -2,33 +2,26 @@ import {
 	CheckboxField,
 	ContentLoading,
 	FilterTabs,
-	NavLinkAdapter,
 	Pagination,
 	SearchField,
-	SelectField,
+	SelectField
 } from '@/shared/components';
 
+import { useQuestionsSocketListener, useSocket } from '@/shared/context';
+import { Question } from '@/shared/types';
 import {
-	Button,
 	FormControlLabel,
 	Switch,
-	Typography,
+	Typography
 } from '@mui/material';
+import { selectAccount, useAppSelector } from '@shared/store';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
+import QnaItem from './QnaItem';
 import {
 	studentQnasApi,
 	useGetStudentQuestionsQuery,
 } from './qna-api';
-import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import {
-	useGetAcademicTopicsQuery,
-	useGetNonAcademicTopicsQuery,
-} from '@/shared/services';
-import { Question } from '@/shared/types';
-import { useSocket } from '@/shared/context';
-import QnaItem from './QnaItem';
-import { addChatListener, selectChatListeners, selectPassiveChatCallback } from '@/shared/components/chat';
 
 const container = {
 	show: {
@@ -101,41 +94,11 @@ const QnaList = () => {
 		{ label: 'Non-Academic', value: 'NON_ACADEMIC' },
 	];
 
-	// const { data: academicTopicsData } = useGetAcademicTopicsQuery();
-	// const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
-	// const academicTopics = academicTopicsData?.content;
-	// const nonAcademicTopics = nonacademicTopicsData?.content;
-
-	// const academicTopicOptions = academicTopics?.map((topic) => ({
-	// 	label: topic.name,
-	// 	value: topic.id,
-	// }));
-
-	// const nonAcademicTopicOptions = nonAcademicTopics?.map((topic) => ({
-	// 	label: topic.name,
-	// 	value: topic.id,
-	// }));
-
-	// const topicOptions =
-	// 	selectedType == 'ACADEMIC'
-	// 		? academicTopicOptions
-	// 		: nonAcademicTopicOptions || [];
-
-	const handleSelectTopic = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSelectedTopic(event.target.value);
-	};
-
 	const handleCheckboxClose = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		setIsClosed(event.target.checked);
 	};
-
-	// const handleCheckboxTaken = (
-	// 	event: React.ChangeEvent<HTMLInputElement>
-	// ) => {
-	// 	setIsTaken(event.target.checked);
-	// };
 
 	const {
 		data: qnaData,
@@ -152,76 +115,39 @@ const QnaList = () => {
 	});
 	const qnaList = qnaData?.content?.data || ([] as Question[]);
 
-
-
-
-
-	useEffect(() => {
+	useQuestionsSocketListener(account?.profile.id, () => {
 		refetch();
-	}, []);
-
-	useEffect(() => {
-		if (socket && account) {
-			const cb = (data) => {
-				console.log('qna socket receive data', data);
-				if (data) {
-					refetch()
-					studentQnasApi.util.invalidateTags(['qna'])
-				}
-			};
-
-			const id = account.profile.id;
-			socket.on(`/user/${id}/question`, cb);
-			console.log(`/user/${id}/question`, socket);
-			return () => {
-				socket.off(`/user/${id}/question`);
-			};
-		}
-	}, [socket, account]);
-
-	// useEffect(()=>{
-	// 	if(qnaList && qnaList.length > 0){
-	// 		qnaList.forEach((item) => {
-	// 			if(item.chatSession){
-	// 				if(!chatListeners.has(item.chatSession.id)){
-	// 					socket.on()
-	// 					dispatch(addChatListener(item.chatSession.id))
-	// 				}
+		studentQnasApi.util.invalidateTags(['qna'])
+	})
+	// useEffect(() => {
+	// 	if (socket && account) {
+	// 		const cb = (data) => {
+	// 			if (data) {
+	// 				refetch()
+	// 				studentQnasApi.util.invalidateTags(['qna'])
 	// 			}
-	// 		})
+	// 		};
+
+	// 		const id = account.profile.id;
+	// 		socket.on(`/user/${id}/question`, cb);
+	// 		return () => {
+	// 			socket.off(`/user/${id}/question`);
+	// 		};
 	// 	}
-	// },[qnaList])
+	// }, [socket, account]);
+
 
 	if (isLoading) {
 		return <ContentLoading />;
 	}
 
-	// if (!qnaData?.content.data.length) {
-	// 	return <div className='flex items-center justify-center gap-4'>
-	// 		<Typography
-	// 			color="textDisabled"
-	// 			className='text-lg text-center'
-	// 		>
-	// 			You have not asked any questions
-	// 		</Typography>
-	// 		<Button
-	// 			className='text-lg w-fit'
-	// 			variant='text'
-	// 			component={NavLinkAdapter}
-	// 			to={`create`}
-	// 		// endIcon={<ArrowForward />}
-	// 		>
-	// 			Ask a question
-	// 		</Button>
-	// 	</div>
-	// }
 
 	return (
 		<motion.div
 			variants={container}
 			initial='hidden'
 			animate='show'
-			className='container w-full p-32 mx-auto space-y-16'
+			className='container w-full p-32 max-w-xl mx-auto space-y-16'
 		>
 			<div className='flex gap-16'>
 				<SearchField onSearch={handleSearch} className='w-xs' />

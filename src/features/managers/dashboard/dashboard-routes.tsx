@@ -4,10 +4,9 @@ import { RouteObject } from 'react-router-dom';
 import { overviewRoutes } from './overview';
 export const dashboardRoutes: RouteObject[] = [
   {
-    path: 'dashboard',
+    path: 'overall',
     children: [
       ...overviewRoutes
     ],
   },
-
 ];

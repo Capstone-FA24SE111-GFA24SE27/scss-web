@@ -1,0 +1,15 @@
+/* .quill-editor {
+} */
+.quill-editor .ql-toolbar {
+  border-top-left-radius: 4px;  /* Rounded top-left corner */
+  border-top-right-radius: 4px; /* Rounded top-right corner */
+}
+
+.quill-editor .ql-container {
+  border-bottom-left-radius: 4px;  /* Rounded bottom-left corner */
+  border-bottom-right-radius: 4px; /* Rounded bottom-right corner */
+}
+
+.quill-editor .ql-editor {
+  min-height: 40rem; 
+}

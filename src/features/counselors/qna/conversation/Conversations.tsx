@@ -101,19 +101,7 @@ const Conversation = () => {
 						<Typography className='text-3xl font-extrabold'>
 							Conversations
 						</Typography>
-						{/* <Paper className="flex items-center w-full h-40 p-4 px-16 py-4 rounded-full shadow-none border-1">
-	  <Search />
-	  <Input
-		placeholder="Search"
-		className="flex flex-1 px-8"
-		disableUnderline
-		fullWidth
-		inputProps={{
-		  'aria-label': 'Search'
-		}}
-	  />
-	</Paper> */}
-						<Scrollbar className='space-y-8 overflow-y-auto !h-[calc(100vh-212px)]'>
+						<Scrollbar className='space-y-8 overflow-y-auto !h-[calc(100vh-180px)]'>
 							{qnaList.length === 0 ? (
 								<Typography
 									className='w-full text-lg text-center'

@@ -7,7 +7,7 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 import { RootState } from '../store'
 import { logout, setAccessToken, setAccount } from './user-slice'
 import { SerializedError } from '@reduxjs/toolkit'
-import { API_BASE_URL } from '../constants/base-url'
+import { API_BASE_URL } from '../constants'
 
 
 const baseQuery = fetchBaseQuery({

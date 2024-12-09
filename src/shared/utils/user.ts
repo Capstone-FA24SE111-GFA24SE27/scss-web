@@ -1,10 +1,10 @@
- export function extractCounselingTypeFromRole(role: string): string {
+export function extractCounselingTypeFromRole(role: string): string {
   const [counselorType] = role.split('_COUNSELOR');
   return counselorType;
 }
 
-export function calculateGPA(subjects) {
-  if (!subjects) {
+export function calculateGPA(subjects = []) {
+  if (!subjects?.length) {
     return `Calculating...`;
   }
   // Filter subjects with status "PASSED"
@@ -22,4 +22,22 @@ export function calculateGPA(subjects) {
 
   // Round the GPA to two decimal places
   return Math.round(gpa * 100) / 100;
+}
+
+
+export function calculateAverageMark(markReports = []) {
+  // Filter out null grades and get only the non-null grades
+  const validGrades = markReports.filter(report => report.grade !== null).map(report => report.grade);
+
+  // If there are no valid grades, return null or an appropriate message
+  if (validGrades.length === 0) {
+    return null;
+  }
+
+  // Calculate the sum of valid grades
+  const totalGrade = validGrades.reduce((sum, grade) => sum + grade, 0);
+
+  // Return the average grade
+  const averageGrade = totalGrade / validGrades.length;
+  return Math.round(averageGrade * 100) / 100;
 }

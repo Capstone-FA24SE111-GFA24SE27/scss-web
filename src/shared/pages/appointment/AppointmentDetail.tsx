@@ -51,7 +51,7 @@ const AppointmentDetail = ({ id }: { id?: string }) => {
   }
 
   return (
-    <Box className={`p-36 flex flex-col gap-16 max-w-md -mt-8`}>
+    <Box className={`p-36 flex flex-col gap-16 max-w-md mt-12`}>
       <Typography className="font-extrabold leading-none tracking-tight text-20 md:text-24">
         Appointment Details
       </Typography>
