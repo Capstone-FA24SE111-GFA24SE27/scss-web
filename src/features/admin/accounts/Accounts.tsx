@@ -1,12 +1,15 @@
-import { FilterTabs, Heading } from '@/shared/components';
+import { FilterTabs, Heading, NavLinkAdapter } from '@/shared/components';
 import React, { useState } from 'react';
 import AccountsTable from './AccountsTable';
 import { roles } from '@/shared/constants';
 import { Role } from '@/shared/types';
-import { GlobalStyles } from '@mui/material';
+import { Button, GlobalStyles } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const Accounts = () => {
 	const [tabValue, setTabValue] = useState(0);
+	const navigate = useNavigate();
 
 	const accountTabs = [
 		{
@@ -28,20 +31,31 @@ const Accounts = () => {
 
 	return (
 		<div className='flex flex-col w-full h-full'>
-			
 			<div className='flex flex-col gap-16 p-32'>
 				<Heading
 					title='Create Account'
 					description='Enter the required information for new account creatation'
 				/>
-				<FilterTabs
-					tabs={accountTabs}
-					tabValue={tabValue}
-					onChangeTab={handleChangeTab}
-				/>
+				<div className='flex items-center justify-between gap-8'>
+					<FilterTabs
+						tabs={accountTabs}
+						tabValue={tabValue}
+						onChangeTab={handleChangeTab}
+					/>
+					<Button
+						variant='contained'
+						color='primary'
+						component={NavLinkAdapter}
+						role='button'
+						to={`/accounts/create/${accountTabs[tabValue]?.value}`}
+					>
+						<Add />
+						Create Acount
+					</Button>
+				</div>
 			</div>
 
-				<AccountsTable selectedRole={accountTabs[tabValue].value} />
+			<AccountsTable selectedRole={accountTabs[tabValue].value} />
 		</div>
 	);
 };

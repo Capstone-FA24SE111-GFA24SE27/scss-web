@@ -1,6 +1,6 @@
 import { FilterTabs, Heading, Scrollbar } from '@/shared/components';
 import { roles } from '@/shared/constants';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	CreateAcademicCounselorForm,
 	CreateManagerForm,
@@ -9,8 +9,10 @@ import {
 	CreateSupportStaffForm,
 } from './forms';
 import { Paper, Typography } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 const CreateAccount = () => {
+	const { role } = useParams();
 	const [tabValue, setTabValue] = useState(0);
 
 	const createAccountTabs = [
@@ -22,6 +24,12 @@ const CreateAccount = () => {
 		{ label: 'Manager', value: roles.MANAGER },
 		{ label: 'Support Staffs', value: roles.SUPPORT_STAFF },
 	];
+	useEffect(() => {
+		if (role)
+			setTabValue(
+				createAccountTabs.findIndex((item) => item.value === role)
+			);
+	}, []);
 
 	let createAccountForm = <></>;
 	switch (createAccountTabs[tabValue]?.value) {

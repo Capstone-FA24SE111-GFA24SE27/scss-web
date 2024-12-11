@@ -6,12 +6,11 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 type Props = {
-	account: Account;
 	allowEdit?: boolean;
 };
 
 const AccountInfoTab = (props: Props) => {
-	const { account, allowEdit = true } = props;
+	const {  allowEdit = true } = props;
 
 	const methods = useFormContext();
 	const { control, formState } = methods;
@@ -112,11 +111,11 @@ const AccountInfoTab = (props: Props) => {
 						error={!!errors.gender}
 						helperText={errors.gender?.message as string}
 					>
-						<MenuItem key={'Male'} value={'MALE'}>
+						<MenuItem key={'MALE'} value={'MALE'}>
 							{'Male'}
 						</MenuItem>
 
-						<MenuItem key={'Female'} value={'FEMALE'}>
+						<MenuItem key={'FEMALE'} value={'FEMALE'}>
 							{'Female'}
 						</MenuItem>
 					</TextField>

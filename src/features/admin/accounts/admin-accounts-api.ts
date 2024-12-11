@@ -19,6 +19,7 @@ export const adminAccountsApi = apiService
 					page = '1',
 					SortDirection = 'ASC',
 					role,
+					size = 10,
 				}) => ({
 					url: `/api/account`,
 					params: {
@@ -28,6 +29,7 @@ export const adminAccountsApi = apiService
 						page,
 						SortDirection,
 						role,
+						size
 					},
 				}),
 				providesTags: (result, error, arg) => [
@@ -240,6 +242,7 @@ type getAccountsArgs = {
 	page?: number;
 	SortDirection?: 'ASC' | 'DESC';
 	role: Role;
+	size?: number;
 };
 
 type getOneAccountResponse = ApiResponse<Account>;

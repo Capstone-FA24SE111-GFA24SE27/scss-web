@@ -46,7 +46,6 @@ import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import clsx from 'clsx';
 import CertificationAppendForm from './CertificationAppendForm';
 import QualificationAppendForm from './QualificationAppendForm';
-import { checkImageUrl } from '@/shared/utils';
 import ImageInput from '@/shared/components/image/ImageInput';
 import Loading from '@/shared/components/loading/AppLoading';
 

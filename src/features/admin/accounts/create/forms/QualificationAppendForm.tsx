@@ -27,13 +27,20 @@ const schema = z.object({
 	fieldOfStudy: z.string().min(1, 'Field of study is required'),
 	institution: z.string().min(1, 'Institution  is required'),
 	yearOfGraduation: z
-		.string()
-		.refine((year) => {
-			return dayjs(year, 'YYYY', true).isValid();
-		}, 'Year must be a valid 4-digit number')
-		.refine((year) => {
-			const parsedYear = parseInt(year);
-			return parsedYear >= 1900 && parsedYear <= currentYear;
+		.union([
+			z.string().refine((value) => /^\d{4}$/.test(value), {
+				message: 'Year must be a 4-digit number',
+			}),
+			z.number().refine((value) => value >= 1000 && value <= 9999, {
+				message: 'Year must be a 4-digit number',
+			}),
+		])
+		.refine((value) => dayjs(value.toString(), 'YYYY', true).isValid(), {
+			message: 'Invalid year',
+		})
+		.refine((date) => {
+			const year = dayjs(date).year();
+			return year >= 1900 && year <= currentYear;
 		}, `Year must be between 1900 and ${currentYear}`),
 	imageUrl: z
 		.instanceof(File, { message: 'Image is required' })
@@ -172,6 +179,7 @@ const QualificationAppendForm = (props: Props) => {
 					)}
 				/>
 				<div className='flex flex-col items-center justify-center flex-1 w-full h-full'>
+					<Typography>Qualification's image</Typography>
 					<Controller
 						name={`imageUrl`}
 						control={control}
@@ -182,7 +190,11 @@ const QualificationAppendForm = (props: Props) => {
 									onFileChange={(file: File) =>
 										field.onChange(file)
 									}
-									file={field.value}
+									url={
+										field.value instanceof File
+											? URL.createObjectURL(field.value)
+											: defaultValues.imageUrl
+									}
 								/>
 							</div>
 						)}
@@ -209,6 +221,7 @@ const QualificationAppendForm = (props: Props) => {
 							className='px-16'
 							color='secondary'
 							variant='contained'
+							disabled={!isDirty || !isValid}
 							onClick={() => {
 								update(index, formData);
 								dispatch(closeDialog());

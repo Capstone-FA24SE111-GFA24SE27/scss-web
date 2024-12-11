@@ -11,11 +11,9 @@ import {
 import { useAppDispatch } from '@shared/store';
 import { Controller, FieldArrayWithId, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Certification } from '@/shared/types';
-import clsx from 'clsx';
-import { checkImageUrl } from '@/shared/utils';
 import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
 import ImageInput from '@/shared/components/image/ImageInput';
+import _ from 'lodash';
 
 // z
 // .string()
@@ -119,6 +117,7 @@ const CertificationAppendForm = (props: Props) => {
 				/>
 				<div className='flex flex-col items-center justify-center flex-1 w-full h-full'>
 
+					<Typography>Certification's image</Typography>
 				<Controller
 					name={`imageUrl`}
 					control={control}
@@ -129,7 +128,8 @@ const CertificationAppendForm = (props: Props) => {
 								onFileChange={(file: File) =>
 									field.onChange(file)
 								}
-								file={field.value}
+								url={field.value instanceof File ? URL.createObjectURL(field.value) : defaultValues.imageUrl}
+
 								/>
 						</div>
 					)}
@@ -154,6 +154,7 @@ const CertificationAppendForm = (props: Props) => {
 							className='px-16'
 							color='secondary'
 							variant='contained'
+							disabled={!isDirty || !isValid}
 							onClick={() => {
 								update(index, formData);
 								dispatch(closeDialog());

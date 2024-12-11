@@ -101,7 +101,7 @@ export type Qualification = {
 	degree: string;
 	fieldOfStudy: string;
 	institution: string;
-	yearOfGraduation: number;
+	yearOfGraduation: string | number;
 	imageUrl: string;
 };
 

@@ -357,6 +357,18 @@ const managerNavigation: NavigationOptions = {
 const adminNavigation: NavigationOptions = {
     list: [
         {
+            name: "Overall",
+            description: "Data visualization & analytics",
+            route: 'overall',
+            items: [
+                {
+                    icon: Dashboard,
+                    name: 'Dashboard',
+                    route: 'dashboard'
+                }
+            ]
+        },
+        {
             name: "Accounts",
             description: "Manage users' accounts",
             route: 'accounts',
@@ -374,33 +386,33 @@ const adminNavigation: NavigationOptions = {
 
             ]
         },
-        {
-            name: "Management",
-            description: "Manage profiles",
-            route: 'profiles',
-            items: [
-                // {
-                //     icon: SupervisedUserCircle,
-                //     name: 'Manager',
-                //     route: 'managers'
-                // },
-                {
-                    icon: AccountBox,
-                    name: 'Counselor',
-                    route: 'counselors'
-                },
-                // {
-                //     icon: EmojiPeople,
-                //     name: 'Support Staff',
-                //     route: 'staffs'
-                // },
-                {
-                    icon: BadgeIcon,
-                    name: 'Student',
-                    route: 'students'
-                },
-            ]
-        },
+        // {
+        //     name: "Management",
+        //     description: "Manage profiles",
+        //     route: 'profiles',
+        //     items: [
+        //         // {
+        //         //     icon: SupervisedUserCircle,
+        //         //     name: 'Manager',
+        //         //     route: 'managers'
+        //         // },
+        //         {
+        //             icon: AccountBox,
+        //             name: 'Counselor',
+        //             route: 'counselors'
+        //         },
+        //         // {
+        //         //     icon: EmojiPeople,
+        //         //     name: 'Support Staff',
+        //         //     route: 'staffs'
+        //         // },
+        //         {
+        //             icon: BadgeIcon,
+        //             name: 'Student',
+        //             route: 'students'
+        //         },
+        //     ]
+        // },
         {
             name: "Resources",
             description: "Manage system's resources",

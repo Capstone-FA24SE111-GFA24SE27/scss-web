@@ -5,27 +5,47 @@ import {
 	validImageTypes,
 } from '@/shared/services';
 import { useAppDispatch } from '@shared/store';
-import React, { ChangeEvent, DragEvent, useRef, useState } from 'react';
+import React, {
+	ChangeEvent,
+	DragEvent,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 import UploadIcon from '@mui/icons-material/Upload';
 import clsx from 'clsx';
 import ImageIcon from '@mui/icons-material/Image';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { Clear } from '@mui/icons-material';
+import { fetchImageAsFile } from '@/shared/utils';
 
 type Props = {
 	onFileChange: (file: File) => void;
 	file?: File;
+	url?: string;
 	error?: boolean;
 };
 
 const ImageInput = (props: Props) => {
-	const { onFileChange, file: initialFile, error = false } = props;
+	const { onFileChange, file: initialFile, error = false, url } = props;
 
-	const [file, setFile] = useState(initialFile)
+	const [file, setFile] = useState(initialFile);
 	const [dragActive, setDragActive] = useState(false);
 	const dispatch = useAppDispatch();
 
-	const fileInputRef = useRef();
+	const fileInputRef = useRef(null);
+
+	useEffect(() => {
+		if (url && url.trim() !== '') {
+			fetchImageAsFile(url, `downloaded-image-${url}`)
+				.then((file) => {
+					if (file) {
+						handleFileChange(file);
+					}
+				})
+				.catch((err) => console.log(err));
+		}
+	}, []);
 
 	const handleFileChange = (file: File) => {
 		if (onFileChange) {
@@ -117,6 +137,7 @@ const ImageInput = (props: Props) => {
 
 	const removeFile = () => {
 		handleFileChange(null);
+		
 	};
 
 	return (
@@ -146,25 +167,29 @@ const ImageInput = (props: Props) => {
 							</p>
 						</div>
 					) : (
-						<div
-							className={clsx(
-								'relative flex flex-col items-center justify-center w-full h-full px-2 overflow-hidden',
-								error && 'bg-red-300/20 '
-							)}
-						>
-							<img
-								src={URL.createObjectURL(file)}
-								className='object-contain w-2/3 h-2/3'
-							/>
-							<span>{file.name}</span>
-							<IconButton
-								onClick={removeFile}
-								type='button'
-								className='absolute z-10 right-1 top-1'
+						<Tooltip title={file.name}>
+							<div
+								className={clsx(
+									'relative flex flex-col items-center justify-center w-full h-full px-2 overflow-hidden ',
+									error && 'bg-red-300/20 '
+								)}
 							>
-								<Clear />
-							</IconButton>
-						</div>
+								<img
+									src={URL.createObjectURL(file)}
+									className='object-contain w-2/3 h-2/3'
+								/>
+								<span className='w-full text-ellipsis'>
+									{file.name}
+								</span>
+								<IconButton
+									onClick={removeFile}
+									type='button'
+									className='absolute z-10 right-1 top-1'
+								>
+									<Clear />
+								</IconButton>
+							</div>
+						</Tooltip>
 					)}
 				</div>
 				<input

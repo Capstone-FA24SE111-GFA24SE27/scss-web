@@ -35,7 +35,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	const [isLoadingAvatar, setIsLoadingAvatar] = useState<boolean>(false);
 
 	const methods = useFormContext();
-	const { formState, watch, getValues, setValue } = methods;
+	const { formState, watch, getValues, setValue, trigger } = methods;
 	const { isValid, dirtyFields, errors } = formState;
 
 	const { fullName, email, avatarLink } = watch();
@@ -51,7 +51,9 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	const [blockAccountById] = usePutBlockAccountByIdMutation();
 	const [unblockAccountById] = usePutUnblockAccountByIdMutation();
 
-	const handleUpdateAccount = () => {};
+	const handleUpdateAccount = () => {
+		trigger()
+	};
 
 	const handleBlockAccount = () => {
 		console.log(id);
@@ -183,15 +185,15 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 						{userViewedAccount ? (
 							<Tooltip title='Edit avatar'>
 								<button
-									className='relative flex flex-auto w-32 sm:w-48 cursor-pointer'
+									className='relative flex flex-auto w-32 cursor-pointer sm:w-48'
 									onClick={handleUpdateAvatar}
 								>
 									<img
-										className='w-full h-full object-contain rounded '
+										className='object-contain w-full h-full rounded '
 										src={avatarLink}
 										alt={fullName}
 									/>
-									<AddPhotoAlternateIcon className='absolute -bottom-10 -right-10 z-10  cursor-pointer' />
+									<AddPhotoAlternateIcon className='absolute z-10 cursor-pointer -bottom-10 -right-10' />
 								</button>
 							</Tooltip>
 						) : (
@@ -204,7 +206,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 						animate={{ x: 0, transition: { delay: 0.3 } }}
 					>
 						<Typography className='font-semibold truncate text-16 sm:text-20'>
-							{fullName || 'Counselor'}
+							{fullName || accountData?.content.profile.fullName || 'Account...'}
 						</Typography>
 						<Typography variant='caption' className='font-medium'>
 							{email}
@@ -240,10 +242,10 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 							</Button>
 						)}
 						<Button
-							className='whitespace-nowrap mx-4'
+							className='mx-4 whitespace-nowrap'
 							variant='contained'
 							color='secondary'
-							disabled={_.isEmpty(dirtyFields) || !isValid}
+							// disabled={_.isEmpty(dirtyFields) || !isValid}
 							onClick={handleUpdateAccount}
 						>
 							Update
