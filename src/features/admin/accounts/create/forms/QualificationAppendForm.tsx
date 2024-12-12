@@ -59,10 +59,11 @@ type Props = {
 	update?: any;
 	qualificationData?: any;
 	index?: string | number;
+	trigger?: any;
 };
 
 const QualificationAppendForm = (props: Props) => {
-	const { append, update, qualificationData, index } = props;
+	const { append, update, qualificationData, index, trigger } = props;
 	const dispatch = useAppDispatch();
 
 	const isEdit = qualificationData && update && index !== null;
@@ -86,17 +87,19 @@ const QualificationAppendForm = (props: Props) => {
 
 	const formData = watch();
 
-	const { isValid, isDirty, errors } = formState;
+	const { isValid, isDirty, dirtyFields, errors } = formState;
 
 	const handleSubmitForm = (data: FormType) => {
 		append(data);
-		console.log(data);
+		if (trigger) {
+			trigger();
+		}
 		dispatch(closeDialog());
 	};
 
 	useEffect(() => {
 		console.log(formData);
-		console.log(errors.yearOfGraduation);
+		console.log(dirtyFields);
 	}, [formData]);
 
 	return (
@@ -185,17 +188,23 @@ const QualificationAppendForm = (props: Props) => {
 						control={control}
 						render={({ field }) => (
 							<div className='aspect-square max-w-256'>
-								<ImageInput
-									error={!!errors.imageUrl}
-									onFileChange={(file: File) =>
-										field.onChange(file)
-									}
-									url={
-										field.value instanceof File
-											? URL.createObjectURL(field.value)
-											: defaultValues.imageUrl
-									}
-								/>
+								{field.value instanceof File ? (
+									<ImageInput
+										error={!!errors.imageUrl}
+										onFileChange={(file: File) =>
+											field.onChange(file)
+										}
+										file={field.value}
+									/>
+								) : (
+									<ImageInput
+										error={!!errors.imageUrl}
+										onFileChange={(file: File) =>
+											field.onChange(file)
+										}
+										url={defaultValues.imageUrl}
+									/>
+								)}
 							</div>
 						)}
 					/>
@@ -224,6 +233,9 @@ const QualificationAppendForm = (props: Props) => {
 							disabled={!isDirty || !isValid}
 							onClick={() => {
 								update(index, formData);
+								if (trigger) {
+									trigger();
+								}
 								dispatch(closeDialog());
 							}}
 						>

@@ -35,11 +35,11 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	const [isLoadingAvatar, setIsLoadingAvatar] = useState<boolean>(false);
 
 	const methods = useFormContext();
-	const { formState, watch, getValues, setValue, trigger } = methods;
+	const { formState, watch, setValue, trigger } = methods;
 	const { isValid, dirtyFields, errors } = formState;
 
-	const { fullName, email, avatarLink } = watch();
-
+	const formData = watch()
+	const { fullName, email, avatarLink } = formData;
 	const {
 		data: accountData,
 		isLoading: isLoadingAccount,
@@ -151,7 +151,13 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 		});
 	};
 
-	console.log('dirty', dirtyFields, errors, isValid);
+	console.log('dirty', dirtyFields, errors, isValid, formData);
+
+	useEffect(()=>{
+		if(!isLoadingAccount && userViewedAccount){
+			trigger()
+		}
+	},[isLoadingAccount])
 
 	if (isLoadingAccount)
 		return <Skeleton variant='rectangular' width='100%' height={120} />;
@@ -245,7 +251,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 							className='mx-4 whitespace-nowrap'
 							variant='contained'
 							color='secondary'
-							// disabled={_.isEmpty(dirtyFields) || !isValid}
+							disabled={_.isEmpty(dirtyFields) || !isValid}
 							onClick={handleUpdateAccount}
 						>
 							Update

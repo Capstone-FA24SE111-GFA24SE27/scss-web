@@ -11,7 +11,7 @@ import { Account, Role } from '@/shared/types';
 import { Avatar, Button, Paper, Tab, Tabs, Typography } from '@mui/material';
 import AccountInfoTab from './tabs/AccountInfoTab';
 import { motion } from 'framer-motion';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
 import dayjs from 'dayjs';
@@ -19,7 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Delete } from '@mui/icons-material';
 import { useGetOneAccountQuery } from '../admin-accounts-api';
 import AccountDetailAdminViewHeader from './AccountDetailAdminViewHeader';
-import { checkImageUrl } from '@/shared/utils';
+import { checkImageUrl, fetchImageAsFile } from '@/shared/utils';
 import DepartmentInfoTab from './tabs/DepartmentInfoTab';
 import WorkExperienceTab from './tabs/WorkExperienceTab';
 import ExpertiseTab from './tabs/ExpertiseTab';
@@ -85,12 +85,13 @@ const schemaNonAcademic = z.object({
 					return year >= 1900 && year <= currentYear;
 				}, `Year must be between 1900 and ${currentYear}`),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					async (url) => await checkImageUrl(url),
-					'URL must point to a valid image file (jpeg, png, gif)'
-				),
+				.instanceof(File, { message: 'Image not found' })
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 	certifications: z.array(
@@ -98,12 +99,13 @@ const schemaNonAcademic = z.object({
 			name: z.string().min(1, 'Please enter'),
 			organization: z.string().min(1, 'Please enter'),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					async (url) => await checkImageUrl(url),
-					'URL must point to a valid image file (jpeg, png, gif)'
-				),
+				.instanceof(File, { message: 'Image not found' })
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 });
@@ -161,12 +163,13 @@ const schemaAcademic = z.object({
 					{ message: 'Invalid year' }
 				),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					async (url) => await checkImageUrl(url),
-					'URL must point to a valid image file (jpeg, png, gif)'
-				),
+				.instanceof(File, { message: 'Image not found' })
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 	certifications: z.array(
@@ -174,12 +177,13 @@ const schemaAcademic = z.object({
 			name: z.string().min(1, 'Please enter'),
 			organization: z.string().min(1, 'Please enter'),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					async (url) => await checkImageUrl(url),
-					'URL must point to a valid image file (jpeg, png, gif)'
-				),
+				.instanceof(File, { message: 'Image not found' })
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 });
@@ -188,7 +192,7 @@ const CounselorAccountAdminView = (props: Props) => {
 	const { id } = props;
 
 	const [tabValue, setTabValue] = useState(0);
-
+	const [isInitializing, setIsInitializing] = useState(true);
 	const { data, isLoading } = useGetCounselorAdminQuery(id, { skip: !id });
 	const { data: counselorAccountData, isLoading: isLoadingAccount } =
 		useGetOneAccountQuery({ id }, { skip: !id });
@@ -196,57 +200,129 @@ const CounselorAccountAdminView = (props: Props) => {
 	const counselor = data?.content;
 	const counselorAccount: Account | null = counselorAccountData?.content;
 
-	const defaultValues = {
-		avatarLink: counselorAccount?.profile?.avatarLink,
-		email: counselorAccount?.email,
-		// password: counselorAccount?.,
-		gender:
-			counselorAccount?.profile?.gender === 'MALE' ? 'MALE' : 'FEMALE',
-		phoneNumber: counselorAccount?.profile?.phoneNumber,
-		dateOfBirth: dayjs(counselorAccount?.profile?.dateOfBirth).format(
-			'YYYY-MM-DD'
-		),
-		fullName: counselorAccount?.profile?.fullName,
-		departmentId: counselor?.profile?.department?.id,
-		majorId: counselor?.profile?.major?.id,
-		expertiseId: counselor?.profile?.expertise?.id,
-		specializedSkills: counselor?.profile?.specializedSkills,
-		otherSkills: counselor?.profile?.otherSkills,
-		workHistory: counselor?.profile?.workHistory,
-		achievements: counselor?.profile?.achievements,
-		qualifications: counselor?.profile?.qualifications,
-		certifications: counselor?.profile?.certifications,
+	const defaultValues = async () => {
+		const certifications = counselor?.profile?.certifications
+			? await Promise.all(
+					counselor?.profile?.certifications.map(
+						async (cert, index) => {
+							const fetchedImage = await fetchImageAsFile(
+								cert.imageUrl,
+								`downloaded-image-${cert.imageUrl}`
+							);
+							console.log({
+								...cert,
+								imageUrl: fetchedImage,
+							});
+
+							return {
+								...cert,
+								imageUrl: fetchedImage,
+							};
+						}
+					)
+			  )
+			: [];
+
+		const qualifications = counselor?.profile?.qualifications
+			? await Promise.all(
+					counselor?.profile?.qualifications.map(
+						async (qual, index) => {
+							const fetchedImage = await fetchImageAsFile(
+								qual.imageUrl,
+								`downloaded-image-${qual.imageUrl}`
+							);
+							console.log({
+								...qual,
+								imageUrl: fetchedImage,
+							});
+
+							return {
+								...qual,
+								imageUrl: fetchedImage,
+							};
+						}
+					)
+			  )
+			: [];
+
+		return {
+			avatarLink: counselorAccount?.profile?.avatarLink,
+			email: counselorAccount?.email,
+			gender:
+				counselorAccount?.profile?.gender === 'MALE'
+					? 'MALE'
+					: 'FEMALE',
+			phoneNumber: counselorAccount?.profile?.phoneNumber,
+			dateOfBirth: dayjs(counselorAccount?.profile?.dateOfBirth).format(
+				'YYYY-MM-DD'
+			),
+			fullName: counselorAccount?.profile?.fullName,
+			departmentId: counselor?.profile?.department?.id,
+			majorId: counselor?.profile?.major?.id,
+			expertiseId: counselor?.profile?.expertise?.id,
+			specializedSkills: counselor?.profile?.specializedSkills,
+			otherSkills: counselor?.profile?.otherSkills,
+			workHistory: counselor?.profile?.workHistory,
+			achievements: counselor?.profile?.achievements,
+			qualifications: qualifications,
+			certifications: certifications,
+		};
 	};
 
-	console.log(defaultValues);
-
-	const methods = useForm({
-		mode: 'onChange',
-		defaultValues,
+	const methods = useForm<
+		Required<
+			z.infer<typeof schemaAcademic> | z.infer<typeof schemaNonAcademic>
+		>
+	>({
+		mode: 'all',
+		defaultValues: {},
 		resolver: counselor?.profile?.expertise
 			? zodResolver(schemaNonAcademic)
 			: zodResolver(schemaAcademic),
 	});
 
-	const { reset, watch, formState } = methods;
+	const { reset, watch, control, trigger } = methods;
 
 	const formData = watch();
+
+	const useCertificationFieldArray = useFieldArray({
+		control,
+		name: 'certifications',
+	});
+
+	const useQualificationFieldArray = useFieldArray({
+		control,
+		name: 'qualifications',
+	});
 
 	const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue);
 	};
 
+	const initializeDefaultValues = async () => {
+		const values = await defaultValues();
+		//@ts-ignore
+		reset(values);
+		trigger();
+		setIsInitializing(false);
+	};
+
 	useEffect(() => {
 		if (!isLoading && !isLoadingAccount) {
-			reset(defaultValues);
+			initializeDefaultValues();
 		}
 	}, [isLoading, isLoadingAccount]);
 
-	const onSubmit = () => {
+	useEffect(() => {
+		if (formData) {
+			console.log('form data changing', formData);
+		}
+	}, [formData]);
 
-	}
+	const onSubmit = () => {};
 
-	if (isLoading || isLoadingAccount) return <ContentLoading />;
+	if (isLoading || isLoadingAccount || isInitializing)
+		return <ContentLoading />;
 
 	return (
 		<FormProvider {...methods}>
@@ -287,7 +363,16 @@ const CounselorAccountAdminView = (props: Props) => {
 					) : (
 						''
 					)}
-					{tabValue === 2 && <WorkExperienceTab />}
+					{tabValue === 2 && (
+						<WorkExperienceTab
+							useQualificationFieldArray={
+								useQualificationFieldArray
+							}
+							useCertificationFieldArray={
+								useCertificationFieldArray
+							}
+						/>
+					)}
 					{/*  */}
 				</Scrollbar>
 			</Paper>

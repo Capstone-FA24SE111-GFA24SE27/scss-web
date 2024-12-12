@@ -6,7 +6,7 @@ import { resourcesRoutes } from './resouces';
 import { profileRoutes, settingsRoutes } from '@/shared/pages';
 import { adminProfilesRoutes } from './profiles/admin-profiles-routes';
 import { adminAccountsRoutes } from './accounts/admin-accounts-routes';
-import { dashboardRoutes } from '../managers/dashboard';
+import { adminDashboardRoutes } from './dashboard';
 
 const AdminLayout = lazy(() => import('./admin-layout'))
 
@@ -15,17 +15,17 @@ export const adminRoutes: RouteObject[] = [
     path: '/',
     element: <AdminLayout />,
     children: [
-      // {
-			// 	path: '',
-			// 	element: <Navigate to={`accounts/table`} />
-			// },
+      {
+				path: '',
+				element: <Navigate to={`dashboard`} />
+			},
         ...specialRoutes,
         ...resourcesRoutes,
         ...adminAccountsRoutes,
         ...adminProfilesRoutes,
         ...profileRoutes,
         ...settingsRoutes,
-        ...dashboardRoutes
+        ...adminDashboardRoutes
     ],
   },
 

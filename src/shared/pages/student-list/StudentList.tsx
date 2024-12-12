@@ -40,7 +40,7 @@ function StudentList({ isShowingTab = false }) {
       scroll={isMobile ? 'normal' : 'content'}
       content={
         <PageSimple
-          className='!min-h-screen'
+          className='h-full'
           header={<StudentListHeader isShowingTab={isShowingTab} />}
           content={<StudentListContent />}
           ref={pageLayout}

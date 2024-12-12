@@ -43,10 +43,11 @@ type Props = {
 	update?: any;
 	certificationData?: any;
 	index?: string | number;
+	trigger?: any;
 };
 
 const CertificationAppendForm = (props: Props) => {
-	const { append, update, certificationData, index } = props;
+	const { append, update, certificationData, index, trigger } = props;
 	const dispatch = useAppDispatch();
 
 	console.log({ append, update, certificationData, index });
@@ -73,7 +74,9 @@ const CertificationAppendForm = (props: Props) => {
 
 	const handleSubmitForm = (data: FormType) => {
 		append(data);
-		console.log(data);
+		if (trigger) {
+			trigger();
+		}
 		dispatch(closeDialog());
 	};
 
@@ -116,27 +119,31 @@ const CertificationAppendForm = (props: Props) => {
 					)}
 				/>
 				<div className='flex flex-col items-center justify-center flex-1 w-full h-full'>
-
 					<Typography>Certification's image</Typography>
-				<Controller
-					name={`imageUrl`}
-					control={control}
-					render={({ field }) => (
-						<div className='aspect-square max-w-256'>
-							<ImageInput
-								error={!!errors.imageUrl}
-								onFileChange={(file: File) =>
-									field.onChange(file)
-								}
-								url={field.value instanceof File ? URL.createObjectURL(field.value) : defaultValues.imageUrl}
-
+					<Controller
+						name={`imageUrl`}
+						control={control}
+						render={({ field }) => (
+							<div className='aspect-square max-w-256'>
+								<ImageInput
+									error={!!errors.imageUrl}
+									onFileChange={(file: File) =>
+										field.onChange(file)
+									}
+									url={
+										field.value instanceof File
+											? URL.createObjectURL(field.value)
+											: defaultValues.imageUrl
+									}
 								/>
-						</div>
-					)}
+							</div>
+						)}
 					/>
-				{errors.imageUrl && (
-					<Typography color='error' className='text-sm'>{errors.imageUrl.message}</Typography>
-				)}
+					{errors.imageUrl && (
+						<Typography color='error' className='text-sm'>
+							{errors.imageUrl.message}
+						</Typography>
+					)}
 				</div>
 			</DialogContent>
 			<DialogActions>
@@ -157,6 +164,9 @@ const CertificationAppendForm = (props: Props) => {
 							disabled={!isDirty || !isValid}
 							onClick={() => {
 								update(index, formData);
+								if (trigger) {
+									trigger();
+								}
 								dispatch(closeDialog());
 							}}
 						>

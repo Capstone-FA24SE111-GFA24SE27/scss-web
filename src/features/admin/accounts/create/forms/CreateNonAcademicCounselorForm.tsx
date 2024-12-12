@@ -410,7 +410,7 @@ const CreateNonAcademicCounselorForm = () => {
 				// 	}
 				// }}
 			>
-				<div className='flex flex-col w-full gap-32 p-32 mt-16'>
+				<div className='flex flex-col flex-1 w-full gap-32 p-32 mt-16'>
 					<Stepper
 						activeStep={activeStep}
 						alternativeLabel
@@ -684,7 +684,7 @@ const CreateNonAcademicCounselorForm = () => {
 						className={clsx(
 							activeStep !== 2
 								? 'hidden'
-								: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+								: 'flex flex-col flex-1 w-full h-full gap-16'
 						)}
 					>
 						<Typography className='text-lg font-semibold leading-tight'>

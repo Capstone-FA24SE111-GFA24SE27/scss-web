@@ -66,7 +66,7 @@ const CreateAccount = () => {
 			<div className='flex items-center justify-between px-32 pt-32'>
 				<Heading
 					title={`Create ${createAccountTabs[tabValue].label}`}
-					description='Enter the required information for new account creatation'
+					description='Enter the required information for new account creation'
 				/>
 			</div>
 			<div className='px-32 py-16'>
@@ -78,7 +78,7 @@ const CreateAccount = () => {
 			</div>
 
 			<Paper className='flex overflow-hidden'>
-				<Scrollbar className='flex-1 overflow-auto'>
+				<Scrollbar className='flex flex-1 max-h-full overflow-auto'>
 					{createAccountForm}
 				</Scrollbar>
 			</Paper>

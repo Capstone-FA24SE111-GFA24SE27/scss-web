@@ -459,7 +459,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 
 	return (
 			<form
-				className='w-full h-full'
+				className='flex-1 w-full h-full'
 				onSubmit={handleSubmit(onSubmit)}
 				// onKeyDown={(e) => {
 				// 	if (e.key === 'Enter') {
@@ -468,7 +468,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 				// 	}
 				// }}
 			>
-				<div className='flex flex-col w-full gap-32 p-32 mt-16'>
+				<div className='flex flex-col flex-1 w-full gap-32 p-32 mt-16'>
 					<Stepper
 						activeStep={activeStep}
 						alternativeLabel
@@ -930,7 +930,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						</div>
 
 						<div className='flex flex-col flex-1 gap-16 '>
-							<div className='flex flex-wrap items-center gap-8'>
+							<div className='flex items-center gap-8'>
 								<Typography className='font-semibold'>
 									Certifications:{' '}
 								</Typography>
@@ -972,7 +972,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						</div>
 
 						<div className='flex flex-col flex-1 gap-16 '>
-							<div className='flex flex-wrap items-center space-y-8'>
+							<div className='flex items-center space-y-8'>
 								<Typography className='font-semibold'>
 									Qualifications:{' '}
 								</Typography>
