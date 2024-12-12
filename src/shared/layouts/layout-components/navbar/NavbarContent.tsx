@@ -55,7 +55,7 @@ function NavbarContent(props: NavbarContentProps) {
 			</div>
 
 			<StyledContent
-				className="flex min-h-0 flex-1 flex-col bg-background-paper"
+				className="flex flex-col flex-1 min-h-0 bg-background-paper"
 			// option={{ suppressScrollX: true, wheelPropagation: false }}
 			>
 				{/* <UserNavbarHeader /> */}

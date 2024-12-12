@@ -8,9 +8,11 @@ import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { useGetProblemTagsQuery } from './problem-tag-api';
+import { useDeleteProblemTagMutation, useGetProblemTagsQuery } from './problem-tag-api';
 import { ManagementCounselor } from '@/features/managers/management/counselors/counselors-api';
 import { ProblemTag } from '@/shared/types/admin';
+import { useAppDispatch } from '@shared/store';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 function ProblemTagTable() {
 
   const [pagination, setPagination] = useState({
@@ -18,25 +20,35 @@ function ProblemTagTable() {
     pageSize: 10,
   });
   console.log(pagination)
+  const dispatch = useAppDispatch()
 
   const { data, isLoading } = useGetProblemTagsQuery({
     page: pagination.pageIndex + 1
   })
 
+  const [removeProblemTag] = useDeleteProblemTagMutation()
 
-  const removeProducts = (ids: string[]) => {
 
+  const removeProducts = (ids: number[]) => {
+    if(ids && ids.length > 0) {
+      useConfirmDialog({
+				dispatch,
+				title: 'Are you sure you want to remove the selected problem tag?',
+				confirmButtonFunction: () => {
+          removeProblemTag({id: ids[0]}).then((res) => {
+            if(res){
+              useAlertDialog({
+                dispatch, title: 'Problem tag removed successfully'
+              })
+            }
+          }).catch(err => console.error(err))
+				},
+			});
+    
+    }
   };
 
   const columns = useMemo<MRT_ColumnDef<ProblemTag>[]>(() => [
-    {
-      id: 'avatarLink',
-      header: 'ID',
-      size: 32,
-      Cell: ({ row }) => (
-          <Typography >{row.original.id}</Typography>
-      )
-    },
     {
       accessorKey: 'name',
       header: 'Tag Name',
@@ -91,7 +103,7 @@ function ProblemTagTable() {
           <MenuItem
             key={0}
             onClick={() => {
-              // removeProducts([row.original.id]);
+              removeProducts([row.original.id]);
               closeMenu();
               table.resetRowSelection();
             }}

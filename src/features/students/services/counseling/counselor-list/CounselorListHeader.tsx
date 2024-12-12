@@ -41,8 +41,8 @@ const CounselorListHeader = () => {
 
 
   return (
-    <div className="flex flex-1 items-center bg-background">
-      <div className="w-full p-24 flex flex-col gap-16">
+    <div className="flex items-center flex-1 overflow-hidden bg-background">
+      <div className="flex flex-col w-full gap-16 p-24 overflow-auto">
         <div className='flex'>
           <SearchField
             onSearch={handleSearch}
@@ -71,12 +71,12 @@ const CounselorListHeader = () => {
             }}
           >
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 mx-4 px-16"
+              className="px-16 mx-4 text-lg font-semibold min-h-40 min-w-64"
               disableRipple
               label="Academic Counselors"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 mx-4 px-16"
+              className="px-16 mx-4 text-lg font-semibold min-h-40 min-w-64"
               disableRipple
               label="Non-Academic Counselors"
             />

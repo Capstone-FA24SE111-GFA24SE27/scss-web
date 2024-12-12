@@ -6,7 +6,7 @@ import {
 	FilterTabs,
 	NavLinkAdapter,
 } from '@shared/components';
-import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
+import { Chip, ListItemIcon, MenuItem, ownerDocument, Paper } from '@mui/material';
 import _ from 'lodash';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -97,6 +97,19 @@ const AccountsTable = (props: Props) => {
 			title: 'Are you sure you want to unblock this account?',
 		});
 	};
+	
+	const getParamRole = (role: Role) => {
+		if(role === 'ADMIN'){
+			return ''
+		}
+		if(role === 'ACADEMIC_COUNSELOR' || role === 'NON_ACADEMIC_COUNSELOR'){
+			return 'counselor'
+		}
+		if(role === 'MANAGER' || role === 'SUPPORT_STAFF'){
+			return 'generic'
+		}
+		return 'student'
+	}
 
 	// const handleBlockMultipleAccounts = (selected: number[]) => {
 	// 	console.log(selected);
@@ -134,7 +147,7 @@ const AccountsTable = (props: Props) => {
 				Cell: ({ row }) => (
 					<Typography
 						component={NavLinkAdapter}
-						to={`${row.original.profile.id}`}
+						to={`/accounts/${row.original.profile.id}/${getParamRole(row.original.role)}`}
 						className='!underline !text-secondary-main'
 						color='secondary'
 					>

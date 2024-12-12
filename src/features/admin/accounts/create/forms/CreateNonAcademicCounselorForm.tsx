@@ -1,4 +1,7 @@
 import {
+	isValidImage,
+	MAX_FILE_SIZE,
+	uploadFile,
 	useGetCounselorExpertisesQuery,
 } from '@/shared/services';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +13,6 @@ import {
 	CircularProgress,
 	IconButton,
 	MenuItem,
-	Paper,
 	Step,
 	StepLabel,
 	Stepper,
@@ -19,27 +21,38 @@ import {
 	Typography,
 } from '@mui/material';
 import React, { MouseEvent, useEffect, useState } from 'react';
-import { Controller, FieldArrayWithId, useFieldArray, useForm } from 'react-hook-form';
+import {
+	Controller,
+	FieldArrayWithId,
+	useFieldArray,
+	useForm,
+} from 'react-hook-form';
 import { z } from 'zod';
 import { usePostCreateNonAcademicCounselorAccountMutation } from '../../admin-accounts-api';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useAppSelector } from '@shared/store';
-import { clearEnteredValueByTab, selectEnteredValues, selectInitialValues, setEnteredValueByTab } from './create-account-slice';
+import {
+	clearEnteredValueByTab,
+	selectEnteredValues,
+	selectInitialValues,
+	setEnteredValueByTab,
+} from './create-account-slice';
 import { useAppDispatch } from '@shared/store';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import clsx from 'clsx';
 import CertificationAppendForm from './CertificationAppendForm';
 import QualificationAppendForm from './QualificationAppendForm';
 import { openDialog } from '@/shared/components';
-
-
+import { checkImageUrl } from '@/shared/utils';
+import ImageInput from '@/shared/components/image/ImageInput';
 
 const steps = [
 	{
 		id: 'Step 1',
 		name: 'Account Information',
 		fields: [
+			'avatarLink',
 			'fullName',
 			'email',
 			'gender',
@@ -61,14 +74,22 @@ const steps = [
 			'workHistory',
 			'achievements',
 			'qualifications',
-			'certifications'
+			'certifications',
 		],
 	},
 ];
 
-const currentYear = dayjs().year()
+const currentYear = dayjs().year();
 
 const schema = z.object({
+	avatarLink: z
+		.instanceof(File, { message: 'Image is required' })
+		.refine((file) => isValidImage(file), {
+			message: 'File must be an image',
+		})
+		.refine((file) => file.size <= MAX_FILE_SIZE, {
+			message: 'Image must be less than 5MB',
+		}),
 	email: z.string().email('Invalid email address'), // Validates email format
 	password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
 	gender: z.enum(['MALE', 'FEMALE']), // Enum for gender
@@ -76,16 +97,16 @@ const schema = z.object({
 		.string()
 		.regex(/^\d{10,15}$/, 'Phone number must be between 10 and 15 digits'),
 	dateOfBirth: z
-	.string()
-	.refine((date) => {
-		return dayjs(date, 'YYYY-MM-DD', true).isValid();
-	}, 'Birth date must be a valid date')
-	.refine((date) => {
-		const year = dayjs(date).year()
-		return year >= 1900 && year <= currentYear;
-	}, `Year must be between 1900 and ${currentYear}`),
+		.string()
+		.refine((date) => {
+			return dayjs(date, 'YYYY-MM-DD', true).isValid();
+		}, 'Birth date must be a valid date')
+		.refine((date) => {
+			const year = dayjs(date).year();
+			return year >= 1900 && year <= currentYear;
+		}, `Year must be between 1900 and ${currentYear}`),
 
-	fullName: z.string().min(1, 'Full name is required'), 
+	fullName: z.string().min(1, 'Full name is required'),
 	expertiseId: z.number().gt(0, 'Expertise ID must be selected'),
 	specializedSkills: z.string().min(1, 'Specialized skill is required'),
 	otherSkills: z.string().min(1, 'Other skill is required'),
@@ -103,12 +124,13 @@ const schema = z.object({
 					'Invalid date format'
 				),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					(url) => /\.(jpg|jpeg|png|gif|webp)$/i.test(url),
-					'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
-				),
+				.instanceof(File)
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 	certifications: z.array(
@@ -116,12 +138,13 @@ const schema = z.object({
 			name: z.string().min(1, 'Please enter'),
 			organization: z.string().min(1, 'Please enter'),
 			imageUrl: z
-				.string()
-				.url('Invalid URL')
-				.refine(
-					(url) => /\.(jpg|jpeg|png|gif|webp)$/i.test(url),
-					'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
-				),
+				.instanceof(File)
+				.refine((file) => isValidImage(file), {
+					message: 'File must be an image',
+				})
+				.refine((file) => file.size <= MAX_FILE_SIZE, {
+					message: 'Image must be less than 5MB',
+				}),
 		})
 	),
 });
@@ -138,27 +161,30 @@ const ClearMenuItem = styled(MenuItem)(({ theme }) => ({
 
 const CreateNonAcademicCounselorForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [errorMsg, setErrorMsg] = useState(null);
 
-	const initialValues = useAppSelector(selectInitialValues)
-	const enteredValues = useAppSelector(selectEnteredValues)
-	const dispatch = useAppDispatch()
+	const initialValues = useAppSelector(selectInitialValues);
+	const enteredValues = useAppSelector(selectEnteredValues);
+	const dispatch = useAppDispatch();
 
-	const defaultValues = enteredValues['NON_ACADEMIC_COUNSELOR']
+	const defaultValues = enteredValues['NON_ACADEMIC_COUNSELOR'];
 	const [activeStep, setActiveStep] = useState(0);
 
-	const { control,
+	const {
+		control,
 		formState,
 		watch,
 		handleSubmit,
 		setValue,
 		reset,
 		trigger,
-		getValues,} =
-		useForm<FormType>({
-			// @ts-ignore
-			defaultValues,
-			resolver: zodResolver(schema),
-		});
+		getValues,
+	} = useForm<FormType>({
+		// @ts-ignore
+		defaultValues,
+		resolver: zodResolver(schema),
+	});
 	const formData = watch();
 
 	const {
@@ -183,19 +209,19 @@ const CreateNonAcademicCounselorForm = () => {
 
 	const { isValid, dirtyFields, errors } = formState;
 
-	type FieldName = keyof FormType
-	
+	type FieldName = keyof FormType;
 
 	const handleNext = async (e: MouseEvent<HTMLButtonElement>) => {
-		const fields = steps[activeStep].fields
-		const result = await trigger(fields as FieldName[], { shouldFocus: true })
+		const fields = steps[activeStep].fields;
+		const result = await trigger(fields as FieldName[], {
+			shouldFocus: true,
+		});
 
-		if (!result) return
+		if (!result) return;
 
 		if (activeStep < steps.length - 1) {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}
-
 	};
 	const handleBack = (e: MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -282,39 +308,98 @@ const CreateNonAcademicCounselorForm = () => {
 
 	const [createAccount] = usePostCreateNonAcademicCounselorAccountMutation();
 
-	const onSubmit = () => {
-		createAccount(formData)
-			.unwrap()
-			.then((res) => {
-				if(res){
-
-					useAlertDialog({dispatch, title: res.message})
-					if(res.status === 200) {
-
-						dispatch(clearEnteredValueByTab('NON_ACADEMIC_COUNSELOR'))
-						reset(initialValues['NON_ACADEMIC_COUNSELOR'])
-					}
-				}
-			})
-			.catch((err) => console.log(err));
-		console.log('formdata', formData);
-		console.log('formdata', isValid);
+	const handleUpload = async (file: File) => {
+		const res = await uploadFile(file, `images/${Date.now()}_${file.name}`);
+		return res;
 	};
 
-	useEffect(()=>{
-		console.log(formData) 
+	const onSubmit = async () => {
+		setIsSubmitting(true);
 
-	},[formData])
+		let avatarUrl = null;
+		let certificationsList = [];
+		let qualificationsList = [];
+
+		try {
+			avatarUrl = await handleUpload(formData.avatarLink);
+
+			certificationsList = await Promise.all(
+				formData.certifications.map(async (cert) => {
+					const url = await handleUpload(cert.imageUrl);
+					return {
+						...cert,
+						imageUrl: url,
+					};
+				})
+			);
+
+			qualificationsList = await Promise.all(
+				formData.qualifications.map(async (qual) => {
+					const url = await handleUpload(qual.imageUrl);
+					return {
+						...qual,
+						imageUrl: url,
+					};
+				})
+			);
+
+			createAccount({
+				...formData,
+				avatarLink: avatarUrl,
+				certifications: certificationsList,
+				qualifications: qualificationsList,
+			})
+				.unwrap()
+				.then((res) => {
+					if (res) {
+						if (res.status === 200) {
+							useAlertDialog({
+								dispatch,
+								title: res.message,
+								color: 'success',
+							});
+							dispatch(
+								clearEnteredValueByTab('NON_ACADEMIC_COUNSELOR')
+							);
+							reset(initialValues['NON_ACADEMIC_COUNSELOR']);
+						} else {
+							useAlertDialog({
+								dispatch,
+								title: res.message,
+								color: 'error',
+							});
+						}
+					}
+				})
+				.catch((err) => console.log('error submiting form', err))
+				.finally();
+			setErrorMsg('');
+		} catch (err) {
+			console.error('Image upload failed:', err);
+			setErrorMsg('Error while uploading images');
+			setIsSubmitting(false);
+		}
+
+		setIsSubmitting(false);
+	};
+
+	useEffect(() => {
+		console.log(formData);
+	}, [formData]);
 
 	useEffect(() => {
 		return () => {
-		  const currentValues = getValues(); // Get current form values
-		  dispatch(setEnteredValueByTab({tab: 'NON_ACADEMIC_COUNSELOR', formValues: currentValues})); // Save to Redux
+			const currentValues = getValues(); // Get current form values
+			dispatch(
+				setEnteredValueByTab({
+					tab: 'NON_ACADEMIC_COUNSELOR',
+					formValues: currentValues,
+				})
+			); // Save to Redux
 		};
-	  }, [dispatch, getValues]);
+	}, [dispatch, getValues]);
 
 	return (
-		<div className='flex flex-wrap w-full h-full gap-16'>
 			<form
 				className='w-full h-full'
 				onSubmit={handleSubmit(onSubmit)}
@@ -325,7 +410,7 @@ const CreateNonAcademicCounselorForm = () => {
 				// 	}
 				// }}
 			>
-				<Paper className='flex flex-col w-full gap-32 p-32 mt-16'>
+				<div className='flex flex-col flex-1 w-full gap-32 p-32 mt-16'>
 					<Stepper
 						activeStep={activeStep}
 						alternativeLabel
@@ -344,11 +429,11 @@ const CreateNonAcademicCounselorForm = () => {
 								: 'flex flex-wrap flex-1 w-full h-full gap-16'
 						)}
 					>
-						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+						<div className='flex flex-col flex-1 gap-16 '>
 							<Typography className='text-lg font-semibold leading-tight'>
 								Enter basic account info:
 							</Typography>
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='fullName'
@@ -366,7 +451,7 @@ const CreateNonAcademicCounselorForm = () => {
 									)}
 								/>
 							</div>
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='phoneNumber'
@@ -386,7 +471,7 @@ const CreateNonAcademicCounselorForm = () => {
 								/>
 							</div>
 
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='dateOfBirth'
@@ -394,26 +479,35 @@ const CreateNonAcademicCounselorForm = () => {
 										<DatePicker
 											className='w-full'
 											label='Date of birth'
-											value={field.value ? dayjs(field.value) : null}
+											value={
+												field.value
+													? dayjs(field.value)
+													: null
+											}
 											minDate={dayjs('1900-01-01')}
 											disableFuture
 											format='YYYY-MM-DD'
 											slotProps={{
 												textField: {
 													helperText:
-														errors.dateOfBirth?.message,
+														errors.dateOfBirth
+															?.message,
 												},
 											}}
 											views={['year', 'month', 'day']}
 											onChange={(date) => {
-												field.onChange(dayjs(date).format('YYYY-MM-DD'));
+												field.onChange(
+													dayjs(date).format(
+														'YYYY-MM-DD'
+													)
+												);
 											}}
 										/>
 									)}
 								/>
 							</div>
 
-							<div className='min-w-320'>
+							<div className=''>
 								<Controller
 									control={control}
 									name='gender'
@@ -446,7 +540,7 @@ const CreateNonAcademicCounselorForm = () => {
 								/>
 							</div>
 
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='email'
@@ -462,7 +556,7 @@ const CreateNonAcademicCounselorForm = () => {
 									)}
 								/>
 							</div>
-							<div className='flex-1 min-w-320'>
+							<div className='flex-1 '>
 								<Controller
 									control={control}
 									name='password'
@@ -503,6 +597,33 @@ const CreateNonAcademicCounselorForm = () => {
 									)}
 								/>
 							</div>
+
+							<div className='flex items-start flex-1 gap-8 '>
+								<Typography>Avatar: </Typography>
+								<Controller
+									control={control}
+									name='avatarLink'
+									render={({ field }) => (
+										<div className='flex-1 aspect-square max-w-256'>
+											<ImageInput
+												error={!!errors.avatarLink}
+												onFileChange={(file: File) =>
+													field.onChange(file)
+												}
+												file={field.value}
+											/>
+										</div>
+									)}
+								/>
+								{errors.avatarLink && (
+									<Typography
+										color='error'
+										className='text-sm'
+									>
+										{errors.avatarLink.message}
+									</Typography>
+								)}
+							</div>
 						</div>
 					</div>
 
@@ -510,72 +631,66 @@ const CreateNonAcademicCounselorForm = () => {
 						className={clsx(
 							activeStep !== 1
 								? 'hidden'
-								: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 min-w-320'
+								: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 '
 						)}
 					>
 						<Typography className='text-lg font-semibold leading-tight'>
 							Select counselor's info:
 						</Typography>
 						<Controller
-									control={control}
-									name='expertiseId'
-									render={({ field }) => (
-										<TextField
-											value={
-												field.value ? field.value : ''
-											}
-											select
-											type='number'
-											label='Expertise'
-											onChange={handleExpertiseChange}
-											variant='outlined'
-											disabled={isExpertiseLoading}
-											fullWidth
-											error={!!errors.expertiseId}
-											helperText={
-												errors.expertiseId?.message
-											}
-										>
-											{isExpertiseLoading ? (
-												<MenuItem disabled>
-													<CircularProgress
-														size={24}
-													/>
-												</MenuItem>
-											) : (
-												expertises?.map((expertise) => (
-													<MenuItem
-														key={expertise.id}
-														value={expertise.id}
-													>
-														{expertise.name}
-													</MenuItem>
-												))
-											)}
-											{field.value && (
-												<ClearMenuItem
-													key='clear-department'
-													value={0}
-												>
-													Clear
-												</ClearMenuItem>
-											)}
-										</TextField>
+							control={control}
+							name='expertiseId'
+							render={({ field }) => (
+								<TextField
+									value={field.value ? field.value : ''}
+									select
+									type='number'
+									label='Expertise'
+									onChange={handleExpertiseChange}
+									variant='outlined'
+									disabled={isExpertiseLoading}
+									fullWidth
+									error={!!errors.expertiseId}
+									helperText={errors.expertiseId?.message}
+								>
+									{isExpertiseLoading ? (
+										<MenuItem disabled>
+											<CircularProgress size={24} />
+										</MenuItem>
+									) : (
+										expertises?.map((expertise) => (
+											<MenuItem
+												key={expertise.id}
+												value={expertise.id}
+											>
+												{expertise.name}
+											</MenuItem>
+										))
 									)}
-								/>
+									{field.value && (
+										<ClearMenuItem
+											key='clear-department'
+											value={0}
+										>
+											Clear
+										</ClearMenuItem>
+									)}
+								</TextField>
+							)}
+						/>
 					</div>
 
 					<div
 						className={clsx(
 							activeStep !== 2
 								? 'hidden'
-								: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+								: 'flex flex-col flex-1 w-full h-full gap-16'
 						)}
 					>
 						<Typography className='text-lg font-semibold leading-tight'>
 							Enter counselor's additional informations:
 						</Typography>
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='specializedSkills'
@@ -595,8 +710,7 @@ const CreateNonAcademicCounselorForm = () => {
 							/>
 						</div>
 
-
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='otherSkills'
@@ -614,7 +728,7 @@ const CreateNonAcademicCounselorForm = () => {
 							/>
 						</div>
 
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='achievements'
@@ -634,7 +748,7 @@ const CreateNonAcademicCounselorForm = () => {
 							/>
 						</div>
 
-						<div className='flex-1 min-w-320'>
+						<div className='flex-1 '>
 							<Controller
 								control={control}
 								name='workHistory'
@@ -652,7 +766,7 @@ const CreateNonAcademicCounselorForm = () => {
 							/>
 						</div>
 
-						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+						<div className='flex flex-col flex-1 gap-16 '>
 							<div className='flex flex-wrap items-center gap-8'>
 								<Typography className='font-semibold'>
 									Certifications:{' '}
@@ -692,7 +806,7 @@ const CreateNonAcademicCounselorForm = () => {
 							</Button>
 						</div>
 
-						<div className='flex flex-col flex-1 gap-16 min-w-320'>
+						<div className='flex flex-col flex-1 gap-16 '>
 							<div className='flex flex-wrap items-center space-y-8'>
 								<Typography className='font-semibold'>
 									Qualifications:{' '}
@@ -734,7 +848,13 @@ const CreateNonAcademicCounselorForm = () => {
 						</div>
 					</div>
 
-					<Box display='flex' justifyContent='space-between' mt={8}>
+					{errorMsg && errorMsg.trim() !== '' && (
+						<Typography color='error' className='font-semibold'>
+							{errorMsg}
+						</Typography>
+					)}
+
+					<Box display='flex' justifyContent='space-between'>
 						<Button
 							disabled={activeStep === 0}
 							onClick={handleBack}
@@ -747,13 +867,18 @@ const CreateNonAcademicCounselorForm = () => {
 						<div className='flex gap-8'>
 							{activeStep === steps.length - 1 ? (
 								<Button
-									className='max-w-128'
-									variant='contained'
-									color='secondary'
-									type='submit'
-								>
-									Confirm
-								</Button>
+								className='max-w-128'
+								variant='contained'
+								color='secondary'
+								type='submit'
+								disabled={isSubmitting}
+							>
+								{isSubmitting ? (
+									<CircularProgress />
+								) : (
+									'Confirm'
+								)}
+							</Button>
 							) : (
 								<Button
 									onClick={handleNext}
@@ -761,16 +886,14 @@ const CreateNonAcademicCounselorForm = () => {
 									color='secondary'
 									className='w-96'
 									type='button'
-
 								>
 									Next
 								</Button>
 							)}
 						</div>
 					</Box>
-				</Paper>
+				</div>
 			</form>
-		</div>
 	);
 };
 

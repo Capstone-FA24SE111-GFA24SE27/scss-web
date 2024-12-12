@@ -17,6 +17,8 @@ import { checkImageUrl } from '@/shared/utils';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useEffect } from 'react';
+import ImageInput from '@/shared/components/image/ImageInput';
+import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
 
 const currentYear = dayjs().year();
 
@@ -25,21 +27,29 @@ const schema = z.object({
 	fieldOfStudy: z.string().min(1, 'Field of study is required'),
 	institution: z.string().min(1, 'Institution  is required'),
 	yearOfGraduation: z
-		.string()
-		.refine((year) => {
-			return dayjs(year, 'YYYY', true).isValid();
-		}, 'Year must be a valid 4-digit number')
-		.refine((year) => {
-			const parsedYear = parseInt(year);
-			return parsedYear >= 1900 && parsedYear <= currentYear;
+		.union([
+			z.string().refine((value) => /^\d{4}$/.test(value), {
+				message: 'Year must be a 4-digit number',
+			}),
+			z.number().refine((value) => value >= 1000 && value <= 9999, {
+				message: 'Year must be a 4-digit number',
+			}),
+		])
+		.refine((value) => dayjs(value.toString(), 'YYYY', true).isValid(), {
+			message: 'Invalid year',
+		})
+		.refine((date) => {
+			const year = dayjs(date).year();
+			return year >= 1900 && year <= currentYear;
 		}, `Year must be between 1900 and ${currentYear}`),
 	imageUrl: z
-		.string()
-		.url('Invalid URL')
-		.refine(
-			async (url) => checkImageUrl(url),
-			'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
-		),
+		.instanceof(File, { message: 'Image is required' })
+		.refine((file) => isValidImage(file), {
+			message: 'File must be an image',
+		})
+		.refine((file) => file.size <= MAX_FILE_SIZE, {
+			message: 'Image must be less than 5MB',
+		}),
 });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -49,10 +59,11 @@ type Props = {
 	update?: any;
 	qualificationData?: any;
 	index?: string | number;
+	trigger?: any;
 };
 
 const QualificationAppendForm = (props: Props) => {
-	const { append, update, qualificationData, index } = props;
+	const { append, update, qualificationData, index, trigger } = props;
 	const dispatch = useAppDispatch();
 
 	const isEdit = qualificationData && update && index !== null;
@@ -76,17 +87,19 @@ const QualificationAppendForm = (props: Props) => {
 
 	const formData = watch();
 
-	const { isValid, isDirty, errors } = formState;
+	const { isValid, isDirty, dirtyFields, errors } = formState;
 
 	const handleSubmitForm = (data: FormType) => {
 		append(data);
-		console.log(data);
+		if (trigger) {
+			trigger();
+		}
 		dispatch(closeDialog());
 	};
 
 	useEffect(() => {
 		console.log(formData);
-		console.log(errors.yearOfGraduation);
+		console.log(dirtyFields);
 	}, [formData]);
 
 	return (
@@ -154,7 +167,7 @@ const QualificationAppendForm = (props: Props) => {
 							minDate={dayjs('1900')}
 							maxDate={dayjs()}
 							disableFuture
-							yearsOrder="desc"
+							yearsOrder='desc'
 							slotProps={{
 								textField: {
 									helperText:
@@ -168,28 +181,39 @@ const QualificationAppendForm = (props: Props) => {
 						/>
 					)}
 				/>
-
-				<Controller
-					name={`imageUrl`}
-					control={control}
-					render={({ field }) => (
-						<TextField
-							{...field}
-							label='Image URL'
-							fullWidth
-							variant='outlined'
-							error={!!errors.imageUrl}
-							helperText={errors.imageUrl?.message}
-						/>
-					)}
-				/>
-				{formData.imageUrl && !errors.imageUrl && (
-					<ImageLoading
-						src={formData.imageUrl}
-						alt='input image preview'
-						className='object-cover overflow-hidden h-224'
+				<div className='flex flex-col items-center justify-center flex-1 w-full h-full'>
+					<Typography>Qualification's image</Typography>
+					<Controller
+						name={`imageUrl`}
+						control={control}
+						render={({ field }) => (
+							<div className='aspect-square max-w-256'>
+								{field.value instanceof File ? (
+									<ImageInput
+										error={!!errors.imageUrl}
+										onFileChange={(file: File) =>
+											field.onChange(file)
+										}
+										file={field.value}
+									/>
+								) : (
+									<ImageInput
+										error={!!errors.imageUrl}
+										onFileChange={(file: File) =>
+											field.onChange(file)
+										}
+										url={defaultValues.imageUrl}
+									/>
+								)}
+							</div>
+						)}
 					/>
-				)}
+					{errors.imageUrl && (
+						<Typography color='error' className='text-sm'>
+							{errors.imageUrl.message}
+						</Typography>
+					)}
+				</div>
 			</DialogContent>
 			<DialogActions>
 				{isEdit ? (
@@ -206,8 +230,12 @@ const QualificationAppendForm = (props: Props) => {
 							className='px-16'
 							color='secondary'
 							variant='contained'
+							disabled={!isDirty || !isValid}
 							onClick={() => {
 								update(index, formData);
+								if (trigger) {
+									trigger();
+								}
 								dispatch(closeDialog());
 							}}
 						>

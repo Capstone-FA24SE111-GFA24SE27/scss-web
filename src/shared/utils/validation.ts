@@ -12,6 +12,28 @@ export function checkLink(url: string): boolean {
   return pattern.test(url);
 }
 
+export async function fetchImageAsFile(url: string, fileName: string) {
+  try {
+    // Fetch the image data
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    }
+
+    // Convert response to a Blob
+    const blob = await response.blob();
+
+    // Create a File object from the Blob
+    const file = new File([blob], fileName, { type: blob.type });
+
+    return file;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export async function checkImageUrl(url: string): Promise<boolean> {
   if (url.trim() === '') return false;
 

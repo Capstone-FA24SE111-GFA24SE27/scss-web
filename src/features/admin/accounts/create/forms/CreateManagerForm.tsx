@@ -1,4 +1,7 @@
 import {
+	isValidImage,
+	MAX_FILE_SIZE,
+	uploadFile,
 	useGetCounselorExpertisesQuery,
 	useGetDepartmentsQuery,
 	useGetMajorsByDepartmentQuery,
@@ -11,7 +14,6 @@ import {
 	CircularProgress,
 	IconButton,
 	MenuItem,
-	Paper,
 	styled,
 	TextField,
 	Typography,
@@ -23,14 +25,27 @@ import { usePostCreateManagerAccountMutation } from '../../admin-accounts-api';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useAppSelector } from '@shared/store';
-import { clearEnteredValueByTab, selectEnteredValues, selectInitialValues, setEnteredValueByTab } from './create-account-slice';
+import {
+	clearEnteredValueByTab,
+	selectEnteredValues,
+	selectInitialValues,
+	setEnteredValueByTab,
+} from './create-account-slice';
 import { useAppDispatch } from '@shared/store';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
+import ImageInput from '@/shared/components/image/ImageInput';
 
-
-const currentYear = dayjs().year()
+const currentYear = dayjs().year();
 
 const schema = z.object({
+	avatarLink: z
+		.instanceof(File, { message: 'Image is required' })
+		.refine((file) => isValidImage(file), {
+			message: 'File must be an image',
+		})
+		.refine((file) => file.size <= MAX_FILE_SIZE, {
+			message: 'Image must be less than 5MB',
+		}),
 	email: z.string().email('Invalid email address'), // Validates email format
 	password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
 	gender: z.enum(['MALE', 'FEMALE']), // Enum for gender
@@ -39,13 +54,13 @@ const schema = z.object({
 		.regex(/^\d{10,15}$/, 'Phone number must be between 10 and 15 digits'),
 	dateOfBirth: z
 		.string()
-	.refine((date) => {
-		return dayjs(date, 'YYYY-MM-DD', true).isValid();
-	}, 'Birth date must be a valid date')
-	.refine((date) => {
-		const year = dayjs(date).year()
-		return year >= 1900 && year <= currentYear;
-	}, `Year must be between 1900 and ${currentYear}`),
+		.refine((date) => {
+			return dayjs(date, 'YYYY-MM-DD', true).isValid();
+		}, 'Birth date must be a valid date')
+		.refine((date) => {
+			const year = dayjs(date).year();
+			return year >= 1900 && year <= currentYear;
+		}, `Year must be between 1900 and ${currentYear}`),
 	fullName: z.string().min(1, 'Full name is required'), // Full name validation
 });
 
@@ -61,19 +76,28 @@ const ClearMenuItem = styled(MenuItem)(({ theme }) => ({
 
 const CreateManagerForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
-	const initialValues = useAppSelector(selectInitialValues)
+	const initialValues = useAppSelector(selectInitialValues);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [errorMsg, setErrorMsg] = useState(null);
 
-	const enteredValues = useAppSelector(selectEnteredValues)
-	const dispatch = useAppDispatch()
+	const enteredValues = useAppSelector(selectEnteredValues);
+	const dispatch = useAppDispatch();
 
-	const defaultValues = enteredValues['MANAGER']
+	const defaultValues = enteredValues['MANAGER'];
 
-	const { control, formState, watch, handleSubmit, setValue, reset, getValues } =
-		useForm<FormType>({
-			// @ts-ignore
-			defaultValues,
-			resolver: zodResolver(schema),
-		});
+	const {
+		control,
+		formState,
+		watch,
+		handleSubmit,
+		setValue,
+		reset,
+		getValues,
+	} = useForm<FormType>({
+		// @ts-ignore
+		defaultValues,
+		resolver: zodResolver(schema),
+	});
 	const formData = watch();
 
 	const { isValid, dirtyFields, errors } = formState;
@@ -84,35 +108,63 @@ const CreateManagerForm = () => {
 
 	const [createAccount] = usePostCreateManagerAccountMutation();
 
-	const onSubmit = () => {
-		createAccount(formData)
-			.unwrap()
-			.then((res) => {
-				if(res){
-
-					useAlertDialog({dispatch, title: res.message})
-					if(res.status === 200) {
-
-						dispatch(clearEnteredValueByTab('MANAGER'))
-						reset(initialValues['MANAGER'])
-					}
-				}
-			})
-			.catch((err) => console.log(err));
-		console.log('formdata', formData);
-		console.log('formdata', isValid);
+	const handleUpload = async (file: File) => {
+		const res = await uploadFile(file, `images/${Date.now()}_${file.name}`);
+		return res;
 	};
 
-  useEffect(() => {
-		return () => {
-		  const currentValues = getValues(); // Get current form values
-		  dispatch(setEnteredValueByTab({tab: 'MANAGER', formValues: currentValues})); // Save to Redux
-		};
-	  }, [dispatch, getValues]);
+	const onSubmit = async () => {
+		setIsSubmitting(true);
+		try {
+			let avatarUrl = null;
 
+			avatarUrl = await handleUpload(formData.avatarLink);
+
+			createAccount({ ...formData, avatarLink: avatarUrl })
+				.unwrap()
+				.then((res) => {
+					if (res) {
+						if (res.status === 200) {
+							useAlertDialog({
+								dispatch,
+								title: res.message,
+								color: 'success',
+							});
+							dispatch(clearEnteredValueByTab('MANAGER'));
+							reset(initialValues['MANAGER']);
+						}
+					} else {
+						useAlertDialog({
+							dispatch,
+							title: res.message,
+							color: 'error',
+						});
+					}
+				})
+				.catch((err) => console.log(err));
+			setErrorMsg('');
+		} catch (err) {
+			console.error('Image upload failed:', err);
+			setErrorMsg('Error while uploading images');
+			setIsSubmitting(false);
+		}
+
+		setIsSubmitting(false);
+	};
+
+	useEffect(() => {
+		return () => {
+			const currentValues = getValues(); // Get current form values
+			dispatch(
+				setEnteredValueByTab({
+					tab: 'MANAGER',
+					formValues: currentValues,
+				})
+			); // Save to Redux
+		};
+	}, [dispatch, getValues]);
 
 	return (
-		<div className='flex flex-wrap w-full h-full gap-16'>
 			<form
 				className='w-full h-full'
 				onSubmit={handleSubmit(onSubmit)}
@@ -123,11 +175,11 @@ const CreateManagerForm = () => {
 					}
 				}}
 			>
-				<Paper className='flex flex-col w-full gap-16 p-32 mt-16'>
+				<div className='flex flex-col w-full gap-16 p-32 mt-16'>
 					<Typography className='text-lg font-semibold leading-tight'>
 						Enter basic account info:
 					</Typography>
-					<div className='flex-1 min-w-320'>
+					<div className='flex-1 '>
 						<Controller
 							control={control}
 							name='fullName'
@@ -143,7 +195,7 @@ const CreateManagerForm = () => {
 							)}
 						/>
 					</div>
-					<div className='flex-1 min-w-320'>
+					<div className='flex-1 '>
 						<Controller
 							control={control}
 							name='phoneNumber'
@@ -161,34 +213,38 @@ const CreateManagerForm = () => {
 						/>
 					</div>
 
-					<div className='flex-1 min-w-320'>
+					<div className='flex-1 '>
 						<Controller
 							control={control}
 							name='dateOfBirth'
 							render={({ field }) => (
 								<DatePicker
-								className='w-full'
-								label='Date of birth'
-								value={field.value ? dayjs(field.value) : null}
-								minDate={dayjs('1900-01-01')}
-								disableFuture
-								format='YYYY-MM-DD'
-								slotProps={{
-									textField: {
-										helperText:
-											errors.dateOfBirth?.message,
-									},
-								}}
-								views={['year', 'month', 'day']}
-								onChange={(date) => {
-									field.onChange(dayjs(date).format('YYYY-MM-DD'));
-								}}
+									className='w-full'
+									label='Date of birth'
+									value={
+										field.value ? dayjs(field.value) : null
+									}
+									minDate={dayjs('1900-01-01')}
+									disableFuture
+									format='YYYY-MM-DD'
+									slotProps={{
+										textField: {
+											helperText:
+												errors.dateOfBirth?.message,
+										},
+									}}
+									views={['year', 'month', 'day']}
+									onChange={(date) => {
+										field.onChange(
+											dayjs(date).format('YYYY-MM-DD')
+										);
+									}}
 								/>
 							)}
 						/>
 					</div>
 
-					<div className='min-w-320'>
+					<div className=''>
 						<Controller
 							control={control}
 							name='gender'
@@ -215,7 +271,7 @@ const CreateManagerForm = () => {
 						/>
 					</div>
 
-					<div className='flex-1 min-w-320'>
+					<div className='flex-1 '>
 						<Controller
 							control={control}
 							name='email'
@@ -231,7 +287,7 @@ const CreateManagerForm = () => {
 							)}
 						/>
 					</div>
-					<div className='flex-1 min-w-320'>
+					<div className='flex-1 '>
 						<Controller
 							control={control}
 							name='password'
@@ -264,21 +320,50 @@ const CreateManagerForm = () => {
 							)}
 						/>
 					</div>
-				
+
+					<div className='flex items-start flex-1 gap-8 '>
+						<Typography>Avatar: </Typography>
+						<Controller
+							control={control}
+							name='avatarLink'
+							render={({ field }) => (
+								<div className='flex-1 aspect-square max-w-256'>
+									<ImageInput
+										error={!!errors.avatarLink}
+										onFileChange={(file: File) =>
+											field.onChange(file)
+										}
+										file={field.value}
+									/>
+								</div>
+							)}
+						/>
+						{errors.avatarLink && (
+							<Typography color='error' className='text-sm'>
+								{errors.avatarLink.message}
+							</Typography>
+						)}
+					</div>
+
+					{errorMsg && errorMsg.trim() !== '' && (
+						<Typography color='error' className='font-semibold'>
+							{errorMsg}
+						</Typography>
+					)}
+
 					<div className='flex items-center justify-end w-full'>
 						<Button
 							className='max-w-128'
 							variant='contained'
 							color='secondary'
-							// disabled={!isValid}
-							onClick={handleSubmit(onSubmit)}
+							type='submit'
+							disabled={isSubmitting}
 						>
-							Confirm
+							{isSubmitting ? <CircularProgress /> : 'Confirm'}
 						</Button>
 					</div>
-				</Paper>
+				</div>
 			</form>
-		</div>
 	);
 };
 

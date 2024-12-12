@@ -11,20 +11,29 @@ import {
 import { useAppDispatch } from '@shared/store';
 import { Controller, FieldArrayWithId, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Certification } from '@/shared/types';
-import clsx from 'clsx';
-import { checkImageUrl } from '@/shared/utils';
+import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
+import ImageInput from '@/shared/components/image/ImageInput';
+import _ from 'lodash';
+
+// z
+// .string()
+// .url('Invalid URL')
+// .refine(
+// 	async (url) => checkImageUrl(url),
+// 	'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
+// ),
 
 const schema = z.object({
 	name: z.string().min(1, 'Please enter certification name'),
 	organization: z.string().min(1, 'Please enter certification organization'),
 	imageUrl: z
-		.string()
-		.url('Invalid URL')
-		.refine(
-			async (url) => checkImageUrl(url),
-			'URL must point to a valid image file (jpg, jpeg, png, gif, webp)'
-		),
+		.instanceof(File, { message: 'Image is required' })
+		.refine((file) => isValidImage(file), {
+			message: 'File must be an image',
+		})
+		.refine((file) => file.size <= MAX_FILE_SIZE, {
+			message: 'Image must be less than 5MB',
+		}),
 });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -34,15 +43,16 @@ type Props = {
 	update?: any;
 	certificationData?: any;
 	index?: string | number;
+	trigger?: any;
 };
 
 const CertificationAppendForm = (props: Props) => {
-	const { append, update,  certificationData, index } = props;
+	const { append, update, certificationData, index, trigger } = props;
 	const dispatch = useAppDispatch();
 
-	console.log({ append, update,  certificationData, index })
+	console.log({ append, update, certificationData, index });
 
-	const isEdit = certificationData && update  && index !== null;
+	const isEdit = certificationData && update && index !== null;
 
 	const defaultValues = isEdit
 		? certificationData
@@ -64,7 +74,9 @@ const CertificationAppendForm = (props: Props) => {
 
 	const handleSubmitForm = (data: FormType) => {
 		append(data);
-		console.log(data);
+		if (trigger) {
+			trigger();
+		}
 		dispatch(closeDialog());
 	};
 
@@ -106,28 +118,33 @@ const CertificationAppendForm = (props: Props) => {
 						/>
 					)}
 				/>
-
-				<Controller
-					name={`imageUrl`}
-					control={control}
-					render={({ field }) => (
-						<TextField
-							{...field}
-							label='Image URL'
-							fullWidth
-							variant='outlined'
-							error={!!errors.imageUrl}
-							helperText={errors.imageUrl?.message}
-						/>
-					)}
-				/>
-				{formData.imageUrl && !errors.imageUrl && (
-					<ImageLoading
-						src={formData.imageUrl}
-						alt='input image preview'
-						className='object-cover overflow-hidden h-224'
+				<div className='flex flex-col items-center justify-center flex-1 w-full h-full'>
+					<Typography>Certification's image</Typography>
+					<Controller
+						name={`imageUrl`}
+						control={control}
+						render={({ field }) => (
+							<div className='aspect-square max-w-256'>
+								<ImageInput
+									error={!!errors.imageUrl}
+									onFileChange={(file: File) =>
+										field.onChange(file)
+									}
+									url={
+										field.value instanceof File
+											? URL.createObjectURL(field.value)
+											: defaultValues.imageUrl
+									}
+								/>
+							</div>
+						)}
 					/>
-				)}
+					{errors.imageUrl && (
+						<Typography color='error' className='text-sm'>
+							{errors.imageUrl.message}
+						</Typography>
+					)}
+				</div>
 			</DialogContent>
 			<DialogActions>
 				{isEdit ? (
@@ -139,13 +156,17 @@ const CertificationAppendForm = (props: Props) => {
 						>
 							Cancel
 						</Button>
-						
+
 						<Button
 							className='px-16'
 							color='secondary'
 							variant='contained'
+							disabled={!isDirty || !isValid}
 							onClick={() => {
 								update(index, formData);
+								if (trigger) {
+									trigger();
+								}
 								dispatch(closeDialog());
 							}}
 						>

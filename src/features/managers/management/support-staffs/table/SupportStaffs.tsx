@@ -10,7 +10,8 @@ import SupportStaffTableFilter from './SupportStaffsTableFilter'
 const Students = () => {
   
   return (
-    <div>
+    <div className='flex flex-col w-full h-full'>
+
       <div className='flex items-center justify-between p-32'>
         <Heading title='Support Staffs Management' description='Manage support staffs'/>
       </div>
@@ -19,9 +20,7 @@ const Students = () => {
           throw new Error('Function not implemented.')
         } } />
       </div>
-      <div className='flex gap-16 h-full'>
         <SupportStaffsTable/>
-      </div>
     </div>
   )
 }
