@@ -38,7 +38,7 @@ const SidebarFilter = () => {
   }))
 
   return (
-    <div className='flex flex-col gap-16 p-24'>
+    <div className='flex flex-col gap-16 p-24 overflow-auto'>
       <div className='flex items-center justify-start gap-8'>
         <StaffStudentListFilterButton onClick={()=>dispatch(filterToggle())} />
         <Typography className='text-xl text-text-disabled'>
@@ -46,13 +46,7 @@ const SidebarFilter = () => {
         </Typography>
       </div>
       <div className='flex flex-col w-full gap-16'>
-        {/* <SearchField
-          onSearch={handleSearch}
-          label='Name'
-          placeholder='John Doe'
-          size='small'
-        /> */}
-        {/* <Divider /> */}
+      
         <Typography className='font-semibold'>Filter by acadamic details</Typography>
         <AcademicFilter
           size='small'

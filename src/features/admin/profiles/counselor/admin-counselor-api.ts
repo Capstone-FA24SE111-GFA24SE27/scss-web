@@ -44,7 +44,7 @@ export const counselorsAdminApi = api
         }),
         providesTags: ['counselors']
       }),
-      getCounselorAdmin: build.query<GetCounselorApiResponse, number>({
+      getCounselorAdmin: build.query<GetCounselorApiResponse, number | string>({
         query: (counselorId) => ({
           url: `/api/manage/counselors/${counselorId}`,
         }),

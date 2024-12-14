@@ -51,7 +51,7 @@ function StudentDemandsContent() {
     })
     const counselingDemands = data?.content?.data
     return (
-        <div className='flex-1 flex flex-col gap-16 pb-16 p-32'>
+        <div className='flex flex-col flex-1 gap-16 p-32 pb-16'>
             <div className='flex gap-16'>
                 <SearchField
                     onSearch={handleSearch}
@@ -70,9 +70,9 @@ function StudentDemandsContent() {
                     animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
                     className="flex flex-col flex-auto w-full max-h-full gap-16"
                 >
-                    <List className="w-full m-0 p-0 flex flex-col gap-16">
+                    <List className="flex flex-col w-full gap-16 p-0 m-0">
                         {!counselingDemands?.length
-                            ? <div className="flex flex-1 items-center justify-center">
+                            ? <div className="flex items-center justify-center flex-1">
                                 <Typography
                                     color="text.secondary"
                                     variant="h5"

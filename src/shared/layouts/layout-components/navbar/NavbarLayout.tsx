@@ -60,42 +60,40 @@ function NavbarLayout() {
 	}
 
 	return (
-		<>
-			{/* <Hidden lgDown>
-				<StyledNavBar
-					className="sticky top-0 z-20 h-screen flex-auto shrink-0 flex-col overflow-hidden shadow"
-					open={navbar.open}
-					position={config.navbar.position}
-				>
-					<NavbarContent />
-				</StyledNavBar>
-			</Hidden> */}
+			// {/* <Hidden lgDown>
+			// 	<StyledNavBar
+			// 		className="sticky top-0 z-20 flex-col flex-auto h-screen overflow-hidden shadow shrink-0"
+			// 		open={navbar.open}
+			// 		position={config.navbar.position}
+			// 	>
+			// 		<NavbarContent />
+			// 	</StyledNavBar>
+			// </Hidden> */}
 			<StyledNavBar
-				className="sticky top-0 z-20 h-screen flex-auto shrink-0 flex-col overflow-hidden shadow"
+				className="sticky top-0 z-20 flex flex-col flex-auto h-screen overflow-hidden shadow shrink-0"
 				open={navbar.open}
 				position={config.navbar.position}
 			>
 				<NavbarContent />
 			</StyledNavBar>
-			{/* <Hidden lgUp>
-				<StyledNavBarMobile
-					classes={{
-						paper: 'flex-col flex-auto h-full'
-					}}
-					anchor={config.navbar.position as 'left' | 'top' | 'right' | 'bottom'}
-					variant="temporary"
-					open={navbar.mobileOpen}
-					onClose={() => dispatch(navbarToggle())}
-					onOpen={() => { }}
-					disableSwipeToOpen
-					ModalProps={{
-						keepMounted: true // Better open performance on mobile.
-					}}
-				>
-					<NavbarContent />
-				</StyledNavBarMobile>
-			</Hidden> */}
-		</>
+			// {/* <Hidden lgUp>
+			// 	<StyledNavBarMobile
+			// 		classes={{
+			// 			paper: 'flex-col flex-auto h-full'
+			// 		}}
+			// 		anchor={config.navbar.position as 'left' | 'top' | 'right' | 'bottom'}
+			// 		variant="temporary"
+			// 		open={navbar.mobileOpen}
+			// 		onClose={() => dispatch(navbarToggle())}
+			// 		onOpen={() => { }}
+			// 		disableSwipeToOpen
+			// 		ModalProps={{
+			// 			keepMounted: true // Better open performance on mobile.
+			// 		}}
+			// 	>
+			// 		<NavbarContent />
+			// 	</StyledNavBarMobile>
+			// </Hidden> */}
 	);
 }
 

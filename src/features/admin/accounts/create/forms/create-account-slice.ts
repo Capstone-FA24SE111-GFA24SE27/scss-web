@@ -16,6 +16,7 @@ type PayloadType = {
 const initialState: initialStateType = {
 	enteredValues: {
 		ACADEMIC_COUNSELOR: {
+			avatarLink: '',
 			email: '',
 			password: '',
 			gender: 'MALE',
@@ -48,6 +49,7 @@ const initialState: initialStateType = {
 		},
 
 		NON_ACADEMIC_COUNSELOR: {
+			avatarLink: '',
 			email: '',
 			password: '',
 			gender: 'MALE',
@@ -68,6 +70,7 @@ const initialState: initialStateType = {
 		},
 
 		MANAGER: {
+			avatarLink: '',
 			email: '',
 			password: '',
 			gender: 'MALE',
@@ -77,6 +80,7 @@ const initialState: initialStateType = {
 		},
 
 		SUPPORT_STAFF: {
+			avatarLink: '',
 			email: '',
 			password: '',
 			gender: 'MALE',
@@ -87,7 +91,7 @@ const initialState: initialStateType = {
 	},
 };
 
-export const chatSessionSlice = createSlice({
+export const createAccountAdminSlice = createSlice({
 	name: 'createAccountAdminSlice',
 	initialState,
 	reducers: {
@@ -105,17 +109,17 @@ export const chatSessionSlice = createSlice({
 	},
 });
 
-rootReducer.inject(chatSessionSlice);
-const injectedSlice = chatSessionSlice.injectInto(rootReducer);
+rootReducer.inject(createAccountAdminSlice);
+const injectedSlice = createAccountAdminSlice.injectInto(rootReducer);
 declare module '@shared/store' {
 	export interface LazyLoadedSlices
-		extends WithSlice<typeof chatSessionSlice> {}
+		extends WithSlice<typeof createAccountAdminSlice> {}
 }
 
 export const { setEnteredValueByTab, clearEnteredValueByTab } =
-	chatSessionSlice.actions;
+	createAccountAdminSlice.actions;
 
 export const { selectEnteredValues, selectInitialValues } =
 	injectedSlice.selectors;
 
-export default chatSessionSlice.reducer;
+export default createAccountAdminSlice.reducer;

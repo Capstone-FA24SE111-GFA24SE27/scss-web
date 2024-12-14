@@ -9,7 +9,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { ProblemTag, TimeSlot } from '@/shared/types/admin';
-import { useGetTimeSlotsQuery } from './time-slot-api';
+import { useDeleteTimeSlotMutation, useGetTimeSlotsQuery } from './time-slot-api';
+import { useAppDispatch } from '@shared/store';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 function TimeSlotTable() {
 
 //   const [pagination, setPagination] = useState({
@@ -19,21 +21,31 @@ function TimeSlotTable() {
 //   console.log(pagination)
 
   const { data, isLoading } = useGetTimeSlotsQuery({})
+  const dispatch = useAppDispatch()
+
+  const [removeTimeSlot] = useDeleteTimeSlotMutation()
 
 
-  const removeProducts = (ids: string[]) => {
-
+  const removeProducts = (ids: number[]) => {
+    if(ids && ids.length > 0) {
+      useConfirmDialog({
+				dispatch,
+				title: 'Are you sure you want to remove the selected time slot?',
+				confirmButtonFunction: () => {
+          removeTimeSlot(ids[0]).then((res) => {
+            if(res){
+              useAlertDialog({
+                dispatch, title: 'Time slot removed successfully'
+              })
+            }
+          }).catch(err => console.error(err))
+				},
+			});
+    
+    }
   };
 
   const columns = useMemo<MRT_ColumnDef<TimeSlot>[]>(() => [
-    {
-      id: 'id',
-      header: 'ID',
-      size: 64,
-      Cell: ({ row }) => (
-          <Typography >{row.original.id}</Typography>
-      )
-    },
     {
       accessorKey: 'name',
       header: 'Slot Name',
@@ -96,7 +108,7 @@ function TimeSlotTable() {
           <MenuItem
             key={0}
             onClick={() => {
-              // removeProducts([row.original.id]);
+              removeProducts([row.original.id]);
               closeMenu();
               table.resetRowSelection();
             }}
@@ -107,6 +119,7 @@ function TimeSlotTable() {
             Delete
           </MenuItem>
         ]}
+        enableRowSelection={false}
         renderTopToolbarCustomActions={({ table }) => {
           const { rowSelection } = table.getState();
 

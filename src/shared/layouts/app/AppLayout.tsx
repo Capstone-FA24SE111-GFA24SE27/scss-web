@@ -77,7 +77,7 @@ export default function AppLayout(props: AppLayoutProps) {
 	// const appContext = useContext(AppContext);
 
 	return (
-		<div className="flex w-full">
+		<div className="flex w-full ">
 			<div className="flex flex-auto min-w-0">
 				{config.navbar.display && config.navbar.position === 'left' && <NavbarLayout />}
 				<main

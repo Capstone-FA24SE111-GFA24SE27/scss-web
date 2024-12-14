@@ -1,29 +1,31 @@
-import { Breadcrumbs, FilterTabs } from '@/shared/components'
+import { Breadcrumbs, FilterTabs, Scrollbar } from '@/shared/components';
 import BehaviorTagsChart from './BehaviorsOverview';
 import AppointmentOverview from './AppointmentOverview';
 
 const CounselorsOverview = () => {
-  return (
-    <div className='p-16'>
-      <Breadcrumbs
-        parents={[
-          {
-            label: "Management",
-            url: `${location.pathname}`
-          },
-          {
-            label: "Counselors",
-            url: `/management/counselors/overview`
-          },
-        ]}
-        currentPage={`Counselors Overview`}
-      />
-      <div>
-        <BehaviorTagsChart />
-        <AppointmentOverview />
-      </div>
-    </div>
-  )
-}
+	return (
+		<div className='h-full overflow-hidden'>
+			<Scrollbar className='max-h-full p-16 overflow-auto'>
+				<Breadcrumbs
+					parents={[
+						{
+							label: 'Management',
+							url: `${location.pathname}`,
+						},
+						{
+							label: 'Students',
+							url: `/management/students/overview`,
+						},
+					]}
+					currentPage={`Students Overview`}
+				/>
+				<div>
+					<BehaviorTagsChart />
+					<AppointmentOverview />
+				</div>
+			</Scrollbar>
+		</div>
+	);
+};
 
-export default CounselorsOverview
+export default CounselorsOverview;

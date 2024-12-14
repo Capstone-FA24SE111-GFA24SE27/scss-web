@@ -15,7 +15,7 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 
 type Props = {
 	title?: string;
-	content?: ReactNode;
+	content?: ReactNode | ReactElement;
 	cancelButtonTitle?: string;
 	confirmButtonTitle?: string;
 	confirmButtonFunction: any;

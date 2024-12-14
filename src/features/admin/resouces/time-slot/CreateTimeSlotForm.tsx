@@ -7,6 +7,8 @@ import { Button, Paper, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
+import { useAlertDialog } from '@/shared/hooks';
+import { useAppDispatch } from '@shared/store';
 
 const schema = z.object({
 	slotCode: z.string().min(1, 'Slot Code is required'),
@@ -36,32 +38,37 @@ const CreateTimeSlotForm = () => {
 			resolver: zodResolver(schema),
 		});
 	const formData = watch();
+	const dispatch = useAppDispatch();
 
 	const { isValid, dirtyFields, errors } = formState;
 
 	const onSubmit = () => {
-		createTimeSlot({
-			slotCode: formData.slotCode,
-			name: formData.name,
-			startTime: {
-				hour: dayjs(formData.startTime).hour(),
-				minute: dayjs(formData.startTime).minute(),
-				second: 0,
-				nano: 0,
-			},
-			endTime: {
-				hour: dayjs(formData.endTime).hour(),
-				minute: dayjs(formData.endTime).minute(),
-				second: 0,
-				nano: 0,
-			},
-		})
-			.unwrap()
-			.then((res) => {
-				console.log(res);
-				navigate(-1);
-			})
-			.catch((err) => console.log('err creating time slot', err));
+			useAlertDialog({
+				dispatch,
+				title: 'Time slot created successfully',
+			});
+			navigate(-1);
+		// createTimeSlot({
+		// 	slotCode: formData.slotCode,
+		// 	name: formData.name,
+		// 	startTime: {
+		// 		hour: dayjs(formData.startTime).hour(),
+		// 		minute: dayjs(formData.startTime).minute(),
+		// 		second: 0,
+		// 		nano: 0,
+		// 	},
+		// 	endTime: {
+		// 		hour: dayjs(formData.endTime).hour(),
+		// 		minute: dayjs(formData.endTime).minute(),
+		// 		second: 0,
+		// 		nano: 0,
+		// 	},
+		// })
+		// 	.unwrap()
+		// 	.then((res) => {
+				
+		// 	})
+		// 	.catch((err) => console.log('err creating time slot', err));
 	};
 
 	useEffect(() => {
@@ -71,9 +78,6 @@ const CreateTimeSlotForm = () => {
 	return (
 		<div className='flex w-full h-full p-16 pt-32'>
 			<div className='flex flex-col w-full max-w-4xl'>
-				<div className='mt-32 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl'>
-					Assign a Counselor to a Demand
-				</div>
 
 				<Paper className='container flex flex-col flex-auto gap-32 p-32 mt-32'>
 					<div className=''>

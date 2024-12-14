@@ -1,10 +1,10 @@
 import { storage } from "@/packages";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB limit
+export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB limit
+export const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
-const isValidImage = (file) => {
-  const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+export const isValidImage = (file) => {
   return validImageTypes.includes(file.type);
 };
 

@@ -70,15 +70,15 @@ const Faq = () => {
   return (
     <div className='w-full p-16'>
       <div>
-        <Typography className='text-lg mb-8 text-text-secondary px-16'>
+        <Typography className='px-16 mb-8 text-lg text-text-secondary'>
           List of questions and answers contributed by our counselors
         </Typography>
       </div>
       <div className='flex justify-center gap-16'>
-        <div className='mt-80 flex flex-col '>
+        <div className='flex flex-col mt-80 '>
           {/* Show category here */}
         </div>
-        <div className='w-full mt-16 max-w-xl flex flex-col'>
+        <div className='flex flex-col w-full max-w-xl mt-16'>
           <ContentSearch onSearch={handleSearch} />
           <div className='flex justify-between w-full mt-16'>
             <FilterTabs
@@ -91,12 +91,12 @@ const Faq = () => {
               options={categoryOptions}
               value={selectedCategory}
               onChange={handleSelectCategory}
-              className='w-200 outline-none pr-8'
+              className='pr-8 outline-none w-200'
               size='medium'
               showClearOptions
             />
           </div>
-          <div className='flex px-8 justify-end w-full'>
+          <div className='flex justify-end w-full px-8'>
             {
               isCounselor && (
                 <CheckboxField
@@ -107,7 +107,7 @@ const Faq = () => {
               )
             }
           </div>
-          <div className='space-y-16 mt-16'>
+          <div className='mt-16 space-y-16'>
             {
               isFetching || isLoading
                 ? <ContentLoading />

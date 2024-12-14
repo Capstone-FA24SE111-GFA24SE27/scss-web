@@ -36,7 +36,7 @@ const StaffRecommendedStudentsLayout = () => {
 		scroll={isMobile ? 'normal' : 'content'}
 		content={
 		  <PageSimple
-			className='!min-h-screen'
+			className='h-full max-h-full overflow-hidden'
 			header={<Header   />}
 			content={<RecommendedStudentList />}
 			ref={pageLayout}
