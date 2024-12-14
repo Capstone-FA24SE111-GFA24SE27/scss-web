@@ -168,7 +168,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
 			>
 				<div
 					className={clsx(
-						'absolute w-20 h-20 rounded-full bg-white shadow transform transition-transform',
+						'absolute rounded-full bg-white shadow transform transition-transform',
 						checked ? 'translate-x-44' : 'translate-x-4',
 					)}
 				>

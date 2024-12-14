@@ -306,7 +306,7 @@ function Counseling() {
                     <div className='flex items-start w-full gap-32'>
                       <DatePicker
                         className='h-12'
-                        label="Basic date picker"
+                        label="Start date"
                         value={dayjs(counselorData?.availableDateRange.startDate)}
                         onChange={handleStartDateChange}
                         maxDate={dayjs(counselorData?.availableDateRange.endDate)}
@@ -315,7 +315,7 @@ function Counseling() {
                       <div className='pt-8 font-semibold'>to</div>
                       <DatePicker
                         className='h-12'
-                        label="Basic date picker"
+                        label="End date"
                         value={dayjs(counselorData?.availableDateRange.endDate)}
                         onChange={handleEndDateChange}
                         minDate={dayjs(counselorData?.availableDateRange.startDate)}

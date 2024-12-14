@@ -16,7 +16,7 @@ export const supportStaffRoutes: RouteObject[] = [
 		children: [
 			{
 				path: '',
-				element: <Navigate to={`questions`} />
+				element: <Navigate to={`students/followed`} />
 			},
 			// ...homeRoutes,
 			...specialRoutes,

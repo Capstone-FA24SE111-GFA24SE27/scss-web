@@ -285,7 +285,7 @@ const managerNavigation: NavigationOptions = {
                         },
                         {
                             icon: ViewList,
-                            name: 'Data Table',
+                            name: 'Counselors Table',
                             route: 'table',
                         }
 
@@ -303,7 +303,7 @@ const managerNavigation: NavigationOptions = {
                         },
                         {
                             icon: ViewList,
-                            name: 'Data Table',
+                            name: 'Students Table',
                             route: 'table',
                         }
 
@@ -321,7 +321,7 @@ const managerNavigation: NavigationOptions = {
                         },
                         {
                             icon: ViewList,
-                            name: 'Data Table',
+                            name: 'Support Staffs Table',
                             route: 'table',
                         }
 
