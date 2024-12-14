@@ -1,4 +1,4 @@
-import { FilterTabs, Heading, NavLinkAdapter } from '@/shared/components'
+import { FilterTabs, Heading, NavLinkAdapter, SearchField } from '@/shared/components'
 import { Add } from '@mui/icons-material'
 import { Box, Button, Tab, Tabs, Typography } from '@mui/material'
 import React, { useState } from 'react'
