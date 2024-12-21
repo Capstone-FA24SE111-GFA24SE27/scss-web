@@ -1,4 +1,4 @@
-import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML, BackdropLoading } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML, BackdropLoading, openDrawer } from '@/shared/components';
 import { roles, statusColor } from '@/shared/constants';
 import {
   ChatBubbleOutline,
@@ -112,15 +112,11 @@ const FaqItem = ({ contributedQuestion }: { contributedQuestion: ContributedQues
                   profile={contributedQuestion.counselor.profile}
                   email={contributedQuestion.counselor?.email}
                   onClick={() => {
-                    if (isStudent) {
-                      dispatch(openCounselorView(contributedQuestion?.counselor?.profile.id.toString()))
-                      return
-                    }
-                    dispatch(openDialog({
+                    dispatch(openDrawer({
                       children: <CounselorView
                         id={contributedQuestion.counselor.id.toString()}
                         shouldShowBooking={false}
-                      />
+                      />,
                     }))
                   }}
                 />

@@ -65,7 +65,7 @@ const CounselorListSidebarContent = () => {
 
 
   return (
-    <div className='p-24 flex flex-col gap-16'>
+    <div className='p-24 flex flex-col gap-16 bg-background'>
       <div className='flex justify-start items-center gap-16'>
         <CounselorListFilterButton />
         <Typography className='text-xl'>

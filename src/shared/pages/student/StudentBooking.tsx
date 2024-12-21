@@ -344,7 +344,7 @@ function CounselorBooking() {
                   autoFocus
                   margin="dense"
                   name={'meetUrl'}
-                  label={'Meet Url'}
+                  label={'Meeting Url'}
                   fullWidth
                   value={meetURL}
                   className='mt-16'

@@ -52,21 +52,26 @@ function NavigationList() {
                     <div key={sublist.name} >
                         <div className='my-8 flex flex-col'>
                             <Typography variant="overline" className='font-bold'>{sublist.name}</Typography>
-                            <Typography variant="caption" className='text-black/80'>{sublist.description}</Typography>
+                            {/* <Typography variant="caption" className='text-black/80'>{sublist.description}</Typography> */}
                         </div>
                         {sublist.items.map(item => (
                             <Fragment key={item.name}>
                                 <ListItemButton
-                                    className={`rounded-md mt-4 `}
+                                    className={`rounded-md mt-4 ${pathname.includes(`${sublist.route}/${item.route}`) ? '!bg-secondary-main/10' : 'inherit'}`}
                                     onClick={item.children
                                         ? handleOpen :
                                         () => handleNavigation(`${sublist.route}/${item.route}`)}
                                     selected={!item.children && pathname.includes(`${sublist.route}/${item.route}`)}
                                 >
                                     <ListItemIcon>
-                                        {<item.icon color={pathname.includes(`${sublist.route}/${item.route}`) ? 'primary' : 'inherit'} />}
+                                        {<item.icon color={pathname.includes(`${sublist.route}/${item.route}`) ? 'secondary' : 'inherit'} />}
                                     </ListItemIcon>
-                                    <ListItemText primary={item.name} />
+                                    <ListItemText
+                                        primary={item.name}
+                                        primaryTypographyProps={{
+                                            color: pathname.includes(`${sublist.route}/${item.route}`) ? 'secondary' : 'inherit',
+                                        }}
+                                    />
                                     {item.children && (open ? <ExpandLess /> : <ExpandMore />)}
                                 </ListItemButton>
                                 {item.children && (

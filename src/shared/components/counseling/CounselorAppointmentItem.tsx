@@ -16,14 +16,14 @@ import { AppointmentDetail } from '@/shared/pages';
 import { splitUserAndReason } from '@/shared/utils';
 
 
-type Props = {
+type AppointmentPropsItem = {
   appointment: Appointment,
-  handleCloseDialog: () => void
+  handleCloseDialog?: () => void
 }
 
-const CounselorAppointmentItem = (props: Props) => {
+const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
 
-  const { appointment, handleCloseDialog } = props
+  const { appointment, handleCloseDialog = () => { } } = props
 
   const dispatch = useAppDispatch();
 
@@ -36,53 +36,7 @@ const CounselorAppointmentItem = (props: Props) => {
     >
       <div className='flex flex-col w-full'>
         <ListItem
-          className='flex justify-between p-0'
-          secondaryAction={
-            <ItemMenu
-              menuItems={[
-                // {
-                //   label: 'View details',
-                //   onClick: () => {
-                //     dispatch(openDialog({
-                //       children: <AppointmentDetail id={appointment?.id.toString()} />
-                //     }))
-                //   },
-                //   icon: <Visibility fontSize='small' />
-                // },
-                {
-                  label: 'View details',
-                  onClick: () => {
-                    navigate(`/counseling/appointments/appointment/${appointment.id}`)
-                  },
-                  icon: <Visibility fontSize='small' />
-                },
-                ...(['WAITING'].includes(appointment?.status) ? [{
-                  label: 'Cancel',
-                  onClick: () => {
-                    dispatch(
-                      openDialog({
-                        children: <CancelAppointmentDialog appointment={appointment} />
-                      })
-                    )
-                  },
-                  icon: <Clear fontSize='small' />
-                }] : []),
-                ...(['ATTEND'].includes(appointment?.status) ? [
-                  appointment?.havingReport
-                    ? {
-                      label: 'View Report',
-                      onClick: () => { navigate(`${appointment?.id}/report`) },
-                      icon: <Summarize fontSize='small' />
-                    }
-                    : {
-                      label: 'Create Report',
-                      onClick: () => { navigate(`${appointment?.id}/report/create`) },
-                      icon: <Add fontSize='small' />
-                    }
-                ] : [])
-              ]}
-            />
-          }
+          className='flex justify-between p-0 gap-16'
         >
           <div className='flex flex-wrap items-center gap-16'>
             <div className='flex items-center gap-8 '>
@@ -99,15 +53,57 @@ const CounselorAppointmentItem = (props: Props) => {
               className='items-center font-semibold'
               size='small'
             />
-            {
-              ['CANCELED'].includes(appointment?.status) && <Chip
-                label={appointment.status}
-                variant='filled'
-                color={statusColor[appointment.status]}
-                size='small'
-              />
-            }
+            <Chip
+              label={appointment.status}
+              variant='filled'
+              color={statusColor[appointment.status]}
+              size='small'
+            />
           </div>
+          <ItemMenu
+              menuItems={[
+                {
+                  label: 'View details',
+                  onClick: () => {
+                    navigate(`appointment/${appointment.id}`)
+                    // navigate(`/counseling/appointments/appointment/${appointment.id}`)
+                    handleCloseDialog()
+                  },
+                  icon: <Visibility fontSize='small' />
+                },
+                ...(['WAITING'].includes(appointment?.status) ? [{
+                  label: 'Cancel',
+                  onClick: () => {
+                    dispatch(
+                      openDialog({
+                        children: <CancelAppointmentDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
+                      })
+                    )
+                    handleCloseDialog()
+                  },
+                  icon: <Clear fontSize='small' />
+                }] : []),
+                ...(['ATTEND'].includes(appointment?.status) ? [
+                  appointment?.havingReport
+                    ? {
+                      label: 'View Report',
+                      onClick: () => {
+                        navigate(`${appointment?.id}/report`)
+                        handleCloseDialog()
+                      },
+                      icon: <Summarize fontSize='small' />
+                    }
+                    : {
+                      label: 'Create Report',
+                      onClick: () => {
+                        navigate(`${appointment?.id}/report/create`)
+                        handleCloseDialog()
+                      },
+                      icon: <Add fontSize='small' />
+                    }
+                ] : [])
+              ]}
+            />
 
           {/* <div className='relative'>
           {
@@ -174,7 +170,7 @@ const CounselorAppointmentItem = (props: Props) => {
                 event.stopPropagation();
                 event.preventDefault();
                 dispatch(openDialog({
-                  children: <UpdateDetailsAppointmentDialog appointment={appointment} />
+                  children: <UpdateDetailsAppointmentDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
                 }));
               }}
             >
@@ -218,7 +214,7 @@ const CounselorAppointmentItem = (props: Props) => {
                       color='secondary'
                       onClick={() => dispatch(
                         openDialog({
-                          children: <CheckAttendanceDialog appointment={appointment} />
+                          children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
                         })
                       )}
                     >
@@ -252,7 +248,7 @@ const CounselorAppointmentItem = (props: Props) => {
                   <Button className='mt-4' variant='contained' color='secondary' size='small'
                     // disabled={dayjs().isBefore(dayjs(appointment.startDateTime))}
                     onClick={() => dispatch(openDialog({
-                      children: <CheckAttendanceDialog appointment={appointment} />
+                      children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
                     }
                     ))}
                   >
@@ -268,7 +264,7 @@ const CounselorAppointmentItem = (props: Props) => {
   );
 }
 
-const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+const UpdateDetailsAppointmentDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
   const [updateAppointmentDetails] = useUpdateAppointmentDetailsMutation();
   const [meetUrl, setMeetUrl] = useState(appointment.meetUrl);
   const [address, setAddress] = useState(appointment.address);
@@ -289,6 +285,7 @@ const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointm
         meetingDetails
       });
     }
+    handleCloseDialog()
     dispatch(closeDialog());
   }
 
@@ -310,7 +307,7 @@ const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointm
                 autoFocus
                 margin="dense"
                 name={'meetUrl'}
-                label={'Meet Url'}
+                label={'Meeting Url'}
                 fullWidth
                 value={meetUrl}
                 variant="standard"
@@ -351,7 +348,7 @@ const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointm
   );
 }
 
-const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) => {
+const CheckAttendanceDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
   const dispatch = useAppDispatch();
   const [attendanceStatus, setAttendanceStatus] = useState<AppointmentAttendanceStatus>((appointment.status as AppointmentAttendanceStatus) || 'WAITING');
   const [takeAttendance] = useTakeAppointmentAttendanceMutation();
@@ -365,6 +362,7 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
       appointmentId: appointment.id,
       counselingAppointmentStatus: attendanceStatus as AppointmentAttendanceStatus
     });
+    handleCloseDialog()
     dispatch(closeDialog());
   }
 
@@ -421,7 +419,7 @@ const CheckAttendanceDialog = ({ appointment }: { appointment: Appointment }) =>
   );
 }
 
-const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+const CancelAppointmentDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
   const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentCounselorMutation();
   const [cancelReason, setCancelReasonl] = useState(``);
   const dispatch = useAppDispatch();
@@ -432,6 +430,7 @@ const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) 
     }).unwrap()
       .then(() => {
         dispatch(closeDialog())
+        handleCloseDialog()
       })
 
   }

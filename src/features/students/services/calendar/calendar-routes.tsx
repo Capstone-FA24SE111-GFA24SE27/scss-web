@@ -2,6 +2,8 @@ import { RouteObject } from 'react-router-dom'
 import { lazy } from "react";
 import DateDetailScheduleView from './calendar-components/date/DateDetailScheduleView';
 import { CounselorView } from '@/shared/pages';
+import { appointmentRoutes } from '@/shared/pages';
+
 const Calendar = lazy(() => import("./calendar-layout"));
 export const studentCalendarRoutes: RouteObject[] = [
   {
@@ -15,7 +17,8 @@ export const studentCalendarRoutes: RouteObject[] = [
       {
         path: 'date/:date',
         element: <DateDetailScheduleView />
-      }
+      },
+      ...appointmentRoutes,
     ]
   },
 ];

@@ -9,6 +9,7 @@ interface UserLabelProps {
   profile: Profile,
   label?: string,
   email?: string,
+  size?: 'small' | 'medium',
   onClick?: () => void; // Optional onClick function
 }
 
@@ -16,6 +17,7 @@ const UserLabel: React.FC<UserLabelProps> = ({
   profile,
   label = ``,
   email,
+  size = 'small',
   onClick,
 }) => {
   const dispatch = useAppDispatch()
@@ -61,10 +63,12 @@ const UserLabel: React.FC<UserLabelProps> = ({
   };
 
   return (
-    <div className="flex items-center text-sm text-text-secondary gap-4"
+    <div className={`flex items-center text-text-secondary gap-8`}
       onClick={(e) => e.stopPropagation()}
     >
-      {label}
+      <Typography className={size === 'medium' ? 'text-sm' : 'text-base'}>
+        {label}
+      </Typography>
       <Box
         className={`flex gap-4 items-center group hover:cursor-pointer`}
         onClick={handleClick} // Use handleClick for conditional onClick behavior

@@ -1,6 +1,6 @@
 import { CakeOutlined, CalendarMonth, Edit, EmailOutlined, LocalPhoneOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Paper, Rating } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -19,7 +19,8 @@ import { useGetCounselorProfileQuery, useGetWeeklySlotsQuery } from '@/shared/pa
 function CounselorProfile() {
   const routeParams = useParams();
   const { data, isLoading } = useGetCounselorProfileQuery();
-  const counselor = data?.content
+  //@ts-ignore
+  const counselor = data?.content?.body?.content
   const navigate = useNavigate();
   const location = useLocation()
   const account = useAppSelector(selectAccount)
@@ -28,11 +29,12 @@ function CounselorProfile() {
 
   const { data: counselorCounselingSlotsData, isLoading: isLoadingCounselorCounselingSlotsData } = useGetWeeklySlotsQuery(account.profile.id)
   const counselorCounselingSlots = counselorCounselingSlotsData?.content
+  const isAcademicCounselor = counselor?.major
 
   if (isLoading) {
     return <ContentLoading className='m-32 w-md' />
   }
-
+  console.log(counselor)
   if (!counselor) {
     return <div className='relative p-48 w-md'>
       <Typography
@@ -58,89 +60,94 @@ function CounselorProfile() {
           alt="user background"
         />
       </Box>
-      <div className="relative flex flex-col items-center flex-auto p-24 pt-0 sm:p-48 sm:pt-0">
+      <div className="relative flex flex-col items-center flex-auto p-24 pt-0 sm:p-48 sm:pt-0 bg-white">
         <div className="w-full max-w-3xl space-y-16">
-          <div className="flex items-end flex-auto -mt-52 gap-8">
-            <Avatar
-              sx={{
-                borderWidth: 4,
-                borderStyle: 'solid',
-                borderColor: 'background.paper',
-                backgroundColor: 'background.default',
-                color: 'text.secondary'
-              }}
-              className="font-bold w-128 h-128 text-64"
-              src={counselor.profile.avatarLink}
-              alt={counselor?.profile.fullName}
-            >
-              {counselor?.profile.fullName?.charAt(0)}
-            </Avatar>
-            <div className=''>
-              <Typography className="mt-12 text-4xl font-bold truncate">{counselor?.profile.fullName}</Typography>
-              {/* <Typography className="text-xl truncate">{counselor?.studentCode}</Typography> */}
-            </div>
-          </div>
-
           <div className="flex flex-col space-y-16">
-            <div>
-              <Paper className="shadow p-16 mt-8">
-                <Typography className='font-semibold text-xl mb-16'>
-                  General Infomation
-                </Typography>
-                <div className="grid grid-cols-3 gap-y-2 mb-4">
-                  <div className="col-span-1 font-medium text-text-secondary">Gender:</div>
-                  <div className="col-span-2 capitalize">{counselor?.profile.gender.toLocaleLowerCase()}</div>
-                </div>
-                {/* Email Section */}
-                <div className="grid grid-cols-3 gap-y-2 mb-4">
-                  <div className="col-span-1 font-medium text-text-secondary">Email:</div>
-                  <div className="col-span-2">{counselor?.email}</div>
-                </div>
+            <div className="w-full">
+              <div className="flex items-end flex-auto -mt-64">
+                <Avatar
+                  sx={{
+                    borderWidth: 4,
+                    borderStyle: 'solid',
+                    borderColor: 'background.paper',
+                    backgroundColor: 'background.default',
+                    color: 'text.secondary'
+                  }}
+                  className="font-bold w-128 h-128 text-64"
+                  src={counselor?.profile?.avatarLink}
+                  alt={counselor?.profile?.fullName}
+                >
+                  {counselor?.profile.fullName?.charAt(0)}
+                </Avatar>
+                <Gender gender={counselor?.profile.gender} />
+              </div>
 
-                {/* Phone Number Section */}
-                <div className="grid grid-cols-3 gap-y-2 mb-4">
-                  <div className="col-span-1 font-medium text-text-secondary">Phone Number:</div>
-                  <div className="col-span-2">{counselor?.profile.phoneNumber}</div>
-                </div>
+              <Typography className="mt-12 text-4xl font-bold truncate">{counselor?.profile.fullName}</Typography>
+              <Typography className="mt-4 text-xl">{counselor?.expertise?.name || counselor?.specialization?.name}</Typography>
 
-                {/* Date of Birth Section */}
-                <div className="grid grid-cols-3 gap-y-2">
-                  <div className="col-span-1 font-medium text-text-secondary">Date of Birth:</div>
-                  <div className="col-span-2">
-                    {counselor?.profile.dateOfBirth
-                      ? dayjs(counselor.profile.dateOfBirth).format('DD-MM-YYYY')
-                      : 'N/A'}
+              <div className='flex items-end gap-8 text-lg text-text-secondary mt-8'>
+                <Rating
+                  name="simple-controlled"
+                  value={counselor?.rating}
+                  readOnly
+                  precision={0.5}
+                />
+                ({counselor?.rating}/5)
+              </div>
+
+              <Divider className="mt-16 mb-24" />
+
+              <div className="flex flex-col space-y-16 pl-8">
+                {counselor.email && (
+                  <div className="flex items-center">
+                    <EmailOutlined />
+                    <div className="ml-24 leading-6">{counselor.email}</div>
                   </div>
-                </div>
+                )}
 
-              </Paper>
-            </div>
+                {counselor.profile.phoneNumber && (
+                  <div className="flex items-center">
+                    <LocalPhoneOutlined />
+                    <div className="ml-24 leading-6">{counselor.profile.phoneNumber}</div>
+                  </div>
+                )}
 
-            <div>
+
+                {counselor.profile.dateOfBirth && (
+                  <div className="flex items-center">
+                    <CakeOutlined />
+                    <div className="ml-24 leading-6">{dayjs(counselor.profile.dateOfBirth).format('DD-MM-YYYY')}</div>
+                  </div>
+                )}
+
+
+              </div>
+
               {
-                role === 'ACADEMIC_COUNSELOR'
-                  ? <Paper className="shadow p-16 mt-8">
-                    <Typography className='font-semibold mb-16 text-xl'>
-                      Academic details
-                    </Typography>
+                isAcademicCounselor && <div>
+                  <Divider className="mt-16 mb-24" />
+                  <Typography className='font-semibold'>
+                    Field of study
+                  </Typography>
+                  <Box className="p-8 mt-8">
 
                     <div className="grid grid-cols-3 gap-y-2 mb-4">
                       <div className="col-span-1 font-medium text-text-secondary">Academic Degree:</div>
-                      <div className="col-span-2">{counselor.academicDegree}</div>
+                      <div className="col-span-2">{counselor?.academicDegree}</div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-y-2 mb-4">
-                      <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
-                      <div className="col-span-2">{counselor.specialization?.name}</div>
-                    </div>
+                    {/* <div className="grid grid-cols-3 mb-4 gap-y-2">
+                                        <div className="col-span-1 font-medium text-text-secondary">Specialization:</div>
+                                        <div className="col-span-2">{counselor?.specialization?.name}</div>
+                                    </div> */}
 
                     {/* Department Section */}
-                    <div className="grid grid-cols-3 gap-y-2 mb-4">
+                    <div className="grid grid-cols-3 mb-4 gap-y-2">
                       <div className="col-span-1 font-medium text-text-secondary">Department:</div>
                       <div className="col-span-2">
-                        <span>{counselor.department.name}</span>
-                        {counselor.department.code && (
-                          <span className="ml-2 text-text-disabled"> ({counselor.department.code})</span>
+                        <span>{counselor?.department.name}</span>
+                        {counselor?.department.code && (
+                          <span className="ml-2 text-text-disabled"> ({counselor?.department.code})</span>
                         )}
                       </div>
                     </div>
@@ -149,33 +156,173 @@ function CounselorProfile() {
                     <div className="grid grid-cols-3 gap-y-2">
                       <div className="col-span-1 font-medium text-text-secondary">Major:</div>
                       <div className="col-span-2">
-                        <span>{counselor.major.name}</span>
-                        {counselor.major.code && (
-                          <span className="ml-2 text-text-disabled"> ({counselor.major.code})</span>
+                        <span>{counselor?.major.name}</span>
+                        {counselor?.major.code && (
+                          <span className="ml-2 text-text-disabled"> ({counselor?.major.code})</span>
                         )}
                       </div>
                     </div>
-                  </Paper>
-                  : <Paper className="shadow p-16 mt-8">
-                    <Typography className='font-semibold text-xl mb-16'>
-                      Experience
-                    </Typography>
-                    <div className="grid grid-cols-3 gap-y-2 mb-4">
-                      <div className="col-span-1 font-medium text-text-secondary">Expertise</div>
-                      <div className="col-span-2">{counselor?.expertise.name}</div>
-                    </div>
-                  </Paper>
+                  </Box>
+                </div>
+              }
+              {
+                counselor?.expertise && <div>
+                  <Divider className="mt-16 mb-24" />
+                  <Typography className='font-semibold'>
+                    Expertise
+                  </Typography>
+                  <Box className="mt-8 px-8">
+                    <div >{counselor?.expertise?.name}</div>
+                  </Box>
+                </div>
               }
 
-            </div>
-            <Paper className="shadow p-16 mt-8">
-              <Typography className='font-semibold mb-16 text-xl'>
-                Weekly Schedule
-              </Typography>
-              <WeeklySlots slots={counselorCounselingSlots} />
-            </Paper>
+              <Divider className="mt-16 mb-24" />
 
+              <div className="flex flex-col gap-16">
+                <Typography className='font-semibold'>
+                  Weekly Schedule
+                </Typography>
+                <WeeklySlots slots={counselorCounselingSlots} />
+              </div>
+
+              <Divider className="mt-16 mb-24" />
+
+              <div className="flex flex-col gap-16">
+                <Typography className='font-semibold'>
+                  Specialized skills
+                </Typography>
+
+                <Box className="flex flex-wrap gap-8">
+                  {
+                    counselor.specializedSkills?.split(`\n`).map(item => <Chip
+                      key={item}
+                      label={item}
+                      size="small"
+                    />)
+                  }
+                </Box>
+              </div>
+
+              <Divider className="mt-16 mb-24" />
+
+              <div className="flex flex-col gap-16">
+                <Typography className='font-semibold'>
+                  Other skills
+                </Typography>
+
+                <Box className="flex flex-wrap gap-8">
+                  {
+                    counselor.otherSkills?.split(`\n`).map(item => <Chip
+                      key={item}
+                      label={item}
+                      size="small"
+                    />)
+                  }
+                </Box>
+              </div>
+
+              <Divider className="mt-16 mb-24" />
+
+              <div className="flex flex-col gap-16">
+                <Typography className='font-semibold'>
+                  Achievements
+                </Typography>
+                <Box className="flex flex-col gap-8">
+                  {
+                    counselor.achievements?.split(`\n`).map(item => (
+                      <div>- {item}</div>
+                    ))
+                  }
+                </Box>
+              </div>
+
+              <Divider className="mt-16 mb-24" />
+
+              <div className="flex flex-col gap-16">
+                <Typography className='font-semibold'>
+                  Work history
+                </Typography>
+                <Box className="flex flex-col gap-8">
+                  {
+                    counselor.workHistory?.split(`\n`).map(item => (
+                      <div>{item}</div>
+                    ))
+                  }
+                </Box>
+              </div>
+
+              <Divider className="mt-16 mb-24" />
+
+              <div className="flex flex-col gap-16">
+                <Typography className='font-semibold'>
+                  Qualifications
+                </Typography>
+                <Box className="flex flex-col gap-8">
+                  {counselor.qualifications?.map((qualification) => (
+                    <div key={qualification.id} className="flex items-start p-8 rounded shadow gap-16">
+                      <img
+                        onClick={() => {
+                          dispatch(openDialog({
+                            children: (
+                              <img
+                                className='min-h-sm min-w-sm'
+                                src={qualification.imageUrl}
+                                alt={qualification.institution}
+                              />
+                            )
+                          }))
+                        }}
+                        src={qualification.imageUrl}
+                        alt={qualification.institution}
+                        className="size-72 object-cover border hover:opacity-90 cursor-pointer rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-lg font-semibold">{qualification.institution}</p>
+                        <p className="">{qualification.degree} • {qualification.fieldOfStudy}</p>
+                        <p className="text-text-secondary">Graduated: {qualification.yearOfGraduation}</p>
+                      </div>
+                    </div>
+                  ))}
+                </Box>
+              </div>
+
+              <Divider className="mt-16 mb-24" />
+
+              <div className="flex flex-col gap-16">
+                <Typography className='font-semibold'>
+                  Certifications
+                </Typography>
+                <Box className="flex flex-col gap-8">
+                  {counselor.certifications?.map((certification) => (
+                    <div key={certification.id} className="flex items-start p-8 rounded shadow gap-16">
+                      <img
+                        src={certification.imageUrl}
+                        alt={certification.organization}
+                        onClick={() => {
+                          dispatch(openDialog({
+                            children: (
+                              <img
+                                className='min-h-sm min-w-sm'
+                                src={certification.imageUrl}
+                                alt={certification.organization}
+                              />
+                            )
+                          }))
+                        }}
+                        className="size-72 object-cover border hover:opacity-90 cursor-pointer rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-lg font-semibold">{certification.name}</p>
+                        <p className="">{certification.organization}</p>
+                      </div>
+                    </div>
+                  ))}
+                </Box>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </div >

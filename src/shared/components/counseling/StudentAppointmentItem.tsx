@@ -12,12 +12,12 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-type Props = {
+type AppointmentItemProps = {
   appointment: Appointment,
-  handleCloseDialog: () => void
+  handleCloseDialog?: () => void
 }
-const StudentAppointmentItem = (props: Props) => {
-  const { appointment, handleCloseDialog } = props
+const StudentAppointmentItem = (props: AppointmentItemProps) => {
+  const { appointment, handleCloseDialog = () => { } } = props
 
   const dispatch = useAppDispatch()
 
@@ -34,51 +34,53 @@ const StudentAppointmentItem = (props: Props) => {
       className="flex flex-col gap-8 shadow"
     >
       <div className='flex flex-col w-full gap-16 p-16'>
-        <ListItem className='flex flex-wrap gap-16 p-0'
-          secondaryAction={
-            <ItemMenu
-              menuItems={[
-                {
-                  label: 'View details',
-                  onClick: () => {
-                    navigate(`/services/activity/appointment/${appointment.id}`)
-                  },
-                  icon: <Visibility fontSize='small' />
-                },
-                ...(['WAITING'].includes(appointment?.status) ? [{
-                  label: 'Cancel',
-                  onClick: () => {
-                    dispatch(
-                      openDialog({
-                        children: <CancelAppointmentDialog appointment={appointment} />
-                      })
-                    )
-                  },
-                  icon: <Clear fontSize='small' />
-                }] : []),
-              ]}
-            />
-          }
+        <ListItem className='flex justify-between p-0 gap-16'
         >
-          <div className='flex items-center gap-8'>
-            <CalendarMonth />
-            <Typography className='' >{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
+          <div className='flex flex-wrap items-center gap-16'>
+            <div className='flex items-center gap-8'>
+              <CalendarMonth />
+              <Typography className='' >{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
+            </div>
+            <div className='flex items-center gap-8'>
+              <AccessTime />
+              <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
+            </div>
+            <Chip
+              label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
+              icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
+              className='items-center font-semibold'
+              size='small'
+            />
+            <Chip
+              label={appointment.status}
+              variant='filled'
+              color={statusColor[appointment.status]}
+              size='small'
+            />
           </div>
-          <div className='flex items-center gap-8'>
-            <AccessTime />
-            <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-          </div>
-          <Chip
-            label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
-            icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} />}
-            className='items-center font-semibold'
-            size='small'
-          />
-          <Chip
-            label={appointment.status}
-            variant='filled'
-            color={statusColor[appointment.status]}
-            size='small'
+
+          <ItemMenu
+            menuItems={[
+              {
+                label: 'View details',
+                onClick: () => {
+                  navigate(`appointment/${appointment.id}`)
+                  // navigate(`/services/activity/appointment/${appointment.id}`)
+                },
+                icon: <Visibility fontSize='small' />
+              },
+              ...(['WAITING'].includes(appointment?.status) ? [{
+                label: 'Cancel',
+                onClick: () => {
+                  dispatch(
+                    openDialog({
+                      children: <CancelAppointmentDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
+                    })
+                  )
+                },
+                icon: <Clear fontSize='small' />
+              }] : []),
+            ]}
           />
         </ListItem>
 
@@ -161,7 +163,7 @@ const StudentAppointmentItem = (props: Props) => {
                   e.stopPropagation()
                   dispatch(openDialog({
                     children: (
-                      <SendFeedbackDialog appointment={appointment} />
+                      <SendFeedbackDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
                     )
                   }))
                 }}
@@ -177,7 +179,7 @@ const StudentAppointmentItem = (props: Props) => {
 }
 
 
-const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
+const SendFeedbackDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentItemProps) => {
   const [comment, setComment] = useState('')
   const [rating, setRating] = useState(0)
   const dispatch = useAppDispatch()
@@ -191,6 +193,7 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
       }
     })
     dispatch(closeDialog())
+    handleCloseDialog()
   }
 
   return (
@@ -244,9 +247,8 @@ const SendFeedbackDialog = ({ appointment }: { appointment: Appointment }) => {
   )
 }
 
-export default StudentAppointmentItem
 
-const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) => {
+const CancelAppointmentDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentItemProps) => {
   const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentMutation();
   const [cancelReason, setCancelReasonl] = useState(``);
   const dispatch = useAppDispatch();
@@ -257,8 +259,8 @@ const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) 
     }).unwrap()
       .then(() => {
         dispatch(closeDialog())
+        handleCloseDialog()
       })
-
   }
   return (
     <div className='w-[40rem]'>
@@ -299,3 +301,6 @@ const CancelAppointmentDialog = ({ appointment }: { appointment: Appointment }) 
     </div>
   );
 }
+
+export default StudentAppointmentItem
+

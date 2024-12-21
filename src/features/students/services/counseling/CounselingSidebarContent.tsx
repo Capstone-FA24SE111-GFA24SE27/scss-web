@@ -14,9 +14,8 @@ function CounselingSidebarContent() {
                 to="."
                 size="large"
             >
-                <Close/>
+                <Close />
             </IconButton>
-
             <Outlet />
         </div>
     );

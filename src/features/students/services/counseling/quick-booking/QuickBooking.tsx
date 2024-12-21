@@ -215,7 +215,13 @@ function QuickBooking() {
 
   }
 
-  console.log(counselingType)
+  const clearQuickBookingForm = () => {
+    reset()
+    reset({
+      department: undefined,
+      major: undefined,
+    })
+  }
 
   const onSubmitBooking = () => {
     useConfirmDialog({
@@ -316,7 +322,7 @@ function QuickBooking() {
     <>
       <div className="container relative flex flex-col gap-16 flex-auto min-h-screen p-16 mx-auto max-w-screen-lg">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeStep} className='' alternativeLabel>
           {steps.map((label, index) => (
             <Step
               key={index}
@@ -326,7 +332,7 @@ function QuickBooking() {
             </Step>
           ))}
         </Stepper>
-        <Box className='flex w-full gap-16 my-16'>
+        <Box className='flex w-full gap-16'>
           {
             activeStep === 0 && (
               <Paper className='w-full shadow'>
@@ -586,10 +592,10 @@ function QuickBooking() {
                     </div>
                   </div>
                 </div>
-                <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-8 px-32'>
+                <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-16 px-32'>
                   <Button
                     size='large'
-                    onClick={() => reset()}
+                    onClick={clearQuickBookingForm}
                   >
                     Clear
                   </Button>
@@ -670,7 +676,7 @@ function QuickBooking() {
                   </div>
 
                 </div>
-                <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-8 px-32'>
+                <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-16 px-32'>
                   <Button
                     onClick={handleBack}
                     color='secondary'
@@ -850,7 +856,7 @@ function QuickBooking() {
                     }
                   </div>
                 </div>
-                <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-8 px-32 place-self-end'>
+                <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-16 px-32 place-self-end'>
                   <Button
                     onClick={handleBack}
                     color='secondary'

@@ -1,12 +1,12 @@
 import { CheckboxField, ContentLoading, FilterTabs, Pagination, SelectField } from '@/shared/components';
-import { ContentSearch } from '@/shared/components/filter/SearchField';
+import SearchField, { ContentSearch } from '@/shared/components/filter/SearchField';
 import {
   Typography
 } from '@mui/material';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { ChangeEvent, useState } from 'react';
 import { useGetAllCategoriesQuery, useSearchContributedQuestionCardsQuery } from './faq-api';
-import ContributedQuestionItem from './faqItem';
+import FaqItem from './FaqItem';
 
 const Faq = () => {
   const [page, setPage] = useState(1);
@@ -70,16 +70,17 @@ const Faq = () => {
   return (
     <div className='w-full p-16'>
       <div>
-        <Typography className='px-16 mb-8 text-lg text-text-secondary'>
+        {/* <Typography className='px-16 mb-8 text-lg text-text-secondary'>
           List of questions and answers contributed by our counselors
-        </Typography>
+        </Typography> */}
       </div>
       <div className='flex justify-center gap-16'>
         <div className='flex flex-col mt-80 '>
           {/* Show category here */}
         </div>
         <div className='flex flex-col w-full max-w-xl mt-16'>
-          <ContentSearch onSearch={handleSearch} />
+          <SearchField onSearch={handleSearch} className='w-full' />
+          {/* <ContentSearch onSearch={handleSearch} /> */}
           <div className='flex justify-between w-full mt-16'>
             <FilterTabs
               tabs={categoryTypeTab}
@@ -92,7 +93,7 @@ const Faq = () => {
               value={selectedCategory}
               onChange={handleSelectCategory}
               className='pr-8 outline-none w-200'
-              size='medium'
+              size={isCounselor ? 'small' : 'medium'}
               showClearOptions
             />
           </div>
@@ -118,7 +119,7 @@ const Faq = () => {
                 ) : (
                   contributedQuestions?.map((contributedQuestion) => {
                     return (
-                      <ContributedQuestionItem key={contributedQuestion.id} contributedQuestion={contributedQuestion} />
+                      <FaqItem key={contributedQuestion.id} contributedQuestion={contributedQuestion} />
                     )
                   })
                 )}

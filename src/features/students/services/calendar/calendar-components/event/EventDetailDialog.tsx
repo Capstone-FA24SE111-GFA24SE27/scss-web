@@ -48,7 +48,6 @@ const EventDetailDialog = () => {
 					<EventHolidayBody holiday={eventDialog.data as HolidayScheduleType} />
 				) : (
 					<EventDetailBody appointment={eventDialog.data as AppointmentScheduleType} onNavClicked={()=>closeDialog()}/>
-
 				)
 			}
 		</Popover>

@@ -235,14 +235,14 @@ export const defaultThemeOptions = {
 				root: {
 					// borderRadius: 8,
 					'&.Mui-selected': {
-						backgroundColor: 'primary.dark',
+						backgroundColor: 'secondary.dark',
 						// boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
 						'&:hover': {
-							backgroundColor: 'primary.light', // Customize background color on hover when selected
+							backgroundColor: 'secondary.light', // Customize background color on hover when selected
 						},
 					},
 					'&:hover': {
-						backgroundColor: 'primary.light', // Customize background color on hover when not selected
+						backgroundColor: 'secondary.light', // Customize background color on hover when not selected
 					},
 				},
 			},
