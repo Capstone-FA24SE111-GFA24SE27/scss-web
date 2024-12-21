@@ -57,9 +57,9 @@ export const EventDetailBody = (props: Props) => {
 	}
 
 	return (
-		<div >
+		<>
 			{/* @ts-ignore */}
-			<StudentAppointmentItem appointment={appointment} handleCloseDialog={handleNavClicked} />
-		</div>
+			< StudentAppointmentItem appointment={appointment} handleCloseDialog={handleNavClicked} />
+		</>
 	);
 };

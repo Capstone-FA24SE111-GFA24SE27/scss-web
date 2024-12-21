@@ -107,7 +107,7 @@ const AppointmentsContent = () => {
           <SearchField
             onSearch={handleSearchStudentCode}
             label='Student code'
-            placeholder='SE110000'
+            placeholder='SE1001'
             className='!w-192 '
           />
         </div>
@@ -178,7 +178,7 @@ const UpdateDetailsAppointmentDialog = ({ appointment }: { appointment: Appointm
                 autoFocus
                 margin="dense"
                 name={'meetUrl'}
-                label={'Meet Url'}
+                label={'Meeting Url'}
                 fullWidth
                 value={meetUrl}
                 variant="standard"

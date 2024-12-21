@@ -81,12 +81,17 @@ function AppointmentCreate() {
   const formData = watch();
 
 
-  const { data: studentData, isFetching: isGettingStudentByCode, isSuccess: isSuccessGetStudentByCode, isError: isErrorGetStudentByCode } = useGetStudentByCodeQuery(debouncedStudentCode, {
+  const {
+    data: studentData,
+    isFetching: isGettingStudentByCode,
+    isSuccess: isSuccessGetStudentByCode,
+    isError: isErrorGetStudentByCode
+  } = useGetStudentByCodeQuery(debouncedStudentCode, {
     skip: !formData.studentCode
   })
 
-  console.log(isErrorGetStudentByCode, `Student---------------------`)
-
+  const student = studentData?.content
+  
   const { isValid, dirtyFields, errors } = formState;
 
   const handleDebouncedStudentCode = useCallback(
@@ -99,7 +104,6 @@ function AppointmentCreate() {
   const { data: counselorDailySlotsData, isFetching: isFetchingCounselorDailySlots } = useGetCounselorDailySlotsQuery({ counselorId: counselorId?.toString(), from: startOfMonth, to: endOfMonth });
 
   const counselor = account
-  const student = studentData?.content
 
   const location = useLocation();
 
@@ -238,7 +242,7 @@ function AppointmentCreate() {
                   <TextField
                     {...field}
                     label="Student Code"
-                    placeholder="SE110011"
+                    placeholder="SE1001"
                     id="studentCode"
                     error={!!errors.studentCode}
                     helperText={errors?.studentCode?.message}
@@ -254,7 +258,7 @@ function AppointmentCreate() {
                 {
                   isGettingStudentByCode
                     ? <Typography>Loading...</Typography>
-                    : student && formData.studentCode && !isErrorGetStudentByCode
+                    : (student && formData.studentCode && !isErrorGetStudentByCode)
                       ? <UserLabel
                         label='Found student:  '
                         profile={student.profile}
@@ -367,7 +371,7 @@ function AppointmentCreate() {
                     autoFocus
                     margin="dense"
                     name={'meetUrl'}
-                    label={'Meet Url'}
+                    label={'Meeting Url'}
                     fullWidth
                     value={meetURL}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

@@ -189,7 +189,7 @@ function QnaForm() {
 	}
 console.log(watch())
 	return (
-		<div className="container flex flex-col items-center p-32 w-xl">
+		<div className="container flex flex-col items-center px-32 my-16 w-xl">
 			<div className="flex flex-col w-full ">
 				<Typography variant="h4"></Typography>
 				<div className="">
@@ -210,7 +210,7 @@ console.log(watch())
 					<li>Keep your question concise and straightforward</li>
 					<li>Double-check your grammar and spelling</li>
 				</Paper>
-				<Paper className="p-16 mt-16 shadow rounded-2xl">
+				<div className="mt-16 ">
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						<div className="mb-24">
 							<Typography variant="h6">Submit your question</Typography>
@@ -272,7 +272,7 @@ console.log(watch())
 							</Button>
 						</div>
 					</form>
-				</Paper>
+				</div>
 			</div>
 			{(isPosting || isEditing) && <BackdropLoading />}
 		</div >

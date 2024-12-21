@@ -43,7 +43,7 @@ function ActivityHeader() {
           color='secondary'
           startIcon={<CalendarMonth/>}
         >
-          View chedule
+          View schedule
         </Button>
       </div>
     </div>

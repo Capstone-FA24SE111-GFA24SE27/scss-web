@@ -4,7 +4,7 @@ import { managersRoutes } from '@features/managers';
 import { StyledEngineProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { AppLoading } from '@shared/components';
+import { AppLoading, Drawer } from '@shared/components';
 import { specialRoutes } from '@shared/configs';
 import { roles } from '@shared/constants';
 import { SnackbarProvider, ThemeProvider } from '@shared/context';
@@ -53,6 +53,7 @@ const App = () => {
 						<SnackbarProvider>
 							<Suspense fallback={<AppLoading />}>
 								<Dialog />
+								<Drawer />
 								{AppRoutes}
 							</Suspense>
 						</SnackbarProvider>

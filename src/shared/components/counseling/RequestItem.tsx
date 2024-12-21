@@ -1,5 +1,5 @@
 import { openStudentView } from '@/features/counselors/counselors-layout-slice';
-import { AppLoading, ItemMenu, NavLinkAdapter, UserListItem, closeDialog, openDialog } from '@/shared/components';
+import { AppLoading, ItemMenu, NavLinkAdapter, UserLabel, UserListItem, closeDialog, openDialog } from '@/shared/components';
 import { statusColor } from '@/shared/constants';
 import { AppointmentRequest } from '@/shared/types';
 import { useApproveAppointmentRequestOfflineMutation, useApproveAppointmentRequestOnlineMutation, useDenyAppointmentRequestMutation } from '@features/counselors/counseling/counseling-api';
@@ -24,7 +24,6 @@ const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRe
     denyAppointmentRequest(appointment.id)
     dispatch(() => closeDialog())
   }
-
   return (
     <Paper
       key={appointment.id}
@@ -57,14 +56,51 @@ const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRe
           />
         </ListItem>
 
+        <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
+          {/* <ListItemButton
+            onClick={onUserClick}
+            className='w-full rounded shadow '
+          >
+            {
+              role === 'STUDENT'
+                ? <UserListItem
+                  fullName={appointment?.counselor.profile.fullName}
+                  avatarLink={appointment?.counselor.profile.avatarLink}
+                  phoneNumber={appointment?.counselor.profile.phoneNumber}
+                  email={appointment?.counselor.email}
+                />
+                : <UserListItem
+                  fullName={appointment?.student.profile.fullName}
+                  avatarLink={appointment?.student.profile.avatarLink}
+                  phoneNumber={appointment?.student.profile.phoneNumber}
+                  email={appointment?.student.email}
+                />
+            }
+          </ListItemButton> */}
+
+          {
+            role === 'STUDENT'
+              ? <UserLabel
+                profile={appointment?.counselor.profile}
+                label='Booked to:'
+                onClick={onUserClick}
+              />
+              : <UserLabel
+                profile={appointment?.student.profile}
+                label='Booked by:'
+                onClick={onUserClick}
+              />
+          }
+        </Tooltip>
+
         <div className='flex gap-8'>
-          <Typography className='w-60' color='textSecondary'>Reason: </Typography>
+          <Typography className='w-72' color='textSecondary'>Reason: </Typography>
           <ExpandableText text={appointment.reason} limit={175} />
         </div>
-        <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
+        {/* <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
           <ListItemButton
             onClick={onUserClick}
-            className='w-full rounded shadow bg-primary-light/5'
+            className='w-full rounded shadow '
           >
             {
               role === 'STUDENT'
@@ -82,7 +118,7 @@ const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRe
                 />
             }
           </ListItemButton>
-        </Tooltip>
+        </Tooltip> */}
       </div>
       <Box className='flex justify-end w-full gap-16 bg-primary-light/5 '>
         {
@@ -203,7 +239,7 @@ const ApproveAppointmentDialog = ({ appointment }: { appointment: AppointmentReq
                   autoFocus
                   margin="dense"
                   name={'meetUrl'}
-                  label={'Meet Url'}
+                  label={'Meeting Url'}
                   fullWidth
                   value={meetUrl}
                   variant="standard"

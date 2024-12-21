@@ -153,12 +153,12 @@ const DemandDetail = ({ id }: { id?: string }) => {
           </Typography>
           <Typography>{demand.additionalInformation || 'N/A'}</Typography>
         </div>
-        <div>
+        {/* <div>
           <Typography className="font-semibold text-text-secondary">
             Contact Note
           </Typography>
           <Typography>{demand.contactNote || 'N/A'}</Typography>
-        </div>
+        </div> */}
         <div>
           <Typography className="font-semibold text-text-secondary">
             Issue Description

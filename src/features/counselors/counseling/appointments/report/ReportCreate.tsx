@@ -99,20 +99,21 @@ const ReportCreate = () => {
         })
           .unwrap()
           .then(() => {
-            navigate('..');
+
             useAlertDialog({
               dispatch,
               title: 'Report created successfully!',
               color: 'success',
             })
           })
-          .catch(() => {
-            useAlertDialog({
-              dispatch,
-              title: 'Failed to create report',
-              color: 'error',
-            })
-          })
+        // .catch(() => {
+        //   useAlertDialog({
+        //     dispatch,
+        //     title: 'Failed to create report',
+        //     color: 'error',
+        //   })
+        // })
+        navigate('..');
       }
     })
 

@@ -3,7 +3,7 @@ import { IconButton, Menu, MenuItem, ListItem, ListItemText, Box, ListItemIcon }
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import ReportOutlined from '@mui/icons-material/ReportOutlined';
-
+import clsx from 'clsx';
 interface MenuItemType {
   label: string;
   onClick: () => void;
@@ -11,11 +11,12 @@ interface MenuItemType {
   disabled?: boolean; // Optional disabled property
 }
 
-interface ListItemMenuProps {
+interface ItemMenuProps {
   menuItems: MenuItemType[];
+  className?: string
 }
 
-const ListItemMenu: React.FC<ListItemMenuProps> = ({ menuItems }) => {
+const ItemMenu: React.FC<ItemMenuProps> = ({ menuItems, className = `` }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,7 +28,7 @@ const ListItemMenu: React.FC<ListItemMenuProps> = ({ menuItems }) => {
   };
 
   return (
-    <div className="flex items-center">
+    <div className={clsx(`flex items-center`, className)}>
       {/* Menu Icon */}
       <IconButton onClick={handleOpen}>
         <MoreVertIcon />
@@ -38,9 +39,9 @@ const ListItemMenu: React.FC<ListItemMenuProps> = ({ menuItems }) => {
         onClose={handleClose}
       >
         {menuItems.map((item, index) => (
-          <MenuItem 
-            key={index} 
-            onClick={() => { handleClose(); item.onClick(); }} 
+          <MenuItem
+            key={index}
+            onClick={() => { handleClose(); item.onClick(); }}
             disabled={item.disabled} // Conditionally apply disabled
           >
             {/* Display Icon if provided */}
@@ -57,4 +58,4 @@ const ListItemMenu: React.FC<ListItemMenuProps> = ({ menuItems }) => {
   );
 };
 
-export default ListItemMenu;
+export default ItemMenu;

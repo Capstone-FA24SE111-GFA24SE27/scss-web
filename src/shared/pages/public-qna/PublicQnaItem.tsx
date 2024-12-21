@@ -1,4 +1,4 @@
-import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML, openDrawer } from '@/shared/components';
 import { roles, statusColor } from '@/shared/constants';
 import {
   ChatBubbleOutline,
@@ -85,15 +85,11 @@ const PublicQnaItem = (props: Props) => {
                   profile={publicQna.counselor.profile}
                   email={publicQna.counselor?.email}
                   onClick={() => {
-                    if (isStudent) {
-                      dispatch(openCounselorView(publicQna?.counselor?.profile.id.toString()))
-                      return
-                    }
-                    dispatch(openDialog({
+                    dispatch(openDrawer({
                       children: <CounselorView
                         id={publicQna.counselor.id.toString()}
                         shouldShowBooking={false}
-                      />
+                      />,
                     }))
                   }}
                 />

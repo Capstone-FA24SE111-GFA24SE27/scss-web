@@ -14,6 +14,8 @@ import { useGetCounselorDetailQuery, useGetWeeklySlotsQuery } from './counselor-
 import { Paper, Rating } from '@mui/material';
 import clsx from 'clsx'
 import { useAppDispatch } from '@shared/store';
+import Qualification from './Qualification';
+import Certification from './Certification';
 /**
  * The contact view.
  */
@@ -278,29 +280,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                         </Typography>
                         <Box className="flex flex-col gap-8">
                             {counselor.qualifications?.map((qualification) => (
-                                <div key={qualification.id} className="flex items-start p-8 rounded shadow gap-16">
-                                    <img
-                                        onClick={() => {
-                                            dispatch(openDialog({
-                                                children: (
-                                                    <img
-                                                        className='min-h-sm min-w-sm'
-                                                        src={qualification.imageUrl}
-                                                        alt={qualification.institution}
-                                                    />
-                                                )
-                                            }))
-                                        }}
-                                        src={qualification.imageUrl}
-                                        alt={qualification.institution}
-                                        className="size-72 object-cover border hover:opacity-90 cursor-pointer rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <p className="text-lg font-semibold">{qualification.institution}</p>
-                                        <p className="">{qualification.degree} • {qualification.fieldOfStudy}</p>
-                                        <p className="text-text-secondary">Graduated: {qualification.yearOfGraduation}</p>
-                                    </div>
-                                </div>
+                                <Qualification qualification={qualification}/>
                             ))}
                         </Box>
                     </div>
@@ -313,28 +293,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                         </Typography>
                         <Box className="flex flex-col gap-8">
                             {counselor.certifications?.map((certification) => (
-                                <div key={certification.id} className="flex items-start p-8 rounded shadow gap-16">
-                                    <img
-                                        src={certification.imageUrl}
-                                        alt={certification.organization}
-                                        onClick={() => {
-                                            dispatch(openDialog({
-                                                children: (
-                                                    <img
-                                                        className='min-h-sm min-w-sm'
-                                                        src={certification.imageUrl}
-                                                        alt={certification.organization}
-                                                    />
-                                                )
-                                            }))
-                                        }}
-                                        className="size-72 object-cover border hover:opacity-90 cursor-pointer rounded"
-                                    />
-                                    <div className="flex-1">
-                                        <p className="text-lg font-semibold">{certification.name}</p>
-                                        <p className="">{certification.organization}</p>
-                                    </div>
-                                </div>
+                                <Certification certification={certification}/>
                             ))}
                         </Box>
                     </div>

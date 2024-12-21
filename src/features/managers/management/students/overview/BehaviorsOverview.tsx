@@ -73,7 +73,7 @@ const BehaviorTagsChart: React.FC = () => {
   const behaviorTagsBarData = [
     {
       name: 'Behavior Tags',
-      data: [15, 12, 20, 25, 10, 30, 18, 14, 8, 5],
+      data: [15, 12, 20, 25, 10, 30, 18, 14, 8, 5].sort((a, b) => b - a),
     },
   ];
 

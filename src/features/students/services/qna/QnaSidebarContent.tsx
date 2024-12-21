@@ -9,7 +9,7 @@ function QnaSidebarContent() {
   return (
     <div className="flex-1 h-full">
       <IconButton
-        className="absolute right-4 z-10 top-16"
+        className="absolute right-16 z-10 top-16"
         component={NavLinkAdapter}
         to="."
         size="large"

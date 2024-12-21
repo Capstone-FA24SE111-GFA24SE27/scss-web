@@ -3,7 +3,6 @@ import {
   Typography
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
-import ContributedQuestionItem from './PublicQnaItem';
 import { useGetAllPublicQuestionCardsQuery } from './public-qna-api';
 import PublicQnaItem from './PublicQnaItem';
 import { motion } from 'framer-motion';
@@ -72,9 +71,9 @@ const PublicQna = () => {
   return (
     <div className='w-full p-16'>
       <div className=''>
-        <Typography className='text-lg mb-8 text-text-secondary px-16'>
+        {/* <Typography className='text-lg mb-8 text-text-secondary px-16'>
           All questions and answers asked by students
-        </Typography>
+        </Typography> */}
       </div>
       <div className='w-full mt-16 max-w-xl mx-auto'>
 

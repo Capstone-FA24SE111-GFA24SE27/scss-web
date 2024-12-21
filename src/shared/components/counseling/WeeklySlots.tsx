@@ -2,8 +2,6 @@ import { daysOfWeek } from "@/shared/constants";
 import { CounselingSlot } from "@/shared/types";
 import { Paper } from "@mui/material";
 import dayjs from "dayjs";
-import React from "react";
-
 
 const WeeklySlots = ({ slots }: { slots: CounselingSlot[] }) => {
   if (!slots?.length) {
