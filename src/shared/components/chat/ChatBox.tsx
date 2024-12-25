@@ -3,6 +3,7 @@ import {
 	Button,
 	IconButton,
 	Input,
+	LinearProgress,
 	Paper,
 	TextField,
 	Typography,
@@ -202,7 +203,7 @@ const ChatBox = (props: Props) => {
 			</div>
 			<Scrollbar
 				ref={messagesRef}
-				className='flex-grow p-16 pb-96 m-8 space-y-4 overflow-y-auto !h-[calc(100vh-196px)] bg-background '
+				className='flex-grow p-16 pb-96 mx-8 space-y-4 overflow-y-auto !h-[calc(100vh-196px)] bg-background '
 			>
 				{messages?.map((message, index) => (
 					<div
@@ -212,12 +213,26 @@ const ChatBox = (props: Props) => {
 							: 'justify-start'
 							}`}
 					>
-						<ChatMessage message={message} />
+						<ChatMessage message={message} uploadProgress={uploadProgress} />
 					</div>
 				))}
+				{
+					isUploadingImage &&
+					(
+						<div className='w-full flex justify-end'>
+							<div className='text-white max-w-384'>
+								<img src={`/assets/images/placeholders/uploading-image.jpeg`} alt="Message content" className='rounded-lg' />
+								<div className="w-full mt-16">
+									<Typography color='secondary'>Uploading image...</Typography>
+									<LinearProgress variant="determinate" value={uploadProgress} color="secondary" />
+								</div>
+							</div>
+						</div>
+					)
+				}
 			</Scrollbar>
 			{qna.closed ? (
-				<div className='p-16 font-semibold text-center bg-secondary-main/10 text-secondary-main absolute bottom-8 w-full'>
+				<div className='p-16 font-semibold text-center text-white bg-secondary-light absolute bottom-8 w-full'>
 					Question has been closed
 				</div>
 			) : (

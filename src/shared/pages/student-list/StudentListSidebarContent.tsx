@@ -26,7 +26,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import PercentIcon from '@mui/icons-material/Percent';
 import { debounce } from 'lodash';
 
-const CounselorListSidebarContent = () => {
+const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { shouldShowToggleButton?: boolean }) => {
   const filter = useAppSelector(selectFilter);
   const dispatch = useAppDispatch();
   const [attendanceType, setAttendanceType] = useState<'COUNT' | 'PERCENTAGE'>('COUNT');
@@ -107,12 +107,17 @@ const CounselorListSidebarContent = () => {
   }));
 
   return (
-    <div className="p-24 flex flex-col gap-16">
-      <div className="flex justify-start items-center gap-8">
-        <CounselorListFilterButton />
-        <Typography className="text-xl text-text-disabled">Filter students</Typography>
-      </div>
+    <div className="flex flex-col gap-8">
+      {
+        shouldShowToggleButton && (
+            <div className="flex justify-start items-center gap-8">
+            <CounselorListFilterButton />
+            {/* <Typography className="text-xl text-text-disabled">Filter students</Typography> */}
+          </div>
+        )
+      }
       <div className="w-full flex flex-col gap-16">
+        <Typography className="font-semibold">Search by name</Typography>
         <SearchField
           onSearch={handleSearch}
           label="Name"

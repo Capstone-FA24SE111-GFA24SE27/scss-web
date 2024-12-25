@@ -79,7 +79,7 @@ const RequestsTab = () => {
     return <AppLoading />
   }
   return (
-    <div className='p-16 container mx-auto flex flex-col gap-16 max-w-screen-lg'>
+    <div className='p-16 container mx-auto flex flex-col gap-16'>
       <Box className='flex justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker

@@ -49,7 +49,7 @@ function NavigationList() {
                 aria-labelledby="nested-list-subheader"
             >
                 {navigationList.map(sublist => (
-                    <div key={sublist.name} >
+                        <div key={sublist.name} >
                         <div className='my-8 flex flex-col'>
                             <Typography variant="overline" className='font-bold'>{sublist.name}</Typography>
                             {/* <Typography variant="caption" className='text-black/80'>{sublist.description}</Typography> */}
@@ -82,7 +82,7 @@ function NavigationList() {
                                                     key={nestedItem.name}
                                                     onClick={() => handleNavigation(`${sublist.route}/${item.route}/${nestedItem.route}`)}
                                                     sx={{ ml: 2 }}
-                                                    className='rounded-md'
+                                                    className={`rounded-md mt-4`}
                                                     selected={pathname.includes(`${sublist.route}/${item.route}/${nestedItem.route}`)} >
                                                     <ListItemIcon>
                                                         {<nestedItem.icon />}

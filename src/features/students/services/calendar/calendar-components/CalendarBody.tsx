@@ -190,7 +190,7 @@ const CalendarBody = (props: Props) => {
 	const handleDatesWithin = (rangeInfo: DatesSetArg) => {
 		if (handleDates) handleDates(rangeInfo);
 	};
-
+	
 	if (isLoading || loading2) {
 		return <ContentLoading className='m-32' />;
 	}

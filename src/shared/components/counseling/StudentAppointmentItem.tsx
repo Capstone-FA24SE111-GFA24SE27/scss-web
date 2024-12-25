@@ -82,7 +82,7 @@ const StudentAppointmentItem = (props: AppointmentItemProps) => {
               }] : []),
             ]}
           />
-        </ListItem>
+        </ListItem> 
 
         {appointment.cancelReason && (
           <div className='flex items-center gap-8'>

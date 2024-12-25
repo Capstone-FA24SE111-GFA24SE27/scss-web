@@ -13,7 +13,7 @@ type CalendarAppEventContentProps = {
  */
 function CalendarAppEventContent(props: CalendarAppEventContentProps) {
 	const { eventInfo } = props;
-	const [color, setColor] = useState('#1c6bab');
+	const [color, setColor] = useState('#e67e22');
 	
 	useEffect(() => {
 		if (eventInfo.event.extendedProps.isHoliday) {

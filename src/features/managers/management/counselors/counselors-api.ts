@@ -35,12 +35,38 @@ export const counselorsMangementApi = api
         providesTags: ['counselors']
       }),
       getCounselorsManagement: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
-        query: ({ type, page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
+        query: ({
+          type, page = 1,
+          ratingFrom = '',
+          ratingTo = '',
+          search = '',
+          sortBy = '',
+          sortDirection = '',
+          availableFrom,
+          availableTo,
+          departmentId,
+          majorId,
+          specializationId,
+          expertiseId,
+          size = 10,
+        }) => ({
           url: type === 'ACADEMIC'
             ? `/api/manage/counselors/academic`
             : `/api/manage/counselors/non-academic`,
           params: {
-            page
+            page,
+            ratingFrom,
+            ratingTo,
+            search,
+            sortBy,
+            sortDirection,
+            availableFrom,
+            availableTo,
+            departmentId,
+            majorId,
+            specializationId,
+            expertiseId,
+            size,
           }
         }),
         providesTags: ['counselors']
@@ -205,9 +231,16 @@ export type GetCounselorsApiArg = {
   search?: string,
   sortDirection?: 'ASC' | 'DESC',
   sortBy?: string,
-  page?: number,
-  ratingFrom?: number,
-  ratingTo?: number
+  page?: number | '',
+  ratingFrom?: number | '',
+  ratingTo?: number | '',
+  availableFrom?: string,
+  availableTo?: string,
+  specializationId?: number | '';
+  departmentId?: number | '';
+  majorId?: number | '';
+  expertiseId?: number | '';
+  size?: number;
 }
 
 export type GetCounselorApiResponse = ApiResponse<ManagementCounselor>

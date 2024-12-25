@@ -84,7 +84,7 @@ const RequestsContent = () => {
 
 
   return (
-    <div className='p-32 flex flex-col gap-16 container mx-auto max-w-screen-lg'>
+    <div className='p-32 flex flex-col gap-16 container mx-auto'>
       <Box className='flex gap-32 justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker

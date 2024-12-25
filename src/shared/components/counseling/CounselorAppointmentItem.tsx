@@ -31,10 +31,10 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
 
   return (
     <Paper
-      className="flex gap-16 p-16 shadow"
+      className="flex flex-col shadow"
       sx={{ bgcolor: 'background.paper' }}
     >
-      <div className='flex flex-col w-full'>
+      <div className='flex flex-col w-full  p-16 '>
         <ListItem
           className='flex justify-between p-0 gap-16'
         >
@@ -54,56 +54,57 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
               size='small'
             />
             <Chip
-              label={appointment.status}
+              label={appointment.status.toLowerCase()}
               variant='filled'
               color={statusColor[appointment.status]}
               size='small'
+              className='capitalize'
             />
           </div>
           <ItemMenu
-              menuItems={[
-                {
-                  label: 'View details',
-                  onClick: () => {
-                    navigate(`appointment/${appointment.id}`)
-                    // navigate(`/counseling/appointments/appointment/${appointment.id}`)
-                    handleCloseDialog()
-                  },
-                  icon: <Visibility fontSize='small' />
+            menuItems={[
+              {
+                label: 'View details',
+                onClick: () => {
+                  navigate(`appointment/${appointment.id}`)
+                  // navigate(`/counseling/appointments/appointment/${appointment.id}`)
+                  handleCloseDialog()
                 },
-                ...(['WAITING'].includes(appointment?.status) ? [{
-                  label: 'Cancel',
-                  onClick: () => {
-                    dispatch(
-                      openDialog({
-                        children: <CancelAppointmentDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
-                      })
-                    )
-                    handleCloseDialog()
-                  },
-                  icon: <Clear fontSize='small' />
-                }] : []),
-                ...(['ATTEND'].includes(appointment?.status) ? [
-                  appointment?.havingReport
-                    ? {
-                      label: 'View Report',
-                      onClick: () => {
-                        navigate(`${appointment?.id}/report`)
-                        handleCloseDialog()
-                      },
-                      icon: <Summarize fontSize='small' />
-                    }
-                    : {
-                      label: 'Create Report',
-                      onClick: () => {
-                        navigate(`${appointment?.id}/report/create`)
-                        handleCloseDialog()
-                      },
-                      icon: <Add fontSize='small' />
-                    }
-                ] : [])
-              ]}
-            />
+                icon: <Visibility fontSize='small' />
+              },
+              ...(['WAITING'].includes(appointment?.status) ? [{
+                label: 'Cancel',
+                onClick: () => {
+                  dispatch(
+                    openDialog({
+                      children: <CancelAppointmentDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
+                    })
+                  )
+                  handleCloseDialog()
+                },
+                icon: <Clear fontSize='small' />
+              }] : []),
+              ...(['ATTEND'].includes(appointment?.status) ? [
+                appointment?.havingReport
+                  ? {
+                    label: 'View Report',
+                    onClick: () => {
+                      navigate(`${appointment?.id}/report`)
+                      handleCloseDialog()
+                    },
+                    icon: <Summarize fontSize='small' />
+                  }
+                  : {
+                    label: 'Create Report',
+                    onClick: () => {
+                      navigate(`${appointment?.id}/report/create`)
+                      handleCloseDialog()
+                    },
+                    icon: <Add fontSize='small' />
+                  }
+              ] : [])
+            ]}
+          />
 
           {/* <div className='relative'>
           {
@@ -135,14 +136,15 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
           </Menu>
         </div> */}
         </ListItem>
-        <div className='mt-16'>
-          {appointment.cancelReason && (
+        {appointment.cancelReason && (
+          <div className='mt-16'>
             <div className='flex items-center gap-8'>
               <Typography className='' color='textSecondary'>Canceled by {splitUserAndReason(appointment.cancelReason).user.toLowerCase()}:</Typography>
               <Typography className='font-semibold' color='error'>{splitUserAndReason(appointment.cancelReason).reason}</Typography>
             </div>
-          )}
-        </div>
+          </div>
+
+        )}
 
         <div className='flex gap-4 mb-8'>
           {appointment.meetingType === 'ONLINE' ? (
@@ -179,7 +181,7 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
           </Tooltip>
         </div>
 
-        <div className='pl-16 border-l-2'>
+        <div className='pl-16 border-l-2 border-secondary-main'>
           <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
             <ListItemButton
               onClick={() => {
@@ -201,34 +203,35 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
 
           <div className='pl-4 mt-8'>
             {
-              ['ATTEND', 'ABSENT'].includes(appointment.status) && (
-                <div className='flex gap-4'>
-                  <div className='flex items-center'>
-                    <Typography className={'w-[13rem]'} color='textSecondary'>Attendance Status:</Typography>
-                    <Typography className='pl-4 font-semibold' color={statusColor[appointment.status]}>
-                      {appointment.status}
-                    </Typography>
-                  </div>
-                  <Tooltip title={'Update attendance'}>
-                    <IconButton
-                      color='secondary'
-                      onClick={() => dispatch(
-                        openDialog({
-                          children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
-                        })
-                      )}
-                    >
-                      <EditNote fontSize='medium' />
-                    </IconButton>
-                  </Tooltip>
+              // ['ATTEND', 'ABSENT'].includes(appointment.status) && (
+
+              // )
+              <div className='flex gap-4'>
+                <div className='flex items-center'>
+                  <Typography className={'w-[9rem]'} color='textSecondary'>Attendance:</Typography>
+                  <Typography className='pl-4 font-semibold' color={statusColor[appointment.status]}>
+                    {appointment.status}
+                  </Typography>
                 </div>
-              )
+                <Tooltip title={'Update attendance'}>
+                  <IconButton
+                    color='secondary'
+                    onClick={() => dispatch(
+                      openDialog({
+                        children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
+                      })
+                    )}
+                  >
+                    <EditNote fontSize='medium' />
+                  </IconButton>
+                </Tooltip>
+              </div>
             }
             {
               appointment.appointmentFeedback && (
                 <div className='w-full'>
                   <div className='flex'>
-                    <Typography className='w-[13rem]' color='textSecondary'>Student feedback:</Typography>
+                    <Typography className='w-[9rem]' color='textSecondary'>Feedback:</Typography>
                     <div className='flex flex-col'>
                       <div className='flex items-center gap-8'>
                         <Rating size='medium' value={appointment.appointmentFeedback.rating} readOnly />
@@ -240,26 +243,29 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
                 </div>
               )
             }
-            {
-              appointment.status === 'WAITING'
-              // && dayjs().isAfter(dayjs(appointment.startDateTime))
-              && (
-                <div className='mt-16'>
-                  <Button className='mt-4' variant='contained' color='secondary' size='small'
-                    // disabled={dayjs().isBefore(dayjs(appointment.startDateTime))}
-                    onClick={() => dispatch(openDialog({
-                      children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
-                    }
-                    ))}
-                  >
-                    Take attendance
-                  </Button>
-                </div>
-              )
-            }
           </div>
         </div>
       </div>
+      {
+        appointment.status === 'WAITING'
+        // && dayjs().isAfter(dayjs(appointment.startDateTime))
+        && (
+          <Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5 '>
+            <div className='flex w-full justify-end'>
+              <Button className='mt-4' variant='contained' color='secondary'
+                // disabled={dayjs().isBefore(dayjs(appointment.startDateTime))}
+                onClick={() => dispatch(openDialog({
+                  children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
+                }
+                ))}
+                // disabled={!dayjs().isAfter(dayjs(appointment.startDateTime))}
+              >
+                Take attendance
+              </Button>
+            </div>
+          </Box>
+        )
+      }
     </Paper>
   );
 }

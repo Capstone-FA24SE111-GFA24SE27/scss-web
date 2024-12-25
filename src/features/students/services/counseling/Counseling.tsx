@@ -10,13 +10,6 @@ import QuickBooking from './quick-booking';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { selectCounselingTab, setCounselingTab } from './counselor-list/counselor-list-slice';
 
-
-const Root = styled(PageSimple)(({ theme }) => ({
-	'& .PageSimple-header': {
-		backgroundColor: theme.palette.background.paper
-	},
-}));
-
 /**
  * The ContactsApp page.
  */
@@ -42,7 +35,7 @@ function Counseling() {
 	}, [routeParams]);
 
 	return (
-		<Root
+		<PageSimple
 			header={
 				<div>
 					<CounselingHeader />

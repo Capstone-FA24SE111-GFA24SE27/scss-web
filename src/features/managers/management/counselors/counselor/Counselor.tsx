@@ -52,8 +52,6 @@ function Counseling() {
 
   const filteredSlots = counselorCounselingSlots?.filter(slot => slot.dayOfWeek === selectedDay) || []
 
-  console.log(filteredSlots)
-
   const isMobile = false
 
   const [updateCounselorStatus, { isLoading: isLoadingCounselorStatus, isSuccess: isSuccessCounselorStatus }] = useUpdateCounselorStatusMutation()

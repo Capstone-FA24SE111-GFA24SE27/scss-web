@@ -26,11 +26,11 @@ import MarkReport from '@/shared/pages/student/MarkReport';
  * The contact view.
  */
 
-interface GeneralInformationProps {
+interface CounselingProfileProps {
   id?: string,
   actionButton?: ReactNode,
 }
-function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
+function CounselingProfile({ id, actionButton }: CounselingProfileProps) {
   const { id: studentRouteId } = useParams();
   const studentId = id || studentRouteId
   const { data, isLoading } = useGetStudentDocumentDetailQuery(studentId);
@@ -145,9 +145,10 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
           <div className='flex flex-col gap-8 mt-8'>
             <div>
               {/* Psychological and Health Status */}
-              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded>
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} >
                   <Typography>Psychological and Health Status</Typography>
+                  <Divider />
                 </AccordionSummary>
                 <AccordionDetails>
                   <Typography><strong>Introduction:</strong> {student?.counselingProfile?.introduction || `N/A`}</Typography>
@@ -158,7 +159,7 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
               </Accordion>
 
               {/* Academic Information */}
-              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded>
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} >
                   <Typography>Academic Information</Typography>
                 </AccordionSummary>
@@ -169,7 +170,7 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
               </Accordion>
 
               {/* Career Information */}
-              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded>
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} >
                   <Typography>Career Information</Typography>
                 </AccordionSummary>
@@ -181,7 +182,7 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
               </Accordion>
 
               {/* Activities and Lifestyle */}
-              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded>
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} >
                   <Typography>Activities and Lifestyle</Typography>
                 </AccordionSummary>
@@ -193,7 +194,7 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
               </Accordion>
 
               {/* Financial Support */}
-              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded>
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} >
                   <Typography>Financial Support</Typography>
                 </AccordionSummary>
@@ -204,7 +205,7 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
               </Accordion>
 
               {/* Counseling Requests */}
-              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded>
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} >
                   <Typography>Counseling Requests</Typography>
                 </AccordionSummary>
@@ -233,7 +234,7 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
   );
 }
 
-export default GeneralInformation;
+export default CounselingProfile;
 function formatMarkdown(data) {
   // Clean up any extra spaces and commas
   data = data.replace(/\n\s*\n/g, '\n'); // Remove extra empty lines

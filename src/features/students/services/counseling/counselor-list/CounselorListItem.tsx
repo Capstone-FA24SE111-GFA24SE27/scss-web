@@ -26,8 +26,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 		<>
 			<ListItemButton
 				selected={counselor?.id == Number(id)}
-				className="p-8 flex gap-24 items-start px-24 py-16 justify-between"
-				sx={{ bgcolor: 'background.paper' }}
+				className="p-8 flex gap-24 items-start px-24 py-16 justify-between bg-background-paper"
 				component={NavLinkAdapter}
 				to={`counselor/${counselor.profile.id}`}
 			>

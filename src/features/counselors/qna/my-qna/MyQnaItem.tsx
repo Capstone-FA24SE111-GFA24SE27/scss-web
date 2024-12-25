@@ -184,22 +184,41 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 				>
 					<AccordionSummary expandIcon={<ExpandMore />} className=''>
 						<div className='flex flex-col gap-8'>
+							<Typography className='w-full pr-8 font-semibold'>
+								{qna.title}
+							</Typography>
+							<div className='flex gap-8 items-center'>
+								<UserLabel
+									profile={qna?.student?.profile}
+									label='Asked by'
+									email={qna?.student.email}
+									onClick={() => {
+										dispatch(
+											openStudentView(qna?.student.id.toString())
+										);
+									}}
+								/>
+								<span className='text-text-secondary' >•</span>
+								<Typography color='textSecondary'>{`${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}</Typography>
+							</div>
 							<div className='flex gap-8'>
-								{qna.answer ? (
-									<Chip icon={<CheckCircleOutlineOutlined />} label='Answered' color='success' size='small' variant='outlined' />
-								) : (
-									<HelpOutlineOutlined color='disabled' />
-								)}
 								<Chip
 									label={qna.difficultyLevel}
 									color={difficultyColor[qna.difficultyLevel as string]}
 									size='small'
 									variant='outlined'
 								/>
+								{qna.answer ? (
+									<Chip icon={<CheckCircleOutlineOutlined />} label='Answered' color='success' size='small' variant='outlined' />
+								) : (
+									<Chip icon={<HelpOutlineOutlined />} label='Not Answered' size='small' variant='outlined' />
+
+								)}
 								<Chip
-									label={qna.status}
+									label={qna.status.toLocaleLowerCase()}
 									color={statusColor[qna.status as string]}
 									size='small'
+									className='capitalize'
 								/>
 								{/* <Chip label={qna.topic?.name} size='small' /> */}
 								{/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
@@ -221,28 +240,6 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								) : (
 									''
 								)}
-							</div>
-							<div className='flex gap-8 items-center mt-8'>
-								<UserLabel
-									profile={qna?.student?.profile}
-									label='Asked by'
-									email={qna?.student.email}
-									onClick={() => {
-										dispatch(
-											openStudentView(qna?.student.id.toString())
-										);
-									}}
-								/>
-								<span className='text-text-secondary' >•</span>
-								<Typography color='textSecondary'>{`${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}</Typography>
-							</div>
-
-							<div className='flex items-center flex-1 gap-8'>
-								{/* <Divider orientation='vertical' /> */}
-
-								<Typography className='w-full pr-8 font-semibold'>
-									{RenderHTML(qna.title)}
-								</Typography>
 							</div>
 						</div>
 					</AccordionSummary>

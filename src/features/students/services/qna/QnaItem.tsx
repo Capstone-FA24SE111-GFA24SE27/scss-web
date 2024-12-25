@@ -164,6 +164,10 @@ const QnaItem = (props: Props) => {
 
 					>
 						<div className='flex flex-col gap-8 w-full'>
+							<Typography className='w-full pr-8 font-semibold text-lg'>
+								{qna.title}
+							</Typography>
+							<Typography color='textSecondary' className=''>Created at {dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
 							<div className='flex gap-8'>
 								{qna.answer ? (
 									<Chip icon={<CheckCircleOutlineOutlined />} label='Answered' color='success' size='small' variant='outlined' />
@@ -182,9 +186,10 @@ const QnaItem = (props: Props) => {
 									size='small'
 								/>
 								<Chip
-									label={qna.status}
+									label={qna.status?.toLowerCase()}
 									color={statusColor[qna.status as string]}
 									size='small'
+									className='!capitalize'
 								/>
 								{qna.closed && (
 									<Chip
@@ -205,7 +210,7 @@ const QnaItem = (props: Props) => {
 
 								{countUnreadMessages() ? (
 									<Chip
-										label={countUnreadMessages()}
+										label={`${countUnreadMessages()} unread messages`}
 										size='small'
 										variant='filled'
 										color='secondary'
@@ -214,13 +219,7 @@ const QnaItem = (props: Props) => {
 									''
 								)}
 							</div>
-							<Typography color='textSecondary' className=''>Created at {dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-							<div className='flex items-center flex-1 gap-8'>
 
-								<Typography className='w-full pr-8 font-semibold'>
-									{qna.title}
-								</Typography>
-							</div>
 						</div>
 					</AccordionSummary>
 
@@ -230,7 +229,7 @@ const QnaItem = (props: Props) => {
 							{
 								qna.counselor && (
 									<UserLabel
-										label={`${([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status] } by`}
+										label={`${([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status]} by`}
 										profile={qna?.counselor.profile}
 										email={qna?.counselor?.email}
 										onClick={() => {

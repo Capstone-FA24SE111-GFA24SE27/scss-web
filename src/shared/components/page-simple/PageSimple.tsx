@@ -1,13 +1,13 @@
 // import FuseScrollbars from '@core/FuseScrollbars';
 import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
-import { forwardRef, memo, ReactNode, useImperativeHandle, useRef } from 'react';
+import { forwardRef, memo, ReactNode, Suspense, useImperativeHandle, useRef } from 'react';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
 import { Theme } from '@mui/system';
 import PageSimpleHeader from './PageSimpleHeader';
 import PageSimpleSidebar from './PageSimpleSidebar';
-import { Scrollbar } from '@shared/components';
+import { AppLoading, Scrollbar } from '@shared/components';
 
 const headerHeight = 72;
 const toolbarHeight = 64;
@@ -169,7 +169,7 @@ const Root = styled('div')<PageSimpleProps>(({ theme, ...props }) => ({
 
 	'& .PageSimple-rightSidebar': {
 		width: props.rightSidebarWidth,
-
+		backgroundColor: theme.palette.background.default,
 		[theme.breakpoints.up('lg')]: {
 			borderLeft: `1px solid ${theme.palette.divider}`,
 			borderRight: 0
@@ -311,7 +311,9 @@ const PageSimple = forwardRef<
 								open={rightSidebarOpen}
 								onClose={rightSidebarOnClose}
 							>
-								{rightSidebarContent}
+								<Suspense fallback={<AppLoading />}>
+									{rightSidebarContent}
+								</Suspense>
 							</PageSimpleSidebar>
 						)}
 					</div>

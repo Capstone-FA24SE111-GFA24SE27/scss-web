@@ -10,17 +10,39 @@ import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { ManagementCounselor, useGetCounselorsAcademicManagementQuery, useGetCounselorsManagementQuery } from '../counselors-api';
 import { CounselingType } from '@/shared/types';
+import { selectCounselorType, selectFilter, selectSearchTerm } from './counselor-list-slice';
+import { useAppSelector } from '@shared/store';
 function CounselorsTable({ type }: { type: CounselingType }) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
-  console.log(type);
-  
+
+  const search = useAppSelector(selectSearchTerm);
+  const filter = useAppSelector(selectFilter);
+  const counselorType = useAppSelector(selectCounselorType);
+  const {
+    availableFrom,
+    availableTo,
+    departmentId,
+    majorId,
+    specializationId,
+    expertiseId,
+    ratingFrom,
+    ratingTo,
+  } = filter;
 
   const { data, isLoading } = useGetCounselorsManagementQuery({
     type,
-    page: pagination.pageIndex + 1
+    page: pagination.pageIndex + 1,
+    search,
+    availableFrom,
+    availableTo,
+    departmentId,
+    majorId,
+    specializationId,
+    ratingFrom,
+    ratingTo,
   })
   console.log(data)
 

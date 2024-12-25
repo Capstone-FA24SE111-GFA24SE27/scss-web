@@ -78,7 +78,7 @@ const Faq = () => {
         <div className='flex flex-col mt-80 '>
           {/* Show category here */}
         </div>
-        <div className='flex flex-col w-full max-w-xl mt-16'>
+        <div className='flex flex-col w-full container mt-16'>
           <SearchField onSearch={handleSearch} className='w-full' />
           {/* <ContentSearch onSearch={handleSearch} /> */}
           <div className='flex justify-between w-full mt-16'>

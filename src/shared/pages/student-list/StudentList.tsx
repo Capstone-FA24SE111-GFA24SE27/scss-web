@@ -23,7 +23,7 @@ function StudentList({ isShowingTab = false }) {
   return (
     <PageSimple
       header={
-        <div className='p-32 border-b bg-background-paper'>
+        <div className='p-32 pb-16 border-b bg-background-paper'>
           <Heading
             title='Student List'
             description='Students in FPTU HCM'
@@ -41,10 +41,18 @@ function StudentList({ isShowingTab = false }) {
       content={
         <PageSimple
           className='h-full'
-          header={<StudentListHeader isShowingTab={isShowingTab} />}
+          header={
+            <div className='bg-background-paper px-24 border-b-2'>
+              <StudentListHeader isShowingTab={isShowingTab} />
+            </div>
+          }
           content={<StudentListContent />}
           ref={pageLayout}
-          rightSidebarContent={<StudentListSidebarContent />}
+          rightSidebarContent={
+            <div className='p-24'>
+              <StudentListSidebarContent />
+            </div>
+          }
           rightSidebarOpen={filter.open}
           rightSidebarOnClose={() => {
             dispatch(filterClose())

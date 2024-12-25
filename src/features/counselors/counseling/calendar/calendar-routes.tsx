@@ -3,20 +3,18 @@ import { lazy } from 'react';
 import { reportRoutes } from '../appointments/report';
 import { appointmentRoutes, studentRoutes } from '@/shared/pages';
 const Calendar = lazy(() => import('./calendar-layout'));
-const DateDetailScheduleView = lazy(
-	() => import('./calendar-components/date/DateDetailScheduleView')
-);
+const DateDetailScheduleView = lazy(() => import('./calendar-components/date/DateDetailScheduleView'));
 export const calendarRoutes: RouteObject[] = [
 	{
 		path: 'calendar',
 		element: <Calendar />,
 		children: [
-			...studentRoutes,
-      ...reportRoutes,
-			...appointmentRoutes,
 			{
 				path: 'date/:date',
 				element: <DateDetailScheduleView />,
+				children: [
+					...appointmentRoutes,
+				]
 			},
 		],
 	},

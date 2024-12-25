@@ -21,7 +21,7 @@ function CounselingHeader() {
     return (
         <>
             <div className="px-24 py-16 sm:px-32 w-full bg-background-paper">
-                <Heading title='Counseling Service' description='Providing personalized guidance and support for students.'/>
+                <Heading title='Counseling Service' description='Providing personalized guidance and support for students.' />
             </div>
         </>
     );

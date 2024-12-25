@@ -52,7 +52,7 @@ const ConversationItem = (props: Props) => {
             {/* <Typography className="text-sm text-text-disabled">{dayjs(qnaItem?.chatSession?.lastInteractionDate).format('YYYY-MM-DD')}</Typography> */}
           </div>
           <div className='flex items-center justify-between'>
-            <div className="flex-1 text-sm text-primary-light line-clamp-1">{qnaItem.chatSession?.messages?.at(-1)?.content || qnaItem.title}</div>
+            <div className="flex-1 text-sm text-primary-light line-clamp-1 max-w-384">{qnaItem.chatSession?.messages?.at(-1)?.content || qnaItem.title}</div>
             {countUnreadMessages() ? <Chip label={countUnreadMessages()} size='small' color='secondary' /> : ''}
           </div>
         </div>

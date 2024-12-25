@@ -22,6 +22,7 @@ const CounselorListFilterButton = (props: { className?: string, children?: React
         >
           <IconButton
             color='inherit'
+            className='p-0'
             onClick={() => dispatch(filterToggle())}
 
           >

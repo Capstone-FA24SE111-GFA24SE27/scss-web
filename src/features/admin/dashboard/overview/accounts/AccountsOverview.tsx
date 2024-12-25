@@ -1,5 +1,5 @@
-import StudentsOverview from '@/features/managers/management/students/overview/StudentsOverview';
-import SupportStaffOverview from '@/features/managers/management/support-staffs/overview/SupportStaffsOverview';
+import StudentsOverview from '@/features/managers/dashboard/analytics/student-overview/StudentsOverview';
+import SupportStaffOverview from '@/features/managers/dashboard/analytics/support-staff-overview/SupportStaffsOverview';
 import { FilterTabs, Heading, Scrollbar } from '@/shared/components';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
