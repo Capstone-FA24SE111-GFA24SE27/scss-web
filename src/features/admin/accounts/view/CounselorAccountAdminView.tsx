@@ -19,7 +19,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Delete } from '@mui/icons-material';
 import { useGetOneAccountQuery } from '../admin-accounts-api';
 import AccountDetailAdminViewHeader from './AccountDetailAdminViewHeader';
-import { checkImageUrl, fetchImageAsFile } from '@/shared/utils';
+import {
+	checkFirebaseImageUrl,
+	checkImageUrl,
+	fetchImageAsFile,
+} from '@/shared/utils';
 import DepartmentInfoTab from './tabs/DepartmentInfoTab';
 import WorkExperienceTab from './tabs/WorkExperienceTab';
 import ExpertiseTab from './tabs/ExpertiseTab';
@@ -31,11 +35,13 @@ type Props = {
 const currentYear = dayjs().year();
 
 const schemaNonAcademic = z.object({
+	id: z.union([z.string(), z.number()]).optional(),
 	avatarLink: z
 		.string()
 		.url('Invalid URL')
 		.refine(
-			async (url) => await checkImageUrl(url),
+			async (url) =>
+				checkFirebaseImageUrl(url) || (await checkImageUrl(url)),
 			'URL must point to a valid image file (jpeg, png, gif)'
 		),
 	email: z.string().email('Invalid email address'), // Validates email format
@@ -62,6 +68,7 @@ const schemaNonAcademic = z.object({
 	achievements: z.string().min(1, 'Achievement is required'),
 	qualifications: z.array(
 		z.object({
+			id: z.union([z.string(), z.number()]).optional(),
 			degree: z.string().min(1, 'Degree is required'),
 			fieldOfStudy: z.string().min(1, 'Field of study is required'),
 			institution: z.string().min(1, 'Institution  is required'),
@@ -85,37 +92,58 @@ const schemaNonAcademic = z.object({
 					return year >= 1900 && year <= currentYear;
 				}, `Year must be between 1900 and ${currentYear}`),
 			imageUrl: z
-				.instanceof(File, { message: 'Image not found' })
-				.refine((file) => isValidImage(file), {
-					message: 'File must be an image',
-				})
-				.refine((file) => file.size <= MAX_FILE_SIZE, {
-					message: 'Image must be less than 5MB',
-				}),
+				.string()
+				.url()
+				.refine(
+					async (url) =>
+						checkFirebaseImageUrl(url) ||
+						(await checkImageUrl(url)),
+					{
+						message: 'Invalid image URL.',
+					}
+				), // Validates URL and checks for image extensions
 		})
 	),
 	certifications: z.array(
 		z.object({
+			id: z.union([z.string(), z.number()]).optional(),
 			name: z.string().min(1, 'Please enter'),
 			organization: z.string().min(1, 'Please enter'),
-			imageUrl: z
-				.instanceof(File, { message: 'Image not found' })
-				.refine((file) => isValidImage(file), {
-					message: 'File must be an image',
-				})
-				.refine((file) => file.size <= MAX_FILE_SIZE, {
-					message: 'Image must be less than 5MB',
-				}),
+			imageUrl: z.union([
+				z
+					.instanceof(File, { message: 'Image not found' })
+					.refine((file) => isValidImage(file), {
+						message: 'File must be an image',
+					})
+					.refine((file) => file.size <= MAX_FILE_SIZE, {
+						message: 'Image must be less than 5MB',
+					}),
+				z
+					.string()
+					.url()
+					.refine(
+						async (url) => {
+							const checkValid = await checkImageUrl(url);
+							return checkFirebaseImageUrl(url) || checkValid;
+						},
+
+						{
+							message: 'Invalid image URL.',
+						}
+					), // Validates URL and checks for image extensions
+			]),
 		})
 	),
 });
 
 const schemaAcademic = z.object({
+	id: z.union([z.string(), z.number()]).optional(),
 	avatarLink: z
 		.string()
 		.url('Invalid URL')
 		.refine(
-			async (url) => await checkImageUrl(url),
+			async (url) =>
+				(await checkImageUrl(url)) || checkFirebaseImageUrl(url),
 			'URL must point to a valid image file (jpeg, png, gif)'
 		),
 	email: z.string().email('Invalid email address'), // Validates email format
@@ -144,6 +172,7 @@ const schemaAcademic = z.object({
 	achievements: z.string().min(1, 'Achievement is required'),
 	qualifications: z.array(
 		z.object({
+			id: z.union([z.string(), z.number()]).optional(),
 			degree: z.string().min(1, 'Degree is required'),
 			fieldOfStudy: z.string().min(1, 'Field of study is required'),
 			institution: z.string().min(1, 'Institution  is required'),
@@ -162,28 +191,57 @@ const schemaAcademic = z.object({
 					(value) => dayjs(value.toString(), 'YYYY', true).isValid(),
 					{ message: 'Invalid year' }
 				),
-			imageUrl: z
-				.instanceof(File, { message: 'Image not found' })
-				.refine((file) => isValidImage(file), {
-					message: 'File must be an image',
-				})
-				.refine((file) => file.size <= MAX_FILE_SIZE, {
-					message: 'Image must be less than 5MB',
-				}),
+			imageUrl: z.union([
+				z
+					.instanceof(File, { message: 'Image not found' })
+					.refine((file) => isValidImage(file), {
+						message: 'File must be an image',
+					})
+					.refine((file) => file.size <= MAX_FILE_SIZE, {
+						message: 'Image must be less than 5MB',
+					}),
+				z
+					.string()
+					.url()
+					.refine(
+						(url) => async (url) => {
+							const checkValid = await checkImageUrl(url);
+							return checkFirebaseImageUrl(url) || checkValid;
+						},
+						{
+							message: 'Invalid image URL. ',
+						}
+					), // Validates URL and checks for image extensions
+			]),
 		})
 	),
 	certifications: z.array(
 		z.object({
+			id: z.union([z.string(), z.number()]).optional(),
 			name: z.string().min(1, 'Please enter'),
 			organization: z.string().min(1, 'Please enter'),
-			imageUrl: z
-				.instanceof(File, { message: 'Image not found' })
-				.refine((file) => isValidImage(file), {
-					message: 'File must be an image',
-				})
-				.refine((file) => file.size <= MAX_FILE_SIZE, {
-					message: 'Image must be less than 5MB',
-				}),
+			imageUrl: z.union([
+				z
+					.instanceof(File, { message: 'Image not found' })
+					.refine((file) => isValidImage(file), {
+						message: 'File must be an image',
+					})
+					.refine((file) => file.size <= MAX_FILE_SIZE, {
+						message: 'Image must be less than 5MB',
+					}),
+				z
+					.string()
+					.url()
+					.refine(
+						async (url) => async (url) => {
+							const checkValid = await checkImageUrl(url);
+							return checkFirebaseImageUrl(url) || checkValid;
+						},
+						{
+							message: 'Invalid image URL.',
+						}
+					), // Validates URL and checks for image extensions
+			]),
 		})
 	),
 });
@@ -200,50 +258,52 @@ const CounselorAccountAdminView = (props: Props) => {
 	const counselor = data?.content;
 	const counselorAccount: Account | null = counselorAccountData?.content;
 
-	const defaultValues = async () => {
-		const certifications = counselor?.profile?.certifications
-			? await Promise.all(
-					counselor?.profile?.certifications.map(
-						async (cert, index) => {
-							const fetchedImage = await fetchImageAsFile(
-								cert.imageUrl,
-								`downloaded-image-${cert.imageUrl}`
-							);
-							console.log({
-								...cert,
-								imageUrl: fetchedImage,
-							});
+	console.log(counselor);
 
-							return {
-								...cert,
-								imageUrl: fetchedImage,
-							};
-						}
-					)
-			  )
-			: [];
+	const defaultValues = () => {
+		// const certifications = counselor?.profile?.certifications
+		// 	? await Promise.all(
+		// 			counselor?.profile?.certifications.map(
+		// 				async (cert, index) => {
+		// 					const fetchedImage = await fetchImageAsFile(
+		// 						cert.imageUrl,
+		// 						`downloaded-image-${cert.imageUrl}`
+		// 					);
+		// 					console.log({
+		// 						...cert,
+		// 						imageUrl: fetchedImage,
+		// 					});
 
-		const qualifications = counselor?.profile?.qualifications
-			? await Promise.all(
-					counselor?.profile?.qualifications.map(
-						async (qual, index) => {
-							const fetchedImage = await fetchImageAsFile(
-								qual.imageUrl,
-								`downloaded-image-${qual.imageUrl}`
-							);
-							console.log({
-								...qual,
-								imageUrl: fetchedImage,
-							});
+		// 					return {
+		// 						...cert,
+		// 						imageUrl: fetchedImage,
+		// 					};
+		// 				}
+		// 			)
+		// 	  )
+		// 	: [];
 
-							return {
-								...qual,
-								imageUrl: fetchedImage,
-							};
-						}
-					)
-			  )
-			: [];
+		// const qualifications = counselor?.profile?.qualifications
+		// 	? await Promise.all(
+		// 			counselor?.profile?.qualifications.map(
+		// 				async (qual, index) => {
+		// 					const fetchedImage = await fetchImageAsFile(
+		// 						qual.imageUrl,
+		// 						`downloaded-image-${qual.imageUrl}`
+		// 					);
+		// 					console.log({
+		// 						...qual,
+		// 						imageUrl: fetchedImage,
+		// 					});
+
+		// 					return {
+		// 						...qual,
+		// 						imageUrl: fetchedImage,
+		// 					};
+		// 				}
+		// 			)
+		// 	  )
+		// 	: [];
 
 		return {
 			avatarLink: counselorAccount?.profile?.avatarLink,
@@ -264,8 +324,8 @@ const CounselorAccountAdminView = (props: Props) => {
 			otherSkills: counselor?.profile?.otherSkills,
 			workHistory: counselor?.profile?.workHistory,
 			achievements: counselor?.profile?.achievements,
-			qualifications: qualifications,
-			certifications: certifications,
+			qualifications: counselor?.profile?.qualifications,
+			certifications: counselor?.profile?.certifications,
 		};
 	};
 
@@ -281,17 +341,20 @@ const CounselorAccountAdminView = (props: Props) => {
 			: zodResolver(schemaAcademic),
 	});
 
-	const { reset, watch, control, trigger } = methods;
+	const { reset, watch, control, trigger, formState, setFocus } = methods;
+	const { dirtyFields, errors } = formState;
 
 	const formData = watch();
 
 	const useCertificationFieldArray = useFieldArray({
 		control,
+		keyName: 'uid',
 		name: 'certifications',
 	});
 
 	const useQualificationFieldArray = useFieldArray({
 		control,
+		keyName: 'uid',
 		name: 'qualifications',
 	});
 
@@ -299,8 +362,8 @@ const CounselorAccountAdminView = (props: Props) => {
 		setTabValue(newValue);
 	};
 
-	const initializeDefaultValues = async () => {
-		const values = await defaultValues();
+	const initializeDefaultValues = () => {
+		const values = defaultValues();
 		//@ts-ignore
 		reset(values);
 		trigger();
@@ -319,14 +382,30 @@ const CounselorAccountAdminView = (props: Props) => {
 		}
 	}, [formData]);
 
-	const onSubmit = () => {};
+	// useEffect(() => {
+	// 	const firstError = Object.keys(errors)[0];
+	// 	console.log('tabfild', tabFields[firstError]);
+
+	// }, [errors, setFocus]);
+
+	const onSubmit = () => {
+		if (dirtyFields.qualifications) {
+		}
+	};
 
 	if (isLoading || isLoadingAccount || isInitializing)
 		return <ContentLoading />;
 
 	return (
 		<FormProvider {...methods}>
-			<AccountDetailAdminViewHeader />
+			<AccountDetailAdminViewHeader
+				role={
+					counselor?.profile?.expertise
+						? roles.NON_ACADEMIC_COUNSELOR
+						: roles.ACADEMIC_COUNSELOR
+				}
+				changeTab={setTabValue}
+			/>
 			<Paper className='flex flex-col flex-auto h-full p-16 overflow-hidden'>
 				<Tabs
 					value={tabValue}

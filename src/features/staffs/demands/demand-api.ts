@@ -63,6 +63,21 @@ export const demandForStaffApi = api
 				},
 				invalidatesTags: ['demands'],
 			}),
+			getMatchCounselorForStudentStaff: build.query<
+				GetMatchCounselorForStudentStaffResponse,
+				GetMatchCounselorForStudentStaffArg
+			>({
+				query: ({ slotId, reason, date, gender }) => ({
+					url: `/api/counselors/random/match`,
+					params: {
+						slotId,
+						reason,
+						date,
+						gender,
+					},
+				}),
+				providesTags: ['counselor']
+			}),
 			putUpdateDemandByDemandIdForStaff: build.mutation<
 				PutUpdateDemandByDemandIdResponse,
 				PutUpdateDemandByDemandIdArgs
@@ -189,7 +204,6 @@ export const demandForStaffApi = api
 						departmentId,
 						specializationId,
 						majorId,
-			
 					},
 					//Object.fromEntries(
 					// 	Object.entries({
@@ -215,6 +229,7 @@ export const {
 	useGetCounselorsNonAcademicForStaffQuery,
 	useGetDemandByIdForStaffQuery,
 	useGetQuickMatchCounselorForStaffMutation,
+	useGetMatchCounselorForStudentStaffQuery
 } = demandForStaffApi;
 
 type GetDemandByIdArg = number | string;
@@ -229,6 +244,14 @@ export type GetCounselingDemandFilterApiArg = {
 	sortBy?: string;
 	sortDirection?: 'ASC' | 'DESC';
 	page?: number;
+};
+
+export type GetMatchCounselorForStudentStaffResponse = ApiResponse<Counselor>;
+export type GetMatchCounselorForStudentStaffArg = {
+	slotId?: number | string;
+	date?: string;
+	gender?: 'MALE' | 'FEMAlE';
+	reason: string;
 };
 
 export type PostCreateDemandByStudentIdResponse = ApiResponse<CounselingDemand>;

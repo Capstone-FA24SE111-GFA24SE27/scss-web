@@ -1,5 +1,9 @@
 import React from 'react';
-import { FollowedDTOType, useGetStudentFollowStatusQuery, useUnfollowStudentStaffMutation } from './staff-followed-student-api';
+import {
+	FollowedDTOType,
+	useGetStudentFollowStatusQuery,
+	useUnfollowStudentStaffMutation,
+} from './staff-followed-student-api';
 import {
 	ExpandableText,
 	ItemMenu,
@@ -25,6 +29,7 @@ import dayjs from 'dayjs';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import { getApiErrorMessage, isApiError, useAppDispatch } from '@shared/store';
 import UpdateFollowNoteForm from './UpdateFollowNoteForm';
+import { useConfirmDialog } from '@/shared/hooks';
 
 type Props = {
 	item: FollowedDTOType;
@@ -33,40 +38,54 @@ type Props = {
 const FollowedListItem = (props: Props) => {
 	const { item } = props;
 	const navigate = useNavigate();
-    const dispatch = useAppDispatch()
+	const dispatch = useAppDispatch();
 
-    const [unfollowStudent] = useUnfollowStudentStaffMutation()
+	const [unfollowStudent] = useUnfollowStudentStaffMutation();
 
-    const handleView = () => {
+	const handleView = () => {};
 
-    }
-    
-    const handleCreateDemand = () => {
-        navigate(`${item.student.id}/create-demand`)
-    }
+	const handleCreateDemand = () => {
+		navigate(`/students/create-demand/${item.student.id}`);
+	};
 
-    const handleUnfollow = () => {
-        unfollowStudent(item.student.id).unwrap().then((result) => {
-			console.log('awdas',result)
-			if(result){
-				useAlertDialog({ title: result, confirmButtonTitle: 'Ok', dispatch })
-			}
-		}).catch(err => console.log(err))
-        
-    }
+	const handleUnfollow = () => {
+		useConfirmDialog({
+			dispatch,
+			title: `Are your sure you want to unfollow ${item?.student.profile.fullName}?`,
+			confirmButtonFunction: () => {
+				unfollowStudent(item.student.id)
+					.unwrap()
+					.then((result) => {
+						console.log('awdas', result);
+						if (result) {
+							useAlertDialog({
+								title: result,
+								confirmButtonTitle: 'Ok',
+								dispatch,
+							});
+						}
+					})
+					.catch((err) => console.log(err));
+			},
+		});
+	};
 
 	const handleUpdateFollowNote = () => {
-		dispatch(openDialog({
-			children: <UpdateFollowNoteForm studentId={item.student.id} followNote={item.followNote}/>
-		}))
-	}
+		dispatch(
+			openDialog({
+				children: (
+					<UpdateFollowNoteForm
+						studentId={item.student.id}
+						followNote={item.followNote}
+					/>
+				),
+			})
+		);
+	};
 
-    if(!item) {
-        return (
-            <Typography>Invalid Item!</Typography>
-        )
-    }
-    
+	if (!item) {
+		return <Typography>Invalid Item!</Typography>;
+	}
 
 	return (
 		<Paper
@@ -86,25 +105,27 @@ const FollowedListItem = (props: Props) => {
 								// 		navigate(``);
 								// 	},
 								// },
-                                {
+								{
 									label: 'Create Demand',
 									icon: <Add fontSize='small' />,
 									onClick: () => {
-										handleCreateDemand()
+										handleCreateDemand();
 									},
 								},
 								{
 									label: 'Update Follow Note',
 									icon: <EditIcon fontSize='small' />,
 									onClick: () => {
-										handleUpdateFollowNote()
+										handleUpdateFollowNote();
 									},
 								},
-                                {
+								{
 									label: 'Unfollow',
-									icon: <BookmarkRemoveIcon fontSize='small' />,
+									icon: (
+										<BookmarkRemoveIcon fontSize='small' />
+									),
 									onClick: () => {
-										handleUnfollow()
+										handleUnfollow();
 									},
 								},
 							]}
@@ -115,15 +136,14 @@ const FollowedListItem = (props: Props) => {
 						<div className='flex items-center gap-8'>
 							<AccessTime />
 							<Typography className='font-semibold'>
-							Followed since
+								Followed since
 							</Typography>
-                            <Typography>
+							<Typography>
 								{dayjs(item.followDate).format('HH:mm')},
 							</Typography>
 							<Typography>
 								{dayjs(item.followDate).format('YYYY-MM-DD')}
 							</Typography>
-							
 						</div>
 					)}
 				</ListItem>

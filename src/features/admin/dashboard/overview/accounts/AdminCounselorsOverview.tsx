@@ -141,7 +141,7 @@ const AdminCounselorsOverview = ({tabValue}) => {
       const counselors = tabValue === 0 ? academicCounselors?.content?.data : nonAcademicCounselors?.content?.data
       const numbers = [32, 27, 20, 18, 17, 10]
       return (
-        <div className="p-16 pt-0">
+        <div className="p-16 ">
           <h2 className="mb-8 text-2xl font-semibold text-text-secondary">Performance Overview</h2>
           <div className='flex w-full gap-16'>
             <Paper className="flex-1 p-16 shadow">
