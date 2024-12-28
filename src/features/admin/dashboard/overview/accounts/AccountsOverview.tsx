@@ -5,9 +5,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AdminCounselorsOverview from './AdminCounselorsOverview';
 import { Typography } from '@mui/material';
-import CounselorCharts from '@/features/managers/management/support-staffs/overview/PerformanceOverview';
-import BehaviorTagsChart from '@/features/managers/management/students/overview/BehaviorsOverview';
-import AppointmentOverview from '@/features/managers/management/students/overview/AppointmentOverview';
+import CounselorCharts from '@/features/managers/dashboard/analytics/counselor-overview/PerformanceOverview';
+import BehaviorTagsChart from '@/features/managers/dashboard/analytics/student-overview/BehaviorsOverview';
+import AppointmentOverview from '@/features/managers/dashboard/analytics/student-overview/AppointmentOverview';
+// import CounselorCharts from '@/features/managers/management/support-staffs/overview/PerformanceOverview';
+// import BehaviorTagsChart from '@/features/managers/management/students/overview/BehaviorsOverview';
+// import AppointmentOverview from '@/features/managers/management/students/overview/AppointmentOverview';
 
 type Props = {};
 

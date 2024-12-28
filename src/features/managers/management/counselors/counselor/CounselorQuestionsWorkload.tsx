@@ -93,7 +93,7 @@ const CounselorQuestionsOverview = () => {
           options={chartOptions}
           series={chartOptions.series}
           type="bar"
-          height={350}
+          height={400}
         />
       </div>
     </Paper>

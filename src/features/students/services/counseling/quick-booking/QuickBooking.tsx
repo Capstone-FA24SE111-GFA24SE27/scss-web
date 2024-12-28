@@ -414,7 +414,7 @@ function QuickBooking() {
     <>
       <div className="container relative flex flex-col gap-16 flex-auto min-h-screen p-16 mx-auto max-w-screen-lg">
         <Typography variant='h6' color='textSecondary'>We will find the perfect counselor based on your needs and preferences.</Typography>
-        <Stepper activeStep={activeStep} className='' alternativeLabel>
+        <Stepper activeStep={activeStep} className='w-full' alternativeLabel>
           {steps.map((label, index) => (
             <Step
               key={index}
@@ -424,6 +424,7 @@ function QuickBooking() {
             </Step>
           ))}
         </Stepper>
+
         <Box className='flex w-full gap-16'>
           {
             activeStep === 0 && (

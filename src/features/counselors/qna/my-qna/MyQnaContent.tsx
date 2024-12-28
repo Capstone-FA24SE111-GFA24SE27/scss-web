@@ -116,8 +116,8 @@ const MyQnaContent = () => {
 
 	// const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
 
-	const { data: academicTopicsData } = useGetAcademicTopicsQuery();
-	const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
+	// const { data: academicTopicsData } = useGetAcademicTopicsQuery();
+	// const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
 
 	// const topicOptions = account?.role ?
 	//   extractCounselingTypeFromRole(account?.role) === 'ACADEMIC' ? academicTopicOptions : nonAcademicTopicOptions

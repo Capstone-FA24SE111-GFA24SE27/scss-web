@@ -1,4 +1,4 @@
-import { ExpandableText, NavLinkAdapter, UserLabel, RenderHTML } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, RenderHTML, openDialog } from '@/shared/components';
 import React, { SyntheticEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -10,6 +10,9 @@ import {
 	ExpandMore,
 	HelpOutlineOutlined,
 	Lock,
+	RateReview,
+	ThumbUp,
+	ThumbUpOutlined,
 } from '@mui/icons-material';
 import {
 	Accordion,
@@ -19,12 +22,15 @@ import {
 	Box,
 	Button,
 	Chip,
+	Divider,
 	Paper,
+	Rating,
 	Typography,
 	styled,
 } from '@mui/material';
 import { Question } from '@/shared/types';
 import {
+	useAcceptQuestionStudentMutation,
 	useCloseQuestionStudentMutation,
 	useCreateChatSessionStudentMutation,
 	useDeleteQuestionStudentMutation,
@@ -37,7 +43,7 @@ import { openCounselorView } from '../../students-layout-slice';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
 import dayjs from 'dayjs';
-
+import QnaSendFeedbackDialog from './QnaSendFeedbackDialog';
 
 export const StyledAccordionSummary = styled(AccordionSummary)({
 	display: 'flex',
@@ -69,6 +75,7 @@ const QnaItem = (props: Props) => {
 	const account = useAppSelector(selectAccount);
 
 	const [closeQuestion] = useCloseQuestionStudentMutation();
+	const [acceptAnswer] = useAcceptQuestionStudentMutation();
 	const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteQuestionStudentMutation();
 	const [createChatSession] = useCreateChatSessionStudentMutation();
 
@@ -81,7 +88,6 @@ const QnaItem = (props: Props) => {
 	};
 
 	const handleCloseQuestion = async () => {
-
 		useConfirmDialog(
 			{
 				title: 'Are you sure you want to close the question?',
@@ -98,8 +104,25 @@ const QnaItem = (props: Props) => {
 				dispatch
 			}
 		)
+	}
 
-
+	const handleAcceptAnswer = async () => {
+		useConfirmDialog(
+			{
+				title: 'Confirm accepting this answer?',
+				confirmButtonFunction: async () => {
+					const result = await acceptAnswer(qna.id)
+					// @ts-ignore
+					if (result?.data?.status === 200) {
+						useAlertDialog({
+							title: `Answer accepted`,
+							dispatch
+						})
+					}
+				},
+				dispatch
+			}
+		)
 	}
 
 	const handleCreateChat = async (qna: Question) => {
@@ -192,6 +215,17 @@ const QnaItem = (props: Props) => {
 									size='small'
 									className='!capitalize'
 								/>
+								{
+									qna.accepted && (
+										< Chip
+											icon={<ThumbUpOutlined />}
+											label={`Accepted`}
+											size='small'
+											variant='filled'
+										/>
+									)
+								}
+
 								{qna.closed && (
 									<Chip
 										icon={<Lock />}
@@ -199,8 +233,9 @@ const QnaItem = (props: Props) => {
 										variant='outlined'
 										size='small'
 									/>
-								)
-								}
+								)}
+
+
 								<div className='w-full flex justify-end pr-8'>
 									{/* <Chip
 										label={`Created at ${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}
@@ -276,6 +311,25 @@ const QnaItem = (props: Props) => {
 												{'The counselor has not answered the question'}
 											</Typography>
 								}
+								<Divider />
+								<div className='flex items-start gap-16 '>
+									<Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
+									<div className='flex-1'>
+										<div>
+											<div className='flex items-center gap-8'>
+												<Rating
+													size='medium'
+													value={qna.feedback.rating}
+													readOnly
+												/>
+												<Typography color='text.secondary'>{dayjs(qna.feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+											</div>
+										</div>
+										<ExpandableText className='pl-4 mt-8' text={qna.feedback.comment} limit={96} />
+										{/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{qna.feedback.comment}</Typography> */}
+									</div>
+								</div>
+
 							</div>
 						</div>
 					</div>
@@ -308,6 +362,18 @@ const QnaItem = (props: Props) => {
 						) : (
 							<></>
 						)}
+
+						{qna.answer && !qna.accepted && (
+							<Button
+								variant='outlined'
+								color='secondary'
+								startIcon={<ThumbUp />}
+								onClick={handleAcceptAnswer}
+							>
+								Accept
+							</Button>
+						)}
+
 						{qna.status == 'PENDING' && !qna.answer ? (
 							<Button
 								variant='contained'
@@ -339,6 +405,27 @@ const QnaItem = (props: Props) => {
 								Start to Chat
 							</Button>
 						)}
+
+						{qna.closed && !qna.feedback && (
+							<Button
+								variant='contained'
+								color='secondary'
+								startIcon={<RateReview />}
+								onClick={(e) => {
+									e.stopPropagation()
+									dispatch(openDialog({
+										children: (
+											<QnaSendFeedbackDialog
+												questionCard={qna}
+											/>
+										)
+									}))
+								}}
+							>
+								Leave a review
+							</Button>
+						)}
+
 					</Box>
 				</div>
 			</Paper>
@@ -347,3 +434,4 @@ const QnaItem = (props: Props) => {
 };
 
 export default QnaItem;
+

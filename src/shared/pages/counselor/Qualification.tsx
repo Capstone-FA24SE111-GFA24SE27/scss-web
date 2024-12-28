@@ -1,10 +1,10 @@
 import { InteractiveImage, openDialog } from '@/shared/components'
-import { Qualification } from '@/shared/types'
+import { Qualification as QualificationType } from '@/shared/types'
 import { Box } from '@mui/material'
 import { useAppDispatch } from '@shared/store'
 import React from 'react'
 
-const Qualification = ({ qualification }: { qualification: Qualification }) => {
+const Qualification = ({ qualification }: { qualification: QualificationType }) => {
   const dispatch = useAppDispatch()
 
   return (

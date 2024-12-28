@@ -1,10 +1,10 @@
 import { InteractiveImage, openDialog } from '@/shared/components'
-import { Certification } from '@/shared/types'
+import { Certification as CertificationType } from '@/shared/types'
 import { Box } from '@mui/material'
 import { useAppDispatch } from '@shared/store'
 import React from 'react'
 
-const Certification = ({ certification }: { certification: Certification }) => {
+const Certification = ({ certification }: { certification: CertificationType }) => {
   const dispatch = useAppDispatch()
   return (
     <div key={certification.id} className="flex items-start p-8 rounded shadow gap-16">

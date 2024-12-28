@@ -190,7 +190,7 @@ const HomeContent = () => {
                 onClick={() => navigate(`/counseling/requests`)}
               >View all</Button>
             </div>
-            <Scrollbar className='flex flex-col gap-8 min-h-sm max-h-md overflow-y-auto p-4 divide-y-2 mt-8'>
+            <Scrollbar className='flex flex-col gap-16 min-h-sm max-h-md overflow-y-auto p-4 mt-8'>
               {
                 isLoadingRequest
                   ? <ContentLoading />

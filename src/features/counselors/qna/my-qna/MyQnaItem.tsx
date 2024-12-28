@@ -43,6 +43,7 @@ import {
 	IconButton,
 	MenuItem,
 	Paper,
+	Rating,
 	Switch,
 	TextField,
 	Typography,
@@ -179,6 +180,12 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								label={qna.difficultyLevel}
 								color={difficultyColor[qna.difficultyLevel as string]}
 								size='small'
+							/>
+							<Chip
+								label={qna.status.toLocaleLowerCase()}
+								color={statusColor[qna.status as string]}
+								size='small'
+								className='capitalize'
 								variant='outlined'
 							/>
 							{qna.answer ? (
@@ -187,12 +194,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								<Chip icon={<HelpOutlineOutlined />} label='Not Answered' size='small' variant='outlined' />
 
 							)}
-							<Chip
-								label={qna.status.toLocaleLowerCase()}
-								color={statusColor[qna.status as string]}
-								size='small'
-								className='capitalize'
-							/>
+
 							{/* <Chip label={qna.topic?.name} size='small' /> */}
 							{/* {qna.taken && <Chip label={`Taken by ${qna?.counselor.profile.fullName}`} variant='outlined' color={'success'} size='small' />} */}
 							{qna.closed && (
@@ -213,61 +215,89 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 							) : (
 								''
 							)}
+							{
+								qna.accepted && (
+									< Chip
+										icon={<ThumbUpOutlined />}
+										label={`Accepted by student`}
+										size='small'
+										variant='filled'
+									/>
+								)
+							}
 						</div>
 					</div>
 					<div className='flex flex-col justify-start gap-16'>
-					<Typography className='w-full pr-8'>
-						{RenderHTML(qna.content)}
-					</Typography>
-					<Divider />
-					<div>
-						{
-							qna.answer
-								? <div>
-									<Typography className='font-semibold' color='textSecondary'>Your answer</Typography>
-									<Typography>{RenderHTML(qna.answer)}</Typography>
-									{!qna.closed && (
-										<Button
-											color='secondary'
-											startIcon={<EditNote fontSize='large' />}
-											onClick={() => {
-												dispatch(openDialog({
-													children: <AnswerQuestionDialog qna={qna} />
-												}))
-											}}
-										>
-											Edit your answer
-										</Button>
-									)}
-								</div>
-								: qna.reviewReason
-									? <div className='flex gap-8'>
-										<Typography
-											className='text-text-secondary'
-										>
-											{qna.status === `REJECTED` ? `Reject` : `Flag`} reason:
-										</Typography>
-										<Typography
-											className='font-semibold'
-											color='error'
-										>
-											{qna.reviewReason}
-										</Typography>
+						<Typography className='w-full pr-8'>
+							{RenderHTML(qna.content)}
+						</Typography>
+						<Divider />
+						<div>
+							{
+								qna.answer
+									? <div>
+										<Typography className='font-semibold' color='textSecondary'>Your answer</Typography>
+										<Typography>{RenderHTML(qna.answer)}</Typography>
+										{!qna.closed && (
+											<Button
+												color='secondary'
+												startIcon={<EditNote fontSize='large' />}
+												onClick={() => {
+													dispatch(openDialog({
+														children: <AnswerQuestionDialog qna={qna} />
+													}))
+												}}
+											>
+												Edit your answer
+											</Button>
+										)}
 									</div>
-									: <Typography
-										className='italic'
-										color='textDisabled'
-									>
-										{'You have not answered the question'}
-									</Typography>
-						}
+									: qna.reviewReason
+										? <div className='flex gap-8'>
+											<Typography
+												className='text-text-secondary'
+											>
+												{qna.status === `REJECTED` ? `Reject` : `Flag`} reason:
+											</Typography>
+											<Typography
+												className='font-semibold'
+												color='error'
+											>
+												{qna.reviewReason}
+											</Typography>
+										</div>
+										: <Typography
+											className='italic'
+											color='textDisabled'
+										>
+											{'You have not answered the question'}
+										</Typography>
+							}
+						</div>
+						<Divider />
+						<div className='flex items-start gap-16'>
+							<Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
+							<div className='flex-1'>
+								<div>
+									<div className='flex items-center gap-8'>
+										<Rating
+											size='medium'
+											value={qna.feedback.rating}
+											readOnly
+										/>
+										<Typography color='text.secondary'>{dayjs(qna.feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+									</div>
+								</div>
+								<ExpandableText className='pl-4 mt-8' text={qna.feedback.comment} limit={96} />
+								{/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{qna.feedback.comment}</Typography> */}
+							</div>
+						</div>
 					</div>
 				</div>
-				</div>
 
-				
+
 				<Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5'>
-					{!qna?.closed && qna?.answer && (
+					{!qna?.closed && qna?.accepted && (
 						<Button
 							variant='outlined'
 							color='secondary'

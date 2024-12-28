@@ -1,7 +1,7 @@
 import { StatsCard } from '@/shared/components'
 import { useAppointmentsSocketListener, useQuestionsSocketListener, useRequestsSocketListener } from '@/shared/context'
 import { getCurrentMonthYear, groupAppointmentsByDate } from '@/shared/utils'
-import { CheckCircle, Class, Description, DoDisturbOn, DoNotDisturb, Pending } from '@mui/icons-material'
+import { CheckCircle, Class, Description, DoDisturbOn, DoNotDisturb, Pending, Reviews } from '@mui/icons-material'
 import { Box, Divider, Typography } from '@mui/material'
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store'
 import dayjs from 'dayjs'
@@ -40,12 +40,14 @@ const OverViewTab = () => {
     toDate: lastDayOfMonth,
     counselorId: Number(id)
   });
+
   const { data: canceledAppointments } = useGetCounselorAppointmentsManagementQuery({
     status: `CANCELED`,
     fromDate: firstDayOfMonth,
     toDate: lastDayOfMonth,
     counselorId: Number(id)
   });
+
 
   const { data: appointmentRequests, refetch: refetchAppointmentRequests } = useGetCounselorAppointmentRequestsManagementQuery({
     size: 9999,
@@ -90,12 +92,23 @@ const OverViewTab = () => {
 
   const { data: totalQuestions, isLoading: isLoadingTotalQuetions, refetch: refetchTotalQuesionts } = useGetCounselorQuestionCardsManagementQuery({
     counselorId: Number(id),
+    from: firstDayOfMonth,
+    to: lastDayOfMonth,
+    size: 9999,
+  })
+
+  const { data: totalQuestionsPreviousMonth, isLoading: isLoadingTotalQuetionsPreviousMonth, refetch: refetchTotalQuesiontsPreviousMonth } = useGetCounselorQuestionCardsManagementQuery({
+    counselorId: Number(id),
+    from: firstDayPreviousMonth,
+    to: lastDayOfPreviousMonth,
     size: 9999,
   })
 
   const completedQuestions = totalQuestions?.content?.data.filter(qna => qna.answer) || []
   const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED', 'FLAGGED'].includes(qna.status)) || []
 
+  const completedQuestionsPreviousMonth = totalQuestionsPreviousMonth?.content?.data.filter(qna => qna.answer) || []
+  const rejectedQuestionsPreviousMonth = totalQuestionsPreviousMonth?.content?.data.filter(qna => ['REJECTED', 'FLAGGED'].includes(qna.status)) || []
 
   console.log(totalAppointments)
   return (
@@ -128,17 +141,6 @@ const OverViewTab = () => {
             color="success"  // You can set color to primary, secondary, success, error, etc.
           />
           <StatsCard
-            title="Canceled Appontments"
-            total={canceledAppointments?.content?.data.length}
-            statChange={{
-              prefixText: 'Last month',
-              current: canceledAppointments?.content?.data.length,
-              previous: canceledAppointmentsPreviousMonth?.content?.data.length,
-            }}
-            icon={<DoDisturbOn />}
-            color="error"  // You can set color to primary, secondary, success, error, etc.
-          />
-          <StatsCard
             title="Appointment Requests"
             total={appointmentRequests?.content?.data.length}
             statChange={{
@@ -148,6 +150,17 @@ const OverViewTab = () => {
             }}
             icon={<Pending />}
             color="warning"  // You can set color to primary, secondary, success, error, etc.
+          />
+          <StatsCard
+            title="Appointment Feedbacks"
+            total={totalAppointments?.content?.data.filter(item => item.appointmentFeedback).length}
+            statChange={{
+              prefixText: 'Last month',
+              current: totalAppointments?.content?.data.filter(item => item.appointmentFeedback).length,
+              previous: totalAppointmentsPreviousMonth?.content?.data.filter(item => item.appointmentFeedback).length,
+            }}
+            icon={<Reviews />}
+            color="action"  // You can set color to primary, secondary, success, error, etc.
           />
         </Box>
         <div className='grid grid-cols-2 gap-16'>
@@ -165,7 +178,7 @@ const OverViewTab = () => {
             statChange={{
               prefixText: 'Last month',
               current: totalQuestions?.content?.data?.length,
-              previous: 0,
+              previous: totalQuestionsPreviousMonth?.content?.data?.length,
             }}
             icon={<Class />}
             color="primary"  // You can set color to primary, secondary, success, error, etc.
@@ -177,7 +190,7 @@ const OverViewTab = () => {
             statChange={{
               prefixText: 'Last month',
               current: completedQuestions.length,
-              previous: 0,
+              previous: completedQuestionsPreviousMonth.length,
             }}
             icon={<CheckCircle fontSize='large' />}
             color="success"  // You can set color to primary, secondary, success, error, etc.
@@ -189,10 +202,22 @@ const OverViewTab = () => {
             statChange={{
               prefixText: 'Last month',
               current: rejectedQuestions.length,
-              previous: 0,
+              previous: completedQuestionsPreviousMonth.length,
             }}
             icon={<DoNotDisturb fontSize='large' />}
             color="error"  // You can set color to primary, secondary, success, error, etc.
+          />
+
+          <StatsCard
+            title="Q&A Feedbacks"
+            total={totalQuestions?.content?.data?.filter(item => item.feedback).length}
+            statChange={{
+              prefixText: 'Last month',
+              current: totalQuestions?.content?.data?.filter(item => item.feedback).length,
+              previous: totalQuestionsPreviousMonth?.content?.data?.filter(item => item.feedback).length,
+            }}
+            icon={<Reviews />}
+            color="action"  // You can set color to primary, secondary, success, error, etc.
           />
         </Box>
         <div className='grid grid-cols-2 gap-16'>

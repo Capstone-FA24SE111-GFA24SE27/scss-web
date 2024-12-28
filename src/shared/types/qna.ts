@@ -32,6 +32,8 @@ export type Question = {
 	difficultyLevel: 'Easy' | 'Medium' | 'Hard';
 	reviewReason?: string;
 	publicStatus?: 'HIDE' | 'PENDING' | 'VISIBLE';
+	accepted: boolean,
+	feedback: QuestionFeedback;
 };
 
 export type ChatSession = {
@@ -60,3 +62,21 @@ export type ContributedQuestionCategory = {
 	name: string;
 	type: 'ACADEMIC' | 'NON_ACADEMIC';
 };
+
+export type QuestionFeedback = {
+	id: number;
+	rating: number;
+	comment: string;
+	appointmentId: number;
+	createdAt: number;
+};
+
+
+export type Feedback = {
+	id: number;
+	rating: number;
+	comment: string;
+	appointmentId: number;
+	createdAt: number;
+};
+

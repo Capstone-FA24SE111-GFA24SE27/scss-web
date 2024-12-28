@@ -63,7 +63,7 @@ function QnaForm() {
 	const { questionId } = useParams();
 	const navigate = useNavigate();
 	const editMode = Boolean(questionId);
-
+	
 	const { data: questionData } = useGetStudentQuestionQuery(questionId || `0`,
 		{
 			skip: !editMode,
@@ -75,7 +75,7 @@ function QnaForm() {
 
 
 	const question = questionData?.content
-	const defaultValues: FormValues = { questionType: 'NON_ACADEMIC', content: '' };
+	const defaultValues: FormValues = { questionType: 'ACADEMIC', content: '' };
 
 	const { control, handleSubmit, watch, formState, reset, register, setValue } = useForm<FormValues>({
 		mode: 'onChange',
