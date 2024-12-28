@@ -1,6 +1,12 @@
 import { roles } from '@/shared/constants';
 import { roleBasedNavigation } from '@/shared/layouts/layout-components/navigation';
-import { Account, CertificationList, PaginationContent, QualificationList, Role } from '@/shared/types';
+import {
+	Account,
+	CertificationList,
+	PaginationContent,
+	QualificationList,
+	Role,
+} from '@/shared/types';
 import { apiService, ApiResponse, ApiMessage } from '@shared/store';
 
 const addTagTypes = ['accounts'] as const;
@@ -29,7 +35,7 @@ export const adminAccountsApi = apiService
 						page,
 						SortDirection,
 						role,
-						size
+						size,
 					},
 				}),
 				providesTags: (result, error, arg) => [
@@ -134,6 +140,58 @@ export const adminAccountsApi = apiService
 					{ type: 'accounts', id: roles.MANAGER },
 				],
 			}),
+			putUpdateAcademicCounselorAccount: build.mutation<
+				PutUpdateAcademicCounselorAccountResponse,
+				PutUpdateAcademicCounselorAccountArgs
+			>({
+				query: (args) => ({
+					url: `/api/account/create/academic-counselor`,
+					method: 'PUT',
+					body: args,
+				}),
+				invalidatesTags: (result, error, arg) => [
+					{ type: 'accounts', id: roles.ACADEMIC_COUNSELOR },
+				],
+			}),
+			putUpdateNonAcademicCounselorAccount: build.mutation<
+				PutUpdateNonAcademicCounselorAccountResponse,
+				PutUpdateNonAcademicCounselorAccountArgs
+			>({
+				query: (args) => ({
+					url: `/api/account/create/non-academic-counselor`,
+					method: 'PUT',
+					body: args,
+				}),
+				invalidatesTags: (result, error, arg) => [
+					{ type: 'accounts', id: roles.NON_ACADEMIC_COUNSELOR },
+				],
+			}),
+			putUpdateManagerAccount: build.mutation<
+				PutUpdateManagerAccountResponse,
+				PutUpdateManagerAccountArgs
+			>({
+				query: (args) => ({
+					url: `/api/account/create/manager`,
+					method: 'PUT',
+					body: args,
+				}),
+				invalidatesTags: (result, error, arg) => [
+					{ type: 'accounts', id: roles.MANAGER },
+				],
+			}),
+			putUpdateStaffAccount: build.mutation<
+				PutUpdateStaffAccountResponse,
+				PutUpdateStaffAccountArgs
+			>({
+				query: (args) => ({
+					url: `/api/account/create/support-staff`,
+					method: 'PUT',
+					body: args,
+				}),
+				invalidatesTags: (result, error, arg) => [
+					{ type: 'accounts', id: roles.SUPPORT_STAFF },
+				],
+			}),
 		}),
 	});
 
@@ -147,6 +205,10 @@ export const {
 	usePostCreateManagerAccountMutation,
 	usePostCreateNonAcademicCounselorAccountMutation,
 	usePostCreateSupportStaffAccountMutation,
+	usePutUpdateAcademicCounselorAccountMutation,
+	usePutUpdateNonAcademicCounselorAccountMutation,
+	usePutUpdateManagerAccountMutation,
+	usePutUpdateStaffAccountMutation,
 } = adminAccountsApi;
 
 type postCreateSupportStaffAccountRepsonse = ApiMessage;
@@ -182,13 +244,74 @@ type postCreateAcademicCounselorAccountArgs = {
 	fullName: string;
 	departmentId: string | number;
 	majorId: string | number;
-	specializationId: string | number;
-	specializedSkills?: string,
-	otherSkills?: string,
-	workHistory?: string,
-	achievements?: string,
-	qualifications?: Omit<QualificationList, 'id'>,
-	certifications?: Omit<CertificationList, 'id'>
+	// specializationId: string | number;
+	specializedSkills?: string;
+	otherSkills?: string;
+	workHistory?: string;
+	achievements?: string;
+	qualifications?: Omit<QualificationList, 'id'>;
+	certifications?: Omit<CertificationList, 'id'>;
+};
+
+type PutUpdateAcademicCounselorAccountResponse = {};
+type PutUpdateAcademicCounselorAccountArgs = {
+	avatarLink?: string;
+	email?: string;
+	password?: string;
+	gender?: 'MALE' | 'FEMALE';
+	phoneNumber?: string;
+	dateOfBirth?: string;
+	fullName?: string;
+	departmentId?: string | number;
+	majorId?: string | number;
+	// specializationId?: string | number;
+	specializedSkills?: string;
+	otherSkills?: string;
+	workHistory?: string;
+	achievements?: string;
+	id: string | number;
+};
+
+type PutUpdateNonAcademicCounselorAccountResponse = {};
+type PutUpdateNonAcademicCounselorAccountArgs = {
+	avatarLink?: string;
+	email?: string;
+	password?: string;
+	gender?: 'MALE' | 'FEMALE';
+	phoneNumber?: string;
+	dateOfBirth?: string;
+	fullName?: string;
+	expertiseId?: string | number;
+	// specializationId?: string | number;
+	specializedSkills?: string;
+	otherSkills?: string;
+	workHistory?: string;
+	achievements?: string;
+	id: string | number;
+};
+
+type PutUpdateManagerAccountResponse = {};
+type PutUpdateManagerAccountArgs = {
+	id: string | number;
+	avatarLink?: string;
+	email?: string;
+	password?: string;
+	gender?: 'MALE' | 'FEMALE';
+	phoneNumber?: string;
+	dateOfBirth?: string;
+	fullName?: string;
+};
+
+type PutUpdateStaffAccountResponse = {};
+type PutUpdateStaffAccountArgs = {
+	id: string | number;
+	avatarLink?: string;
+	email?: string;
+	password?: string;
+	gender?: 'MALE' | 'FEMALE';
+	phoneNumber?: string;
+	dateOfBirth?: string;
+	fullName?: string;
 };
 
 type postCreateNonAcademicCounselorAccountRepsonse = ApiMessage;
@@ -201,12 +324,12 @@ type postCreateNonAcademicCounselorAccountArgs = {
 	dateOfBirth: string;
 	fullName: string;
 	expertiseId: string | number;
-	specializedSkills?: string,
-	otherSkills?: string,
-	workHistory?: string,
-	achievements?: string,
-	qualifications?: Omit<QualificationList, 'id'>,
-	certifications?: Omit<CertificationList, 'id'>
+	specializedSkills?: string;
+	otherSkills?: string;
+	workHistory?: string;
+	achievements?: string;
+	qualifications?: Omit<QualificationList, 'id'>;
+	certifications?: Omit<CertificationList, 'id'>;
 };
 
 type postCreateAccountArgs = {

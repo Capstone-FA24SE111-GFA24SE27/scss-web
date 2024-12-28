@@ -137,7 +137,6 @@ const ImageInput = (props: Props) => {
 
 	const removeFile = () => {
 		handleFileChange(null);
-		
 	};
 
 	return (
@@ -153,7 +152,7 @@ const ImageInput = (props: Props) => {
 				)}
 			>
 				<div className='flex w-full h-full border-2 border-dashed border-secondary-dark text-primary-light'>
-					{!file ? (
+					{!file && !url ? (
 						<div
 							className={clsx(
 								'flex flex-col items-center justify-center w-full h-full px-4',
@@ -167,7 +166,7 @@ const ImageInput = (props: Props) => {
 							</p>
 						</div>
 					) : (
-						<Tooltip title={file.name}>
+						<Tooltip title={file?.name}>
 							<div
 								className={clsx(
 									'relative flex flex-col items-center justify-center w-full h-full px-2 overflow-hidden ',
@@ -175,11 +174,11 @@ const ImageInput = (props: Props) => {
 								)}
 							>
 								<img
-									src={URL.createObjectURL(file)}
+									src={file ? URL.createObjectURL(file) : url}
 									className='object-contain w-2/3 h-2/3'
 								/>
 								<span className='w-full text-ellipsis'>
-									{file.name}
+									{file?.name}
 								</span>
 								<IconButton
 									onClick={removeFile}

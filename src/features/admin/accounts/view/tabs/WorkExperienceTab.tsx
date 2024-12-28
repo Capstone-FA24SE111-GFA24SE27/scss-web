@@ -62,6 +62,7 @@ const WorkExperienceTab = (props: Props) => {
 		quali: any,
 		index: string | number
 	) => {
+		console.log(quali)
 		dispatch(
 			openDialog({
 				children: (
@@ -177,7 +178,7 @@ const WorkExperienceTab = (props: Props) => {
 			/>
 
 			<div className='flex flex-wrap items-center space-y-8'>
-				<Typography className='font-semibold'>
+				<Typography className='font-semibold w-112'>
 					Certifications:{' '}
 				</Typography>
 				{certificationFields.map((certification, index) => (
@@ -231,7 +232,7 @@ const WorkExperienceTab = (props: Props) => {
 			</div>
 
 			<div className='flex flex-wrap items-center space-y-8'>
-				<Typography className='font-semibold'>
+				<Typography className='font-semibold w-112'>
 					Qualifications:{' '}
 				</Typography>
 

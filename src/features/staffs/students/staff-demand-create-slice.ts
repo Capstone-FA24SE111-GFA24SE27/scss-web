@@ -11,6 +11,11 @@ interface CreateDemandState {
 	specializationId?: string;
 	majorId?: string;
 	counselorId?: string | number;
+	contactNote?: string;
+	priorityLevel?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+	additionalInformation?: string;
+	issueDescription?: string;
+	causeDescription?: string;
 }
 
 const initialState: CreateDemandState = {
@@ -21,6 +26,11 @@ const initialState: CreateDemandState = {
 	specializationId: null,
 	majorId: null,
 	counselorId: null,
+	contactNote: '',
+	priorityLevel: 'MEDIUM',
+	additionalInformation: '',
+	issueDescription: '',
+	causeDescription: '',
 };
 
 /**
@@ -48,14 +58,29 @@ export const createDemandFormStaffSlice = createSlice({
 		setSpecializationId: (state, action) => {
 			state.specializationId = action.payload;
 		},
-        setCounselorId: (state,action) => {
-            state.counselorId = action.payload
-        }
+		setCounselorId: (state, action) => {
+			state.counselorId = action.payload;
+		},
+		setIssueDescription: (state, action) => {
+			state.issueDescription = action.payload;
+		},
+		setCauseDescription: (state, action) => {
+			state.causeDescription = action.payload;
+		},
+		setAdditionalInfo: (state, action) => {
+			state.additionalInformation = action.payload;
+		},
+		setContactNote: (state, action) => {
+			state.contactNote = action.payload;
+		},
+		setPriorityLevel: (state, action) => {
+			state.priorityLevel = action.payload;
+		},
 	},
 	selectors: {
-        selectCreateDemandCounselorFormData: (state) => state,
-        selectCounselor: (state) => state.counselorId
-    },
+		selectCreateDemandCounselorFormData: (state) => state,
+		selectCounselor: (state) => state.counselorId,
+	},
 });
 
 /**
@@ -65,19 +90,22 @@ rootReducer.inject(createDemandFormStaffSlice);
 const injectedSlice = createDemandFormStaffSlice.injectInto(rootReducer);
 
 export const {
-    setCounselorId,
-    setCounselorGender,
-    setDepartmentId,
-    setExpertiseId,
-    setMajorId,
-    setMatchType,
-    setSpecializationId
+	setCounselorId,
+	setCounselorGender,
+	setDepartmentId,
+	setExpertiseId,
+	setMajorId,
+	setMatchType,
+	setSpecializationId,
+	setAdditionalInfo,
+	setCauseDescription,
+	setContactNote,
+	setIssueDescription,
+	setPriorityLevel
 } = createDemandFormStaffSlice.actions;
 
-export const {
-    selectCounselor,
-    selectCreateDemandCounselorFormData
-} = injectedSlice.selectors;
+export const { selectCounselor, selectCreateDemandCounselorFormData } =
+	injectedSlice.selectors;
 
 export default createDemandFormStaffSlice.reducer;
 

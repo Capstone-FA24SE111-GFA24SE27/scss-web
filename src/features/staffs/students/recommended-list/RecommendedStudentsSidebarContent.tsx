@@ -9,7 +9,7 @@ const RecommendedStudentsSidebarContent = (props: Props) => {
 	return (
 		<div className='relative flex-grow-0 h-screen max-h-screen'>
 			<IconButton
-				className='absolute top-0 right-0 z-10 m-16'
+				className='absolute top-0 right-0 z-10 m-16 text-white bg-black/30 hover:bg-black/80'
 				onClick={() => navigate(-1)}
 				size='large'
 			>

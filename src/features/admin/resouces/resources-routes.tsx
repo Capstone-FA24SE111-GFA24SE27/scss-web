@@ -2,6 +2,8 @@ import { RouteObject } from 'react-router-dom';
 import { problemTagsRoutes } from './problem-tag';
 import { holidaysRoutes } from './holiday';
 import { timeSlotRoutes } from './time-slot';
+import { adminQuestionCardCategoryRoutes } from './question-card-category';
+import { adminQuestionCardRoutes } from './question-card';
 
 export const resourcesRoutes: RouteObject[] = [
   {
@@ -9,7 +11,9 @@ export const resourcesRoutes: RouteObject[] = [
     children: [
       ...problemTagsRoutes,
       ...holidaysRoutes,
-      ...timeSlotRoutes
+      ...timeSlotRoutes,
+      ...adminQuestionCardCategoryRoutes,
+      ...adminQuestionCardRoutes
     ],
   },
 

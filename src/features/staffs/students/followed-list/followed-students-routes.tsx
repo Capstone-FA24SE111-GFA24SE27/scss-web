@@ -19,14 +19,14 @@ export const staffFollowedStudentsRoutes: RouteObject[] = [
 				path: 'student/:id',
 				element: <StudentView actionButton={<CreateDemandButton />} />,
 			},
-			{
-				path: 'student/:id/create-demand',
-				element: <CreateDemandForm />,
-			},
-			{
-				path: ':id/create-demand',
-				element: <CreateDemandForm />,
-			},
+			// {
+			// 	path: 'student/:id/create-demand',
+			// 	element: <CreateDemandForm />,
+			// },
+			// {
+			// 	path: ':id/create-demand',
+			// 	element: <CreateDemandForm />,
+			// },
 			...studentRoutes,
 		],
 		// path: 'student-list',

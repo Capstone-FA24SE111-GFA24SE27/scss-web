@@ -5,6 +5,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AdminCounselorsOverview from './AdminCounselorsOverview';
 import { Typography } from '@mui/material';
+import CounselorCharts from '@/features/managers/management/support-staffs/overview/PerformanceOverview';
+import BehaviorTagsChart from '@/features/managers/management/students/overview/BehaviorsOverview';
+import AppointmentOverview from '@/features/managers/management/students/overview/AppointmentOverview';
 
 type Props = {};
 
@@ -46,11 +49,26 @@ const AccountsOverview = (props: Props) => {
 			break;
 		}
 		case 'staff': {
-			view = <SupportStaffOverview />;
+			view = (
+				<div className='h-full overflow-hidden'>
+					<Scrollbar className='max-h-full overflow-auto'>
+						<CounselorCharts />
+					</Scrollbar>
+				</div>
+			);
 			break;
 		}
 		case 'student': {
-			view = <StudentsOverview />;
+			view = (
+				<div className='h-full overflow-hidden'>
+					<Scrollbar className='max-h-full overflow-auto'>
+						<div>
+							<BehaviorTagsChart />
+							<AppointmentOverview />
+						</div>
+					</Scrollbar>
+				</div>
+			);
 			break;
 		}
 		default: {

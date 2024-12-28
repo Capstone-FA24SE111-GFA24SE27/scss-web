@@ -1,4 +1,4 @@
-import { StatsCard } from '@/shared/components'
+import { AppLoading, StatsCard } from '@/shared/components'
 import { EmojiPeople, Face, Handshake, School, SupervisedUserCircle } from '@mui/icons-material'
 import React from 'react'
 import { Typography } from '@mui/material';
@@ -30,19 +30,25 @@ const Overview = () => {
   //   to: lastDayOfMonth
   // })
 
-  const { data: students } = useGetStudentsFilterQuery({
+  const { data: students, isLoading: isLoadingStudent } = useGetStudentsFilterQuery({
     size: 9999
   })
 
-  const { data: academicCounselors } = useGetCounselorsAcademicQuery({
+  const { data: academicCounselors, isLoading: isLoadingACounselor } = useGetCounselorsAcademicQuery({
   })
 
-  const { data: nonAcademicCounselors } = useGetCounselorsNonAcademicQuery({
+  const { data: nonAcademicCounselors, isLoading: isLoadingNACounselor } = useGetCounselorsNonAcademicQuery({
   })
 
-  const { data: supportStaffs } = useGetAccountsQuery({size: 9999, role: roles.SUPPORT_STAFF as Role})
+  const { data: supportStaffs, isLoading: isLoadingStaff } = useGetAccountsQuery({size: 9999, role: roles.SUPPORT_STAFF as Role})
 
-  const {data: managers } = useGetAccountsQuery({size: 9999, role: roles.MANAGER as Role})
+  const {data: managers, isLoading: isLoadingManager } = useGetAccountsQuery({size: 9999, role: roles.MANAGER as Role})
+
+  if(isLoadingStudent || isLoadingACounselor || isLoadingManager || isLoadingNACounselor || isLoadingStaff){
+    return (
+      <AppLoading />
+    )
+  }
 
   return (
     <div className='p-32'>

@@ -43,32 +43,30 @@ const CreateTimeSlotForm = () => {
 	const { isValid, dirtyFields, errors } = formState;
 
 	const onSubmit = () => {
-			useAlertDialog({
-				dispatch,
-				title: 'Time slot created successfully',
-			});
-			navigate(-1);
-		// createTimeSlot({
-		// 	slotCode: formData.slotCode,
-		// 	name: formData.name,
-		// 	startTime: {
-		// 		hour: dayjs(formData.startTime).hour(),
-		// 		minute: dayjs(formData.startTime).minute(),
-		// 		second: 0,
-		// 		nano: 0,
-		// 	},
-		// 	endTime: {
-		// 		hour: dayjs(formData.endTime).hour(),
-		// 		minute: dayjs(formData.endTime).minute(),
-		// 		second: 0,
-		// 		nano: 0,
-		// 	},
-		// })
-		// 	.unwrap()
-		// 	.then((res) => {
-				
-		// 	})
-		// 	.catch((err) => console.log('err creating time slot', err));
+		// useAlertDialog({
+		// 	dispatch,
+		// 	title: 'Time slot created successfully',
+		// });
+		// navigate(-1);
+		createTimeSlot({
+			slotCode: formData.slotCode,
+			name: formData.name,
+			startTime: {
+				hour: dayjs(formData.startTime).hour(),
+				minute: dayjs(formData.startTime).minute(),
+				second: 0,
+				nano: 0,
+			},
+			endTime: {
+				hour: dayjs(formData.endTime).hour(),
+				minute: dayjs(formData.endTime).minute(),
+				second: 0,
+				nano: 0,
+			},
+		})
+			.unwrap()
+			.then((res) => {})
+			.catch((err) => console.log('err creating time slot', err));
 	};
 
 	useEffect(() => {
@@ -78,7 +76,6 @@ const CreateTimeSlotForm = () => {
 	return (
 		<div className='flex w-full h-full p-16 pt-32'>
 			<div className='flex flex-col w-full max-w-4xl'>
-
 				<Paper className='container flex flex-col flex-auto gap-32 p-32 mt-32'>
 					<div className=''>
 						<Typography className='text-2xl font-bold tracking-tight'>
@@ -132,10 +129,7 @@ const CreateTimeSlotForm = () => {
 										label='Start time'
 										onChange={(newValue) => {
 											console.log('startTime', newValue);
-											setValue(
-												'startTime',
-												newValue.format()
-											);
+											field.onChange(newValue.format());
 										}}
 									/>
 								)}
@@ -149,18 +143,10 @@ const CreateTimeSlotForm = () => {
 										slotProps={{
 											textField: {
 												helperText:
-													'End time must be after start time',
+													'End time must be at least 30 minutes after start time',
 											},
 										}}
 										label='End time'
-										onError={() => {
-											setValue(
-												'endTime',
-												dayjs(formData.startTime)
-													.add(30, 'minute')
-													.format()
-											);
-										}}
 										minTime={
 											formData &&
 											dayjs(formData.startTime).add(
@@ -170,10 +156,7 @@ const CreateTimeSlotForm = () => {
 										}
 										onChange={(newValue) => {
 											console.log('endtime', newValue);
-											setValue(
-												'endTime',
-												newValue.format()
-											);
+											field.onChange(newValue.format());
 										}}
 									/>
 								)}

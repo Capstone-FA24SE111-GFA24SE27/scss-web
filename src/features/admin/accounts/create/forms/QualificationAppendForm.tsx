@@ -232,6 +232,7 @@ const QualificationAppendForm = (props: Props) => {
 							variant='contained'
 							disabled={!isDirty || !isValid}
 							onClick={() => {
+								console.log(qualificationData);
 								update(index, formData);
 								if (trigger) {
 									trigger();
