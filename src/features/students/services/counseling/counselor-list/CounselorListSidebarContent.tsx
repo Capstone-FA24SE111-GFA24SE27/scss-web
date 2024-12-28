@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import CounselorListFilterButton from './CounselorListFilterButton'
 import { Box, IconButton, Rating, Slider, Tooltip, Typography } from '@mui/material'
-import { AcademicFilter, DateRangePicker, SelectField } from '@/shared/components'
+import { AcademicFilter, DateRangePicker, SearchField, SelectField } from '@/shared/components'
 import dayjs from 'dayjs'
 import { useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSpecializationId } from './counselor-list-slice'
+import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSearchTerm, setSpecializationId } from './counselor-list-slice'
 import { useGetCounselorExpertisesQuery, useGetNonAcademicTopicsQuery } from '@/shared/services'
 import { Close, Female, Male } from '@mui/icons-material'
 
@@ -60,6 +60,12 @@ const CounselorListSidebarContent = () => {
     dispatch(setRatingTo(valueFrom ? 5 : undefined));
   };
 
+
+  const handleSearch = (searchTerm: string) => {
+    dispatch(setSearchTerm(searchTerm))
+  }
+
+
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
 
 
@@ -73,7 +79,14 @@ const CounselorListSidebarContent = () => {
         </Typography>
       </div>
       <div>
-        <Typography className='font-semibold text-lg mb-8'>Select available date range</Typography>
+        <Typography className='font-semibold text-lg'>Search counselor by name</Typography>
+        <SearchField
+          onSearch={handleSearch}
+          className='mt-8'
+        />
+      </div>
+      <div>
+        <Typography className='font-semibold text-lg'>Select available date range</Typography>
         <DateRangePicker
           className='mt-8'
           startDate={availableFrom ? dayjs(availableFrom) : null}
@@ -83,7 +96,7 @@ const CounselorListSidebarContent = () => {
         />
       </div>
       <div>
-        <Typography className='font-semibold text-lg mb-8'>Select {counselingType === 'ACADEMIC' ? 'specialization' : 'expertise'}</Typography>
+        <Typography className='font-semibold text-lg'>Select {counselingType === 'ACADEMIC' ? 'specialization' : 'expertise'}</Typography>
         {
           counselingType === 'ACADEMIC'
             ? <AcademicFilter
@@ -105,10 +118,9 @@ const CounselorListSidebarContent = () => {
         }
 
       </div>
-      <div>
-        <Typography className="font-semibold text-lg mb-8">Filter by rating</Typography>
+      {/* <div>
+        <Typography className="font-semibold text-lg">Filter by rating</Typography>
         <Box className="flex flex-col gap-8">
-          {/* Rating From */}
           <Box className="flex gap-16 items-center  ">
             <Typography className='text-lg text-text-secondary'>From</Typography>
             <Rating
@@ -120,9 +132,9 @@ const CounselorListSidebarContent = () => {
             <Typography className='text-lg text-text-secondary'>and up</Typography>
           </Box>
         </Box>
-      </div>
+      </div> */}
       <div className='mt-8'>
-        <Typography className="font-semibold text-lg mb-8">Select by gender</Typography>
+        <Typography className="font-semibold text-lg">Select by gender</Typography>
         <div className="flex items-center gap-8">
           {/* Male Icon */}
           <Tooltip title="Male">

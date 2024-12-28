@@ -17,7 +17,7 @@ const Students = () => {
 					description='Manage academic and non-academic counselors'
 				/>
 			</div>
-			<div className='flex overflow-hidden w-full gap-32 px-32'>
+			<div className='flex overflow-hidden h-full w-full gap-32 px-32 '>
 				<div className='flex flex-col w-full gap-8'>
 					<StudentListHeader />
 					<StudentsTable />

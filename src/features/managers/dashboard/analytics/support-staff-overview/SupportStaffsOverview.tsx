@@ -15,19 +15,6 @@ const SupportStaffOverview = () => {
 	return (
 		<div className='h-full overflow-hidden'>
 			<Scrollbar className='max-h-full p-16 overflow-auto'>
-				<Breadcrumbs
-					parents={[
-						{
-							label: 'Management',
-							url: `${location.pathname}`,
-						},
-						{
-							label: 'Support Staffs',
-							url: `/management/support-staffs/overview`,
-						},
-					]}
-					currentPage={`Support Staff Overview`}
-				/>
 				<div>
 					<PerformanceOverview />
 				</div>

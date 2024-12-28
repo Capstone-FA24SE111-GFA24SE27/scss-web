@@ -152,8 +152,8 @@ const FaqItem = ({ contributedQuestion }: { contributedQuestion: ContributedQues
                   </Button>
                 </Box>
                 : <Box className='flex justify-end w-full gap-8 px-16 py-8 bg-primary-light/5 '>
-                  <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
-                  <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button>
+                  {/* <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
+                  <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button> */}
                 </Box>
             }
           </div>

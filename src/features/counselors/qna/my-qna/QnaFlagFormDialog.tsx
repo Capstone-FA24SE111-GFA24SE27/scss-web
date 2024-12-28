@@ -15,6 +15,7 @@ import { usePostFlagQuestionStatusMutation } from '../qna-api';
 import { closeSnackbar, enqueueSnackbar } from 'notistack';
 import ToastTemplate from '@/shared/components/notifications/ToastTemplate';
 import { useNavigate } from 'react-router-dom';
+import { useAlertDialog } from '@/shared/hooks';
 
 type Props = {
 	id: number;
@@ -45,36 +46,25 @@ const QnaFlagForm = (props: Props) => {
 	});
 
 	const handleSubmitForm = (data: FormValues) => {
-		flagQuestion({ id: id, body: data.reason }).unwrap().then((result) => {
-			console.log(result)
-			if (result.data.status === 200) {
+		flagQuestion({ id: id, body: data.reason })
+			.unwrap()
+			.then((result) => {
 				dispatch(closeDialog());
-				enqueueSnackbar(result.data.message, {
-					variant: 'success',
-					key: result.data.message,
-					autoHideDuration: 5000,
-					content: (
-						<ToastTemplate
-							variant='success'
-							message={result.data.message}
-							onClose={() => {
-								closeSnackbar(result.data.message);
-							}}
-						/>
-					),
-				});
-			}
-		}).catch((err) => console.log(err));
-
-		
+				useAlertDialog({
+					dispatch,
+					title: 'Question flagged successfully!',
+				})
+			})
+			.catch((err) => console.log(err));
 
 	};
 
 	return (
 		<div className='min-w-320'>
 			<DialogTitle id='alert-dialog-title'>Reason for flag?</DialogTitle>
-			<form onSubmit={handleSubmit(handleSubmitForm)}>
-				<DialogContent>
+			<DialogContent>
+
+				<form onSubmit={handleSubmit(handleSubmitForm)}>
 					<Controller
 						name='reason'
 						control={control}
@@ -95,24 +85,24 @@ const QnaFlagForm = (props: Props) => {
 							/>
 						)}
 					/>
-				</DialogContent>
-				<DialogActions>
-					<Button
-						onClick={() => dispatch(closeDialog())}
-						color='primary'
-					>
-						Cancel
-					</Button>
-					<Button
-						color='secondary'
-						variant='contained'
-						type='submit'
-						disabled={watch('reason').length <= 0}
-					>
-						Submit
-					</Button>
-				</DialogActions>
-			</form>
+					<DialogActions>
+						<Button
+							onClick={() => dispatch(closeDialog())}
+							color='primary'
+						>
+							Cancel
+						</Button>
+						<Button
+							color='secondary'
+							variant='contained'
+							type='submit'
+							disabled={watch('reason').length <= 0}
+						>
+							Submit
+						</Button>
+					</DialogActions>
+				</form>
+			</DialogContent>
 		</div>
 	);
 };

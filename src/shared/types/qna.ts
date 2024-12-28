@@ -30,7 +30,7 @@ export type Question = {
   taken: boolean;
   topic: Topic,
   createdDate: string;
-  difficultyLevel: string;
+  difficultyLevel: 'Easy' | 'Medium' | 'Hard';
   reviewReason?: string;
 }
 

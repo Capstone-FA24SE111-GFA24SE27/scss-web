@@ -2,11 +2,17 @@ import { StatsCard } from '@/shared/components'
 import { useAppointmentsSocketListener, useQuestionsSocketListener, useRequestsSocketListener } from '@/shared/context'
 import { getCurrentMonthYear, groupAppointmentsByDate } from '@/shared/utils'
 import { CheckCircle, Class, Description, DoDisturbOn, DoNotDisturb, Pending } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
+import { Box, Divider, Typography } from '@mui/material'
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store'
 import dayjs from 'dayjs'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useGetCounselorAppointmentsManagementQuery, useGetCounselorAppointmentRequestsManagementQuery, useGetCounselorQuestionCardsManagementQuery } from '../counselors-api'
+import CounselorQuestionsDistribution from './CounselorQuestionsDistribution'
+import CounselorQuestionsWorkload from './CounselorQuestionsWorkload'
+import AppointmentsChart from '@/features/managers/dashboard/overview/AppointmentsOverview'
+import AppointmentsDistribution from '@/features/managers/dashboard/overview/AppointmentsDistribution'
+import CounselorAppointmentsWorkload from './CounselorAppointmentsWorkload'
+import CounselorAppointmentsDistribution from './CounselorAppointmentsDistribution'
 
 const OverViewTab = () => {
   const { id } = useParams()
@@ -88,14 +94,14 @@ const OverViewTab = () => {
   })
 
   const completedQuestions = totalQuestions?.content?.data.filter(qna => qna.answer) || []
-  const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED','FLAGGED'].includes(qna.status)) || []
+  const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED', 'FLAGGED'].includes(qna.status)) || []
 
 
   console.log(totalAppointments)
   return (
     <section className='w-full container mx-auto'>
       <div className='p-16 flex flex-col gap-16 '>
-        <Typography className='text-xl font-bold text-text-disabled'>Counseling Overview - {getCurrentMonthYear()}</Typography>
+        <Typography className='text-xl font-bold text-text-disabled'>Booking Overview - {getCurrentMonthYear()}</Typography>
         <Box className='flex justify-between w-full gap-16'>
 
           <StatsCard
@@ -111,7 +117,7 @@ const OverViewTab = () => {
           />
 
           <StatsCard
-            title="Completed Counseling"
+            title="Completed Appointment"
             total={completedAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
@@ -144,11 +150,14 @@ const OverViewTab = () => {
             color="warning"  // You can set color to primary, secondary, success, error, etc.
           />
         </Box>
-
-
+        <div className='grid grid-cols-2 gap-16'>
+          <CounselorAppointmentsWorkload />
+          <CounselorAppointmentsDistribution />
+        </div>
       </div >
+      <Divider className='mt-16' />
       <div className='p-16 flex flex-col gap-16 mt-8'>
-        <Typography className='text-2xl font-bold text-text-disabled'>Question & Answer Overview - {getCurrentMonthYear()}</Typography>
+        <Typography className='text-xl font-bold text-text-disabled'>Question & Answer Overview - {getCurrentMonthYear()}</Typography>
         <Box className='flex justify-between w-full gap-16'>
           <StatsCard
             title="Total Questions"
@@ -186,6 +195,10 @@ const OverViewTab = () => {
             color="error"  // You can set color to primary, secondary, success, error, etc.
           />
         </Box>
+        <div className='grid grid-cols-2 gap-16'>
+          <CounselorQuestionsWorkload />
+          <CounselorQuestionsDistribution />
+        </div>
       </div >
     </section>
 

@@ -12,7 +12,7 @@ export const managersRoutes: RouteObject[] = [
     element: <ManagersLayout />,
     children: [{
       path: '',
-      element: <Navigate to={`overall/dashboard`}/>
+      element: <Navigate to={`overall/overview`}/>
     },
     ...dashboardRoutes,
     ...managementRoutes,

@@ -38,6 +38,7 @@ import { quillModules } from '@/shared/configs';
 import { ref } from 'firebase/storage';
 import { QuillEditor } from '@/shared/components';
 import { validateHTML } from '@/shared/utils';
+import { useSearchAllPublicQuestionCardsMutation } from '@/shared/pages';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -74,7 +75,7 @@ function QnaForm() {
 
 
 	const question = questionData?.content
-	const defaultValues: FormValues = { questionType: 'ACADEMIC', content: '' };
+	const defaultValues: FormValues = { questionType: 'NON_ACADEMIC', content: '' };
 
 	const { control, handleSubmit, watch, formState, reset, register, setValue } = useForm<FormValues>({
 		mode: 'onChange',
@@ -95,6 +96,8 @@ function QnaForm() {
 			skip: !watch('majorId'),
 		}
 	);
+
+	const [searchPublicQna, { isLoading: isLoadingSearch }] = useSearchAllPublicQuestionCardsMutation()
 
 
 	// Mutations for posting and editing questions
@@ -165,7 +168,8 @@ function QnaForm() {
 							.catch(error => useAlertDialog({
 								dispatch,
 								color: 'error',
-								title: 'Error creating question',
+								confirmButtonTitle : `Edit question`,
+								title: error?.data.message === `Expertise not found with name: none` ? `Question does have not have enough context`: `Error creating question`
 							}))
 					}
 				})
@@ -188,7 +192,7 @@ function QnaForm() {
 	if (banInfo?.ban) {
 		return <BanInfo banInfo={banInfo} />
 	}
-console.log(watch())
+	console.log(watch())
 	return (
 		<div className="container flex flex-col items-center px-32 my-16 w-xl">
 			<div className="flex flex-col w-full ">
@@ -212,7 +216,7 @@ console.log(watch())
 					<li>Keep your question concise and straightforward</li>
 					<li>Double-check your grammar and spelling</li>
 				</Paper>
-				<Divider className='mt-16'/>
+				<Divider className='mt-16' />
 				<div className="mt-16 ">
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
 						{/* <div className="mb-24">

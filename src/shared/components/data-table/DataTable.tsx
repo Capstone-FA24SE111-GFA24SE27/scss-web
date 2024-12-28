@@ -3,8 +3,22 @@ import _ from 'lodash';
 import { useMemo } from 'react';
 import { Theme } from '@mui/material/styles/createTheme';
 import DataTableTopToolbar from './DataTableTopToolbar';
+
 function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 	const { columns, data, ...rest } = props;
+
+	const columnsWithIndex = useMemo(() => [
+		{
+			id: 'index',
+			header: '#',
+			accessorFn: (_, index) => index + 1, // Removed index argument
+			accessorKey: undefined, // Ensure it's not confused with a key in data
+			size: 50, // Set column width
+			enableSorting: false, // Disable sorting for index column
+			cell: ({ row }) => row.index + 1, // Access row index correctly
+		},
+		...columns,
+	], [columns]);
 
 	const defaults = useMemo(
 		() =>
@@ -14,7 +28,7 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 					showColumnFilters: false,
 					showGlobalFilter: false,
 					columnPinning: {
-						left: ['mrt-row-expand', 'mrt-row-select'],
+						left: ['mrt-row-expand'], // Removed 'mrt-row-select' to disable selection box
 						right: ['mrt-row-actions']
 					},
 					pagination: {
@@ -24,7 +38,7 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 				},
 				state: {
 					pageIndex: 0,
-					pageSize: 5, //customize the default page size
+					pageSize: 5, // Customize the default page size
 				},
 				enableFullScreenToggle: false,
 				enableColumnFilterModes: true,
@@ -33,7 +47,7 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 				enableColumnPinning: true,
 				enableFacetedValues: true,
 				enableRowActions: true,
-				enableRowSelection: true,
+				enableRowSelection: false, // Disable row selection
 				enableGlobalFilter: false, // Disable the global search functionality
 				muiBottomToolbarProps: {
 					className: 'flex items-center min-h-56 h-56'
@@ -47,7 +61,6 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 					className: 'flex-auto'
 				},
 				enableStickyHeader: true,
-				// enableStickyFooter: true,
 				paginationDisplayMode: 'pages',
 				positionToolbarAlertBanner: 'top',
 				muiPaginationProps: {
@@ -66,13 +79,6 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 				muiFilterTextFieldProps: {
 					variant: 'outlined',
 					size: 'small',
-					// sx: {
-					// 	'& .MuiInputBase-root': {
-					// 		padding: '0px 8px',
-					// 		height: '32px!important',
-					// 		minHeight: '32px!important'
-					// 	}
-					// }
 				},
 				muiSelectAllCheckboxProps: {
 					className: 'w-48'
@@ -126,14 +132,13 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 					pinnedRowBackgroundColor: theme.palette.background.paper,
 					pinnedColumnBackgroundColor: theme.palette.background.paper
 				}),
-				// renderTopToolbar: (_props) => <DataTableTopToolbar {..._props} />,
-				// icons: tableIcons
 			} as Partial<MaterialReactTableProps<TData>>),
 		[rest]
 	);
 
 	const table = useMaterialReactTable<TData>({
-		columns,
+		// @ts-ignore
+		columns: columnsWithIndex,
 		data,
 		...defaults,
 		...rest

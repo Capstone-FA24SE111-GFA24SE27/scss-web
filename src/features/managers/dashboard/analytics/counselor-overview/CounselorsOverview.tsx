@@ -15,27 +15,8 @@ const CounselorsOverview = () => {
 	return (
 		<div className='h-full overflow-hidden'>
 			<Scrollbar className='max-h-full p-16 overflow-auto'>
-				<Breadcrumbs
-					parents={[
-						{
-							label: 'Management',
-							url: `${location.pathname}`,
-						},
-						{
-							label: 'Counselors',
-							url: `/management/counselors/overview`,
-						},
-					]}
-					currentPage={`Counselors Overview`}
-				/>
 				<div>
-					<div className='mt-16'>
-						<FilterTabs
-							tabs={counselingTabs}
-							tabValue={tabValue}
-							onChangeTab={handleChangeTab}
-						/>
-					</div>
+					
 					<PerformanceOverview />
 				</div>
 			</Scrollbar>

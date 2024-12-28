@@ -173,7 +173,6 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
             onChange={handleAttendanceTypeChange}
             aria-label="Attendance Type"
             size='small'
-            className=''
           >
             <ToggleButton value="COUNT" aria-label="Count" className='w-144'>
               <FilterAltIcon /> Count

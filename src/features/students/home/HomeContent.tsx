@@ -7,8 +7,10 @@ import { useNavigate } from 'react-router-dom'
 import { useGetCounselingAppointmentQuery, useGetCounselingAppointmentRequestsQuery } from '../services/activity/activity-api'
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store'
 import { openCounselorView } from '../students-layout-slice'
-import { useAppointmentsSocketListener, useRequestsSocketListener } from '@/shared/context'
+import { useAppointmentsSocketListener, useQuestionsSocketListener, useRequestsSocketListener } from '@/shared/context'
 import { groupAppointmentsByDate } from '@/shared/utils'
+import { useGetStudentQuestionsQuery } from '../services/qna/qna-api'
+import QnaItem from '../services/qna/QnaItem'
 
 const HomeContent = () => {
   const account = useAppSelector(selectAccount)
@@ -44,10 +46,14 @@ const HomeContent = () => {
 
   const groupedAppointments = groupAppointmentsByDate(upcomingAppointments);
 
+  const { data: qnaData, isLoading: isLoadingQuestions, refetch: refetchQna } = useGetStudentQuestionsQuery({
+  })
+  const askingQuestions = qnaData?.content.data.filter(item => !item.closed)
+  useQuestionsSocketListener(account?.profile.id, refetchRequest)
 
   const navigate = useNavigate()
   return (
-    <div className='p-32 w-full flex flex-col gap-16'>
+    <div className='p-16 w-full flex flex-col gap-16'>
       <Box className='grid grid-cols-12 gap-16'>
         <Paper className='col-span-full shadow p-16'>
           <div className='flex justify-between items-center px-8'>
@@ -64,7 +70,7 @@ const HomeContent = () => {
               isLoadingAppointment
                 ? <ContentLoading />
                 : Object.keys(groupedAppointments).length === 0
-                  ? <div className='flex justify-center gap-4 items-center'>
+                  ? <div className='flex flex-col justify-center gap-4 items-center'>
                     <Typography
                       color="textDisabled"
                       className='text-center'
@@ -100,6 +106,52 @@ const HomeContent = () => {
             }
           </Scrollbar>
         </Paper>
+      </Box>
+      <Box className='grid gap-16'>
+        <Paper className='shadow p-16'>
+          <div className='flex justify-between items-center px-8'>
+            <Typography className='font-semibold text-xl'>Asking Questions</Typography>
+            <Button
+              color='secondary'
+              className=''
+              onClick={() => navigate(`/services/qna`)}
+            >View all</Button>
+          </div>
+          <Scrollbar className='flex flex-col gap-8 p-4 mt-8 min-h-xs'>
+            {
+              isLoadingQuestions
+                ? <ContentLoading />
+                : !askingQuestions?.length
+                  ? <div className='flex flex-col justify-center gap-4 items-center'>
+                    <Typography
+                      color="textDisabled"
+                      className='text-center'
+                    >
+                      You have not asked any questions
+                    </Typography>
+                    <Button
+                      className='w-fit'
+                      variant='text'
+                      component={NavLinkAdapter}
+                      to={`/services/qna/create`}
+                      endIcon={<ArrowForward />}
+                    >
+                      Ask a question
+                    </Button>
+                  </div>
+                  : <div className='flex flex-col gap-16'>
+                    {
+                      askingQuestions?.map(item =>
+                        <QnaItem
+                          key={item?.id}
+                          qna={askingQuestions[0]}
+                        />
+                      )}
+                  </div>
+            }
+          </Scrollbar>
+        </Paper>
+
       </Box>
     </div >
   )

@@ -62,7 +62,8 @@ const Faq = () => {
   const { data: contributedQuestionsData, isLoading, isFetching } = useSearchContributedQuestionCardsQuery({
     query: searchTerm,
     counselorId: isShowingOnlyMyQna ? account?.profile.id : undefined,
-    categoryId: Number(selectedCategory) || undefined
+    categoryId: Number(selectedCategory) || undefined,
+    page: page,
   });
   const contributedQuestions = contributedQuestionsData?.content?.data || [];
 
@@ -111,7 +112,7 @@ const Faq = () => {
           <div className='mt-16 space-y-16'>
             {
               isFetching || isLoading
-                ? <ContentLoading />
+                ? <ContentLoading className='h-md' />
                 : !contributedQuestions?.length ? (
                   <Typography variant='h5' color='textSecondary' className='p-16'>
                     No questions found.

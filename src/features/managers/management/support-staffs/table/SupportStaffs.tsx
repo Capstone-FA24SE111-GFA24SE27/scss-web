@@ -14,11 +14,17 @@ const Students = () => {
       <div className='flex items-center justify-between p-32'>
         <Heading title='Support Staffs Management' description='Manage support staffs' />
       </div>
-      <div className='px-32 space-y-16'>
-        <SearchField onSearch={function (searchTerm: string): void {
-          throw new Error('Function not implemented.')
-        }} />
-        <SupportStaffsTable />
+      <div className='px-32 my-16'>
+        <SearchField
+          onSearch={function (searchTerm: string): void {
+            throw new Error('Function not implemented.')
+          }} />
+      </div>
+      <div className='px-32 space-y-16 h-full overflow-hidden'>
+
+        <div className='h-full'>
+          <SupportStaffsTable />
+        </div>
       </div>
     </div>
   )

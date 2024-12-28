@@ -68,7 +68,7 @@ const AccountsOverview = (props: Props) => {
 			<div className='flex items-center justify-between px-32 pt-32'>
 				<Heading
 					title={`Overview`}
-					description='Performance overview of accounts'
+					description='Analytics of user activities'
 				/>
 			</div>
 			<div className='px-32 py-16'>

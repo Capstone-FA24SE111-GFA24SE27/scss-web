@@ -16,7 +16,7 @@ function RequestsHeader() {
     return (
         <div className='p-32'>
             <Heading    
-                title='My Requests'   
+                title='My Appointment Requests'   
                 description='All appointments counseling requests to the user' 
             />
         </div>

@@ -11,9 +11,13 @@ export const calendarRoutes: RouteObject[] = [
 		children: [
 			{
 				path: 'date/:date',
-				element: <DateDetailScheduleView />,
 				children: [
+					{
+						index: true,
+						element: <DateDetailScheduleView />,
+					},
 					...appointmentRoutes,
+					...reportRoutes,
 				]
 			},
 		],

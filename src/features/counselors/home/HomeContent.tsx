@@ -31,7 +31,7 @@ const HomeContent = () => {
 
   const { data: pendingRequestsData, isLoading: isLoadingRequest, refetch: refetchRequest } = useGetCounselorAppointmentRequestsQuery({
     dateFrom: today,
-    dateTo: lastDayOfMonth,
+    // dateTo: lastDayOfMonth,
     status: `WAITING`,
   })
 
@@ -130,9 +130,8 @@ const HomeContent = () => {
   const navigate = useNavigate()
   return (
     <section className='w-full container mx-auto'>
-
       <div className='p-16 flex flex-col gap-16 '>
-        <Typography className='text-xl font-bold text-text-disabled'>Counseling Overview - {getCurrentMonthYear()}</Typography>
+        <Typography className='text-xl font-bold text-text-disabled'>Booking Overview - {getCurrentMonthYear()}</Typography>
         <Box className='flex justify-between w-full gap-16'>
 
           <StatsCard
@@ -148,7 +147,7 @@ const HomeContent = () => {
           />
 
           <StatsCard
-            title="Completed Counseling"
+            title="Completed Appointment"
             total={completedAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
@@ -311,7 +310,6 @@ const HomeContent = () => {
               }
             </Scrollbar>
           </Paper>
-
         </Box>
       </div >
     </section>

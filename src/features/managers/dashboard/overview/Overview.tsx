@@ -35,7 +35,10 @@ import {
 	useGetSupportStaffManagementQuery,
 	useGetSupportStaffsManagementQuery,
 } from '../../management/support-staffs/support-staffs-api';
-import AppointmentOverview from './AppointmentOverview';
+import AppointmentsOverview from './AppointmentsOverview';
+import AppointmentsDistribution from './AppointmentsDistribution';
+import QuestionsOverview from './QuestionsOverview';
+import QuestionsDistribution from './QuestionsDistribution';
 
 const Overview = () => {
 	const {
@@ -183,11 +186,18 @@ const Overview = () => {
 					/>
 				</div>
 				<div className='flex flex-col gap-16 mt-16'>
-					{/* <AppointmentOverview /> */}
-					<AppointmentChart />
-					<RequestChart />
-					<QnaChart />
-					<DemandChart />
+					<div className='grid grid-cols-2 gap-16'>
+						<AppointmentsOverview />
+						<AppointmentsDistribution />
+					</div>
+					<div className='grid grid-cols-2 gap-16'>
+						<QuestionsOverview />
+						<QuestionsDistribution />
+					</div>
+					{/* <QnaChart />	 */}
+							
+					{/* <RequestChart /> */}
+					{/* <DemandChart /> */}
 				</div>
 			</Scrollbar>
 		</div>

@@ -92,8 +92,8 @@ const MyQnaContent = () => {
 	const qnaList = qnaData?.content?.data || [];
 
 
-	const pendingQuestions = qnaList.filter(item => !item.closed)
-	const completedQuestion = qnaList.filter(item => item.closed)
+	const pendingQuestions = qnaList.filter(item => !item.answer)
+	const completedQuestion = qnaList.filter(item => item.answer)
 
 	useEffect(() => {
 		if (socket && account) {
@@ -162,7 +162,7 @@ const MyQnaContent = () => {
 						label='Question keyword'
 						placeholder='Enter question keyword'
 						onSearch={handleSearch}
-						className='w-xs'
+						className='w-full'
 					/>
 					{/* <SelectField
             label="Topic"
@@ -215,9 +215,9 @@ const MyQnaContent = () => {
 					) : (
 						<div className='space-y-16'>
 							{
-								completedQuestion?.length > 0 && (
+								pendingQuestions?.length > 0 && (
 									<div className='flex flex-col gap-16'>
-										{pendingQuestions?.length > 0 && (
+										{completedQuestion?.length > 0 && (
 											<SubHeading title='Pending Questions' />
 										)}
 										{

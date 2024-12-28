@@ -13,7 +13,7 @@ const SubHeading = ({ title, description = '', className }: HeadingProps) => {
         // initial={{ x: -20 }}
         // animate={{ x: 0, transition: { delay: 0.2 } }}
       >
-        <Typography className="text-lg font-semibold border-l-2 !border-secondary-main pl-8">
+        <Typography className="text-lg font-semibold border-l-2 !border-secondary-main pl-8 text-text-secondary">
           {title}
         </Typography>
       </motion.span>

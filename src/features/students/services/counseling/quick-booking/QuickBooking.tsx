@@ -1,5 +1,5 @@
 import { useSocket } from '@/shared/context';
-import { CounselingType, Counselor } from '@/shared/types';
+import { CounselingType, Counselor, DailySlot, Department, Major } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronRight, Close, ContactSupport, EmailOutlined, Female, Handshake, LocalPhoneOutlined, Male, NavigateBefore, NavigateNext, People, PersonPin, PersonSearch, School, SentimentVeryDissatisfied } from '@mui/icons-material';
 import { Autocomplete, Box, Chip, CircularProgress, CircularProgressProps, FormControl, FormControlLabel, IconButton, InputLabel, ListItemAvatar, ListItemButton, ListItemText, Paper, Radio, RadioGroup, Rating, Step, StepLabel, Stepper, TextField, Tooltip } from '@mui/material';
@@ -15,8 +15,8 @@ import { useEffect, useState, MouseEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { useBookCounselorMutation, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCounselorReasonMeaningMutation, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
-import { counselingTypeDescription } from '@/shared/constants';
+import { useBookCounselorMutation, useGetCounselorDailySlotsQuery, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCounselorReasonMeaningMutation, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
+import { counselingTypeDescription, firstDayOfMonth, lastDayOfMonth } from '@/shared/constants';
 import { useGetCounselorExpertisesQuery, useGetDepartmentsQuery, useGetMajorsByDepartmentQuery, useGetSpecializationsByMajorQuery } from '@/shared/services';
 import { useConfirmDialog } from '@/shared/hooks';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
@@ -24,6 +24,7 @@ import { useAlertDialog } from '@/shared/hooks';
 import { getApiErrorMessage } from '@shared/store';
 import { useGetStudentDocumentQuery } from '@/features/students/students-api';
 import { setCounselingTab, setCounselorType } from '../counselor-list/counselor-list-slice';
+import { SlotsMessage } from '@/shared/pages/counselor/CounselorBooking';
 
 /**
  * The contact view.
@@ -31,16 +32,16 @@ import { setCounselingTab, setCounselorType } from '../counselor-list/counselor-
 
 const steps = [
   'Counseling Perferences',
-  'Date Time',
-  'Matched counselor',
+  // 'Date Time',
+  'Matching counselor',
 ];
 
 const schema = z.object({
-  slotId: z.number().min(1, "Slot is required"),
-  slotCode: z.string().min(1, "Slot code is required"),
-  date: z.string().min(1, "Counseling date is required"),
+  reason: z.string().min(1, "Please enter a valid reason"),
+  slotId: z.number().nullable().optional(),
+  slotCode: z.string().nullable().optional(),
+  date: z.string().nullable().optional(),
   isOnline: z.coerce.boolean().optional(),
-  reason: z.string().min(2, "Please enter a valid reason").optional(),
   department: z.object({
     id: z.number(),
     name: z.string(),
@@ -85,30 +86,40 @@ function QuickBooking() {
   const socket = useSocket()
   const navigate = useNavigate()
   const today = dayjs().format('YYYY-MM-DD');
-  const [startOfMonth, setStartOfMonth] = useState(today);
+  const [startOfMonth, setStartOfMonth] = useState(null);
   const [endOfMonth, setEndOfMonth] = useState(dayjs().endOf('month').format('YYYY-MM-DD'));
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
-
+  const [studentDepartment, setStudentDepartment] = useState<Department | null>(null)
+  const [studentMajor, setStudentMajor] = useState<Major | null>(null)
   const [bookCounselor, { isLoading: isBookingCounselor, isSuccess }] = useBookCounselorMutation()
 
   const [isGettingRandomMatchedCounselor, setGettingRandomMatchedCounselor] = useState(false)
 
 
   const [randomMatchedCounselor, setRandomMatchedCounselor] = useState<Counselor | null>(null)
-
-  const [counselingType, setCounselingType] = useState<CounselingType>('ACADEMIC');
+  const [matchedCounselorList, setMatchedCounselorList] = useState<Counselor[] | null>(null)
+  const [counselingType, setCounselingType] = useState<CounselingType | null>(null);
 
   const handleCounselingTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCounselingType((event.target as HTMLInputElement).value as CounselingType);
-    setValue('specialization', null)
-    setValue('expertise', null)
+    const newCounselingType = (event.target as HTMLInputElement).value as CounselingType
+    setCounselingType(newCounselingType);
+    if (newCounselingType === `ACADEMIC`) {
+      setValue(`department`, studentDepartment)
+      setValue(`major`, studentMajor)
+    }
+    if (newCounselingType === `NON_ACADEMIC`) {
+      setValue(`department`, null)
+      setValue(`major`, null)
+    }
+
   };
 
   console.log(startOfMonth, today)
 
   const defaultValues = {
-    date: startOfMonth,
-    isOnline: true,
+    date: null,
+    slotCode: null,
+    slotId: null,
     reason: "",
   }
 
@@ -142,7 +153,7 @@ function QuickBooking() {
 
   const dispatch = useAppDispatch()
 
-  const [getRnadomMatchedCounselorReasonMeaning, { isLoading: isLoadingRandomMatchedCOunselorReasonMeaning }] = useGetRandomMatchedCounselorReasonMeaningMutation()
+  const [getRandomMatchedCounselorReasonMeaning, { isLoading: isLoadingRandomMatchedCOunselorReasonMeaning }] = useGetRandomMatchedCounselorReasonMeaningMutation()
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -163,19 +174,22 @@ function QuickBooking() {
   // const { data: counselorData, isLoading } = useGetCounselorQuery(counselorId);
   // const { data: counserDailySlotsData, isFetching: isFetchingCounselorSlots } = useGetCounselorDailyQuery({ counselorId, from: startOfMonth, to: endOfMonth });
 
-  const onSubmitMatching = () => {
+  const onSubmitMatching = async () => {
+    const isReasonValid = await checkReasonMeaning()
+    if (!isReasonValid) {
+      return;
+    }
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: 'smooth', // Smooth scrolling
+      behavior: 'smooth',
     });
-    console.log(formData)
     handleNext()
     setGettingRandomMatchedCounselor(true)
     setProgress(20)
-    getRandomMatchedCounselor({
-      date: formData.date,
-      slotId: formData.slotId,
+    const foundCounselorData = await getRandomMatchedCounselor({
+      date: formData.date || undefined,
+      slotId: formData.slotId || undefined,
       // expertiseId: formData.expertise?.id,
       // specializationId: formData.specialization?.id,
       departmentId: formData.department?.id || undefined,
@@ -183,44 +197,32 @@ function QuickBooking() {
       gender: formData.gender,
       reason: formData.reason
     })
-      .unwrap()
-      .then(response => {
-        setRandomMatchedCounselor(response?.content)
-      })
+    setMatchedCounselorList(foundCounselorData?.data?.content)
   }
 
-  const validateReason = async () => {
-    const isValidReason = await trigger('reason');
+  const checkReasonMeaning = async () => {
+    // const isValidReason = await trigger('reason');
 
-    if (!isValidReason) {
-      return
-    }
+    // if (!isValidReason) {
+    //   return false
+    // }
 
-    const reasonMeaningData = await getRnadomMatchedCounselorReasonMeaning({
+    const reasonMeaningData = await getRandomMatchedCounselorReasonMeaning({
       reason: formData.reason,
       studentId: account?.profile.id
     })
 
     const reasonData = reasonMeaningData?.data.message
 
-    if (reasonMeaningData?.data.message !== 'OK') {
+    if (reasonData !== 'OK') {
       setError("reason", {
         type: "manual",
         message: `Inapproriate words ${extractInappropriateSentences(reasonData)}`,
       });
-      return
+      return false
     }
 
-    handleNext()
-
-  }
-
-  const clearQuickBookingForm = () => {
-    reset()
-    reset({
-      department: undefined,
-      major: undefined,
-    })
+    return true
   }
 
   const onSubmitBooking = () => {
@@ -258,6 +260,18 @@ function QuickBooking() {
     })
   }
 
+  const clearQuickBookingForm = () => {
+    reset()
+    setSelectedGender(null)
+    setCounselingType(null)
+    reset({
+      department: undefined,
+      major: undefined,
+    })
+    reset({
+      reason: ``,
+    })
+  }
 
   const handleDateChange = (selectedDate) => {
     const previousDate = formData.date
@@ -273,17 +287,26 @@ function QuickBooking() {
     setStartOfMonth(newMonth.startOf('month').format('YYYY-MM-DD'));
     setEndOfMonth(newMonth.endOf('month').format('YYYY-MM-DD'));
   };
+
+
   console.log(formData)
 
+  // const [getRandomMatchedCounselor,
+  //   {
+  //     isLoading: isLoadingRandomMatchedCounselor,
+  //     isSuccess: isSuccessGettingRandomMatchedCounselor,
+  //     isError: isErrorGettingRandomMatchedCounselor,
+  //   }
+  // ] = counselingType == 'ACADEMIC'
+  //     ? useGetRandomMatchedCousenlorAcademicMutation()
+  //     : useGetRandomMatchedCousenlorNonAcademicMutation()
   const [getRandomMatchedCounselor,
     {
       isLoading: isLoadingRandomMatchedCounselor,
       isSuccess: isSuccessGettingRandomMatchedCounselor,
       isError: isErrorGettingRandomMatchedCounselor,
     }
-  ] = counselingType == 'ACADEMIC'
-      ? useGetRandomMatchedCousenlorAcademicMutation()
-      : useGetRandomMatchedCousenlorNonAcademicMutation()
+  ] = useGetRandomMatchedCousenlorMutation()
 
   console.log(formData)
 
@@ -312,11 +335,80 @@ function QuickBooking() {
   const studentProfile = studentDocumentData?.content.studentProfile
 
   useEffect(() => {
-    reset({
-      department: studentProfile?.department,
-      major: studentProfile?.major,
-    })
+    setStudentDepartment(studentProfile?.department)
+    setStudentMajor(studentProfile?.major)
   }, [studentProfile]);
+
+
+  const [counselorDailySlots, setCounselorDailySlots] = useState<DailySlot>()
+  console.log(counselorDailySlots)
+
+
+  const handleCounselorMonthChange = (newMonth) => {
+    handleDateChange(newMonth)
+    setValue("date", dayjs(newMonth).format('YYYY-MM-DD'))
+    setStartOfMonth(newMonth.startOf('month').format('YYYY-MM-DD'));
+    setEndOfMonth(newMonth.endOf('month').format('YYYY-MM-DD'));
+  };
+
+  const counselorId = randomMatchedCounselor?.profile.id?.toString()
+
+  const handleCounselorDateChange = (selectedDate) => {
+    const previousDate = formData.date
+    const currentDate = dayjs(selectedDate).format('YYYY-MM-DD')
+
+    socket?.off(`/user/${previousDate}/${counselorId}/slot`);
+
+    socket?.on(`/user/${currentDate}/${counselorId}/slot`, (slotsMessage: SlotsMessage) => {
+      console.log("Slots Message", slotsMessage)
+      if (!slotsMessage) {
+        return
+      }
+      setCounselorDailySlots(previousSlots => ({
+        ...previousSlots,
+        [slotsMessage?.dateChange]: (previousSlots[slotsMessage?.dateChange]).map((slot) =>
+          slot.slotId === slotsMessage.slotId
+            ? { ...slot, status: slotsMessage.newStatus }
+            : slot
+        )
+      }));
+    })
+
+    setValue("date", currentDate)
+    setValue("slotCode", '')
+  }
+
+  const { data: counserDailySlotsData, isFetching: isFetchingCounselorDailySlots, refetch: refecthDailySlots }
+    = useGetCounselorDailySlotsQuery({ counselorId, from: startOfMonth || firstDayOfMonth, to: lastDayOfMonth }, {
+      skip: !counselorId,
+    });
+
+  console.log(counserDailySlotsData)
+
+  useEffect(() => {
+    if (randomMatchedCounselor) {
+      refecthDailySlots()
+    }
+  }, [randomMatchedCounselor]);
+
+  useEffect(() => {
+    if (counserDailySlotsData) {
+      setCounselorDailySlots(counserDailySlotsData.content);
+    }
+  }, [counserDailySlotsData]);
+
+  useEffect(() => {
+
+    if (socket) {
+      socket.on(`/user/${today}/${counselorId}/slot`, (data) => {
+        console.log("Socket counselor booking", data)
+      })
+    }
+
+    return () => {
+      socket?.off(`/user/${formData.date}/${counselorId}/slot`);
+    };
+  }, [socket]);
 
   return (
     <>
@@ -336,52 +428,7 @@ function QuickBooking() {
           {
             activeStep === 0 && (
               <Paper className='w-full shadow'>
-                <div className="flex flex-col flex-1 gap-16 p-36">
-                  <div className=''>
-                    <Typography className='text-lg font-semibold text-primary'>Select counseling type</Typography>
-                    <FormControl className='w-full pl-8'>
-                      <RadioGroup
-                        aria-labelledby="counselingType"
-                        name="controlled-radio-buttons-group"
-                        value={counselingType}
-                        onChange={handleCounselingTypeChange}
-                        className='flex flex-1 pt-16'
-                      >
-                        <FormControlLabel
-                          className='w-full rounded-md hover:bg-primary-main/5'
-                          value="ACADEMIC"
-                          control={<Radio />}
-                          label={
-                            <Box display="flex" flexDirection="column" alignItems="flex-start" className="flex-1 w-full p-8">
-                              <Box display="flex" alignItems="center">
-                                <School fontSize="large" /> {/* Large Icon */}
-                                <Typography variant="h6" sx={{ marginLeft: 1 }}>Academic</Typography>
-                              </Box>
-                              <Typography variant="body2" color="text.secondary">
-                                {counselingTypeDescription.ACADEMIC}
-                              </Typography>
-                            </Box>
-                          }
-                        />
-                        <FormControlLabel
-                          className='w-full rounded-md hover:bg-primary-main/5'
-                          value="NON_ACADEMIC"
-                          control={<Radio />}
-                          label={
-                            <Box display="flex" flexDirection="column" alignItems="flex-start" className="flex-1 w-full p-8">
-                              <Box display="flex" alignItems="center">
-                                <Handshake fontSize="large" /> {/* Large Icon */}
-                                <Typography variant="h6" sx={{ marginLeft: 1 }}>Non-academic</Typography>
-                              </Box>
-                              <Typography variant="body2" color="text.secondary">
-                                {counselingTypeDescription.NONE_ACADEMIC}
-                              </Typography>
-                            </Box>
-                          }
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </div>
+                <div className="flex flex-col flex-1 gap-24 p-36">
                   <div className=''>
                     <Typography className='text-lg font-semibold text-primary'>Enter reason</Typography>
                     <Controller
@@ -390,6 +437,7 @@ function QuickBooking() {
                       render={({ field }) => (
                         <TextField
                           {...field}
+                          required
                           className="mt-16"
                           label="Reason"
                           placeholder="Enter your reason"
@@ -408,11 +456,57 @@ function QuickBooking() {
                       )}
                     />
                   </div>
+                  {/* <div className=''>
+                    <Typography className='text-lg font-semibold text-primary'>Select counseling type</Typography>
+                    <FormControl className='w-full pl-8'>
+                      <RadioGroup
+                        aria-labelledby="counselingType"
+                        name="controlled-radio-buttons-group"
+                        value={counselingType}
+                        onChange={handleCounselingTypeChange}
+                        className='pt-16 grid grid-cols-2'
+                      >
+                        <FormControlLabel
+                          className='w-full rounded-md hover:bg-primary-main/5'
+                          value="ACADEMIC"
+                          control={<Radio />}
+                          label={
+                            <Box display="flex" flexDirection="column" alignItems="flex-start" className="flex-1 w-full p-8">
+                              <Box display="flex" alignItems="center">
+                                <School fontSize="large" /> 
+                                <Typography variant="h6" sx={{ marginLeft: 1 }}>Academic</Typography>
+                              </Box>
+                              <Typography variant="body2" color="text.secondary">
+                                {counselingTypeDescription.ACADEMIC}
+                              </Typography>
+                            </Box>
+                          }
+                        />
+                        <FormControlLabel
+                          className='w-full rounded-md hover:bg-primary-main/5'
+                          value="NON_ACADEMIC"
+                          control={<Radio />}
+                          label={
+                            <Box display="flex" flexDirection="column" alignItems="flex-start" className="flex-1 w-full p-8">
+                              <Box display="flex" alignItems="center">
+                                <Handshake fontSize="large" />
+                                <Typography variant="h6" sx={{ marginLeft: 1 }}>Non-academic</Typography>
+                              </Box>
+                              <Typography variant="body2" color="text.secondary">
+                                {counselingTypeDescription.NONE_ACADEMIC}
+                              </Typography>
+                            </Box>
+                          }
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div> */}
+
                   {
                     counselingType === 'ACADEMIC'
                       ? <div className=''>
                         < div className=''>
-                          <Typography className='text-lg font-semibold text-primary'>Select Department</Typography>
+                          <Typography className='text-lg font-semibold text-primary'>Select department</Typography>
                           <Controller
                             name="department"
                             control={control}
@@ -442,7 +536,7 @@ function QuickBooking() {
                           />
 
                           {/* Major Selection */}
-                          <Typography className='mt-16 text-lg font-semibold text-primary'>Select Major</Typography>
+                          <Typography className='mt-16 text-lg font-semibold text-primary'>Select major</Typography>
                           <Controller
                             name="major"
                             control={control}
@@ -470,7 +564,7 @@ function QuickBooking() {
                           />
 
                           {/* Specialization Selection */}
-                          {/* <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization (optional)</Typography>
+                          {/* <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization</Typography>
                       <Controller
                         name="specialization"
                         control={control}
@@ -496,7 +590,7 @@ function QuickBooking() {
                         </div>
                       </div>
                       : < div className=''>
-                        {/* <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise (optional)</Typography>
+                        {/* <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise</Typography>
                     <Controller
                       name="expertise"
                       control={control}
@@ -522,9 +616,63 @@ function QuickBooking() {
                       </div>
                   }
 
-                  <div className=''>
-                    <Typography className='text-lg font-semibold text-primary'>Select couselor's gender (optional)</Typography>
-                    <div className="mt-8">
+
+                  <div className="grid grid-cols-3 gap-16">
+                    <div className='flex flex-col'>
+                      <Typography className='text-lg font-semibold text-primary'>Select date</Typography>
+                      <div className='w-fit'>
+                        <DateCalendar
+                          views={['day']}
+                          className='w-full'
+                          disablePast
+                          value={formData.date ? dayjs(formData.date) : null}
+                          onChange={handleDateChange}
+                          onMonthChange={handleMonthChange}
+                        />
+                        {
+                          errors.date && <Typography color='error' className='mt-4'>{errors?.date?.message}</Typography>
+                        }
+                      </div>
+                    </div>
+                    <div className='col-span-2'>
+                      <Typography className='text-lg font-semibold text-primary'>Select time</Typography>
+                      <div className='flex flex-wrap gap-16 mt-8 min-h-52'>
+                        {
+                          isFetchingCounselorSlots
+                            ? <ContentLoading />
+                            : !counselorSlots?.length
+                              ? <Typography color='text.secondary'>No available slots</Typography>
+                              : counselorSlots
+                                .map(slot => (
+                                  <Tooltip
+                                    key={slot.slotCode}
+                                    title={slot.slotCode.split('-').join(" ").concat(slot.myAppointment ? " - You booked this slot" : "")}
+                                  >
+                                    <Button
+                                      variant={formData.slotId === slot.slotId ? 'contained' : 'outlined'}
+                                      // disabled={['UNAVAILABLE', 'EXPIRED'].includes(slot.status)}
+                                      onClick={() => {
+                                        setValue("slotId", slot.slotId)
+                                        setValue("slotCode", slot.slotCode)
+                                      }}
+                                      color='primary'
+                                      className='font-normal'
+                                    >
+                                      {dayjs(slot.startTime, 'HH:mm:ss').format('HH:mm')} -  {dayjs(slot.endTime, 'HH:mm:ss').format('HH:mm')}
+                                    </Button>
+                                  </Tooltip>
+                                ))
+                        }
+                      </div>
+                      {
+                        errors.slotId && <Typography color='error' className='mt-8'>{errors?.slotId?.message}</Typography>
+                      }
+                    </div>
+                  </div>
+
+                  <div className='-mt-16'>
+                    <Typography className='text-lg font-semibold text-primary'>Select couselor's gender</Typography>
+                    <div className="mt-8 h-52 ">
                       <Controller
                         name="gender"
                         control={control}
@@ -591,6 +739,33 @@ function QuickBooking() {
                       )}
                     </div>
                   </div>
+                  {/* {
+            activeStep === 1 && (
+              <Paper className='w-full shadow'>
+                
+                <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-16 px-32'>
+                  <Button
+                    onClick={handleBack}
+                    color='secondary'
+                    startIcon={<NavigateBefore />}
+                    size='large'
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    startIcon={<PersonSearch />}
+                    size='large'
+                    variant='contained'
+                    color='secondary'
+                    onClick={handleSubmit(onSubmitMatching)}
+                    disabled={isLoadingRandomMatchedCounselor}
+                  >
+                    Find my counselor
+                  </Button>
+                </Box>
+              </Paper >
+            )
+          } */}
                 </div>
                 <Box className='flex justify-between w-full gap-16 bg-primary-light/5 py-16 px-32'>
                   <Button
@@ -599,22 +774,33 @@ function QuickBooking() {
                   >
                     Clear
                   </Button>
-                  <Button
+                  {/* <Button
                     endIcon={<NavigateNext />}
                     variant="outlined"
                     type='button'
                     size='large'
-                    onClick={validateReason}
+                    onClick={checkReasonMeaning}
                     color='secondary'
                     disabled={isLoadingRandomMatchedCOunselorReasonMeaning}
                   >
                     Select date time
+                  </Button> */}
+                  <Button
+                    startIcon={<PersonSearch />}
+                    size='large'
+                    variant='contained'
+                    color='secondary'
+                    // onClick={findRandomMatchedCounselor}
+                    onClick={handleSubmit(onSubmitMatching)}
+                    disabled={isLoadingRandomMatchedCOunselorReasonMeaning || isLoadingRandomMatchedCounselor}
+                  >
+                    Find my counselor
                   </Button>
                 </Box>
               </Paper >
             )
           }
-          {
+          {/* {
             activeStep === 1 && (
               <Paper className='w-full shadow'>
                 <div className="flex flex-col flex-1 gap-16 p-36">
@@ -640,7 +826,6 @@ function QuickBooking() {
                     </div>
                     <div className=''>
                       <Typography className='text-lg font-semibold text-primary'>Select time</Typography>
-                      {/* <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography> */}
                       <div className='flex flex-wrap gap-16 mt-8 min-h-52'>
                         {
                           isFetchingCounselorSlots
@@ -698,135 +883,203 @@ function QuickBooking() {
                 </Box>
               </Paper >
             )
-          }
+          } */}
           {
-            activeStep === 2 && (
-              <Paper className='w-full shadow' id={'found_counselor'}>
-                <div className='p-32'>
-                  <div className=''>
+            activeStep === 1 && (
+              <Paper className='w-full shadow h-full' id={'found_counselor'}>
+                <div className='p-32 grid grid-cols-3 gap-16'>
+                  <div className='border-r pr-16 col-span-1'>
+                    <Typography color='textSecondary' className='text-lg font-semibold'>Booking details</Typography>
+                    <div className=''>
+                      <div className='mt-16 flex flex-col gap-16'>
+                        <div className='flex flex-col'>
+                          <Typography className='text-lg font-semibold text-primary'>Reason:</Typography>
+                          <Typography className='text-primary'>{formData.reason || `N/A`}</Typography>
+                        </div>
+
+                        <div className='flex flex-col'>
+                          <Typography className='text-lg font-semibold text-primary'>Selected date:</Typography>
+                          <Typography className='text-primary' >
+                            {
+                              formData.date
+                                ? dayjs(formData.date).format('dddd, MMMM DD, YYYY')
+                                : `N/A`
+                            }
+                          </Typography>
+                        </div>
+
+
+                        <div className='flex flex-col'>
+                          <Typography className='text-lg font-semibold text-primary'>Selected slot:</Typography>
+                          <Typography className='text-primary' >
+                            {
+                              formData.slotCode
+                                ? `${dayjs(counselorSlots?.find((slot) => slot.slotCode === formData.slotCode)?.startTime, 'HH:mm:ss').format('HH:mm')}  -  ${dayjs(counselorSlots?.find((slot) => slot.slotCode === formData.slotCode)?.endTime, 'HH:mm:ss').format('HH:mm')}`
+                                : `N/A`
+                            }
+                          </Typography>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-span-2'>
                     {
                       ((progress > 0 && progress < 100) || isLoadingRandomMatchedCounselor)
                         ? <div className='flex flex-col items-center gap-16'>
                           <Typography color='secondary' className='text-lg font-semibold text-center'>Matching the most suitable counselor for you.</Typography>
                           <CircularProgressWithLabel value={progress} />
                         </div>
-                        : randomMatchedCounselor
+                        : matchedCounselorList?.length
                           ? (
-                            <div className='flex'>
-                              <div className='w-md'>
-                                <Typography color='textSecondary' className='text-lg font-semibold'>Booking details.</Typography>
-                                <div className=''>
-                                  <div className='mt-16 flex flex-col gap-16'>
+                            <div className='flex flex-col'>
+                              <div className='w-full'>
+                                <Typography color='textSecondary' className='text-lg font-semibold'>The best counselors that fits your criteria:</Typography>
+                                {
+                                  matchedCounselorList.map(matchedCounselor => (
+                                    <Box
+                                      onClick={() => setRandomMatchedCounselor(matchedCounselor)}
+                                      key={matchedCounselor.id}
+                                      title={`View ${matchedCounselor.profile.fullName}'s profile`}
+                                      className='mt-16 shadow flex  rounded-md'>
+                                      <ListItemButton
+                                        className='w-full'
+                                        selected={matchedCounselor?.profile.id === randomMatchedCounselor?.profile.id}
+                                      >
+                                        <div className='flex gap-24'>
+                                          <ListItemAvatar>
+                                            <Avatar
+                                              alt={matchedCounselor.profile.fullName}
+                                              src={matchedCounselor.profile.avatarLink}
+                                              className='size-80'
+                                            />
+                                          </ListItemAvatar>
+                                          <Box className='flex flex-col gap-8 justify-between'>
+                                            <ListItemText
+                                              classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate text-lg' }}
+                                              primary={matchedCounselor.profile.fullName}
+                                              secondary={matchedCounselor.expertise?.name || matchedCounselor.major?.name}
+                                            />
+                                            <div className="flex items-center gap-16">
+                                              <div className="flex items-center w-120">
+                                                <LocalPhoneOutlined fontSize='small' />
+                                                <div className="ml-8 text-text-secondary leading-6">{matchedCounselor.profile.phoneNumber}</div>
+                                              </div>
+                                              <div className="flex items-center">
+                                                <EmailOutlined fontSize='small' />
+                                                <div className="ml-8 text-text-secondary leading-6">{matchedCounselor.email}</div>
+                                              </div>
+                                            </div>
+                                            {/* <div className="flex flex-wrap mt-8 gap-8">
+                                              {
+                                                matchedCounselor.specializedSkills?.split(`\n`).map(item => (
+                                                  <Chip
+                                                    key={item}
+                                                    label={item}
+                                                    size="small"
+                                                  />
+                                                ))
+                                              }
+                                            </div> */}
+                                          </Box>
+                                        </div>
+
+                                      </ListItemButton>
+                                      <Box className={`flex items-center hover:bg-primary-main/5 !border-l px-2`}
+                                        component={NavLinkAdapter}
+                                        to={`counselor/${matchedCounselor.profile.id}`}
+                                      >
+                                        <ChevronRight />
+                                      </Box>
+                                    </Box>
+                                  ))
+
+                                }
+
+                                <div className='flex mt-16'>
+
+                                  <div className="flex gap-16 mt-16">
                                     <div className='flex flex-col'>
-                                      <Typography className='text-lg font-semibold text-primary'>Selected date:</Typography>
-                                      <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography>
+                                      <Typography className='text-lg font-semibold text-primary'>Select date:</Typography>
+                                      <div className='w-fit'>
+                                        <DateCalendar
+                                          views={['day']}
+                                          className='w-full'
+                                          disablePast
+                                          sx={{
+                                            '&.Mui-selected': {
+                                              backgroundColor: '#e67e22'
+                                            },
+                                          }}
+                                          value={formData.date ? dayjs(formData.date) : null}
+                                          onChange={handleCounselorDateChange}
+                                          onMonthChange={handleCounselorMonthChange}
+                                        />
+                                        {
+                                          errors.date && <Typography color='error' className='mt-4'>{errors?.date?.message}</Typography>
+                                        }
+                                      </div>
                                     </div>
-                                    <div className='flex flex-col'>
-                                      <Typography className='text-lg font-semibold text-primary'>Selected slot:</Typography>
-                                      <Typography className='text-primary' >
-                                        {dayjs(counselorSlots?.find((slot) => slot.slotCode === formData.slotCode)?.startTime, 'HH:mm:ss').format('HH:mm')} -  {dayjs(counselorSlots?.find((slot) => slot.slotCode === formData.slotCode)?.endTime, 'HH:mm:ss').format('HH:mm')}
-                                      </Typography>
-                                    </div>
-                                    <div className='flex flex-col'>
-                                      <Typography className='text-lg font-semibold text-primary'>Reason:</Typography>
-                                      <Typography className='text-primary' >{formData.reason}</Typography>
-                                    </div>
-                                    <div>
-                                      <Divider className='mt-16' />
-                                      <Typography className='mt-16 text-lg font-semibold text-primary'>Select meeting type</Typography>
-                                      <Controller
-                                        name="isOnline"
-                                        control={control}
-                                        render={({ field }) => (
-                                          <FormControl>
-                                            <RadioGroup
-                                              {...field}
-                                              className="Settings-group"
-                                              row
-                                            >
-                                              <FormControlLabel
-                                                value={true}
-                                                control={<Radio />}
-                                                label="Online"
-                                              />
-                                              <FormControlLabel
-                                                value={false}
-                                                control={<Radio />}
-                                                label="Offline"
-                                              />
-                                            </RadioGroup>
-                                          </FormControl>
-                                        )}
-                                      />
+                                    <div className='col-span-2'>
+                                      <Typography className='text-lg font-semibold text-primary'>Select time</Typography>
+                                      <div className='flex flex-wrap gap-y-8 gap-x-16 mt-16 min-h-52'>
+                                        {
+                                          isFetchingCounselorDailySlots
+                                            ? <ContentLoading />
+                                            : !counselorDailySlots || !counselorDailySlots[formData.date]?.length
+                                              ? <Typography color='text.secondary'>No available slots</Typography>
+                                              : counselorDailySlots[formData.date]
+                                                .map(slot => (
+                                                  <Tooltip
+                                                    key={slot.slotCode}
+                                                    title={slot.slotCode.split('-').join(" ").concat(slot.myAppointment ? " - You booked this slot" : "")}
+                                                  >
+                                                    <Button
+                                                      variant={formData.slotCode === slot.slotCode ? 'contained' : 'outlined'}
+                                                      disabled={['UNAVAILABLE', 'EXPIRED'].includes(slot.status)}
+                                                      onClick={() => setValue("slotCode", slot.slotCode)}
+                                                      className='font-normal'
+                                                      color='primary'
+                                                    >
+                                                      {dayjs(slot.startTime, 'HH:mm:ss').format('HH:mm')} -  {dayjs(slot.endTime, 'HH:mm:ss').format('HH:mm')}
+                                                    </Button>
+                                                  </Tooltip>
+                                                ))
+                                        }
+                                      </div>
+                                      {
+                                        errors.slotId && <Typography color='error' className='mt-8'>{errors?.slotId?.message}</Typography>
+                                      }
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div className='w-full border-l pl-16'>
-                                <Typography color='textSecondary' className='text-lg font-semibold'>Best counselor that fits your criteria:</Typography>
-                                <Tooltip title={`View ${randomMatchedCounselor.profile.fullName}'s profile`} className='mt-16 shadow'>
-                                  <ListItemButton
-                                    component={NavLinkAdapter}
-                                    to={`counselor/${randomMatchedCounselor.profile.id}`}
-                                    className='w-full rounded '
-                                  >
-                                    <div className='flex gap-24'>
-                                      <ListItemAvatar>
-                                        <Avatar
-                                          alt={randomMatchedCounselor.profile.fullName}
-                                          src={randomMatchedCounselor.profile.avatarLink}
-                                          className='size-80'
-                                        />
-                                      </ListItemAvatar>
-                                      <Box className='flex flex-col gap-8 justify-between'>
-                                        <ListItemText
-                                          classes={{ root: 'm-0', primary: 'font-semibold leading-5 truncate text-lg' }}
-                                          primary={randomMatchedCounselor.profile.fullName}
-                                          secondary={randomMatchedCounselor.expertise?.name || randomMatchedCounselor.major?.name}
-                                        />
-                                        <div className="flex items-center gap-16">
-                                          <div className="flex items-center w-120">
-                                            <LocalPhoneOutlined fontSize='small' />
-                                            <div className="ml-8 text-text-secondary leading-6">{randomMatchedCounselor.profile.phoneNumber}</div>
-                                          </div>
-                                          <div className="flex items-center">
-                                            <EmailOutlined fontSize='small' />
-                                            <div className="ml-8 text-text-secondary leading-6">{randomMatchedCounselor.email}</div>
-                                          </div>
-                                        </div>
-                                        <div className="flex flex-wrap mt-8 gap-8">
-                                          {
-                                            randomMatchedCounselor.specializedSkills?.split(`\n`).map(item => (
-                                              <Chip
-                                                key={item}
-                                                label={item}
-                                                size="small"
-                                              />
-                                            ))
-                                          }
-                                        </div>
-                                      </Box>
-                                      <div className='flex gap-8 text-sm text-text-secondary'>
-                                        <Rating
-                                          name="simple-controlled"
-                                          size='small'
-                                          value={randomMatchedCounselor.rating}
-                                          readOnly
-                                          precision={0.5}
-                                        />
-                                        ({randomMatchedCounselor?.rating}/5)
-                                      </div>
-                                    </div>
-                                    {/* <div className=''>
-                                      <ChevronRight />
-                                    </div> */}
-                                  </ListItemButton>
-                                </Tooltip>
-
-                                <div className='flex justify-center px-32 mt-24'>
-
+                                <div>
+                                  <Typography className='text-lg font-semibold text-primary'>Select meeting type</Typography>
+                                  <Controller
+                                    name="isOnline"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <FormControl
+                                      >
+                                        <RadioGroup
+                                          {...field}
+                                          className="Settings-group"
+                                          row
+                                        >
+                                          <FormControlLabel
+                                            value={true}
+                                            control={<Radio />}
+                                            label="Online"
+                                          />
+                                          <FormControlLabel
+                                            value={false}
+                                            control={<Radio />}
+                                            label="Offline"
+                                          />
+                                        </RadioGroup>
+                                      </FormControl>
+                                    )}
+                                  />
                                 </div>
-
                               </div>
                             </div>
                           )
@@ -834,9 +1087,9 @@ function QuickBooking() {
                             <Box className="flex flex-col items-center w-full">
                               <SentimentVeryDissatisfied className='size-224 text-text-disabled' />
                               <Typography className='text-2xl text-text-disabled'>No counselor matched!</Typography>
-                              <div className='text-2xl text-text-disabled'>You can view more counselors at
+                              <div className='text-2xl text-text-disabled text-center'>You can view more counselors at
                                 <span
-                                  className='font-semibold hover:underline pl-8 cursor-pointer'
+                                  className='font-semibold hover:underline pl-8 cursor-pointer text-secondary-main'
                                   onClick={() => {
                                     dispatch(setCounselorType(counselingType))
                                     dispatch(setCounselingTab(1))
@@ -869,7 +1122,7 @@ function QuickBooking() {
                     variant='contained'
                     color='secondary'
                     size='large'
-                    disabled={!isValid || isBookingCounselor || !formData.reason}
+                    disabled={!isValid || isBookingCounselor || !formData.reason || !formData.date || !formData.slotCode || formData.isOnline === undefined}
                     onClick={handleSubmit(onSubmitBooking)}>
                     Confirm booking
                   </Button>

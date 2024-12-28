@@ -10,11 +10,11 @@ export const myQnaRoutes: RouteObject[] = [
     path: 'my-qna',
     element: <MyQna />,
     children: [
-      // {
-      //   path: ':id',
-      //   element: <MyQnaChat />,
-      // },
-      ...qnaDetailRoutes
+      {
+        path: ':id',
+        element: <MyQnaChat />,
+      },
+      // ...qnaDetailRoutes
     ]
   },
 ];

@@ -152,7 +152,7 @@ const counselorNavigation: NavigationOptions = {
             ]
         },
         {
-            name: "Questions and Answers",
+            name: "Question and Answer",
             description: "Questions and answers",
             route: 'qna',
             items: [

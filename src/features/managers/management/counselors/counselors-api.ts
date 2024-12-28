@@ -179,12 +179,21 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselingSlots'],
       }),
-      getCounselorQuestionCardsManagement: build.query<GetCounselorQuestionCardsManagementApiArg, GetCounselorQuestionCardsManagementApiResponse>({
+      getCounselorQuestionCardsManagement: build.query<GetCounselorQuestionCardsManagementApiResponse, GetCounselorQuestionCardsManagementApiArg>({
         query: ({
           counselorId,
-          page
+          page,
+          from,
+          to,
+          size
         }) => ({
           url: `/api/question-cards/manage/counselor/filter/${counselorId}`,
+          params: {
+            page,
+            from,
+            to,
+            size
+          }
         }),
         providesTags: ['counselors', 'qna'],
       }),
@@ -305,9 +314,9 @@ export type GetCounselorAppointmentRequestsApiArg = {
   status?: string;
   size?: number;
 }
-export type GetCounselorQuestionCardsManagementApiArg = ApiResponse<PaginationContent<Question>>
+export type GetCounselorQuestionCardsManagementApiResponse = ApiResponse<PaginationContent<Question>>
 
-export type GetCounselorQuestionCardsManagementApiResponse = {
+export type GetCounselorQuestionCardsManagementApiArg = {
   sortBy?: string;
   keyword?: string;
   type?: 'ACADEMIC' | 'NON-ACADEMIC' | '';
@@ -317,6 +326,8 @@ export type GetCounselorQuestionCardsManagementApiResponse = {
   counselorId: number,
   status?: string;
   size?: number;
+  from?: string;
+  to?: string;
 }
 
 export type GetCounselorAppointmentsApiResponse = ApiResponse<PaginationContent<Appointment>>

@@ -1,8 +1,37 @@
-import { Divider, Paper } from '@mui/material';
-import React from 'react';
+import { Divider, Paper, Typography } from '@mui/material';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
+import { useGetAllProblemTagsBySemesterQuery } from '../../overview/overview-api';
+import { useGetSemestersQuery } from '@/shared/services';
+import { SelectField } from '@/shared/components';
 
 const BehaviorTagsChart: React.FC = () => {
+  
+  const [selectedSemester, setSelectedSemester] = useState('');
+
+  const { data: semesterData } = useGetSemestersQuery()
+  const semesterOptions = semesterData?.map(semester => (
+    { label: semester.name, value: semester.name }
+  )) || []
+
+  const handleSelectSemester = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedSemester(event.target.value);
+  };
+
+  const { data: behaviorsData } = useGetAllProblemTagsBySemesterQuery({
+    semesterName: selectedSemester
+  })
+
+  const problemTags = behaviorsData?.content
+  const categories = problemTags?.map(item => item.problemTagName)
+  const counts = problemTags?.map(item => item.count)
+  const behaviorTagsBarData = [
+    {
+      name: 'Behavior Tags',
+      data: counts,
+    },
+  ];
+
   // Data for the horizontal bar chart (Behavior Tags with Student Counts)
   const behaviorTagsBarOptions = {
     chart: {
@@ -19,18 +48,7 @@ const BehaviorTagsChart: React.FC = () => {
       enabled: false, // Disable data labels for a cleaner chart
     },
     xaxis: {
-      categories: [
-        'Easily Distracted by Surroundings',
-        'Does Not Follow Lecture',
-        'Frequent Mental Distractions',
-        'Lack of Eye Contact',
-        'Constantly Looking Around',
-        'Not Engaged in the Discussion',
-        'Attention Wanders During Lectures',
-        'Gazing Outside',
-        'Frequent Tardiness',
-        'Skipping Mandatory Classes',
-      ],
+      categories: categories,
       title: {
         text: 'Number of Students',
         style: {
@@ -63,33 +81,47 @@ const BehaviorTagsChart: React.FC = () => {
     fill: {
       opacity: 1,
     },
-    colors: ['#FF4560'], // Color for bars
     margin: {
       left: 60, // Adjust left margin to accommodate long labels
     },
   };
 
   // Mock Data for Behavior Tags and Corresponding Student Counts
-  const behaviorTagsBarData = [
-    {
-      name: 'Behavior Tags',
-      data: [15, 12, 20, 25, 10, 30, 18, 14, 8, 5].sort((a, b) => b - a),
-    },
-  ];
+
+
+
+
+  useEffect(() => {
+    if (semesterData?.length) {
+      setSelectedSemester(semesterData.at(-1).name)
+    }
+  }, [semesterData]);
 
   return (
     <div className="p-16">
-      <h2 className="text-2xl font-semibold mb-8 text-text-secondary">Student Behavior Analysis</h2>
-      <Paper className="p-16 shadow">
+      {/* <h2 className="text-2xl font-semibold mb-8 text-text-secondary">Student Behavior Analysis</h2> */}
+      <Paper className="p-32 shadow">
         {/* Horizontal Bar Chart: Behavior Tags with Student Counts */}
         <div className="rounded-lg">
-          <h3 className="text-xl font-semibold">Behavior Tags with Number of Students</h3>
-          <Chart
-            options={behaviorTagsBarOptions}
-            series={behaviorTagsBarData}
-            type="bar"
-            height={350}
-          />
+          <div className='flex justify-between'>
+            <Typography className="text-xl font-semibold">Student Behavior Analysis</Typography>
+            <SelectField
+              label="Semester"
+              options={semesterOptions}
+              value={selectedSemester}
+              onChange={handleSelectSemester}
+              className='w-192'
+              size='small'
+              showClearOptions
+            />
+          </div>
+          <div className='pt-8'>
+            <Chart
+              options={behaviorTagsBarOptions}
+              series={behaviorTagsBarData}
+              type="bar"
+            />
+          </div>
         </div>
       </Paper>
     </div>

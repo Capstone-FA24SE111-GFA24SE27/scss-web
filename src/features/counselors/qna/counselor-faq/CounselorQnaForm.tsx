@@ -300,7 +300,7 @@ function CounselorQnaForm() {
 
             </div>
 
-            <div className="flex items-center justify-end mt-32 pt-24">
+            <div className="flex items-center justify-end mt-32 pt-24 gap-16">
               <Button onClick={() => navigate('.')} color="primary">
                 Cancel
               </Button>

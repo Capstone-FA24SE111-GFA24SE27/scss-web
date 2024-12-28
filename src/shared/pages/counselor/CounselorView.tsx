@@ -105,7 +105,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                     <Typography className="mt-12 text-4xl font-bold truncate">{counselor?.profile.fullName}</Typography>
                     <Typography className="mt-4 text-xl">{counselor?.expertise?.name || counselor?.specialization?.name}</Typography>
 
-                    <div className='flex items-end gap-8 text-lg text-text-secondary mt-8'>
+                    {/* <div className='flex items-end gap-8 text-lg text-text-secondary mt-8'>
                         <Rating
                             name="simple-controlled"
                             value={counselor?.rating}
@@ -113,7 +113,7 @@ function CounselorView({ shouldShowBooking = true, id, className = 'w-md' }: Cou
                             precision={0.5}
                         />
                         ({counselor?.rating}/5)
-                    </div>
+                    </div> */}
 
                     <Divider className="mt-16 mb-24" />
 
