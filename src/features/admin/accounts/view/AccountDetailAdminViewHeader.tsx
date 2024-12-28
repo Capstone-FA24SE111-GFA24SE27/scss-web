@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { NavLinkAdapter, openDialog } from '@/shared/components';
@@ -6,6 +8,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import {
 	Avatar,
 	Button,
+	CircularProgress,
 	IconButton,
 	Paper,
 	Skeleton,
@@ -19,27 +22,67 @@ import {
 	useGetOneAccountQuery,
 	usePutBlockAccountByIdMutation,
 	usePutUnblockAccountByIdMutation,
+	usePutUpdateAcademicCounselorAccountMutation,
+	usePutUpdateManagerAccountMutation,
+	usePutUpdateNonAcademicCounselorAccountMutation,
+	usePutUpdateStaffAccountMutation,
 } from '../admin-accounts-api';
 import { useFormContext } from 'react-hook-form';
 import _ from 'lodash';
 import ImageInput from '@/shared/components/image/ImageInput';
 import { uploadFile } from '@/shared/services';
+import AvatarAppendForm from '../create/forms/AvatarAppendForm';
+import { roles } from '@/shared/constants';
 
-type Props = {};
+type Props = {
+	changeTab?: any;
+	role: string;
+};
 
 const AccountDetailAdminViewHeader = (props: Props) => {
-	const { id, role } = useParams();
+	const { changeTab, role } = props;
+	const { id} = useParams();
 	const dispatch = useAppDispatch();
 
-	const [avatarFile, setAvatarFile] = useState<File | null>(null);
-	const [isLoadingAvatar, setIsLoadingAvatar] = useState<boolean>(false);
+	const tabFields = {
+		email: 0,
+		gender: 0,
+		phoneNumber: 0,
+		dateOfBirth: 0,
+		fullName: 0,
+		departmentId: 1,
+		majorId: 1,
+		expertiseId: 1,
+		specializedSkills: 2,
+		otherSkills: 2,
+		workHistory: 2,
+		achievements: 2,
+		qualifications: 2,
+		certifications: 2,
+	};
 
 	const methods = useFormContext();
 	const { formState, watch, setValue, trigger } = methods;
 	const { isValid, dirtyFields, errors } = formState;
 
-	const formData = watch()
-	const { fullName, email, avatarLink } = formData;
+	const formData = watch();
+	const {
+		fullName,
+		email,
+		avatarLink,
+		gender,
+		phoneNumber,
+		dateOfBirth,
+		departmentId,
+		majorId,
+		expertiseId,
+		specializedSkills,
+		otherSkills,
+		workHistory,
+		achievements,
+		qualifications,
+		certifications,
+	} = formData;
 	const {
 		data: accountData,
 		isLoading: isLoadingAccount,
@@ -51,9 +94,99 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	const [blockAccountById] = usePutBlockAccountByIdMutation();
 	const [unblockAccountById] = usePutUnblockAccountByIdMutation();
 
-	const handleUpdateAccount = () => {
-		trigger()
+	const handleTrigger = () => {
+		if (trigger) {
+			trigger();
+			handleChangeTab();
+		}
 	};
+
+	const handleChangeTab = () => {
+		if (changeTab) {
+			const firstError = Object.keys(errors)[0];
+			console.log(tabFields[firstError]);
+			if (Number.isInteger(tabFields[firstError])) {
+				changeTab(tabFields[firstError]);
+			}
+		}
+	};
+
+	const [updateAcademicCounselor] =
+		usePutUpdateAcademicCounselorAccountMutation();
+	const [updateNonAcademicCounselor] =
+		usePutUpdateNonAcademicCounselorAccountMutation();
+	const [updateManager] = usePutUpdateManagerAccountMutation();
+	const [updateSupportStaff] = usePutUpdateStaffAccountMutation();
+
+	const handleUpdateAccount = () => {
+		handleTrigger();
+		if (isValid) {
+			if (formData) {
+				if (role === roles.ACADEMIC_COUNSELOR) {
+					console.log('asdasd')
+					const res = updateAcademicCounselor({
+						id,
+						fullName,
+						email,
+						avatarLink,
+						gender,
+						phoneNumber,
+						dateOfBirth,
+						departmentId,
+						majorId,
+						specializedSkills,
+						otherSkills,
+						workHistory,
+						achievements,
+					});
+				}
+				if (role === roles.NON_ACADEMIC_COUNSELOR) {
+					const res = updateNonAcademicCounselor({
+						//@ts-ignore
+						id,
+						fullName,
+						email,
+						avatarLink,
+						gender,
+						phoneNumber,
+						dateOfBirth,
+						expertiseId,
+						specializedSkills,
+						otherSkills,
+						workHistory,
+						achievements,
+					});
+				}
+
+				if (role === roles.MANAGER) {
+					const res = updateManager({
+						id,
+						fullName,
+						email,
+						avatarLink,
+						gender,
+						phoneNumber,
+						dateOfBirth,
+					});
+				}
+				if (role === roles.SUPPORT_STAFF) {
+					const res = updateSupportStaff({
+						id,
+						fullName,
+						email,
+						avatarLink,
+						gender,
+						phoneNumber,
+						dateOfBirth,
+					});
+				}
+			}
+		}
+	};
+
+	useEffect(() => {
+		handleChangeTab();
+	}, [errors]);
 
 	const handleBlockAccount = () => {
 		console.log(id);
@@ -107,57 +240,27 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 		});
 	};
 
-	const handleUpload = async (file: File) => {
-		if (file) {
-			try {
-				const res = await uploadFile(
-					file,
-					`images/${Date.now()}_${file.name}`
-				);
-				return res;
-			} catch (err) {
-				useAlertDialog({
-					dispatch,
-					title: 'Error uploading image',
-					color: 'error',
-				});
-				return false;
-			}
-		}
-	};
-
 	const handleUpdateAvatar = () => {
-		useConfirmDialog({
-			title: 'Update avatar image:',
-			content: (
-				<div className='min-w-256 max-w-320'>
-					<ImageInput
-						onFileChange={setAvatarFile}
-						file={avatarFile}
-						error={!!errors.avatarLink}
+		dispatch(
+			openDialog({
+				children: (
+					<AvatarAppendForm
+						onChangeAvatar={(avatar: string) =>
+							setValue('avatarLink', avatar)
+						}
 					/>
-				</div>
-			),
-			dispatch,
-			confirmButtonFunction: async () => {
-				setIsLoadingAvatar(true);
-				const res = await handleUpload(avatarFile);
-				if (res) {
-					setValue('avatarLink', res);
-				}
-				setIsLoadingAvatar(false);
-			},
-			confirmButtonTitle: 'Save',
-		});
+				),
+			})
+		);
 	};
 
-	console.log('dirty', dirtyFields, errors, isValid, formData);
+	console.log('dirty', dirtyFields, isValid, errors);
 
-	useEffect(()=>{
-		if(!isLoadingAccount && userViewedAccount){
-			trigger()
+	useEffect(() => {
+		if (!isLoadingAccount && userViewedAccount) {
+			trigger();
 		}
-	},[isLoadingAccount])
+	}, [isLoadingAccount]);
 
 	if (isLoadingAccount)
 		return <Skeleton variant='rectangular' width='100%' height={120} />;
@@ -212,7 +315,9 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 						animate={{ x: 0, transition: { delay: 0.3 } }}
 					>
 						<Typography className='font-semibold truncate text-16 sm:text-20'>
-							{fullName || accountData?.content.profile.fullName || 'Account...'}
+							{fullName ||
+								accountData?.content.profile.fullName ||
+								'Account...'}
 						</Typography>
 						<Typography variant='caption' className='font-medium'>
 							{email}
@@ -251,7 +356,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 							className='mx-4 whitespace-nowrap'
 							variant='contained'
 							color='secondary'
-							disabled={_.isEmpty(dirtyFields) || !isValid}
+							disabled={_.isEmpty(dirtyFields)}
 							onClick={handleUpdateAccount}
 						>
 							Update

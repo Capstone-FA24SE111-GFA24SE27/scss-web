@@ -41,7 +41,7 @@ export async function checkImageUrl(url: string): Promise<boolean> {
     // Make a HEAD request to check the headers
     const res = await fetch(url, { method: 'HEAD', mode: 'cors' });
 
-    // Ensure the request is successful
+    // // Ensure the request is successful
     if (!res.ok) {
       console.error("Failed to fetch image URL, status: ", res.status);
       return false;

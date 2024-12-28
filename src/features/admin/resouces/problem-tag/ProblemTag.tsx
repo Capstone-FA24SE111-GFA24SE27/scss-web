@@ -1,4 +1,4 @@
-import CounselorsTable from '@/features/managers/management/counselors/CounselorsTable';
+
 import { FilterTabs, Heading, PageSimple } from '@/shared/components';
 import { Box, IconButton, Tab, Tabs } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';

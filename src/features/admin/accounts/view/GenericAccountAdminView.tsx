@@ -2,7 +2,7 @@ import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
 import { Account } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useGetOneAccountQuery } from '../admin-accounts-api';
@@ -10,10 +10,12 @@ import AccountDetailAdminViewHeader from './AccountDetailAdminViewHeader';
 import { Paper, Tab, Tabs } from '@mui/material';
 import { Scrollbar } from '@/shared/components';
 import AccountInfoTab from './tabs/AccountInfoTab';
+import { roles } from '@/shared/constants';
 
 const currentYear = dayjs().year();
 
 const schema = z.object({
+	id: z.union([z.string(), z.number()]).optional(),
 	avatarLink: z
 		.instanceof(File, { message: 'Image is required' })
 		.refine((file) => isValidImage(file), {
@@ -42,15 +44,12 @@ const schema = z.object({
 
 type FormType = Required<z.infer<typeof schema>>;
 
-
 type Props = {
-    id: string
-}
-
-
+	id: string;
+};
 
 const GenericAccountAdminView = (props: Props) => {
-    const {id} = props
+	const { id } = props;
 
 	const { data: genericAccountData, isLoading: isLoadingAccount } =
 		useGetOneAccountQuery({ id }, { skip: !id });
@@ -75,45 +74,39 @@ const GenericAccountAdminView = (props: Props) => {
 	const methods = useForm({
 		mode: 'onChange',
 		defaultValues,
-		resolver: zodResolver(schema)
+		resolver: zodResolver(schema),
 	});
 
 	const { reset, watch, formState } = methods;
 
 	const formData = watch();
 
-	useEffect(() => {
-		if (!isLoadingAccount) {
-			reset(defaultValues);
-		}
-	}, [isLoadingAccount]);
+	return (
+		<FormProvider {...methods}>
+			<AccountDetailAdminViewHeader role={roles.SUPPORT_STAFF} />
+			<Paper className='flex flex-col flex-auto h-full p-16 overflow-hidden'>
+				<Tabs
+					value={0}
+					onChange={() => {}}
+					indicatorColor='secondary'
+					textColor='secondary'
+					variant='scrollable'
+					scrollButtons='auto'
+					classes={{
+						root: 'w-full h-32  bg-background-paper mb-16',
+					}}
+				>
+					<Tab
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
+						label='Account info'
+					/>
+				</Tabs>
+				<Scrollbar className='flex-1 w-full max-h-full overflow-auto'>
+					<AccountInfoTab />
+				</Scrollbar>
+			</Paper>
+		</FormProvider>
+	);
+};
 
-    return (
-      <FormProvider {...methods}>
-        <AccountDetailAdminViewHeader/>
-        <Paper className='flex flex-col flex-auto h-full p-16 overflow-hidden'>
-          <Tabs
-            value={0}
-            onChange={()=>{}}
-            indicatorColor='secondary'
-            textColor='secondary'
-            variant='scrollable'
-            scrollButtons='auto'
-            classes={{
-              root: 'w-full h-32  bg-background-paper mb-16',
-            }}
-          >
-            <Tab
-              className='px-16 text-lg font-semibold min-h-40 min-w-64'
-              label='Account info'
-            />
-          </Tabs>
-          <Scrollbar className='flex-1 w-full max-h-full overflow-auto'>
-            <AccountInfoTab />
-          </Scrollbar>
-        </Paper>
-      </FormProvider>
-    );
-}
-
-export default GenericAccountAdminView
+export default GenericAccountAdminView;

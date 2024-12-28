@@ -21,10 +21,7 @@ export const staffRecommendedStudentsRoutes: RouteObject[] = [
 				path: 'student/:id',
 				element: <StudentView actionButton={<div className='flex items-center gap-16'> <ExcludeStudentButton /> <FollowStudentButton/>  </div>}  />,
 			},
-			{
-				path: 'student/:id/create-demand',
-				element: <CreateDemandForm  />,
-			},
+			
 			{
 				path: 'counselor/:id',
 				element: <CounselorView shouldShowBooking={false} />,

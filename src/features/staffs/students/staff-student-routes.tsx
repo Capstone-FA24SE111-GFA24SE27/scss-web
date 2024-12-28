@@ -3,17 +3,28 @@ import { RouteObject } from 'react-router-dom';
 import { staffFollowedStudentsRoutes } from './followed-list/followed-students-routes';
 import { staffRecommendedStudentsRoutes } from './recommended-list/recommended-students-routes';
 import { staffStudentsListRoutes } from './students-list/students-list-routes';
+import { CounselorView } from '@/shared/pages';
 
+const CreateDemandForm = lazy(() => import('./CreateDemandForm'));
 
 export const staffStudentRoutes: RouteObject[] = [
 	{
-
-		path:'students',
+		path: 'students',
 		children: [
 			...staffFollowedStudentsRoutes,
 			...staffStudentsListRoutes,
-			...staffRecommendedStudentsRoutes
-		]
+			...staffRecommendedStudentsRoutes,
+			{
+				path: 'create-demand/:studentId',
+				element: <CreateDemandForm />,
+				children: [
+					{
+						path: 'counselor/:id',
+						element: <CounselorView shouldShowBooking={false} />,
+					},
+				],
+			},
+		],
 		// path: 'student-list',
 		// element: <StudentList isShowingTab={true} />,
 		// children: [
@@ -30,6 +41,5 @@ export const staffStudentRoutes: RouteObject[] = [
 		// 		element: <CounselorView shouldShowBooking={false} />,
 		// 	},
 		// 	...studentRoutes,
-		
 	},
 ];

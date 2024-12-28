@@ -64,7 +64,7 @@ const FollowStudentButton = (props: Props) => {
 					Currently followed by:{' '}
 				</Typography>
 				{studentStatus.content.your ? (
-					<Typography className='font-semibold' color='info'>
+					<Typography className='font-semibold' color='success'>
 						You
 					</Typography>
 				) : (
