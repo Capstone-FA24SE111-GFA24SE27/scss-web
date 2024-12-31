@@ -386,7 +386,7 @@ const StudentDocument: React.FC<StudentDocumentProps> = ({ editMode = false }) =
             <Button onClick={() => dispatch(closeDialog())}>
               Skip for now
             </Button>
-            <div className="">
+            <div className="flex gap-8">
               <Button disabled={activeStep === 0 || isLoadingCreateStudentCounselingDocument} onClick={handleBack} color='secondary'>
                 Back
               </Button>

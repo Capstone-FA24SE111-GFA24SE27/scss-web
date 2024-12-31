@@ -55,7 +55,7 @@ const AccountsOverview = (props: Props) => {
 			view = (
 				<div className='h-full overflow-hidden'>
 					<Scrollbar className='max-h-full overflow-auto'>
-						<CounselorCharts />
+						{/* <CounselorCharts /> */}
 					</Scrollbar>
 				</div>
 			);
