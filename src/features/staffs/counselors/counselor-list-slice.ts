@@ -12,6 +12,9 @@ type initialType = {
   counselorType: CounselingType;
   availableFrom: string;
   availableTo: string;
+  departmentId?: number;
+  majorId?: number;
+  expertiseId?: number;
 };
 
 const initialState: initialType = {
@@ -21,32 +24,20 @@ const initialState: initialType = {
   counselorType: 'ACADEMIC',
   availableFrom: ``,
   availableTo: ``,
+   // expertiseId: '',
+  // departmentId: '',
+  // majorId: '',
 };
 /**
  * The filter slice.
  */
-export const counselorListSlice = createSlice({
+export const counselorListStaffSlice = createSlice({
   name: 'counselorListStaff',
   initialState,
   reducers: {
-    // filterToggleFolded: (state) => {
-    //     state.foldedOpen = !state.foldedOpen;
-    // },
-    // filterOpenFolded: (state) => {
-    //     state.foldedOpen = true;
-    // },
-    // filterCloseFolded: (state) => {
-    //     state.foldedOpen = false;
-    // },
-    // filterToggleMobile: (state) => {
-    //     state.mobileOpen = !state.mobileOpen;
-    // },
-    // filterOpenMobile: (state) => {
-    //     state.mobileOpen = true;
-    // },
-    // filterCloseMobile: (state) => {
-    //     state.mobileOpen = false;
-    // },
+    setSelectedCounselor: (state, action: PayloadAction<Counselor>) => {
+      state.counselor = action.payload
+    },
     filterClose: (state) => {
       state.open = false;
     },
@@ -57,20 +48,35 @@ export const counselorListSlice = createSlice({
       state.open = !state.open;
     },
     setSearchTerm: (state, action: PayloadAction<string>) => {
-      state.searchTerm = action.payload
+      state.searchTerm = action.payload;
     },
-    setCounselorType: (state, action: PayloadAction<CounselingType>) => {
-      state.counselorType = action.payload
+    setCounselorType: (state, action: PayloadAction<'ACADEMIC' | 'NON_ACADEMIC'>) => {
+      state.counselorType = action.payload;
     },
     setAvailableFrom: (state, action: PayloadAction<string>) => {
-      state.availableFrom = action.payload
+      state.availableFrom = action.payload;
     },
     setAvailableTo: (state, action: PayloadAction<string>) => {
-      state.availableTo = action.payload
+      state.availableTo = action.payload;
     },
-    setSelectedCounselor: (state, action: PayloadAction<Counselor>) => {
-      state.counselor = action.payload
-    }
+    // setSpecializationId: (state, action: PayloadAction<number>) => {
+    //   state.specializationId = action.payload;
+    // },
+    setDepartmentId: (state, action: PayloadAction<number>) => {
+      state.departmentId = action.payload;
+    },
+    setMajorId: (state, action: PayloadAction<number>) => {
+      state.majorId = action.payload;
+    },
+    setExpertiseId: (state, action: PayloadAction<number>) => {
+      state.expertiseId = action.payload;
+    },
+    // setRatingFrom: (state, action: PayloadAction<number>) => {
+    //   state.ratingFrom = action.payload; // New reducer for ratingFrom
+    // },
+    // setRatingTo: (state, action: PayloadAction<number>) => {
+    //   state.ratingTo = action.payload; // New reducer for ratingTo
+    // },
   },
   selectors: {
     selectFilter: (filter) => filter,
@@ -82,8 +88,8 @@ export const counselorListSlice = createSlice({
 /**
  * Lazy loading
  */
-rootReducer.inject(counselorListSlice);
-const injectedSlice = counselorListSlice.injectInto(rootReducer);
+rootReducer.inject(counselorListStaffSlice);
+const injectedSlice = counselorListStaffSlice.injectInto(rootReducer);
 export const {
   filterOpen,
   filterClose,
@@ -93,15 +99,15 @@ export const {
   setAvailableFrom,
   setAvailableTo,
   setSelectedCounselor
-} = counselorListSlice.actions;
+} = counselorListStaffSlice.actions;
 export const {
   selectFilter,
   selectSearchTerm,
   selectCounselorType,
   selectCounselor
 } = injectedSlice.selectors;
-export default counselorListSlice.reducer;
+export default counselorListStaffSlice.reducer;
 
 declare module '@shared/store' {
-  export interface LazyLoadedSlices extends WithSlice<typeof counselorListSlice> { }
+  export interface LazyLoadedSlices extends WithSlice<typeof counselorListStaffSlice> { }
 }

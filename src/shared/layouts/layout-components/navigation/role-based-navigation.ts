@@ -44,6 +44,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import QuizIcon from '@mui/icons-material/Quiz';
+import SchoolIcon from '@mui/icons-material/School';
 
 interface SubList {
 	name: string;
@@ -454,12 +455,17 @@ const adminNavigation: NavigationOptions = {
 				{
 					icon: QuestionAnswerIcon,
 					name: 'Questions',
-					route: 'question',
+					route: 'questions',
 				},
 				{
 					icon: QuizIcon,
 					name: 'Question Category',
 					route: 'question-category',
+				},
+				{
+					icon: SchoolIcon,
+					name: 'Academic Infomation',
+					route: 'academic',
 				},
 			],
 		},

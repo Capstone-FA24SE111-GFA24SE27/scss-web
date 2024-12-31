@@ -15,6 +15,15 @@ export const questionCardsApi = apiService
 	})
 	.injectEndpoints({
 		endpoints: (build) => ({
+			getContributedQuestionCardCategoryById: build.query<
+				ApiResponse<ContributedQuestionCategory>,
+				string | number
+			>({
+				query: (id) => ({
+					url: `/api/contribution-question-cards/categories/${id}`,
+				}),
+				providesTags: ['qna-category'],
+			}),
 			getContributedQuestionCardCategory: build.query<
 				GetContributedQuestionCardCategoryResponse,
 				void
@@ -60,6 +69,7 @@ export const questionCardsApi = apiService
 	});
 
 export const {
+	useGetContributedQuestionCardCategoryByIdQuery,
 	useGetContributedQuestionCardCategoryQuery,
 	useDeleteQuestionCategoryAdminMutation,
 	usePostCreateQuestionCategoryAdminMutation,
