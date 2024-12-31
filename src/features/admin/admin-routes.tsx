@@ -25,7 +25,7 @@ export const adminRoutes: RouteObject[] = [
         ...adminProfilesRoutes,
         ...profileRoutes,
         ...settingsRoutes,
-        ...adminDashboardRoutes
+        ...adminDashboardRoutes,
     ],
   },
 

@@ -6,6 +6,9 @@ import { staffStudentsListRoutes } from './students-list/students-list-routes';
 import { CounselorView } from '@/shared/pages';
 
 const CreateDemandForm = lazy(() => import('./CreateDemandForm'));
+const CounselorListForStaff = lazy(
+	() => import('../counselors/CounselorListForStaff')
+);
 
 export const staffStudentRoutes: RouteObject[] = [
 	{
@@ -23,6 +26,10 @@ export const staffStudentRoutes: RouteObject[] = [
 						element: <CounselorView shouldShowBooking={false} />,
 					},
 				],
+			},
+			{
+				path: 'create-demand/:studentId/counselors',
+				element: <CounselorListForStaff />,
 			},
 		],
 		// path: 'student-list',
