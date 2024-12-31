@@ -93,46 +93,47 @@ function RequestsTable() {
 
 
   return (
-    <DataTable
-      data={data?.content.data || []}
-      columns={columns}
-      manualPagination
-      rowCount={data?.content.totalElements || 0}
-      onPaginationChange={setPagination}
-      state={{ pagination }}
-      enableColumnFilterModes={false}
-      enableGlobalFilter={false} // Disable global search
-      renderRowActionMenuItems={({ closeMenu, row, table }) => [
-        <MenuItem
-          key={0}
-          onClick={() => {
-            dispatch(openDialog({
-              children: <AppointmentDetail id={row.original.id.toString()} />
-            }))
-            closeMenu();
-            table.resetRowSelection();
-          }}
-        >
-          <ListItemIcon>
-            <Visibility />
-          </ListItemIcon>
-          View Detail
-        </MenuItem>,
-      ]}
-      renderTopToolbarCustomActions={({ table }) => {
-        const { rowSelection } = table.getState();
+    <Paper className='shadow p-8'>
+      <DataTable
+        data={data?.content.data || []}
+        columns={columns}
+        manualPagination
+        rowCount={data?.content.totalElements || 0}
+        onPaginationChange={setPagination}
+        state={{ pagination }}
+        enableColumnFilterModes={false}
+        enableGlobalFilter={false} // Disable global search
+        renderRowActionMenuItems={({ closeMenu, row, table }) => [
+          <MenuItem
+            key={0}
+            onClick={() => {
+              dispatch(openDialog({
+                children: <AppointmentDetail id={row.original.id.toString()} />
+              }))
+              closeMenu();
+              table.resetRowSelection();
+            }}
+          >
+            <ListItemIcon>
+              <Visibility />
+            </ListItemIcon>
+            View Detail
+          </MenuItem>,
+        ]}
+        renderTopToolbarCustomActions={({ table }) => {
+          const { rowSelection } = table.getState();
 
-        if (Object.keys(rowSelection).length === 0) {
-          return null;
-        }
+          if (Object.keys(rowSelection).length === 0) {
+            return null;
+          }
 
-        return (
-          <div>
-          </div>
-        );
-      }}
-    />
-
+          return (
+            <div>
+            </div>
+          );
+        }}
+      />
+    </Paper>
   );
 }
 

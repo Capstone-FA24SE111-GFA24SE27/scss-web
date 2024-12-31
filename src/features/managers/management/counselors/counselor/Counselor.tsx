@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { AppLoading, BackdropLoading, Breadcrumbs, Gender, Heading, PageSimple, Popover, WeeklySlots } from '@shared/components';
-import { Autocomplete, Box, Button, MenuItem, Paper, Rating, Select, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
-import { CalendarMonth, CalendarViewWeek, Feedback, Mail, Phone, Star } from '@mui/icons-material';
+import { AppLoading, BackdropLoading, Breadcrumbs, Gender, Heading, PageSimple, Popover, WeeklySlots, setBackdropLoading } from '@shared/components';
+import { Autocomplete, Avatar, Box, Button, Chip, IconButton, MenuItem, Paper, Rating, Select, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
+import { Cake, CalendarMonth, CalendarViewWeek, Feedback, Female, Mail, Male, Phone, Star, Start } from '@mui/icons-material';
 import { Controller } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDeleteCounselorCounselingSlotsMutation, useGetCounselingSlotsQuery, useGetCounselorCounselingSlotsQuery, useGetCounselorManagementQuery, useUpdateCounselorAvailableDateRangeMutation, useUpdateCounselorCounselingSlotsMutation, useUpdateCounselorStatusMutation } from '../counselors-api';
@@ -51,8 +51,6 @@ function Counseling() {
 
 
   const filteredSlots = counselorCounselingSlots?.filter(slot => slot.dayOfWeek === selectedDay) || []
-
-  console.log(filteredSlots)
 
   const isMobile = false
 
@@ -142,6 +140,16 @@ function Counseling() {
     setRightSidebarOpen(Boolean(routeParams.appointmentId));
   }, [routeParams]);
 
+
+  const isLoadingWithBackdrop = isLoadingUpdateCounselorAvailableDateRange
+    || isLoadingDeleteCounselorCounselingSlots
+    || isLoadingUpdateCounselorCounselingSlots
+    || isLoadingCounselorStatus
+
+  useEffect(() => {
+    dispatch(setBackdropLoading(isLoadingWithBackdrop));
+  }, [isLoadingWithBackdrop]);
+
   if (isLoading) {
     return <AppLoading />;
   }
@@ -150,120 +158,144 @@ function Counseling() {
     return <Typography color='text.secondary' variant='h5' className='p-16'>No counselor</Typography>;
   }
 
+
+
   return (
     <Root
-      // header={
-
-      // }
-      content={
-        <div className='w-full'>
-          <div className='bg-white'>
-            {
-              (
-                isLoadingUpdateCounselorAvailableDateRange
-                || isLoadingDeleteCounselorCounselingSlots
-                || isLoadingUpdateCounselorCounselingSlots
-                || isLoadingCounselorStatus
-              ) && (
-                <BackdropLoading />
-              )
-            }
-            <div className='p-16 px-32 space-y-16'>
-              <Breadcrumbs
-                parents={[
-                  {
-                    label: "Management",
-                    url: `${location.pathname}`
-                  },
-                  {
-                    label: "Counselors",
-                    url: `/management/counselors`
-                  }
-                ]}
-                currentPage={counselorData?.profile.profile.fullName}
-              />
-              <div className='flex gap-16 lg:gap-64'>
-                <div className='flex w-[42rem] mt-12'>
-                  <div className='relative w-full h-full'>
-                    <img src={counselorData?.profile.profile.avatarLink} className='border rounded-full size-144' />
-                    <div className='absolute bg-white border rounded-full top-112 left-112'>
-                      <Gender gender={counselorData?.profile.profile.gender} />
-                    </div>
-                  </div>
-                  <div className='flex flex-col w-full gap-8'>
-                    <Heading
-                      title={counselorData?.profile.profile.fullName}
-                      description={counselorData?.profile.specialization?.name || counselorData?.profile.expertise?.name}
-                    />
-                    <Rating readOnly value={counselorData?.profile.rating} />
-                    <div className='flex justify-between mt-16 border-t divide-x-1'>
-                      <Tooltip title={`Call`}>
-                        <a
-                          className="flex items-center flex-1 p-8"
-                          href={`tel${counselorData?.profile.profile.phoneNumber}`}
-                          role="button"
-                        >
-                          <Phone fontSize='small' />
-                          <Typography className="ml-8 text-sm">{counselorData?.profile.profile.phoneNumber}</Typography>
-                        </a>
-                      </Tooltip>
-                      <Tooltip title={`Mail`}>
-                        <a
-                          className="flex items-center justify-end flex-1 p-8"
-                          href={`mailto:${counselorData?.profile.email}`}
-                          role="button"
-                        >
-                          <Mail fontSize='small' />
-                          <Typography className="ml-8 text-sm">{counselorData?.profile.email}</Typography>
-                        </a>
-                      </Tooltip>
+      header={
+        <div className='bg-white'>
+          <div className='pt-16 px-32 space-y-16'>
+            <Breadcrumbs
+              parents={[
+                {
+                  label: "Management",
+                  url: `${location.pathname}`
+                },
+                {
+                  label: "Counselors",
+                  url: `/management/counselors`
+                }
+              ]}
+              currentPage={counselorData?.profile.profile.fullName}
+            />
+            <div className='grid grid-cols-12 gap-32'>
+              <div className="col-span-3 flex flex-col items-start gap-8 h-full">
+                <div className='flex relative'>
+                  <Avatar
+                    sx={{
+                      color: (theme) => theme.palette.text.secondary
+                    }}
+                    className="flex-0 size-72 border"
+                    alt="user photo"
+                    src={counselorData?.profile.profile.avatarLink}
+                  >
+                    {counselorData?.profile.profile.fullName}
+                  </Avatar>
+                  <div className="flex flex-col mx-16 gap-6">
+                    <div>
+                      <Typography className='text-3xl font-semibold'>{counselorData?.profile.profile?.fullName}</Typography>
+                      <Typography className='text-xl text-text-secondary'>{counselorData?.profile.major?.name || counselorData?.profile.expertise?.name}</Typography>
                     </div>
                   </div>
                 </div>
-
-                <div className='flex flex-col flex-1 gap-16 '>
-                  <div className='flex items-center'>
-                    <Typography className='font-semibold w-224 '>Availability Status </Typography>
-                    <TextField
-                      size='small'
-                      className='w-full'
-                      select
-                      value={counselorData?.profile.status}
-                      label="Availability"
-                      variant="outlined"
-                      disabled={isLoadingCounselorStatus}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      onChange={handleStatusChange} // Add onChange here
-                    >
-                      <MenuItem value="AVAILABLE">Available</MenuItem>
-                      <MenuItem value="UNAVAILABLE">Unavailable</MenuItem>
-                    </TextField>
-
+                <div className='grid grid-cols-2 w-full gap-4'>
+                  <a
+                    className="flex items-center"
+                    role="button"
+                    href={`mailto:${counselorData?.profile?.email}`}
+                  >
+                    <Mail fontSize='small' />
+                    <Typography className="ml-8 leading-6">{counselorData?.profile.email}</Typography>
+                  </a>
+                  <div
+                    className="flex items-center"
+                    role="button"
+                  >
+                    <Phone fontSize='small' />
+                    <Typography className="ml-8 leading-6">{counselorData?.profile.profile.phoneNumber}</Typography>
                   </div>
-                  <div className='flex items-start'>
-                    <Typography className='font-semibold w-224'>Assign Slots</Typography>
-                    <div className='flex flex-col w-full gap-16'>
-                      <Box className='flex justify-between w-full'>
-                        <TextField
-                          size="small"
-                          select
-                          value={selectedDay}
-                          onChange={handleDayChange}
-                          label="Select Day"
-                          variant="outlined"
-                          className="w-256"
-                        >
-                          {daysOfWeek.map(day => (
-                            <MenuItem key={day} value={day}>
-                              {day}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+
+                  <div className="flex items-center">
+                    <Cake fontSize='small' />
+                    <div className="ml-8 leading-6">{dayjs(counselorData.profile.profile.dateOfBirth).format('DD-MM-YYYY')}</div>
+                  </div>
+                  <div className="flex items-center">
+                    {
+                      counselorData?.profile.profile.gender === `MALE` ? <Male fontSize='small' /> : <Female fontSize='small' />
+                    }
+                    <div className="ml-8 leading-6 capitalize">{counselorData?.profile.profile.gender.toLowerCase()}</div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div className='col-span-4 flex flex-col gap-16 flex-1'>
+                <Typography className='text-lg font-semibold'>Availability</Typography>
+                <div className='flex items-center'>
+                  <TextField
+                    size='small'
+                    className='w-full'
+                    select
+                    value={counselorData?.profile.status}
+                    label="Status"
+                    variant="outlined"
+                    disabled={isLoadingCounselorStatus}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={handleStatusChange} // Add onChange here
+                  >
+                    <MenuItem value="AVAILABLE">Available</MenuItem>
+                    <MenuItem value="UNAVAILABLE">Unavailable</MenuItem>
+                  </TextField>
+                </div>
+                <div className='flex items-center'>
+                  <div className='flex items-start w-full gap-16'>
+                    <DatePicker
+                      className='h-12 w-full'
+                      label="Start date"
+                      value={dayjs(counselorData?.availableDateRange.startDate)}
+                      onChange={handleStartDateChange}
+                      maxDate={dayjs(counselorData?.availableDateRange.endDate)}
+                      disabled={counselorData?.profile.status === 'UNAVAILABLE' || isLoadingUpdateCounselorAvailableDateRange}
+                    />
+                    <DatePicker
+                      className='h-12 w-full'
+                      label="End date"
+                      value={dayjs(counselorData?.availableDateRange.endDate)}
+                      onChange={handleEndDateChange}
+                      minDate={dayjs(counselorData?.availableDateRange.startDate)}
+                      disabled={counselorData?.profile.status === 'UNAVAILABLE' || isLoadingUpdateCounselorAvailableDateRange}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className='col-span-5 flex flex-col gap-16 flex-1'>
+                <div className='flex gap-32'>
+                  <Typography className='text-lg font-semibold'>Weekly Schedule</Typography>
+                </div>
+                <div className='flex items-start w-full'>
+                  <div className='flex flex-col w-full gap-16'>
+                    <Box className='grid grid-cols-2 gap-16 w-full'>
+                      <TextField
+                        size="small"
+                        select
+                        value={selectedDay}
+                        onChange={handleDayChange}
+                        label="Select Day"
+                        variant="outlined"
+                        fullWidth
+                      >
+                        {daysOfWeek.map(day => (
+                          <MenuItem key={day} value={day}>
+                            {day}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      <div>
                         <Popover
                           trigger={
-                            <Button startIcon={<CalendarMonth />}>Weekly schedule</Button>
+                            <Button size='large' startIcon={<CalendarMonth fontSize='large' />}>View</Button>
                           }
                           content={
                             <WeeklySlots slots={counselorCounselingSlots} />
@@ -277,111 +309,95 @@ function Counseling() {
                             horizontal: "center",
                           }}
                         />
-                      </Box>
+                      </div>
 
-                      <Autocomplete
-                        className="w-full"
-                        multiple
-                        disabled={isLoadingCounselingSlotsData || isLoadingDeleteCounselorCounselingSlots || isLoadingUpdateCounselorCounselingSlots}
-                        options={counselingSlots}
-                        getOptionLabel={(option) => `${dayjs(option.startTime, 'HH:mm:ss').format('HH:mm')} -  ${dayjs(option.endTime, 'HH:mm:ss').format('HH:mm')}`}
-                        isOptionEqualToValue={(option, value) => option.slotCode === value.slotCode}
-                        // value={counselorData?.counselingSlot}
-                        value={filteredSlots}
-                        onChange={handleSlotsChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            placeholder="Select slots"
-                            label="Slots"
-                            variant="outlined"
-                          // InputLabelProps={{ shrink: true }}
-                          />
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <div className='flex items-center'>
-                    <Typography className='font-semibold w-224 '>Available date range</Typography>
-                    <div className='flex items-start w-full gap-32'>
-                      <DatePicker
-                        className='h-12'
-                        label="Start date"
-                        value={dayjs(counselorData?.availableDateRange.startDate)}
-                        onChange={handleStartDateChange}
-                        maxDate={dayjs(counselorData?.availableDateRange.endDate)}
-                        disabled={counselorData?.profile.status === 'UNAVAILABLE' || isLoadingUpdateCounselorAvailableDateRange}
-                      />
-                      <div className='pt-8 font-semibold'>to</div>
-                      <DatePicker
-                        className='h-12'
-                        label="End date"
-                        value={dayjs(counselorData?.availableDateRange.endDate)}
-                        onChange={handleEndDateChange}
-                        minDate={dayjs(counselorData?.availableDateRange.startDate)}
-                        disabled={counselorData?.profile.status === 'UNAVAILABLE' || isLoadingUpdateCounselorAvailableDateRange}
-                      />
-                    </div>
-                  </div>
+                    </Box>
 
+                    <Autocomplete
+                      className="w-full"
+                      multiple
+                      disabled={isLoadingCounselingSlotsData || isLoadingDeleteCounselorCounselingSlots || isLoadingUpdateCounselorCounselingSlots}
+                      options={counselingSlots}
+                      getOptionLabel={(option) => `${dayjs(option.startTime, 'HH:mm:ss').format('HH:mm')} -  ${dayjs(option.endTime, 'HH:mm:ss').format('HH:mm')}`}
+                      isOptionEqualToValue={(option, value) => option.slotCode === value.slotCode}
+                      // value={counselorData?.counselingSlot}
+                      value={filteredSlots}
+                      onChange={handleSlotsChange}
+                      size='small'
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder="Select slots"
+                          label="Slots"
+                          variant="outlined"
+                          className='w-full'
+                        // InputLabelProps={{ shrink: true }}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
-
-            </ div>
-            <Tabs
-              value={tabValue}
-              onChange={handleChangeTab}
-              indicatorColor="secondary"
-              textColor="secondary"
-              variant="scrollable"
-              scrollButtons="auto"
-              classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
-            >
-              <Tab
-                className="px-16 text-lg font-semibold min-h-40 min-w-64"
-                label="Overview"
-              />
-              <Tab
-                className="px-16 text-lg font-semibold min-h-40 min-w-64"
-                label="Appointments"
-              />
-              <Tab
-                className="px-16 text-lg font-semibold min-h-40 min-w-64"
-                label="Requests"
-              />
-              <Tab
-                className="px-16 text-lg font-semibold min-h-40 min-w-64"
-                label="Schedule"
-              />
-              <Tab
-                className="px-16 text-lg font-semibold min-h-40 min-w-64"
-                label="Feedbacks"
-              />
-              <Tab
-                className="px-16 text-lg font-semibold min-h-40 min-w-64"
-                label="Q&A"
-              />
-              <Tab
-                className="px-16 text-lg font-semibold min-h-40 min-w-64"
-                label="Profile"
-              />
-            </Tabs>
-
-          </div>
-          <div className="w-full h-full p-16" >
-            <Paper className='min-h-full p-16 shadow'>
-              <div className="w-full pr-8">
-                {tabValue === 0 && <OverviewTab />}
-                {tabValue === 1 && <AppointmentsTable />}
-                {tabValue === 2 && <RequestsTable />}
-                {tabValue === 3 && <ScheduleTab />}
-                {tabValue === 4 && <FeedbackTab />}
-                {tabValue === 5 && <QnaTab />}
-                {tabValue === 6 && <ProfileTab />}
+            </div>
+          </ div>
+          <Tabs
+            value={tabValue}
+            onChange={handleChangeTab}
+            indicatorColor="secondary"
+            textColor="secondary"
+            variant="scrollable"
+            scrollButtons="auto"
+            classes={{ root: 'w-full h-32 border-b bg-background-paper px-16 mt-8' }}
+          >
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Overview"
+            />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Appointments"
+            />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Requests"
+            />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Schedule"
+            />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Feedbacks"
+            />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Q&A"
+            />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Profile"
+            />
+          </Tabs>
+        </div>
+      }
+      content={
+        <>
+          <div className='w-full'>
+            <div className="w-full h-full p-16" >
+              <div className='min-h-full'>
+                <div className="w-full pr-8">
+                  {tabValue === 0 && <OverviewTab />}
+                  {tabValue === 1 && <AppointmentsTable />}
+                  {tabValue === 2 && <RequestsTable />}
+                  {tabValue === 3 && <ScheduleTab />}
+                  {tabValue === 4 && <FeedbackTab />}
+                  {tabValue === 5 && <QnaTab />}
+                  {tabValue === 6 && <ProfileTab />}
+                </div>
               </div>
-            </Paper>
-          </div>
-        </div >
+            </div>
+          </div >
+        </>
       }
       ref={pageLayout}
       rightSidebarOpen={rightSidebarOpen}

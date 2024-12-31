@@ -81,7 +81,7 @@ function StudentListContent() {
 					animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
 					className="flex flex-col flex-auto w-full max-h-full gap-16"
 				>
-					<List className="w-full p-0 m-0">
+					<List className="w-full flex gap-8 px-24 py-8">
 						{!students?.length ? (
 							<div className="flex items-center justify-center flex-1">
 								<Typography color="text.secondary" variant="h5">

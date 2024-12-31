@@ -7,6 +7,7 @@ import {
 	Pagination,
 	SearchField,
 	SelectField,
+	SubHeading,
 } from '@/shared/components';
 import { motion } from 'framer-motion';
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
@@ -23,9 +24,9 @@ import {
 } from '@/shared/services';
 import { selectAccount, useAppSelector } from '@shared/store';
 import { extractCounselingTypeFromRole } from '@/shared/utils';
-import { Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { useSocket } from '@/shared/context';
-import { QuestionCardStatus } from '@/shared/types';
+import { Question, QuestionCardStatus } from '@/shared/types';
 
 const container = {
 	show: {
@@ -67,7 +68,7 @@ const MyQnaContent = () => {
 		setSearchTerm(searchTerm);
 	};
 
-	
+
 
 	const socket = useSocket();
 
@@ -90,7 +91,9 @@ const MyQnaContent = () => {
 	});
 	const qnaList = qnaData?.content?.data || [];
 
-	console.log(qnaData)
+
+	const pendingQuestions = qnaList.filter(item => !item.answer)
+	const completedQuestion = qnaList.filter(item => item.answer)
 
 	useEffect(() => {
 		if (socket && account) {
@@ -113,19 +116,8 @@ const MyQnaContent = () => {
 
 	// const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
 
-	const { data: academicTopicsData } = useGetAcademicTopicsQuery();
-	const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
-	const academicTopics = academicTopicsData?.content;
-	const nonAcademicTopics = nonacademicTopicsData?.content;
-	const academicTopicOptions = academicTopics?.map((topic) => ({
-		label: topic.name,
-		value: topic.id,
-	}));
-
-	const nonAcademicTopicOptions = nonAcademicTopics?.map((topic) => ({
-		label: topic.name,
-		value: topic.id,
-	}));
+	// const { data: academicTopicsData } = useGetAcademicTopicsQuery();
+	// const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
 
 	// const topicOptions = account?.role ?
 	//   extractCounselingTypeFromRole(account?.role) === 'ACADEMIC' ? academicTopicOptions : nonAcademicTopicOptions
@@ -158,7 +150,7 @@ const MyQnaContent = () => {
 	}
 
 	return (
-		<div className='container w-full h-full max-w-xl mx-auto'>
+		<div className='container w-full h-full mx-auto'>
 			<motion.div
 				variants={container}
 				initial='hidden'
@@ -170,7 +162,7 @@ const MyQnaContent = () => {
 						label='Question keyword'
 						placeholder='Enter question keyword'
 						onSearch={handleSearch}
-						className='w-xs'
+						className='w-full'
 					/>
 					{/* <SelectField
             label="Topic"
@@ -186,29 +178,29 @@ const MyQnaContent = () => {
             placeholder='SE1001'
             className='!w-192'
           /> */}
-					
+
 				</div>
-        <div>
-						<div className='flex justify-between'>
-							<FilterTabs
-								tabs={statusTabs}
-								tabValue={tabValue}
-								onChangeTab={handleChangeTab}
-							/>
-							<div className='flex gap-16'>
-								{/* <CheckboxField
+				<div>
+					<div className='flex justify-between'>
+						<FilterTabs
+							tabs={statusTabs}
+							tabValue={tabValue}
+							onChangeTab={handleChangeTab}
+						/>
+						<div className='flex gap-16'>
+							{/* <CheckboxField
 							label='Is Taken'
 							checked={isTaken}
 							onChange={handleCheckboxTaken}
 						/> */}
-								<CheckboxField
-									label='Is Close'
-									checked={isClosed}
-									onChange={handleCheckboxClose}
-								/>
-							</div>
+							<CheckboxField
+								label='Is Close'
+								checked={isClosed}
+								onChange={handleCheckboxClose}
+							/>
 						</div>
 					</div>
+				</div>
 
 				<div className='space-y-16'>
 					{!qnaList.length ? (
@@ -221,9 +213,37 @@ const MyQnaContent = () => {
 							</Typography>
 						</div>
 					) : (
-						qnaList.map((qna) => (
-							<MyQnaItem key={qna.id} qna={qna} />
-						))
+						<div className='space-y-16'>
+							{
+								pendingQuestions?.length > 0 && (
+									<div className='flex flex-col gap-16'>
+										{completedQuestion?.length > 0 && (
+											<SubHeading title='Pending Questions' />
+										)}
+										{
+											pendingQuestions.map((qna) => (
+												<MyQnaItem key={qna.id} qna={qna} />
+											))
+										}
+										{completedQuestion?.length > 0 && <Divider />}
+									</div>
+								)
+							}
+							{
+								completedQuestion?.length > 0 && (
+									<div className='flex flex-col gap-16'>
+										{pendingQuestions?.length > 0 && (
+											<SubHeading title='Completed Questions' />
+										)}
+										{
+											completedQuestion.map((qna) => (
+												<MyQnaItem key={qna.id} qna={qna} />
+											))
+										}
+									</div>
+								)
+							}
+						</div>
 					)}
 				</div>
 				<Pagination

@@ -36,7 +36,7 @@ const CustomTabs = ({
         {tabs.map((tab, index) => (
           <Tab
             key={index}
-            className="text-lg font-semibold min-h-40 min-w-64 mx-4 px-16"
+            className="text-lg font-semibold min-h-40 min-w-64 px-16"
             disableRipple
             label={tab.label}
           />

@@ -11,6 +11,7 @@ import {
 	CircularProgress,
 	LinearProgress,
 	Box,
+	Divider,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,6 +38,7 @@ import { quillModules } from '@/shared/configs';
 import { ref } from 'firebase/storage';
 import { QuillEditor } from '@/shared/components';
 import { validateHTML } from '@/shared/utils';
+import { useSearchAllPublicQuestionCardsMutation } from '@/shared/pages';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -61,7 +63,7 @@ function QnaForm() {
 	const { questionId } = useParams();
 	const navigate = useNavigate();
 	const editMode = Boolean(questionId);
-
+	
 	const { data: questionData } = useGetStudentQuestionQuery(questionId || `0`,
 		{
 			skip: !editMode,
@@ -94,6 +96,8 @@ function QnaForm() {
 			skip: !watch('majorId'),
 		}
 	);
+
+	const [searchPublicQna, { isLoading: isLoadingSearch }] = useSearchAllPublicQuestionCardsMutation()
 
 
 	// Mutations for posting and editing questions
@@ -164,7 +168,8 @@ function QnaForm() {
 							.catch(error => useAlertDialog({
 								dispatch,
 								color: 'error',
-								title: 'Error creating question',
+								confirmButtonTitle : `Edit question`,
+								title: error?.data.message === `Expertise not found with name: none` ? `Question does have not have enough context`: `Error creating question`
 							}))
 					}
 				})
@@ -187,7 +192,7 @@ function QnaForm() {
 	if (banInfo?.ban) {
 		return <BanInfo banInfo={banInfo} />
 	}
-console.log(watch())
+	console.log(watch())
 	return (
 		<div className="container flex flex-col items-center px-32 my-16 w-xl">
 			<div className="flex flex-col w-full ">
@@ -204,19 +209,21 @@ console.log(watch())
 				<div className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
 					{editMode ? 'Edit your question' : 'Ask a question'}
 				</div>
+				<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
 				<Paper className='p-16 mt-16 bg-secondary-main/10 text-secondary-main shadow-0 text-lg'>
-					<Typography className='font-semibold text-lg'>Tips on getting good answers quickly</Typography>
+					<Typography className='font-semibold text-lg'>Tips on asking a good question</Typography>
 					<li>Ensure your question hasn't been asked before</li>
 					<li>Keep your question concise and straightforward</li>
 					<li>Double-check your grammar and spelling</li>
 				</Paper>
+				<Divider className='mt-16' />
 				<div className="mt-16 ">
 					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
-						<div className="mb-24">
+						{/* <div className="mb-24">
 							<Typography variant="h6">Submit your question</Typography>
 							<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
-						</div>
-						<div className="space-y-32">
+						</div> */}
+						<div className="space-y-16 px-16">
 							{/* Question Type Radio Group */}
 							<Controller
 								name="questionType"
@@ -252,11 +259,12 @@ console.log(watch())
 								value={watch('content')}
 								onChange={(value) => setValue('content', value, { shouldValidate: true })}
 								error={errors.content?.message}
+								label='Content'
 							/>
 
 						</div>
 
-						<div className="flex items-center justify-end mt-32 pt-24">
+						<div className="flex items-center justify-end mt-32 pt-24 gap-8">
 							<Button onClick={() => navigate(-1)} color="primary" type='button'>
 								Cancel
 							</Button>

@@ -6,17 +6,7 @@ interface HeadingProps {
   description?: string;
   className?: string;
 }
-
-export const MiniHeading = ({ title, description, className }: HeadingProps) => {
-  return (
-    <div className={className}>
-      <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
-      <p className="text-sm text-black/50">{description}</p>
-    </div>
-  );
-};
-
-export const Heading = ({ title, description = '', className }: HeadingProps) => {
+const Heading = ({ title, description = '', className }: HeadingProps) => {
   return (
     <div className={`flex flex-col gap-4 ${className}`}>
       <motion.span
@@ -42,3 +32,5 @@ export const Heading = ({ title, description = '', className }: HeadingProps) =>
     </div>
   );
 };
+
+export default Heading;

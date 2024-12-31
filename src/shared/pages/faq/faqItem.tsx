@@ -1,5 +1,5 @@
 import { ExpandableText, NavLinkAdapter, UserLabel, openDialog, RenderHTML, BackdropLoading, openDrawer } from '@/shared/components';
-import { roles, statusColor } from '@/shared/constants';
+import { counselingTypeLabel, roles, statusColor } from '@/shared/constants';
 import {
   ChatBubbleOutline,
   CheckCircleOutlineOutlined,
@@ -88,23 +88,10 @@ const FaqItem = ({ contributedQuestion }: { contributedQuestion: ContributedQues
             expandIcon={<ExpandMore sx={{ fontSize: '3rem', height: '6rem' }} />}
           >
             <div className='flex flex-col gap-8'>
-              <div className='flex gap-8'>
-                <Chip
-                  label={
-                    contributedQuestion.category.type === 'ACADEMIC'
-                      ? 'ACADEMIC'
-                      : 'NON-ACADEMIC'
-                  }
-                  color={'secondary'}
-                  size='small'
-                  variant='outlined'
-                />
-                <Chip
-                  label={contributedQuestion.category.name}
-                  color={'secondary'}
-                  size='small'
-                />
-
+              <div className='flex items-center flex-1 gap-8'>
+                <Typography className='w-full text-lg font-semibold'>
+                  {contributedQuestion.title}
+                </Typography>
               </div>
               <div className='flex items-center gap-8'>
                 <UserLabel
@@ -123,12 +110,21 @@ const FaqItem = ({ contributedQuestion }: { contributedQuestion: ContributedQues
                 <span className='text-text-secondary' >•</span>
                 <Typography color='textSecondary'>{`${dayjs(contributedQuestion.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}</Typography>
               </div>
-              <div className='flex items-center flex-1 gap-8'>
-                <Typography className='w-full pr-8 font-semibold'>
-                  {/* {contributedQuestion.content} */}
-                  {RenderHTML(contributedQuestion.title || `No Title`)}
-                </Typography>
+              <div className='flex gap-8'>
+                <Chip
+                  label={counselingTypeLabel[contributedQuestion.category.type  ]}
+                  color={'secondary'}
+                  size='small'
+                  variant='outlined'
+                />
+                <Chip
+                  label={contributedQuestion.category.name}
+                  color={'secondary'}
+                  size='small'
+                />
+
               </div>
+
             </div>
           </AccordionSummary>
 
@@ -156,8 +152,8 @@ const FaqItem = ({ contributedQuestion }: { contributedQuestion: ContributedQues
                   </Button>
                 </Box>
                 : <Box className='flex justify-end w-full gap-8 px-16 py-8 bg-primary-light/5 '>
-                  <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
-                  <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button>
+                  {/* <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
+                  <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button> */}
                 </Box>
             }
           </div>

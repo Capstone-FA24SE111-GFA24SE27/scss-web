@@ -35,12 +35,38 @@ export const counselorsMangementApi = api
         providesTags: ['counselors']
       }),
       getCounselorsManagement: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
-        query: ({ type, page = 1, ratingFrom = '', ratingTo = '', search = '', sortBy = '', sortDirection = '' }) => ({
+        query: ({
+          type, page = 1,
+          ratingFrom = '',
+          ratingTo = '',
+          search = '',
+          sortBy = '',
+          sortDirection = '',
+          availableFrom,
+          availableTo,
+          departmentId,
+          majorId,
+          specializationId,
+          expertiseId,
+          size = 10,
+        }) => ({
           url: type === 'ACADEMIC'
             ? `/api/manage/counselors/academic`
             : `/api/manage/counselors/non-academic`,
           params: {
-            page
+            page,
+            ratingFrom,
+            ratingTo,
+            search,
+            sortBy,
+            sortDirection,
+            availableFrom,
+            availableTo,
+            departmentId,
+            majorId,
+            specializationId,
+            expertiseId,
+            size,
           }
         }),
         providesTags: ['counselors']
@@ -153,12 +179,21 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselingSlots'],
       }),
-      getCounselorQuestionCardsManagement: build.query<GetCounselorQuestionCardsManagementApiArg, GetCounselorQuestionCardsManagementApiResponse>({
+      getCounselorQuestionCardsManagement: build.query<GetCounselorQuestionCardsManagementApiResponse, GetCounselorQuestionCardsManagementApiArg>({
         query: ({
           counselorId,
-          page
+          page,
+          from,
+          to,
+          size
         }) => ({
           url: `/api/question-cards/manage/counselor/filter/${counselorId}`,
+          params: {
+            page,
+            from,
+            to,
+            size
+          }
         }),
         providesTags: ['counselors', 'qna'],
       }),
@@ -205,9 +240,16 @@ export type GetCounselorsApiArg = {
   search?: string,
   sortDirection?: 'ASC' | 'DESC',
   sortBy?: string,
-  page?: number,
-  ratingFrom?: number,
-  ratingTo?: number
+  page?: number | '',
+  ratingFrom?: number | '',
+  ratingTo?: number | '',
+  availableFrom?: string,
+  availableTo?: string,
+  specializationId?: number | '';
+  departmentId?: number | '';
+  majorId?: number | '';
+  expertiseId?: number | '';
+  size?: number;
 }
 
 export type GetCounselorApiResponse = ApiResponse<ManagementCounselor>
@@ -272,9 +314,9 @@ export type GetCounselorAppointmentRequestsApiArg = {
   status?: string;
   size?: number;
 }
-export type GetCounselorQuestionCardsManagementApiArg = ApiResponse<PaginationContent<Question>>
+export type GetCounselorQuestionCardsManagementApiResponse = ApiResponse<PaginationContent<Question>>
 
-export type GetCounselorQuestionCardsManagementApiResponse = {
+export type GetCounselorQuestionCardsManagementApiArg = {
   sortBy?: string;
   keyword?: string;
   type?: 'ACADEMIC' | 'NON-ACADEMIC' | '';
@@ -284,6 +326,8 @@ export type GetCounselorQuestionCardsManagementApiResponse = {
   counselorId: number,
   status?: string;
   size?: number;
+  from?: string;
+  to?: string;
 }
 
 export type GetCounselorAppointmentsApiResponse = ApiResponse<PaginationContent<Appointment>>

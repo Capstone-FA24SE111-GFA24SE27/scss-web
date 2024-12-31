@@ -97,10 +97,10 @@ function StudentListItem(props: StudentListItemPropsType) {
 	};
 
 	return (
-		<>
+		<div className=''>
 			<ListItemButton
 				selected={student?.id === Number(id)}
-				className='flex items-start gap-24 p-8 px-24 py-16'
+				className='flex items-start gap-24 px-24 py-16 rounded-lg'
 				sx={{ bgcolor: 'background.paper' }}
 				component={NavLinkAdapter}
 				to={`student/${student.profile.id}`}
@@ -202,8 +202,7 @@ function StudentListItem(props: StudentListItemPropsType) {
 					</div>
 				</Box>
 			</ListItemButton>
-			<Divider />
-		</>
+		</div>
 	);
 }
 

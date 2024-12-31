@@ -44,7 +44,7 @@ function BanInfo({ banInfo }: { banInfo: BanInfoType }) {
         <div className="">
           <Button
             component={NavLinkAdapter}
-            to="."
+            to="../"
             startIcon={<ArrowBack />}
           >
             Back to QnA

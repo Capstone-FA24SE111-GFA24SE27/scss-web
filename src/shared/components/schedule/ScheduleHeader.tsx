@@ -29,11 +29,8 @@ const CalendarHeader = (props: Props) => {
 				initial={{ x: -20 }}
 				animate={{ x: 0, transition: { delay: 0.2 } }}
 			>
-				<Typography className='font-extrabold leading-none tracking-tight text-20 md:text-24 '>
-					Your Calendar
-				</Typography>
 			</motion.span>
-			<div className='flex flex-col justify-between w-full mt-16 md:flex-row'>
+			<div className='flex flex-col justify-between w-full md:flex-row'>
 				<div className='flex items-center justify-between'>
 					<div className='flex items-center'>
 						<Tooltip title='Previous'>

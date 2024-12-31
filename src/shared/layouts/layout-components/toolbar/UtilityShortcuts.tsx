@@ -17,15 +17,13 @@ function UtilityShortcuts() {
     ]
     return (
         <div className='flex items-center gap-4'>
-            {
+            {/* {
                 items.map(item =>
-                    // < Tooltip title={item.name} key={item.name}>
                     <IconButton key={item.name}>
                         <item.icon />
                     </IconButton>
-                    // </Tooltip>
                 )
-            }
+            } */}
             <NotificationPanelToggleButton />
         </div >
     );

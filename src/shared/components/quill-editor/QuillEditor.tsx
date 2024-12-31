@@ -41,23 +41,42 @@ const QuillEditor = ({
         console.log(`Image`, path);
 
         try {
+          const quill = quillRef.current?.getEditor();
+          if (!quill) {
+            return;
+          }
+
+          const range = quill.getSelection();
+          if (!range) {
+            return;
+          }
+
+          // Insert a placeholder image at the current cursor position
+          const placeholderImageUrl = '/assets/images/placeholders/uploading-image.jpeg';
+          quill.insertEmbed(range.index, 'image', placeholderImageUrl);
+
+          // Keep track of the placeholder node
+          const placeholderImage = quill.root.querySelector(`img[src="${placeholderImageUrl}"]`) as HTMLImageElement;
+          if (!placeholderImage) {
+            return;
+          }
+
+          placeholderImage.style.maxWidth = '52rem';
+          placeholderImage.style.minWidth = '24rem';
+          placeholderImage.style.borderRadius = '4px';
+          placeholderImage.style.height = 'auto';
+
           const downloadURL = await uploadFile(file, path, (progress) => {
             setUploadProgress(progress);
+            placeholderImage.title = `Uploading: ${progress}%`;
           });
 
-          // Insert the image URL into the Quill editor
-          const quill = quillRef.current?.getEditor();
-          if (quill) {
-            const range = quill.getSelection();
-            if (range) {
-              quill.insertEmbed(range.index, 'image', downloadURL);
-              const image = quill.root.querySelector(`img[src="${downloadURL}"]`) as HTMLImageElement;
-              if (image) {
-                image.style.maxWidth = '48rem';
-                image.style.height = 'auto';
-              }
-            }
+          if (downloadURL) {
+            placeholderImage.src = downloadURL as string;
+            placeholderImage.removeAttribute('title');
           }
+
+
         } catch (error) {
           console.error("Image upload failed:", error);
         }
@@ -103,7 +122,7 @@ const QuillEditor = ({
       />
 
       {
-        uploadProgress > 0 && uploadProgress <= 100 && (
+        uploadProgress > 0 && uploadProgress < 100 && (
           <Box className="w-full mt-16">
             <Typography color='secondary'>Uploading image...</Typography>
             <LinearProgress variant="determinate" value={uploadProgress} color="secondary" />

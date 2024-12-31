@@ -27,7 +27,7 @@ import {
 } from '../calendar-api';
 import { date } from 'zod';
 import { AppLoading, ContentLoading } from '@/shared/components';
-import { useSocket } from '@/shared/context';
+import { useAppointmentsSocketListener, useSocket } from '@/shared/context';
 import { useNavigate } from 'react-router-dom';
 
 import { AppointmentScheduleType, HolidayScheduleType } from '@/shared/types';
@@ -65,25 +65,25 @@ const CalendarBody = (props: Props) => {
 	const { data: holidayfetchData, isLoading: loading2 } =
 		useGetHolidayScheduleQuery({});
 
-	useEffect(() => {
-		const cb = (data: any) => {
-			console.log('socket schedule', data);
-			if (data) {
-				refetchSchedule();
-			}
-		};
-		if (socket && account) {
-			console.log(`/user/${account.profile.id}/appointment`, account);
+	// useEffect(() => {
+	// 	const cb = (data: any) => {
+	// 		console.log('socket schedule', data);
+	// 		if (data) {
+	// 			refetchSchedule();
+	// 		}
+	// 	};
+	// 	if (socket && account) {
+	// 		console.log(`/user/${account.profile.id}/appointment`, account);
 
-			socket.on(`/user/${account.profile.id}/appointment`, cb);
-		}
+	// 		socket.on(`/user/${account.profile.id}/appointment`, cb);
+	// 	}
 
-		return () => {
-			if (socket && account) {
-				socket.off(`/user/${account.profile.id}/appointment`, cb);
-			}
-		};
-	}, [socket]);
+	// 	return () => {
+	// 		if (socket && account) {
+	// 			socket.off(`/user/${account.profile.id}/appointment`, cb);
+	// 		}
+	// 	};
+	// }, [socket]);
 
 	useEffect(() => {
 		if (currentDate) {
@@ -191,14 +191,16 @@ const CalendarBody = (props: Props) => {
 			const chosenAppointment = data.content.find(
 				(item) => item.id == clickInfo.event.id
 			);
-		dispatch(openEventDetailDialog(clickInfo, chosenAppointment, 'appointment'));
-	}
+			dispatch(openEventDetailDialog(clickInfo, chosenAppointment, 'appointment'));
+		}
 
 	};
 
 	const handleDatesWithin = (rangeInfo: DatesSetArg) => {
 		if (handleDates) handleDates(rangeInfo);
 	};
+
+	useAppointmentsSocketListener(account?.profile.id, refetchSchedule)
 
 	if (isLoading || loading2) {
 		return <ContentLoading className='m-32' />;

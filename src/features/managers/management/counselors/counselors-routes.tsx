@@ -1,15 +1,18 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 import { counselorsTableRoutes } from './table';
-import {counselorOverviewRoutes} from './overview';
+import { counselorOverviewRoutes } from '../../dashboard/analytics/counselors';
 import { counselorRoutes } from './counselor';
+const Counselors = lazy(() => import('./table/Counselors'))
 
 export const counselorsRoutes: RouteObject[] = [
   {
     path: 'counselors',
     children: [
-      ...counselorsTableRoutes,
-      ...counselorOverviewRoutes,
+      {
+        index: true,
+        element: <Counselors />
+      },
       ...counselorRoutes,
     ]
 

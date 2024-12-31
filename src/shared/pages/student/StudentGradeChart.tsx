@@ -88,10 +88,10 @@ const StudentGradeChart = ({ data }: { data: Subject[] }) => {
   return (
     <Paper className="shadow p-4">
       <Chart options={options} series={series} type="line" height={350} />
-      <Box className="flex gap-8 py-8 px-16">
+      {/* <Box className="flex gap-8 py-8 px-16">
         <Typography color="textSecondary" >Currnet GPA:</Typography>
         <Typography className="font-semibold">{calculateGPA(data)}</Typography>
-      </Box>
+      </Box> */}
     </Paper>
   );
 };

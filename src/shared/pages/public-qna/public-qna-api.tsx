@@ -33,11 +33,33 @@ export const publicQnaApi = api
         }),
         providesTags: ['publicQna']
       }),
+      searchAllPublicQuestionCards: build.mutation<GetAllPublicQuestionCardsResponse, GetAllPublicQuestionCardsArgs>({
+        query: ({
+          keyword,
+          type,
+          sortBy = 'createdDate',
+          sortDirection = 'DESC',
+          page = 1,
+          size = 10
+        }) => ({
+          url: `/api/question-cards/filter`,
+          method: 'GET',
+          params: {
+            keyword,
+            type,
+            sortBy,
+            sortDirection,
+            page,
+            size,
+          },
+        }),
+      }),
     })
   });
 
 export const {
-  useGetAllPublicQuestionCardsQuery
+  useGetAllPublicQuestionCardsQuery,
+  useSearchAllPublicQuestionCardsMutation
 } = publicQnaApi;
 
 type GetAllPublicQuestionCardsResponse = ApiResponse<PaginationContent<Question>>

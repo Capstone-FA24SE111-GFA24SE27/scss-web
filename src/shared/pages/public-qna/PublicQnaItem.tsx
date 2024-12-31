@@ -63,6 +63,24 @@ const PublicQnaItem = (props: Props) => {
             expandIcon={<ExpandMore sx={{ fontSize: '3rem', height: '6rem' }} />}
           >
             <div className='flex flex-col gap-8'>
+              <div className='flex items-center flex-1 gap-8'>
+                <Typography className='font-semibold text-lg line-clamp-2'>
+                  {publicQna.title}
+                </Typography>
+              </div>
+              <UserLabel
+                label='Answered by'
+                profile={publicQna.counselor.profile}
+                email={publicQna.counselor?.email}
+                onClick={() => {
+                  dispatch(openDrawer({
+                    children: <CounselorView
+                      id={publicQna.counselor.id.toString()}
+                      shouldShowBooking={false}
+                    />,
+                  }))
+                }}
+              />
               <div className='flex gap-8'>
                 <Chip
                   label={
@@ -78,26 +96,6 @@ const PublicQnaItem = (props: Props) => {
                 <span className='text-text-secondary'>Created at</span>
                 <Typography color='textSecondary'>{`${dayjs(publicQna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}</Typography>
 
-              </div>
-              <div>
-                <UserLabel
-                  label='Published by'
-                  profile={publicQna.counselor.profile}
-                  email={publicQna.counselor?.email}
-                  onClick={() => {
-                    dispatch(openDrawer({
-                      children: <CounselorView
-                        id={publicQna.counselor.id.toString()}
-                        shouldShowBooking={false}
-                      />,
-                    }))
-                  }}
-                />
-              </div>
-              <div className='flex items-center flex-1 gap-8'>
-                <Typography className='w-full pr-8 font-semibold'>
-                  {publicQna.title}
-                </Typography>
               </div>
             </div>
           </AccordionSummary>

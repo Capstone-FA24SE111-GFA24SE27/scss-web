@@ -132,10 +132,10 @@ function QnaTab() {
     //   }}
     // />
     <div>
-      <div>
+      <div className='flex flex-col gap-16'>
         {
           !questions?.length
-            ? <div className='text-center p-32'>
+            ? <div className='text-center p-32 '>
               <Typography variant='h5' className='text-text-disabled'>No qna found</Typography>
             </div>
             : data?.content?.data.map(qna => <QuestionCardItem qna={qna} />)

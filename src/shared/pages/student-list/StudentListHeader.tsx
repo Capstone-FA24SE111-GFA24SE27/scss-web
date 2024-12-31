@@ -23,7 +23,7 @@ import { Autocomplete, Chip, InputAdornment, TextField } from '@mui/material';
 import { ProblemTag } from '@/shared/types/admin';
 
 
-const StudentListHeader = ({ isShowingTab = false }) => {
+const StudentListHeader = ({ isShowingTab = false}) => {
 	const filter = useAppSelector(selectFilter);
 	const [tabValue, setTabValue] = useState(0);
 
@@ -93,15 +93,15 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 		dispatch(setBehaviorList(value.join(`,`)))
 	}
 	return (
-		<div className='flex items-center flex-1 bg-background'>
-			<div className='flex flex-col w-full gap-16 p-24'>
+		<div className='flex items-center flex-1'>
+			<div className='flex flex-col w-full gap-16 pb-8 pt-16'>
 				<div className='flex items-start gap-32'>
 					{
 						filter.isUsingPrompt
 							? <SearchField
 								onSearch={handlePromptForBehavior}
 								label='Behavior tags'
-								className='Student behavior'
+								className='w-full'
 								startIcon={<Psychology />}
 								placeholder='Student behavior'
 								disabled={
@@ -133,9 +133,13 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 						checked={filter.isUsingPrompt}
 						onChange={handleSwitchChange}
 					/>
-					<div className='pl-16'>
-						{!filter.open && <StudentListFilterButton />}
-					</div>
+
+					{
+						!filter.open && <div className='pl-16'>
+							<StudentListFilterButton />
+						</div>
+					}
+
 				</div>
 				{isShowingTab && (
 					<FilterTabs
@@ -158,7 +162,7 @@ interface ToggleSwitchProps {
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
 	return (
-		<div className="flex flex-col gap-4 mx-8 mt-4">
+		<div className="flex flex-col gap-4 mt-4">
 			<div
 				className={clsx(
 					'relative w-72 h-28 flex items-center rounded-full cursor-pointer bg-primary-main',
@@ -169,13 +173,13 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
 				<div
 					className={clsx(
 						'absolute rounded-full bg-white shadow transform transition-transform',
-						checked ? 'translate-x-44' : 'translate-x-4',
+						checked ? 'translate-x-48' : 'translate-x-4',
 					)}
 				>
 					{checked ? (
 						<Psychology className=" text-primary-main" fontSize='small' />
 					) : (
-						<Sell className="pt-3  text-primary-light" fontSize='small' />
+						<Sell className="pt-3  text-primary-main" fontSize='small' />
 					)}
 				</div>
 			</div>
@@ -227,14 +231,17 @@ const TagsSelect: React.FC<Props> = ({ data, selectedValues, onChange }) => {
 					label="Select Tags"
 					variant="outlined"
 					placeholder="Search or select tags"
-					
-					// InputProps={{
-					// 	startAdornment: (
-					// 		<InputAdornment position="start">
-					// 			<Sell />
-					// 		</InputAdornment>
-					// 	),
-					// }}
+					InputProps={{
+						...params.InputProps, // Preserve the existing InputProps from Autocomplete
+						startAdornment: (
+							<>
+								<InputAdornment position="start">
+									<Sell />
+								</InputAdornment>
+								{params.InputProps.startAdornment} {/* Keep existing adornments */}
+							</>
+						),
+					}}
 				/>
 			)}
 

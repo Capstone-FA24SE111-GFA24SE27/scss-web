@@ -69,19 +69,18 @@ const PublicQna = () => {
 
 
   return (
-    <div className='w-full p-16'>
+    <div className='w-full py-16 px-32 container mx-auto'>
       <div className=''>
         {/* <Typography className='text-lg mb-8 text-text-secondary px-16'>
           All questions and answers asked by students
         </Typography> */}
       </div>
-      <div className='w-full mt-16 max-w-xl mx-auto'>
-
+      <div className='w-full mt-16'>
         <motion.div
           variants={motionVariants.container}
           initial='hidden'
           animate='show'
-          className='container w-full max-w-xl mx-auto space-y-16'
+          className='container w-full space-y-16'
         >
           <div className='flex gap-16'>
             {/* <ContentSearch onSearch={handleSearch} className='w-full' /> */}

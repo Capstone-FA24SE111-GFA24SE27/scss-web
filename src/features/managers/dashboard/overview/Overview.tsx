@@ -1,4 +1,4 @@
-import { Scrollbar, StatsCard } from '@/shared/components';
+import { Scrollbar, StatsCard, SubHeading } from '@/shared/components';
 import {
 	Archive,
 	AssignmentLate,
@@ -35,39 +35,44 @@ import {
 	useGetSupportStaffManagementQuery,
 	useGetSupportStaffsManagementQuery,
 } from '../../management/support-staffs/support-staffs-api';
-import AppointmentOverview from './AppointmentOverview';
+import AppointmentsOverview from './AppointmentsOverview';
+import AppointmentsDistribution from './AppointmentsDistribution';
+import QuestionsOverview from './QuestionsOverview';
+import QuestionsDistribution from './QuestionsDistribution';
+import DemandsOverview from './DemandsOverview';
+import DemandsDistribution from './DemandsDistribution';
 
 const Overview = () => {
 	const {
 		data: appointmentRequestsOverview,
 		isLoading: isLoadingAppoitnmentRequestsOverview,
 	} = useGetAllAppointmentRequestsQuery({
-		from: firstDayOfMonth,
-		to: lastDayOfMonth,
+		// from: firstDayOfMonth,
+		// to: lastDayOfMonth,
 	});
 
 	const {
 		data: appointmentsOverview,
 		isLoading: isLoadingAppoitnmentsOverview,
 	} = useGetAllAppointmentsQuery({
-		from: firstDayOfMonth,
-		to: lastDayOfMonth,
+		// from: firstDayOfMonth,
+		// to: lastDayOfMonth,
 	});
 
 	const {
 		data: questionCardsOverview,
 		isLoading: isLoadingQuestionCardsOverview,
 	} = useGetAllQuestionCardsQuery({
-		from: firstDayOfMonth,
-		to: lastDayOfMonth,
+		// from: firstDayOfMonth,
+		// to: lastDayOfMonth,
 	});
 
 	const {
 		data: counselingDemandsOverview,
 		isLoading: isLoadingCounselingDemandsOverview,
 	} = useGetAllCounselingDemandsQuery({
-		from: firstDayOfMonth,
-		to: lastDayOfMonth,
+		// from: firstDayOfMonth,
+		// to: lastDayOfMonth,
 	});
 
 	const { data: students } = useGetStudentsFilterQuery({
@@ -87,107 +92,118 @@ const Overview = () => {
 	return (
 		<div className='h-full overflow-hidden'>
 			<Scrollbar className='max-h-full p-32 overflow-auto'>
-				<Typography className='text-xl font-bold text-text-disabled'>
-					Users Overview
-				</Typography>
+				<SubHeading title='Users Overview' size='large' />
 				<div className='grid grid-cols-4 gap-16 mt-8'>
 					<StatsCard
 						title={'Students'}
 						total={students?.data.length}
-						// statChange={{
-						//   prefixText: 'Last month',
-						//   current: 1234,
-						//   previous: 12553
-						// }}
+						// // statChange={{
+						// //   prefixText: 'Last month',
+						// //   current: 1234,
+						// //   previous: 12553
+						// // }}
 						icon={<Face />}
 					/>
 					<StatsCard
 						title={'Academic Counselors'}
 						total={academicCounselors?.content.totalElements}
-						// statChange={{
-						//   prefixText: 'Last month',
-						//   current: 1234,
-						//   previous: 24
-						// }}
+						// // statChange={{
+						// //   prefixText: 'Last month',
+						// //   current: 1234,
+						// //   previous: 24
+						// // }}
 						icon={<School />}
 					/>
 					<StatsCard
 						title={'Non-academic Counselors'}
 						total={nonAcademicCounselors?.content.totalElements}
-						// statChange={{
-						//   prefixText: 'Last month',
-						//   current: 1234,
-						//   previous: 12553
-						// }}
+						// // statChange={{
+						// //   prefixText: 'Last month',
+						// //   current: 1234,
+						// //   previous: 12553
+						// // }}
 						icon={<Handshake />}
 					/>
 					<StatsCard
 						title={'Support Staffs'}
 						total={supportStaffs?.content.totalElements}
-						// statChange={{
-						//   prefixText: 'Last month',
-						//   current: 123234,
-						//   previous: 1553
-						// }}
+						// // statChange={{
+						// //   prefixText: 'Last month',
+						// //   current: 123234,
+						// //   previous: 1553
+						// // }}
 						icon={<EmojiPeople />}
 					/>
 				</div>
-				<Typography className='mt-24 text-xl font-bold text-text-disabled'>
+				<SubHeading title={`Activities Overview`} size='large' className='mt-32' />
+
+				{/* <Typography className='mt-24 text-xl font-bold text-text-disabled'>
 					Activities Overview - {getCurrentMonthYear()}
-				</Typography>
+				</Typography> */}
 
 				<div className='grid grid-cols-4 gap-16 mt-8'>
 					<StatsCard
 						title={'Requests'}
 						total={appointmentRequestsOverview?.content?.length}
-						statChange={{
-							prefixText: 'Last month',
-							current:
-								appointmentRequestsOverview?.content?.length,
-							previous: 0,
-						}}
+						// statChange={{
+						// 	prefixText: 'Last month',
+						// 	current:
+						// 		appointmentRequestsOverview?.content?.length,
+						// 	previous: 0,
+						// }}
 						icon={<Archive />}
 					/>
 
 					<StatsCard
 						title={'Appointments'}
 						total={appointmentsOverview?.content?.length}
-						statChange={{
-							prefixText: 'Last month',
-							current: appointmentsOverview?.content?.length,
-							previous: 0,
-						}}
+						// statChange={{
+						// 	prefixText: 'Last month',
+						// 	current: appointmentsOverview?.content?.length,
+						// 	previous: 0,
+						// }}
 						icon={<Description />}
 					/>
 
 					<StatsCard
 						title={'Q&As'}
 						total={questionCardsOverview?.content?.length}
-						statChange={{
-							prefixText: 'Last month',
-							current: questionCardsOverview?.content?.length,
-							previous: 0,
-						}}
+						// statChange={{
+						// 	prefixText: 'Last month',
+						// 	current: questionCardsOverview?.content?.length,
+						// 	previous: 0,
+						// }}
 						icon={<Class />}
 					/>
 
 					<StatsCard
 						title={'Demands'}
 						total={counselingDemandsOverview?.content?.length}
-						statChange={{
-							prefixText: 'Last month',
-							current: counselingDemandsOverview?.content?.length,
-							previous: 0,
-						}}
+						// statChange={{
+						// 	prefixText: 'Last month',
+						// 	current: counselingDemandsOverview?.content?.length,
+						// 	previous: 0,
+						// }}
 						icon={<AssignmentLate />}
 					/>
 				</div>
 				<div className='flex flex-col gap-16 mt-16'>
-					{/* <AppointmentOverview /> */}
-					<AppointmentChart />
-					<RequestChart />
-					<QnaChart />
-					<DemandChart />
+					<div className='grid grid-cols-2 gap-16'>
+						<AppointmentsOverview />
+						<AppointmentsDistribution />
+					</div>
+					<div className='grid grid-cols-2 gap-16'>
+						<QuestionsOverview />
+						<QuestionsDistribution />
+					</div>
+					<div className='grid grid-cols-2 gap-16'>
+						<DemandsOverview />
+						<DemandsDistribution />
+					</div>
+					{/* <QnaChart />	 */}
+
+					{/* <RequestChart /> */}
+					{/* <DemandChart /> */}
 				</div>
 			</Scrollbar>
 		</div>

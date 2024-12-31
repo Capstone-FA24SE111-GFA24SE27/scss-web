@@ -7,6 +7,7 @@ import { useGetCounselorAppointmentsManagementQuery, useGetCounselorScheduleAppo
 import { selectAccount, useAppSelector } from '@shared/store';
 import { Schedule } from '@/shared/components';
 import { useParams } from 'react-router-dom';
+import { Paper } from '@mui/material';
 
 const ScheduleTab = () => {
   const account = useAppSelector(selectAccount)
@@ -16,12 +17,12 @@ const ScheduleTab = () => {
 
   const calendarRef = useRef<FullCalendar>(null);
   return (
-    <div>
-      <Schedule 
-      getScheduleHook={useGetCounselorScheduleAppointmentsQuery}
-      id={Number(id)}
+    <Paper className='shadow p-8'>
+      <Schedule
+        getScheduleHook={useGetCounselorScheduleAppointmentsQuery}
+        id={Number(id)}
       />
-    </div>
+    </Paper>
   )
 }
 

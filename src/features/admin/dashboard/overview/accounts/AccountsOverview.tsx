@@ -1,13 +1,16 @@
-import StudentsOverview from '@/features/managers/management/students/overview/StudentsOverview';
-import SupportStaffOverview from '@/features/managers/management/support-staffs/overview/SupportStaffsOverview';
+import StudentsOverview from '@/features/managers/dashboard/analytics/students/StudentsAnalytics';
+import SupportStaffOverview from '@/features/managers/dashboard/analytics/support-staffs/SupportStaffsAnalytics';
 import { FilterTabs, Heading, Scrollbar } from '@/shared/components';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AdminCounselorsOverview from './AdminCounselorsOverview';
 import { Typography } from '@mui/material';
-import CounselorCharts from '@/features/managers/management/support-staffs/overview/PerformanceOverview';
-import BehaviorTagsChart from '@/features/managers/management/students/overview/BehaviorsOverview';
-import AppointmentOverview from '@/features/managers/management/students/overview/AppointmentOverview';
+import CounselorCharts from '@/features/managers/dashboard/analytics/counselors/CounselorsAnalytics';
+import BehaviorTagsChart from '@/features/managers/dashboard/analytics/students/BehaviorsOverview';
+import AppointmentOverview from '@/features/managers/dashboard/analytics/students/AppointmentOverview';
+// import CounselorCharts from '@/features/managers/management/support-staffs/overview/PerformanceOverview';
+// import BehaviorTagsChart from '@/features/managers/management/students/overview/BehaviorsOverview';
+// import AppointmentOverview from '@/features/managers/management/students/overview/AppointmentOverview';
 
 type Props = {};
 

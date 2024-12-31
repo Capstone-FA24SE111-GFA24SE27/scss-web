@@ -26,7 +26,8 @@ function MyQna() {
       header={
         <div className='p-32 bg-background-paper'>
           <Heading title='Asked Questions' description='List of your assigned questions to answer' />
-        </div>}
+        </div>
+      }
       content={<MyQnaContent />}
       ref={pageLayout}
       rightSidebarContent={<MyQnaSidebarContent />}

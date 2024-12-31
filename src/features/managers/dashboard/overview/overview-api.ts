@@ -7,7 +7,7 @@ import {
 import { ApiResponse, apiService as api } from '@shared/store';
 
 export const addTagTypes = [
-  'appointments', 
+  'appointments',
   'appointmentRequests',
   'counselingDemands',
   'questionCards',
@@ -19,7 +19,6 @@ export const managerOverviewApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      // API 1: Get appointments (no pagination)
       getAllAppointments: build.query<ApiResponse<Appointment[]>, { from?: string; to?: string }>({
         query: ({ from, to }) => ({
           url: '/api/appointments/manage/find-all',
@@ -28,7 +27,6 @@ export const managerOverviewApi = api
         providesTags: ['appointments'],
       }),
 
-      // API 2: Get appointment requests (no pagination)
       getAllAppointmentRequests: build.query<ApiResponse<AppointmentRequest[]>, { from?: string; to?: string }>({
         query: ({ from, to }) => ({
           url: '/api/booking-counseling/manage/appointment-request/find-all',
@@ -37,7 +35,6 @@ export const managerOverviewApi = api
         providesTags: ['appointmentRequests'],
       }),
 
-      // API 3: Get counseling demands (no pagination)
       getAllCounselingDemands: build.query<ApiResponse<CounselingDemand[]>, { from?: string; to?: string }>({
         query: ({ from, to }) => ({
           url: '/api/counseling-demand/manage/find-all',
@@ -46,13 +43,21 @@ export const managerOverviewApi = api
         providesTags: ['counselingDemands'],
       }),
 
-      // API 4: Get question cards (no pagination)
       getAllQuestionCards: build.query<ApiResponse<Question[]>, { from?: string; to?: string }>({
         query: ({ from, to }) => ({
           url: '/api/question-cards/manage/find-all',
           params: { from, to },
         }),
         providesTags: ['questionCards'],
+      }),
+      getAllProblemTagsBySemester: build.query<ApiResponse<{
+        problemTagName: string,
+        count: number
+      }[]>, { semesterName?: string }>({
+        query: ({ semesterName }) => ({
+          url: '/api/dashboard/problem-tags',
+          params: { semesterName },
+        }),
       }),
     }),
   });
@@ -62,4 +67,5 @@ export const {
   useGetAllAppointmentRequestsQuery,
   useGetAllCounselingDemandsQuery,
   useGetAllQuestionCardsQuery,
+  useGetAllProblemTagsBySemesterQuery
 } = managerOverviewApi;

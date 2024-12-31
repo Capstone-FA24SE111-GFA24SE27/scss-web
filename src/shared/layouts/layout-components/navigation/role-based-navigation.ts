@@ -167,6 +167,23 @@ const studentNavigation: NavigationOptions = {
 const counselorNavigation: NavigationOptions = {
 	list: [
 		{
+			name: 'Home',
+			description: 'Home',
+			route: '',
+			items: [
+				{
+					icon: Home,
+					name: 'Home',
+					route: 'home',
+				},
+				{
+					icon: Dashboard,
+					name: 'Dashboard',
+					route: 'dashboard',
+				},
+			],
+		},
+		{
 			name: 'Counseling',
 			description: 'Counseling service',
 			route: 'counseling',
@@ -189,7 +206,7 @@ const counselorNavigation: NavigationOptions = {
 			],
 		},
 		{
-			name: 'Questions and Answers',
+			name: 'Questions & Answers',
 			description: 'Questions and answers',
 			route: 'qna',
 			items: [
@@ -295,8 +312,13 @@ const managerNavigation: NavigationOptions = {
 			items: [
 				{
 					icon: Dashboard,
-					name: 'Dashboard',
-					route: 'dashboard',
+					name: 'Overview',
+					route: 'overview',
+				},
+				{
+					icon: Analytics,
+					name: 'Analytics',
+					route: 'analytics',
 				},
 				// {
 				//     icon: Description,
@@ -314,52 +336,16 @@ const managerNavigation: NavigationOptions = {
 					icon: SupportAgent,
 					name: 'Counselors',
 					route: 'counselors',
-					children: [
-						{
-							icon: Analytics,
-							name: 'Overview',
-							route: 'overview',
-						},
-						{
-							icon: ViewList,
-							name: 'Counselors Table',
-							route: 'table',
-						},
-					],
 				},
 				{
 					icon: Face,
 					name: 'Students',
 					route: 'students',
-					children: [
-						{
-							icon: Analytics,
-							name: 'Overview',
-							route: 'overview',
-						},
-						{
-							icon: ViewList,
-							name: 'Students Table',
-							route: 'table',
-						},
-					],
 				},
 				{
 					icon: EmojiPeople,
 					name: 'Support Staffs',
 					route: 'support-staffs',
-					children: [
-						{
-							icon: Analytics,
-							name: 'Overview',
-							route: 'overview',
-						},
-						{
-							icon: ViewList,
-							name: 'Support Staffs Table',
-							route: 'table',
-						},
-					],
 				},
 			],
 		},

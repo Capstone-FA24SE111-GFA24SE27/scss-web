@@ -123,6 +123,18 @@ export const counselingApi = api
           url: `/api/counselors/counseling-slot?date=${date}`,
         }),
       }),
+      getRandomMatchedCousenlor: build.mutation<GetRandomMatchedCounselorApiResponse, GetCounselorRandomMatchApiArg>({
+        query: ({ slotId, date, gender, reason }) => ({
+          method: 'GET',
+          url: '/api/counselors/random/match',
+          params: {
+            slotId,
+            date,
+            gender,
+            reason,
+          },
+        }),
+      }),
       getRandomMatchedCousenlorAcademic: build.mutation<GetRandomMatchedCounselorApiResponse, GetCounselorRandomMatchApiArg>({
         query: ({ slotId, date, gender, departmentId, majorId, reason }) => ({
           method: 'GET',
@@ -138,7 +150,7 @@ export const counselingApi = api
         }),
       }),
       getRandomMatchedCousenlorNonAcademic: build.mutation<GetRandomMatchedCounselorApiResponse, GetCounselorRandomMatchApiArg>({
-        query: ({ slotId, date, gender, expertiseId, departmentId, majorId,   reason }) => ({
+        query: ({ slotId, date, gender, expertiseId, departmentId, majorId, reason }) => ({
           method: 'GET',
           url: '/api/counselors/non-academic/random/match',
           params: {
@@ -173,7 +185,8 @@ export const {
   useGetCounselorSlotsQuery,
   useGetRandomMatchedCousenlorAcademicMutation,
   useGetRandomMatchedCousenlorNonAcademicMutation,
-  useGetRandomMatchedCounselorReasonMeaningMutation
+  useGetRandomMatchedCounselorReasonMeaningMutation,
+  useGetRandomMatchedCousenlorMutation
 } = counselingApi
 
 
@@ -196,7 +209,7 @@ export type GetCounselorsApiArg = {
 
 export type GetCounselorApiResponse = ApiResponse<Counselor>
 export type GetCounselorApiAcademicResponse = ApiResponse<PaginationContent<Counselor>>
-export type GetRandomMatchedCounselorApiResponse = ApiResponse<Counselor>
+export type GetRandomMatchedCounselorApiResponse = ApiResponse<Counselor[]>
 
 
 export type GetCounselorsDailySlotsResponse = ApiResponse<DailySlot>

@@ -95,7 +95,7 @@ const AppointmentsContent = () => {
   }
 
   return (
-    <div className='p-32 w-full flex flex-col gap-16 container mx-auto max-w-screen-lg'>
+    <div className='p-32 w-full flex flex-col gap-16 container mx-auto'>
       <Box className='flex justify-between items-center'>
         <div className='flex gap-32'>
           <DateRangePicker
@@ -117,7 +117,7 @@ const AppointmentsContent = () => {
         />
       </Box>
       <FilterTabs tabs={statusTabs} tabValue={tabValue} onChangeTab={handleChangeTab} />
-      <List className='flex flex-col gap-16'>
+      <List className='flex flex-col gap-16 min-h-md'>
         {
           isFetching
             ? <ContentLoading />
