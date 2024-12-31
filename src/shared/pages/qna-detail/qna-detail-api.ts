@@ -8,9 +8,9 @@ import {
 } from '@shared/types';
 import { ApiResponse, apiService as api } from '@shared/store';
 
-export const addTagTypes = ['qna'] as const;
+const addTagTypes = ['qna'] as const;
 
-export const qnaDetailApi = api
+const qnaDetailApi = api
 	.enhanceEndpoints({
 		addTagTypes,
 	})

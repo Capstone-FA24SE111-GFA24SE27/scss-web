@@ -12,8 +12,9 @@ import { DateRangePicker } from "@/shared/components";
 import { firstDayOfMonth, lastDayOfMonth, today } from "@/shared/constants";
 import { useParams } from "react-router-dom";
 
-const CounselorQuestionsDistributiontsx = () => {
-  const { id } = useParams()
+const CounselorQuestionsDistributiontsx = ({ counselorId }: { counselorId?: string }) => {
+  const { id: routeId } = useParams()
+  const id = counselorId || routeId
 
   const [startDate, setStartDate] = useState<string>(firstDayOfMonth);
   const [endDate, setEndDate] = useState<string>(lastDayOfMonth);
@@ -41,23 +42,23 @@ const CounselorQuestionsDistributiontsx = () => {
 
   sortedMonths?.forEach(month => {
     const groupedByType = groupAppointmentsByCounselingType(groupedByMonth[month]);
-    academicCounts.push(groupedByType.ACADEMIC.length);
-    nonAcademicCounts.push(groupedByType.NON_ACADEMIC.length);
+    academicCounts.push(groupedByType.ACADEMIC.length || 0);
+    nonAcademicCounts.push(groupedByType.NON_ACADEMIC.length || 0);
   });
 
 
-  const completed = appointments?.filter(item => item.answer).length;
-  const flagged = appointments?.filter(item => item.status === 'FLAGGED').length;
-  const rejected = appointments?.filter(item => item.status === 'REJECTED').length;
-  const easy = appointments?.filter(item => item.difficultyLevel === 'Easy').length;
-  const medium = appointments?.filter(item => item.difficultyLevel === 'Medium').length;
-  const hard = appointments?.filter(item => item.difficultyLevel === 'Hard').length;
+  const completed = appointments?.filter(item => item.answer).length || 0;
+  const flagged = appointments?.filter(item => item.status === 'FLAGGED').length || 0;
+  const rejected = appointments?.filter(item => item.status === 'REJECTED').length || 0;
+  const easy = appointments?.filter(item => item.difficultyLevel === 'Easy').length || 0;
+  const medium = appointments?.filter(item => item.difficultyLevel === 'Medium').length || 0;
+  const hard = appointments?.filter(item => item.difficultyLevel === 'Hard').length || 0;
 
 
   // Pie chart data
   const statusChartOptions: ApexOptions = {
     series: [completed, rejected, flagged],
-    labels: ['Completed', 'Canceled', 'Absent'],
+    labels: ['Completed', 'Rejected', 'Flagged'],
     chart: {
       type: 'pie',
     },
@@ -71,18 +72,17 @@ const CounselorQuestionsDistributiontsx = () => {
     },
   };
 
-  if (!appointments) {
-    return <Typography className="text-text-secondary text-lg mt-16">No data to display</Typography>;
-  }
+
+  console.log(appointmentsData)
 
   const handleStartDateChange = (date: string) => setStartDate(date);
   const handleEndDateChange = (date: string) => setEndDate(date);
 
   return (
-    <Paper className="p-16 space-y-8">
+    <Paper className="p-16 space-y-8 shadow">
       <div className="grid grid-cols-2 gap-16">
         <Typography className="font-semibold text-2xl">Q&As Distribution</Typography>
-        <div className='flex items-start w-full gap-16'>
+        {/* <div className='flex items-start w-full gap-16'>
           <DateRangePicker
             startDate={startDate ? dayjs(startDate) : null}
             endDate={endDate ? dayjs(endDate) : null}
@@ -90,7 +90,7 @@ const CounselorQuestionsDistributiontsx = () => {
             onEndDateChange={handleEndDateChange}
             className="h-12"
           />
-        </div>
+        </div> */}
       </div>
       <Box className="w-full flex flex-wrap justify-center items-center gap-8 h-full p-8">
         {/* <ReactApexChart
@@ -117,7 +117,7 @@ const CounselorQuestionsDistributiontsx = () => {
               options={statusChartOptions}
               series={statusChartOptions.series}
               type="pie"
-              height={200}
+
             />
           </Box>
           <Box className="w-full">
@@ -125,7 +125,6 @@ const CounselorQuestionsDistributiontsx = () => {
               options={meetingTypeChartOptions}
               series={meetingTypeChartOptions.series}
               type="pie"
-              height={200}
             />
           </Box>
         </Box>

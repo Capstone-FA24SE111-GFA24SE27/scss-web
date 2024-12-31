@@ -169,7 +169,7 @@ const AppointmentDetail = ({ id }: { id?: string }) => {
                 <Typography color='text.secondary'>{dayjs(appointment.appointmentFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
               </div>
             </div>
-            <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
+            <Typography className='pl-4 mt-8' sx={{ color: 'text.secondary' }}>{appointment.appointmentFeedback.comment}</Typography>
           </div>
         </div>
       }

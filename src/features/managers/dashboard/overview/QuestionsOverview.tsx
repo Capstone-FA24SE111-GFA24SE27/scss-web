@@ -94,7 +94,7 @@ const QuestionsOverview = () => {
   };
 
   return (
-    <Paper className="p-16 space-y-8">
+    <Paper className="p-16 space-y-8 shadow">
       <div className="flex justify-between gap-16">
         <Typography className="font-semibold text-2xl">Q&As Overview</Typography>
         <Select value={selectedView} size='small' className='font-semibold' onChange={handleViewChange}>

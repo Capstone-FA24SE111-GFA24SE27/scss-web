@@ -96,63 +96,65 @@ function AppointmentTab() {
 
 
   return (
-    <DataTable
-      data={data?.content.data || []}
-      columns={columns}
-      manualPagination
-      rowCount={data?.content.totalElements || 0}
-      onPaginationChange={setPagination}
-      state={{ pagination }}
-      enableColumnFilterModes={false}
-      enableGlobalFilter={false} // Disable global search
-      renderRowActionMenuItems={({ closeMenu, row, table }) => [
-        <MenuItem
-          key={0}
-          onClick={() => {
-            dispatch(openDialog({
-              children: <AppointmentDetail id={row.original.id.toString()} />
-            }))
-            closeMenu();
-            table.resetRowSelection();
-          }}
-        >
-          <ListItemIcon>
-            <Visibility />
-          </ListItemIcon>
-          View Detail
-        </MenuItem>,
-                <MenuItem
-          key={1}
-          onClick={() => {
-            // navigate(`report/${row.original.id}`)
-            dispatch(openDialog({
-              children: <StudentAppointmentReport id={row.original.id.toString()}/>
-            }))
-            closeMenu();
-            table.resetRowSelection();
-          }}
-          disabled={!row.original.havingReport}
-        >
-          <ListItemIcon>
-            <Summarize />
-          </ListItemIcon>
-          View Report
-        </MenuItem>
+    <Paper className='shadow p-8'>
+      <DataTable
+        data={data?.content.data || []}
+        columns={columns}
+        manualPagination
+        rowCount={data?.content.totalElements || 0}
+        onPaginationChange={setPagination}
+        state={{ pagination }}
+        enableColumnFilterModes={false}
+        enableGlobalFilter={false} // Disable global search
+        renderRowActionMenuItems={({ closeMenu, row, table }) => [
+          <MenuItem
+            key={0}
+            onClick={() => {
+              dispatch(openDialog({
+                children: <AppointmentDetail id={row.original.id.toString()} />
+              }))
+              closeMenu();
+              table.resetRowSelection();
+            }}
+          >
+            <ListItemIcon>
+              <Visibility />
+            </ListItemIcon>
+            View Detail
+          </MenuItem>,
+          <MenuItem
+            key={1}
+            onClick={() => {
+              // navigate(`report/${row.original.id}`)
+              dispatch(openDialog({
+                children: <StudentAppointmentReport id={row.original.id.toString()} />
+              }))
+              closeMenu();
+              table.resetRowSelection();
+            }}
+            disabled={!row.original.havingReport}
+          >
+            <ListItemIcon>
+              <Summarize />
+            </ListItemIcon>
+            View Report
+          </MenuItem>
 
-      ]}
-      renderTopToolbarCustomActions={({ table }) => {
-        const { rowSelection } = table.getState();
+        ]}
+        renderTopToolbarCustomActions={({ table }) => {
+          const { rowSelection } = table.getState();
 
-        if (Object.keys(rowSelection).length === 0) {
-          return null;
-        }
+          if (Object.keys(rowSelection).length === 0) {
+            return null;
+          }
 
-        return (
-          <div>
-          </div>
-        );
-      }}
-    />
+          return (
+            <div>
+            </div>
+          );
+        }}
+      />
+    </Paper>
 
   );
 }

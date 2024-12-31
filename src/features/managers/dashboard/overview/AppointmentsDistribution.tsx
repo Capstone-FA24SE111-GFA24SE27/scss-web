@@ -36,18 +36,18 @@ const AppointmentsDistribution = () => {
 
   sortedMonths?.forEach(month => {
     const groupedByType = groupAppointmentsByCounselingType(groupedByMonth[month]);
-    academicCounts.push(groupedByType.ACADEMIC.length);
-    nonAcademicCounts.push(groupedByType.NON_ACADEMIC.length);
+    academicCounts.push(groupedByType.ACADEMIC.length || 0);
+    nonAcademicCounts.push(groupedByType.NON_ACADEMIC.length || 0);
   });
 
 
-  const completed = appointments?.filter(item => item.status === 'ATTEND').length;
-  const canceled = appointments?.filter(item => item.status === 'CANCELED').length;
-  const expired = appointments?.filter(item => item.status === 'EXPIRED').length;
-  const waiting = appointments?.filter(item => item.status === 'WAITING').length;
-  const absent = appointments?.filter(item => item.status === 'ABSENT').length;
-  const online = appointments?.filter(item => item.meetingType === 'ONLINE').length;
-  const offline = appointments?.filter(item => item.meetingType === 'OFFLINE').length;
+  const completed = appointments?.filter(item => item.status === 'ATTEND').length || 0;
+  const canceled = appointments?.filter(item => item.status === 'CANCELED').length || 0;
+  const expired = appointments?.filter(item => item.status === 'EXPIRED').length || 0;
+  const waiting = appointments?.filter(item => item.status === 'WAITING').length || 0;
+  const absent = appointments?.filter(item => item.status === 'ABSENT').length || 0;
+  const online = appointments?.filter(item => item.meetingType === 'ONLINE').length || 0;
+  const offline = appointments?.filter(item => item.meetingType === 'OFFLINE').length || 0;
 
   // Pie chart data
   const statusChartOptions: ApexOptions = {
@@ -67,9 +67,6 @@ const AppointmentsDistribution = () => {
     colors: ['#2196f3', '#9e9e9e'], // Tailwind-compatible blue and gray
   };
 
-  if (!appointments) {
-    return <Typography className="text-text-secondary text-lg mt-16">No data to display</Typography>;
-  }
 
   const handleStartDateChange = (date: string) => setStartDate(date);
   const handleEndDateChange = (date: string) => setEndDate(date);

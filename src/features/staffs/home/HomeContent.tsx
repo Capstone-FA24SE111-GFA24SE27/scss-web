@@ -57,7 +57,7 @@ const HomeContent = () => {
     <section className='container w-full mx-auto'>
 
       <div className='flex flex-col gap-16 p-16 '>
-        <Typography className='text-xl font-bold text-text-disabled'>Booking Overview - {getCurrentMonthYear()}</Typography>
+        <Typography className='text-xl font-bold text-text-disabled'>Appointments Overview - {getCurrentMonthYear()}</Typography>
         <Box className='flex justify-between w-full gap-16'>
 
           <StatsCard

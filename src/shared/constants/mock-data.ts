@@ -244,6 +244,243 @@ export const appointments = [
     "havingReport": false
   }
 ]
-export const questions = [
-  
+const appointmentsWithFeedback = [
+  {
+    "id": 3,
+    "startDateTime": "2024-12-30T13:00:00",
+    "endDateTime": "2024-12-30T14:00:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "42342134",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 1,
+      "rating": 3,
+      "comment": "11111111111",
+      "appointment": null,
+      "createdAt": 1735445582184
+    },
+    "reason": "123",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 3,
+    "startDateTime": "2024-12-30T13:00:00",
+    "endDateTime": "2024-12-30T14:00:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "42342134",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 1,
+      "rating": 3,
+      "comment": "11111111111",
+      "appointment": null,
+      "createdAt": 1735445582184
+    },
+    "reason": "123",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 3,
+    "startDateTime": "2024-12-30T13:00:00",
+    "endDateTime": "2024-12-30T14:00:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "42342134",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 1,
+      "rating": 4,
+      "comment": "11111111111",
+      "appointment": null,
+      "createdAt": 1735445582184
+    },
+    "reason": "123",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 2,
+    "startDateTime": "2024-12-30T10:30:00",
+    "endDateTime": "2024-12-30T11:30:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "12342",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 2,
+      "rating": 4,
+      "comment": "2222222222222",
+      "appointment": null,
+      "createdAt": 1735445587762
+    },
+    "reason": "1234",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 2,
+    "startDateTime": "2024-12-30T10:30:00",
+    "endDateTime": "2024-12-30T11:30:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "12342",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 2,
+      "rating": 5,
+      "comment": "2222222222222",
+      "appointment": null,
+      "createdAt": 1735445587762
+    },
+    "reason": "1234",
+    "cancelReason": null,
+    "havingReport": false
+  }
+]
+
+const appointmentsWithoutStudentCounselor = [
+  {
+    "id": 1,
+    "startDateTime": "2024-12-23T09:15:00",
+    "endDateTime": "2024-12-23T10:15:00",
+    "status": "ABSENT",
+    "meetingType": "ONLINE",
+    "meetUrl": "https://meet.example.com/session1",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 1,
+      "rating": 5,
+      "comment": "Very satisfied",
+      "appointment": null,
+      "createdAt": 1735570499572
+    },
+    "reason": "Reason for request 2",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 3,
+    "startDateTime": "2024-12-16T13:00:00",
+    "endDateTime": "2024-12-16T14:00:00",
+    "status": "ATTEND",
+    "meetingType": "OFFLINE",
+    "meetUrl": null,
+    "address": "Room 4",
+    "appointmentFeedback": {
+      "id": 3,
+      "rating": 1,
+      "comment": "Very dissatisfied",
+      "appointment": null,
+      "createdAt": 1735570499576
+    },
+    "reason": "Reason for request 4",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 7,
+    "startDateTime": "2024-12-23T09:15:00",
+    "endDateTime": "2024-12-23T10:15:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "https://meet.example.com/session7",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 7,
+      "rating": 2,
+      "comment": "Dissatisfied",
+      "appointment": null,
+      "createdAt": 1735570499581
+    },
+    "reason": "Reason for request 8",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 8,
+    "startDateTime": "2024-12-25T10:30:00",
+    "endDateTime": "2024-12-25T11:30:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "https://meet.example.com/session8",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 8,
+      "rating": 3,
+      "comment": "Neutral",
+      "appointment": null,
+      "createdAt": 1735570499582
+    },
+    "reason": "Reason for request 9",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 11,
+    "startDateTime": "2024-12-02T15:30:00",
+    "endDateTime": "2024-12-02T16:30:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "https://meet.example.com/session11",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 11,
+      "rating": 5,
+      "comment": "Very satisfied",
+      "appointment": null,
+      "createdAt": 1735570499586
+    },
+    "reason": "Reason for request 12",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 16,
+    "startDateTime": "2024-12-09T14:15:00",
+    "endDateTime": "2024-12-09T15:15:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "https://meet.example.com/session16",
+    "address": null,
+    "appointmentFeedback": {
+      "id": 16,
+      "rating": 3,
+      "comment": "Neutral",
+      "appointment": null,
+      "createdAt": 1735570499608
+    },
+    "reason": "Reason for request 17",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 44,
+    "startDateTime": "2024-12-31T13:00:00",
+    "endDateTime": "2024-12-31T14:00:00",
+    "status": "WAITING",
+    "meetingType": "ONLINE",
+    "meetUrl": "1",
+    "address": null,
+    "appointmentFeedback": null,
+    "reason": "1234",
+    "cancelReason": null,
+    "havingReport": false
+  },
+  {
+    "id": 46,
+    "startDateTime": "2024-12-31T14:15:00",
+    "endDateTime": "2024-12-31T15:15:00",
+    "status": "ATTEND",
+    "meetingType": "ONLINE",
+    "meetUrl": "1234",
+    "address": null,
+    "appointmentFeedback": null,
+    "reason": "124",
+    "cancelReason": null,
+    "havingReport": false
+  }
 ]

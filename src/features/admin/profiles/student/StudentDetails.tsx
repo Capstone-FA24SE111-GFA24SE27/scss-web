@@ -1,46 +1,46 @@
 import {
-  BackdropLoading,
-	Breadcrumbs,
-	closeDialog,
-	ContentLoading,
-	Gender,
-	openDialog,
-	SelectField,
+  Breadcrumbs,
+  closeDialog,
+  ContentLoading,
+  Gender,
+  openDialog,
+  SelectField,
+  setBackdropLoading,
 } from '@/shared/components';
 import {
-	StudentDetailAppointmentList,
-	useGetStudentBehaviorAssessmentMutation,
-	useGetStudentDocumentDetailQuery,
-	useGetStudentProblemTagDetailsQuery,
-	useGetStudentStudyDetailQuery,
+  StudentDetailAppointmentList,
+  useGetStudentBehaviorAssessmentMutation,
+  useGetStudentDocumentDetailQuery,
+  useGetStudentProblemTagDetailsQuery,
+  useGetStudentStudyDetailQuery,
 } from '@/shared/pages';
 import AcademicTranscript from '@/shared/pages/student/AcademicTranscript';
 import AttendanceReport from '@/shared/pages/student/AttendanceReport';
 import { useGetSemestersQuery } from '@/shared/services';
 import { calculateGPA } from '@/shared/utils';
 import {
-	CakeOutlined,
-	Checklist,
-	Description,
-	EmailOutlined,
-	EventNote,
-	LocalPhoneOutlined,
+  CakeOutlined,
+  Checklist,
+  Description,
+  EmailOutlined,
+  EventNote,
+  LocalPhoneOutlined,
 } from '@mui/icons-material';
 import {
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
-	Avatar,
-	Box,
-	Button,
-	Chip,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	Divider,
-	Tab,
-	Tabs,
-	Typography,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
 import { useAppDispatch } from '@shared/store';
 import dayjs from 'dayjs';
@@ -53,52 +53,52 @@ import ReactMarkdown from 'react-markdown';
 type Props = {};
 
 const StudentDetails = (props: Props) => {
-	const { id: studentId } = useParams();
-	const { data, isLoading } = useGetStudentDocumentDetailQuery(studentId);
-	const { data: academicTranscriptData } =
-		useGetStudentStudyDetailQuery(studentId);
-	const [displayView, setDisplayView] = useState<
-		'' | 'academic_transcrip' | 'attendance_report'
-	>('');
-	const [selectedSemester, setSelectedSemester] = useState('');
+  const { id: studentId } = useParams();
+  const { data, isLoading } = useGetStudentDocumentDetailQuery(studentId);
+  const { data: academicTranscriptData } =
+    useGetStudentStudyDetailQuery(studentId);
+  const [displayView, setDisplayView] = useState<
+    '' | 'academic_transcrip' | 'attendance_report'
+  >('');
+  const [selectedSemester, setSelectedSemester] = useState('');
 
-	const handleSelectSemester = (event: ChangeEvent<HTMLInputElement>) => {
-		setSelectedSemester(event.target.value);
-	};
-	const student = data?.content;
-	const navigate = useNavigate();
-	const location = useLocation();
+  const handleSelectSemester = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedSemester(event.target.value);
+  };
+  const student = data?.content;
+  const navigate = useNavigate();
+  const location = useLocation();
 
-	const studentGpa = calculateGPA(academicTranscriptData?.content);
+  const studentGpa = calculateGPA(academicTranscriptData?.content);
 
-	const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [tabValue, setTabValue] = useState(0);
 
 
-	const { data: semesterData } = useGetSemestersQuery();
-	const semesterOptions =
-		semesterData?.map((semester) => ({
-			label: semester.name,
-			value: semester.name,
-		})) || [];
+  const { data: semesterData } = useGetSemestersQuery();
+  const semesterOptions =
+    semesterData?.map((semester) => ({
+      label: semester.name,
+      value: semester.name,
+    })) || [];
 
-	const { data: studentProblemTagsData } =
-		useGetStudentProblemTagDetailsQuery(
-			{
-				studentId,
-				semesterName: selectedSemester,
-			},
-			{
-				skip: !selectedSemester,
-			}
-		);
-	const studentProblemTags = studentProblemTagsData?.content || [];
+  const { data: studentProblemTagsData } =
+    useGetStudentProblemTagDetailsQuery(
+      {
+        studentId,
+        semesterName: selectedSemester,
+      },
+      {
+        skip: !selectedSemester,
+      }
+    );
+  const studentProblemTags = studentProblemTagsData?.content || [];
 
-	useEffect(() => {
-		if (semesterData?.length) {
-			setSelectedSemester(semesterData.at(-1).name);
-		}
-	}, [semesterData]);
+  useEffect(() => {
+    if (semesterData?.length) {
+      setSelectedSemester(semesterData.at(-1).name);
+    }
+  }, [semesterData]);
 
   const [generateGeneralAssessment, { isLoading: isLoadingGeneralAssessment }] = useGetStudentBehaviorAssessmentMutation()
 
@@ -142,36 +142,40 @@ const StudentDetails = (props: Props) => {
     })
   }
 
-	if (isLoading) {
-		return <ContentLoading className='m-32 w-md' />;
-	}
+  useEffect(() => {
+    dispatch(setBackdropLoading(isLoadingGeneralAssessment))
+  }, [isLoadingGeneralAssessment]);
 
-	if (!student) {
-		return (
-			<div className='relative p-48 w-md'>
-				<Typography color='text.secondary' variant='h5'>
-					Invalid student!
-				</Typography>
-			</div>
-		);
-	}
+  if (isLoading) {
+    return <ContentLoading className='m-32 w-md' />;
+  }
 
-	return (
-		<div className='p-16 px-32'>
-			<Breadcrumbs
-				parents={[
-					{
-						label: 'Admin',
-						url: `/`,
-					},
-					{
-						label: 'Students',
-						url: `/profiles/students`,
-					},
-				]}
-				currentPage={student.studentProfile.profile.fullName}
-			/>
-			<div className="relative flex flex-col items-center flex-auto px-24 sm:p-36">
+  if (!student) {
+    return (
+      <div className='relative p-48 w-md'>
+        <Typography color='text.secondary' variant='h5'>
+          Invalid student!
+        </Typography>
+      </div>
+    );
+  }
+
+  return (
+    <div className='p-16 px-32'>
+      <Breadcrumbs
+        parents={[
+          {
+            label: 'Admin',
+            url: `/`,
+          },
+          {
+            label: 'Students',
+            url: `/profiles/students`,
+          },
+        ]}
+        currentPage={student.studentProfile.profile.fullName}
+      />
+      <div className="relative flex flex-col items-center flex-auto px-24 sm:p-36">
         <div className="w-full max-w-3xl">
           <div className="flex items-end flex-auto pl-16">
             <Avatar
@@ -189,7 +193,7 @@ const StudentDetails = (props: Props) => {
               {student?.studentProfile.profile.fullName?.charAt(0)}
             </Avatar>
             <Gender gender={student?.studentProfile.profile.gender} />
-           
+
           </div>
           <div className='pl-16'>
 
@@ -454,15 +458,13 @@ const StudentDetails = (props: Props) => {
                         />
                       </Box>
                       {
-                        isLoadingGeneralAssessment
-                          ? <BackdropLoading />
-                          : <Button size='small' color='secondary' variant='contained'
-                            startIcon={<EventNote fontSize='small' />}
-                            disabled={isLoadingGeneralAssessment}
-                            onClick={handleAssessment}
-                          >
-                            Generate general assessment
-                          </Button>
+                        <Button size='small' color='secondary' variant='contained'
+                          startIcon={<EventNote fontSize='small' />}
+                          disabled={isLoadingGeneralAssessment}
+                          onClick={handleAssessment}
+                        >
+                          Generate general assessment
+                        </Button>
                       }
                     </div>
 
@@ -514,8 +516,8 @@ const StudentDetails = (props: Props) => {
 
         </div >
       </div >
-		</div>
-	);
+    </div>
+  );
 };
 
 export default StudentDetails;

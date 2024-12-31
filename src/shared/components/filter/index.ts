@@ -8,6 +8,7 @@ import SortingToggle from "./SortingToggle";
 import AcademicFilter from "./AcademicFilter";
 import CategorySelect from "./CategorySelect";
 import ContentSearch from "./ContentSearch";
+import PeriodFilter from "./PeriodFilter";
 export {
   FilterTabs,
   SearchField,
@@ -18,5 +19,6 @@ export {
   SortingToggle,
   AcademicFilter,
   CategorySelect,
-  ContentSearch
+  ContentSearch,
+  PeriodFilter
 }

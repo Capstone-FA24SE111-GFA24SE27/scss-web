@@ -10,9 +10,8 @@ import ReactApexChart from "react-apexcharts";
 
 const AppointmentsChart = () => {
   const { data: appointmentsData } = useGetAllAppointmentsQuery({
-    from: dayjs().subtract(3, 'month').startOf('month').format("YYYY-MM-DD"),
-    // to: dayjs().endOf("month").format("YYYY-MM-DD"),
-    to: dayjs().add(1, 'month').endOf("month").format("YYYY-MM-DD"),
+    // from: dayjs().subtract(12, 'month').startOf('month').format("YYYY-MM-DD"),
+    // to: dayjs().add(1, 'month').endOf("month").format("YYYY-MM-DD"),
   });
   const [selectedView, setSelectedView] = useState(`month`)
 

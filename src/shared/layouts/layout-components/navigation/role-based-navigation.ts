@@ -166,6 +166,23 @@ const studentNavigation: NavigationOptions = {
 const counselorNavigation: NavigationOptions = {
 	list: [
 		{
+			name: 'Home',
+			description: 'Home',
+			route: '',
+			items: [
+				{
+					icon: Home,
+					name: 'Home',
+					route: 'home',
+				},
+				{
+					icon: Dashboard,
+					name: 'Dashboard',
+					route: 'dashboard',
+				},
+			],
+		},
+		{
 			name: 'Counseling',
 			description: 'Counseling service',
 			route: 'counseling',
@@ -188,7 +205,7 @@ const counselorNavigation: NavigationOptions = {
 			],
 		},
 		{
-			name: 'Questions and Answers',
+			name: 'Questions & Answers',
 			description: 'Questions and answers',
 			route: 'qna',
 			items: [

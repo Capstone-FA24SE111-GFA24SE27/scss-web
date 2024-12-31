@@ -5,15 +5,16 @@ interface HeadingProps {
   title: string;
   description?: string;
   className?: string;
+  size?: `medium` | `large`
 }
-const SubHeading = ({ title, description = '', className }: HeadingProps) => {
+const SubHeading = ({ title, description = '', size = 'medium', className }: HeadingProps) => {
   return (
     <div className={`flex flex-col gap-4 ${className}`}>
       <motion.span
-        // initial={{ x: -20 }}
-        // animate={{ x: 0, transition: { delay: 0.2 } }}
+      // initial={{ x: -20 }}
+      // animate={{ x: 0, transition: { delay: 0.2 } }}
       >
-        <Typography className="text-lg font-semibold border-l-2 !border-secondary-main pl-8 text-text-secondary">
+        <Typography className={`font-semibold border-l-2 !border-secondary-main pl-8 text-text-secondary ${size == 'medium' ? 'text-lg' : 'text-xl'}`}>
           {title}
         </Typography>
       </motion.span>

@@ -8,20 +8,20 @@ import { useAppDispatch } from '@shared/store';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
 
-export type FeedbackCard = {
+export type FeedbackItem = {
   feedback: Feedback,
   profile: Profile,
   handleOpenDetail: () => void
 }
-const FeedbackCard = ({ feedback, profile, handleOpenDetail }) => {
+const FeedbackItem = ({ feedback, profile, handleOpenDetail }) => {
   const dispatch = useAppDispatch();
   return (
     <motion.div
       variants={motionVariants.item}
       key={feedback.id}
     >
-      <Paper className='bg-background-paper flex justify-between items-start shadow'>
-        <div className='flex gap-16 items-start  p-16'>
+      <Paper className='flex justify-between items-start shadow'>
+        <div className='flex gap-16 items-start p-16'>
           <Avatar
             className='size-32'
             alt={profile.fullName}
@@ -40,7 +40,7 @@ const FeedbackCard = ({ feedback, profile, handleOpenDetail }) => {
             <ItemMenu
               menuItems={[
                 {
-                  label: 'View Appointment',
+                  label: 'View Source',
                   onClick: handleOpenDetail,
                   icon: <Visibility fontSize='small' />
                 },
@@ -55,4 +55,4 @@ const FeedbackCard = ({ feedback, profile, handleOpenDetail }) => {
   )
 }
 
-export default FeedbackCard
+export default FeedbackItem

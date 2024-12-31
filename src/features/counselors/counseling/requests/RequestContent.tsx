@@ -72,14 +72,12 @@ const RequestsContent = () => {
   const appointmentRequests = data?.content.data
 
 
-  useRequestsSocketListener(account?.profile.id, refetch)
-
-
   const pendingRequests = appointmentRequests?.filter(item => item.status === `WAITING`)
   const resolvedRequests = appointmentRequests?.filter(item => item.status !== `WAITING`)
 
   const dispatch = useAppDispatch()
 
+  useRequestsSocketListener(account?.profile.id, refetch)
 
   if (isLoading) {
     return <AppLoading />

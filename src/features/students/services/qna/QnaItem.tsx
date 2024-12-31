@@ -311,24 +311,32 @@ const QnaItem = (props: Props) => {
 												{'The counselor has not answered the question'}
 											</Typography>
 								}
-								<Divider />
-								<div className='flex items-start gap-16 '>
-									<Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
-									<div className='flex-1'>
-										<div>
-											<div className='flex items-center gap-8'>
-												<Rating
-													size='medium'
-													value={qna.feedback.rating}
-													readOnly
-												/>
-												<Typography color='text.secondary'>{dayjs(qna.feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+								{
+									qna?.feedback && (
+										<>
+											<Divider />
+											<div className='flex items-start gap-16 '>
+												<Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
+												<div className='flex-1'>
+													<div>
+														<div className='flex items-center gap-8'>
+															<Rating
+																size='medium'
+																value={qna.feedback?.rating}
+																readOnly
+															/>
+															<Typography color='text.secondary'>{dayjs(qna.feedback?.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+														</div>
+													</div>
+													<ExpandableText className='pl-4 mt-8' text={qna.feedback?.comment} limit={96} />
+													{/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{qna.feedback.comment}</Typography> */}
+												</div>
 											</div>
-										</div>
-										<ExpandableText className='pl-4 mt-8' text={qna.feedback.comment} limit={96} />
-										{/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{qna.feedback.comment}</Typography> */}
-									</div>
-								</div>
+										</>
+
+									)
+
+								}
 
 							</div>
 						</div>

@@ -98,13 +98,13 @@ const BehaviorTagsChart: React.FC = () => {
   }, [semesterData]);
 
   return (
-    <div className="p-16">
+    <div className="">
       {/* <h2 className="text-2xl font-semibold mb-8 text-text-secondary">Student Behavior Analysis</h2> */}
-      <Paper className="p-32 shadow">
+      <Paper className="p-16 mt-8 shadow">
         {/* Horizontal Bar Chart: Behavior Tags with Student Counts */}
         <div className="rounded-lg">
           <div className='flex justify-between'>
-            <Typography className="text-xl font-semibold">Student Behavior Analysis</Typography>
+            <Typography className="text-xl font-semibold">Student Behaviors Analytics</Typography>
             <SelectField
               label="Semester"
               options={semesterOptions}

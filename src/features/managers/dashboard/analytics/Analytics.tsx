@@ -1,10 +1,10 @@
-import StudentsOverview from '@/features/managers/dashboard/analytics/student-overview/StudentsOverview';
-import SupportStaffOverview from '@/features/managers/dashboard/analytics/support-staff-overview/SupportStaffsOverview';
+import StudentsOverview from '@/features/managers/dashboard/analytics/students/StudentsAnalytics';
 import { FilterTabs, Heading, Scrollbar } from '@/shared/components';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography } from '@mui/material';
-import CounselorsOverview from './counselor-overview/CounselorsOverview';
+import CounselorsAnalytics from './counselors/CounselorsAnalytics';
+import SupportStaffAnalytics from './support-staffs/SupportStaffsAnalytics';
 
 type Props = {};
 
@@ -14,13 +14,9 @@ const AccountsOverview = (props: Props) => {
 	const [tabValue, setTabValue] = useState(0);
 
 	const overviewAccountTabs = [
-		{ label: 'Academic Counselor', value: 'counselor' },
-		{
-			label: 'Non-academic Counselor',
-			value: 'na-counselor',
-		},
-		{ label: 'Student', value: 'student' },
-		// { label: 'Manager', value: 'manager' },
+		{ label: 'Academic Counselors', value: 'counselor' },
+		{ label: 'Non-academic Counselors', value: 'na-counselor', },
+		{ label: 'Students', value: 'student' },
 		{ label: 'Support Staffs', value: 'staff' },
 	];
 	// useEffect(() => {
@@ -38,15 +34,15 @@ const AccountsOverview = (props: Props) => {
 
 	switch (overviewAccountTabs[tabValue]?.value) {
 		case 'counselor': {
-			view = <CounselorsOverview />;
+			view = <CounselorsAnalytics isAcademic={true} />;
 			break;
 		}
 		case 'na-counselor': {
-			view = <CounselorsOverview />;
+			view = <CounselorsAnalytics isAcademic={false} />;
 			break;
 		}
 		case 'staff': {
-			view = <SupportStaffOverview />;
+			view = <SupportStaffAnalytics />;
 			break;
 		}
 		case 'student': {
@@ -64,21 +60,20 @@ const AccountsOverview = (props: Props) => {
 	}
 
 	return (
-		<div className='flex flex-col w-full h-full overflow-hidden'>
-			<div className='flex items-center justify-between px-32 pt-32'>
+		<div className='flex flex-col w-full h-full overflow-hidden mt-32'>
+			<div className='flex items-center justify-between px-32'>
 				<Heading
-					title={`Overview`}
-					description='Analytics of user activities'
+					title={`Analytics`}
+					description='Providing Metrics Summary & Insights'
 				/>
 			</div>
-			<div className='px-32 py-16'>
+			<div className='px-16 pt-16 pb-8'>
 				<FilterTabs
 					tabs={overviewAccountTabs}
 					tabValue={tabValue}
 					onChangeTab={handleChangeTab}
 				/>
 			</div>
-
 			<Scrollbar className='flex-1 overflow-auto'>{view}</Scrollbar>
 		</div>
 	);

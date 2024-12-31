@@ -4,23 +4,26 @@ import { Typography, Paper, Box, MenuItem, Select, SelectChangeEvent } from "@mu
 import dayjs from "dayjs";
 import { useGetCounselorAppointmentsManagementQuery } from "../counselors-api";
 import { ApexOptions } from "apexcharts";
-import { groupAppointmentsByDay, groupAppointmentsByMonth, groupAppointmentsByWeek } from "@/shared/utils";
+import { groupAppointmentsByDay, groupAppointmentsByDays, groupAppointmentsByMonth, groupAppointmentsByWeek } from "@/shared/utils";
 import ReactApexChart from "react-apexcharts";
 import { useParams } from "react-router-dom";
+import { PeriodFilter } from "@/shared/components";
+import { firstDayOfMonth, lastDayOfMonth } from "@/shared/constants";
 
-const CounselorAppointmentsWorkload = () => {
-  const { id } = useParams();
+const CounselorAppointmentsWorkload = ({ counselorId }: { counselorId?: string }) => {
+  const { id: routeId } = useParams()
+  const id = counselorId || routeId
 
   const { data: appointmentsData } = useGetCounselorAppointmentsManagementQuery({
-    fromDate: dayjs().subtract(3, 'month').startOf('month').format("YYYY-MM-DD"),
-    toDate: dayjs().add(1, 'month').endOf("month").format("YYYY-MM-DD"),
+    fromDate: firstDayOfMonth,
+    toDate: lastDayOfMonth,
     counselorId: Number(id),
     size: 9999,
   });
-  const [selectedView, setSelectedView] = useState("month");
+  const [selectedPeriod, setSelectedPeriod] = useState(`month`)
 
-  const handleViewChange = (event: SelectChangeEvent) => {
-    setSelectedView(event.target.value as string);
+  const handlePeriodChange = (event: SelectChangeEvent) => {
+    setSelectedPeriod(event.target.value as string);
   };
 
   const appointments = appointmentsData?.content?.data.map(item => {
@@ -28,12 +31,13 @@ const CounselorAppointmentsWorkload = () => {
     return rest;
   });
 
-  const groupedByMonth = groupAppointmentsByMonth(appointments);
+  // const groupedByMonth = groupAppointmentsByMonth(appointments);
+  const groupedByMonth = groupAppointmentsByDays(appointments);
   const groupedByWeek = groupAppointmentsByWeek(appointments);
   const groupedByDay = groupAppointmentsByDay(appointments);
 
   let displayGroup = {};
-  switch (selectedView) {
+  switch (selectedPeriod) {
     case "month":
       displayGroup = groupedByMonth;
       break;
@@ -65,14 +69,13 @@ const CounselorAppointmentsWorkload = () => {
   };
 
   return (
-    <Paper className="p-16 space-y-8">
+    <Paper className="p-16 space-y-8 shadow">
       <div className="flex justify-between gap-16">
         <Typography className="font-semibold text-2xl">Appointments Workload</Typography>
-        <Select value={selectedView} size="small" className="font-semibold" onChange={handleViewChange}>
-          <MenuItem value="month">Month</MenuItem>
-          <MenuItem value="week">Week</MenuItem>
-          <MenuItem value="day">Day</MenuItem>
-        </Select>
+        {/* <PeriodFilter
+          onPeriodChange={handlePeriodChange}
+          period={selectedPeriod}
+        /> */}
       </div>
       <div>
         <ReactApexChart

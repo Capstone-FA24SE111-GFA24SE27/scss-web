@@ -108,11 +108,11 @@ function Student() {
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Counseling Profile"
+              label="Learning Process"
             />
             <Tab
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Learning Process"
+              label="Counseling"
             />
           </Tabs>
         </div>
@@ -123,8 +123,8 @@ function Student() {
             <Paper className='p-16 h-fit shadow'>
               <div className="w-full pr-8">
                 {tabValue === 0 && <GeneralInformation />}
-                {tabValue === 1 && <CounselingProfile />}
-                {tabValue === 2 && <LearningProcess />}
+                {tabValue === 1 && <LearningProcess />}
+                {tabValue === 2 && <CounselingProfile />}
               </div>
             </Paper>
           </div >

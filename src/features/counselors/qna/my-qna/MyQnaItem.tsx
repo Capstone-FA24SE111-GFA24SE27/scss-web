@@ -69,6 +69,7 @@ import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 import { validateHTML } from '@/shared/utils';
 import dayjs from 'dayjs';
 import QnaRejectForm from './QnaRejectFormDialog';
+import AnswerQuestionDialog from './AnswerQuestionDialog';
 
 const item = {
 	hidden: { opacity: 0, y: 20 },
@@ -274,24 +275,31 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 										</Typography>
 							}
 						</div>
-						<Divider />
-						<div className='flex items-start gap-16'>
-							<Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
-							<div className='flex-1'>
-								<div>
-									<div className='flex items-center gap-8'>
-										<Rating
-											size='medium'
-											value={qna.feedback.rating}
-											readOnly
-										/>
-										<Typography color='text.secondary'>{dayjs(qna.feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+						{
+							qna.feedback && (
+								<>
+									<Divider />
+
+									<div className='flex items-start gap-16'>
+										<Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
+										<div className='flex-1'>
+											<div>
+												<div className='flex items-center gap-8'>
+													<Rating
+														size='medium'
+														value={qna.feedback?.rating}
+														readOnly
+													/>
+													<Typography color='text.secondary'>{dayjs(qna.feedback?.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+												</div>
+											</div>
+											<ExpandableText className='pl-4 mt-8' text={qna.feedback?.comment} limit={96} />
+										</div>
 									</div>
-								</div>
-								<ExpandableText className='pl-4 mt-8' text={qna.feedback.comment} limit={96} />
-								{/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{qna.feedback.comment}</Typography> */}
-							</div>
-						</div>
+								</>
+							)
+						}
+
 					</div>
 				</div>
 
@@ -379,122 +387,3 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 };
 
 export default MyQnaItem;
-
-
-const AnswerQuestionDialog = ({ qna }: { qna: Question }) => {
-	const editMode = Boolean(qna.answer)
-	console.log(editMode)
-
-	const [answer, setAnswer] = useState(qna.answer || ``);
-
-	const [answerQuestion, { isLoading: submitingAnswer }] =
-		useAnswerQuestionMutation();
-
-	const [editAnswer, { isLoading: editingAnswer }] =
-		useEditAnswerMutation();
-
-	const dispatch = useAppDispatch()
-
-
-	const handleAnswerQuestion = () => {
-		useConfirmDialog({
-			title: 'Are you sure you want to submit the answer?',
-			confirmButtonFunction: onSubmitAnswer,
-			dispatch,
-		});
-	}
-
-
-	const onSubmitAnswer = () => {
-		if (editMode) {
-			editAnswer({
-				questionCardId: qna.id,
-				content: answer,
-			})
-				.unwrap()
-				.then(() => {
-					useAlertDialog({
-						title: " Answer edited successfully",
-						dispatch,
-					})
-					dispatch(closeDialog())
-				})
-		} else {
-			answerQuestion({
-				questionCardId: qna.id,
-				content: answer,
-			})
-				.unwrap()
-				.then(() => {
-					useAlertDialog({
-						title: " Answer submitted successfully",
-						dispatch,
-					})
-					dispatch(closeDialog())
-				})
-		}
-	};
-
-	if (submitingAnswer || editingAnswer) {
-		return <BackdropLoading />
-	}
-
-	return (
-		<div className=' w-xl'>
-			<DialogTitle >{qna.title}</DialogTitle>
-			<DialogContent className='flex flex-col gap-8'>
-				{/* {!qna.closed &&
-					qna.status === 'VERIFIED' && (
-						<TextField
-							disabled={qna?.closed}
-							label='My answer'
-							placeholder='Enter answer for the question...'
-							variant='outlined'
-							value={answer}
-							onChange={(
-								event: ChangeEvent<HTMLInputElement>
-							) => {
-								setAnswer(
-									event.target.value
-								);
-							}}
-							multiline
-							minRows={4}
-							fullWidth
-							slotProps={{
-								inputLabel: {
-									shrink: true,
-								},
-							}}
-						/>
-					)} */}
-				<div>{RenderHTML(qna.content)}</div>
-				<Divider />
-				<QuillEditor
-					value={answer}
-					onChange={setAnswer}
-					// error={errors.content?.message}
-					label={editMode ? "Edit your answer" : "Answer the question"}
-					placeholder='Write your answer...'
-				/>
-			</DialogContent>
-			<DialogActions>
-				<Button
-					variant='contained'
-					color='secondary'
-					className='m-8'
-					disabled={
-						submitingAnswer
-						|| !answer.length
-						|| !validateHTML(answer)
-					}
-					onClick={() =>
-						handleAnswerQuestion()
-					}
-				>
-					Submit Answer
-				</Button>
-			</DialogActions>
-		</div>
-	)
-}

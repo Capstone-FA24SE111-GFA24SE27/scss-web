@@ -11,7 +11,7 @@ const CalendarSidebarContent = (props: Props) => {
 	return (
 		<div className='z-10 flex flex-col flex-auto max-w-full w-fit'>
 			<IconButton
-				className='absolute top-0 right-0 m-16 z-999'
+				className='absolute top-0 right-0 m-16 z-10'
 				size='large'
 				onClick={() => navigate(-1)}
 			>

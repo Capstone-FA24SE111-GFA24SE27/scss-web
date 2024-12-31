@@ -14,20 +14,23 @@ import { statusColor } from '@/shared/constants';
 import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 import { AppointmentDetail } from '@/shared/pages';
 import { splitUserAndReason } from '@/shared/utils';
+import UpdateAppointmentDetailDialog from './UpdateAppointmentDetailDialog';
 
 
 type AppointmentPropsItem = {
   appointment: Appointment,
-  handleCloseDialog?: () => void
+  handleCloseDialog?: () => void,
+  openDetail?: boolean,
 }
 
 const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
 
-  const { appointment, handleCloseDialog = () => { } } = props
+  const { appointment, handleCloseDialog = () => { }, openDetail } = props
 
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
+
 
   return (
     <Paper
@@ -66,8 +69,13 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
               {
                 label: 'View details',
                 onClick: () => {
+                  if (openDetail) {
+                    dispatch(openDialog({
+                      children: <AppointmentDetail id={appointment.id.toString()} />
+                    }))
+                    return;
+                  }
                   navigate(`appointment/${appointment.id}`)
-                  // navigate(`/counseling/appointments/appointment/${appointment.id}`)
                   handleCloseDialog()
                 },
                 icon: <Visibility fontSize='small' />
@@ -172,7 +180,7 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
                 event.stopPropagation();
                 event.preventDefault();
                 dispatch(openDialog({
-                  children: <UpdateDetailsAppointmentDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
+                  children: <UpdateAppointmentDetailDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
                 }));
               }}
             >
@@ -258,7 +266,7 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
                   children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
                 }
                 ))}
-                // disabled={!dayjs().isAfter(dayjs(appointment.startDateTime))}
+              // disabled={!dayjs().isAfter(dayjs(appointment.startDateTime))}
               >
                 Take attendance
               </Button>
@@ -267,90 +275,6 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
         )
       }
     </Paper>
-  );
-}
-
-const UpdateDetailsAppointmentDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
-  const [updateAppointmentDetails] = useUpdateAppointmentDetailsMutation();
-  const [meetUrl, setMeetUrl] = useState(appointment.meetUrl);
-  const [address, setAddress] = useState(appointment.address);
-  const dispatch = useAppDispatch();
-
-  const handleEditDetails = () => {
-    const meetingDetails = {};
-    if (appointment.meetingType === 'ONLINE') {
-      meetingDetails['meetUrl'] = meetUrl;
-      updateAppointmentDetails({
-        requestId: appointment.id,
-        meetingDetails
-      });
-    } else {
-      meetingDetails['address'] = address;
-      updateAppointmentDetails({
-        requestId: appointment.id,
-        meetingDetails
-      });
-    }
-    handleCloseDialog()
-    dispatch(closeDialog());
-  }
-
-  return (
-    <div className='w-[40rem]'>
-      <DialogTitle id="alert-dialog-title">Edit details?</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          <div>
-            {appointment.meetingType === 'ONLINE' ? (
-              <Typography>Edit the current meeting URL</Typography>
-            ) : (
-              <Typography>Edit the current address</Typography>
-            )}
-          </div>
-          <div>
-            {appointment.meetingType === 'ONLINE' ? (
-              <TextField
-                autoFocus
-                margin="dense"
-                name={'meetUrl'}
-                label={'Meeting Url'}
-                fullWidth
-                value={meetUrl}
-                variant="standard"
-                className='mt-16'
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setMeetUrl(event.target.value);
-                }} />
-            ) : (
-              <TextField
-                autoFocus
-                margin="dense"
-                name={'address'}
-                label={'Address'}
-                fullWidth
-                value={address}
-                variant="standard"
-                className='mt-16'
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setAddress(event.target.value);
-                }} />
-            )}
-          </div>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => dispatch(closeDialog())} color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => handleEditDetails()}
-          color="secondary" variant='contained'
-          disabled={!meetUrl && !address}
-        >
-          Confirm
-        </Button>
-      </DialogActions>
-    </div>
   );
 }
 

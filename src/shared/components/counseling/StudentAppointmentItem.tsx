@@ -14,10 +14,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 type AppointmentItemProps = {
   appointment: Appointment,
-  handleCloseDialog?: () => void
+  handleCloseDialog?: () => void,
+  openDetail?: boolean
 }
 const StudentAppointmentItem = (props: AppointmentItemProps) => {
-  const { appointment, handleCloseDialog = () => { } } = props
+  const { appointment, handleCloseDialog = () => { }, openDetail } = props
 
   const dispatch = useAppDispatch()
 
@@ -64,6 +65,12 @@ const StudentAppointmentItem = (props: AppointmentItemProps) => {
               {
                 label: 'View details',
                 onClick: () => {
+                  if (openDetail) {
+                    dispatch(openDialog({
+                      children: <AppointmentDetail id={appointment.id.toString()} />
+                    }))
+                    return;
+                  }
                   navigate(`appointment/${appointment.id}`)
                   // navigate(`/services/activity/appointment/${appointment.id}`)
                 },
@@ -82,7 +89,7 @@ const StudentAppointmentItem = (props: AppointmentItemProps) => {
               }] : []),
             ]}
           />
-        </ListItem> 
+        </ListItem>
 
         {appointment.cancelReason && (
           <div className='flex items-center gap-8'>

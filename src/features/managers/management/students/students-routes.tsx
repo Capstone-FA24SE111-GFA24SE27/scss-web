@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 import { studentsTableRoutes } from './table';
-import { studentOverviewRoutes } from '../../dashboard/analytics/student-overview';
+import { studentOverviewRoutes } from '../../dashboard/analytics/students';
 import { studentRoutes } from './student';
 const Students = lazy(() => import('./table/Students'))
 

@@ -36,45 +36,41 @@ const QuestionsDistribution = () => {
 
   sortedMonths?.forEach(month => {
     const groupedByType = groupAppointmentsByCounselingType(groupedByMonth[month]);
-    academicCounts.push(groupedByType.ACADEMIC.length);
-    nonAcademicCounts.push(groupedByType.NON_ACADEMIC.length);
+    academicCounts.push(groupedByType.ACADEMIC.length || 0);
+    nonAcademicCounts.push(groupedByType.NON_ACADEMIC.length || 0);
   });
 
 
-  const completed = appointments?.filter(item => item.answer).length;
-  const flagged = appointments?.filter(item => item.status === 'FLAGGED').length;
-  const rejected = appointments?.filter(item => item.status === 'REJECTED').length;
-  const easy = appointments?.filter(item => item.difficultyLevel === 'Easy').length;
-  const medium = appointments?.filter(item => item.difficultyLevel === 'Medium').length;
-  const hard = appointments?.filter(item => item.difficultyLevel === 'Hard').length;
+  const completed = appointments?.filter(item => item.answer).length || 0;
+  const flagged = appointments?.filter(item => item.status === 'FLAGGED').length || 0;
+  const rejected = appointments?.filter(item => item.status === 'REJECTED').length || 0;
+  const easy = appointments?.filter(item => item.difficultyLevel === 'Easy').length || 0;
+  const medium = appointments?.filter(item => item.difficultyLevel === 'Medium').length || 0;
+  const hard = appointments?.filter(item => item.difficultyLevel === 'Hard').length || 0;
 
 
   // Pie chart data
   const statusChartOptions: ApexOptions = {
     series: [completed, rejected, flagged],
-    labels: ['Completed', 'Canceled', 'Absent'],
+    labels: ['Completed', 'Rejected', 'Flagged'],
     chart: {
       type: 'pie',
     },
   };
 
   const meetingTypeChartOptions: ApexOptions = {
-    series: [easy, medium, hard ],
+    series: [easy, medium, hard],
     labels: ['Easy', 'Medium', 'Hard'],
     chart: {
       type: 'pie',
     },
   };
 
-  if (!appointments) {
-    return <Typography className="text-text-secondary text-lg mt-16">No data to display</Typography>;
-  }
-
   const handleStartDateChange = (date: string) => setStartDate(date);
   const handleEndDateChange = (date: string) => setEndDate(date);
 
   return (
-    <Paper className="p-16 space-y-8">
+    <Paper className="p-16 space-y-8 shadow">
       <div className="grid grid-cols-2 gap-16">
         <Typography className="font-semibold text-2xl">Q&As Distribution</Typography>
         <div className='flex items-start w-full gap-16'>

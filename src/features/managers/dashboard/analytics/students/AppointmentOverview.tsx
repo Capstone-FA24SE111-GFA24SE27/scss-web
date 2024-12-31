@@ -137,7 +137,7 @@ const AppointmentOverview: React.FC = () => {
   const numbers = [32, 27, 20, 18, 17, 10]
   return (
     <div className="p-16">
-      <h2 className="text-2xl font-semibold mb-8 text-text-secondary">Student Booking Overview</h2>
+      <h2 className="text-2xl font-semibold mb-8 text-text-secondary">Student Appointments Overview</h2>
       <div className='flex gap-16 w-full'>
         <Paper className="p-16 shadow flex-1">
           <div className='flex justify-between'>

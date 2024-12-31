@@ -97,7 +97,7 @@ const HomeContent = () => {
                         {groupedAppointments[dateLabel].map(appointment => (
                           <div key={appointment.id} className='my-8'>
                             {/* @ts-ignored */}
-                            <StudentAppointmentItem appointment={appointment} />
+                            <StudentAppointmentItem appointment={appointment} openDetail/>
                           </div>
                         ))}
                       </div>

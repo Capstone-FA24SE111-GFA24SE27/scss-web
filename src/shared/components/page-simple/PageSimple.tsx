@@ -271,7 +271,7 @@ const PageSimple = forwardRef<
 				leftSidebarWidth={leftSidebarWidth}
 				rightSidebarWidth={rightSidebarWidth}
 			>
-				<div className="z-10 flex flex-col flex-auto h-full">
+				<div className="z-9999 flex flex-col flex-auto h-full">
 					<div className="PageSimple-wrapper">
 						{leftSidebarContent && (
 							<PageSimpleSidebar

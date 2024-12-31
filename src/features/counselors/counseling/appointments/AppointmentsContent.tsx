@@ -117,7 +117,7 @@ const AppointmentsContent = () => {
         />
       </Box>
       <FilterTabs tabs={statusTabs} tabValue={tabValue} onChangeTab={handleChangeTab} />
-      <List className='flex flex-col gap-16'>
+      <List className='flex flex-col gap-16 min-h-md'>
         {
           isFetching
             ? <ContentLoading />

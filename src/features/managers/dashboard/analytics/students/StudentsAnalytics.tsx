@@ -4,13 +4,8 @@ import AppointmentOverview from './AppointmentOverview';
 
 const CounselorsOverview = () => {
 	return (
-		<div className='h-full overflow-hidden'>
-			<Scrollbar className='max-h-full p-16 overflow-auto'>
-				<div>
-					<BehaviorTagsChart />
-					<AppointmentOverview />
-				</div>
-			</Scrollbar>
+		<div className='h-full px-24'>
+			<BehaviorTagsChart />
 		</div>
 	);
 };

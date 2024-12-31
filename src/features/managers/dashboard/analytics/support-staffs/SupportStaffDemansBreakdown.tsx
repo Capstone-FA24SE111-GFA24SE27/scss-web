@@ -141,7 +141,7 @@ const CounselorCharts: React.FC = () => {
       <div className='flex gap-16 w-full'>
         <Paper className="p-16 shadow flex-1">
           <div className='flex justify-between'>
-            <h3 className="text-xl font-semibold">Total Appointments Handled Weekly</h3>
+            <h3 className="text-xl font-semibold">Total Demands Assigned Weekly</h3>
             <Select size='small' className='font-semibold' value={`week`}>
               <MenuItem value="month">Month</MenuItem>
               <MenuItem value="week">Week</MenuItem>
@@ -194,9 +194,9 @@ const CounselorCharts: React.FC = () => {
           </div>
         </Paper>
         <Paper className="p-16 shadow">
-          <h3 className="text-xl font-semibold">Top Counselors by Handled Sessions</h3>
+          <h3 className="text-xl font-semibold">Top Staffs by Handled Demands</h3>
           <div className='flex justify-between pt-8'>
-            <Typography className='font-semibold text-text-secondary ml-32'>Counselor</Typography>
+            <Typography className='font-semibold text-text-secondary ml-32'>Support staff</Typography>
             <Typography className='font-semibold text-text-secondary'>Total</Typography>
           </div>
           {
