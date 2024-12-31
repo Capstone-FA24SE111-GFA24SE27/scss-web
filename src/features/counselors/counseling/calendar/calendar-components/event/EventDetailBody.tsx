@@ -1,51 +1,13 @@
-import { closeDialog, CounselorAppointmentItem, NavLinkAdapter, openDialog, UserListItem } from '@/shared/components';
+import { CounselorAppointmentItem } from '@/shared/components';
 import {
-	Avatar,
-	Button,
-	Chip,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle,
-	Divider,
-	FormControl,
-	FormControlLabel,
-	IconButton,
-	ListItemButton,
-	Menu,
-	MenuItem,
-	Paper,
-	Radio,
-	RadioGroup,
-	Rating,
-	TextField,
-	Tooltip,
-	Typography,
-} from '@mui/material';
-import React, { useState } from 'react';
-import { useAppDispatch } from '@shared/store';
-import {
-	AccessTime,
-	Add,
-	CalendarMonth,
-	ChevronRight,
-	Circle,
-	Clear,
-	EditNote,
-	MoreVert,
-	Summarize,
-} from '@mui/icons-material';
-import dayjs from 'dayjs';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {
-	AppointmentAttendanceStatus,
-	Appointment,
+	Appointment
 } from '@/shared/types';
 import {
-	useTakeAppointmentAttendanceMutation,
-	useUpdateAppointmentDetailsMutation,
-} from '../../../counseling-api';
-import { openStudentView } from '@/features/counselors/counselors-layout-slice';
+	Typography
+} from '@mui/material';
+import { useAppDispatch } from '@shared/store';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type Props = {
 	appointment: Appointment;

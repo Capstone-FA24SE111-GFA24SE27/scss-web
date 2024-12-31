@@ -7,11 +7,13 @@ import { Button, Stepper, Step, StepLabel, Typography, Box, Switch, FormControlL
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { useCreateAppointmentReportMutation } from './report-api';
 import { useParams, useNavigate } from 'react-router';
-import { RenderHTML } from '@/shared/components';
+import { ContentLoading, RenderHTML, UserLabel } from '@/shared/components';
 import { Scrollbar, closeDialog, openDialog, QuillEditor } from '@/shared/components';
 import { useAppDispatch } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 import ReportPreview from './ReportPreview';
+import { useGetAppointmentByIdQuery } from '@/shared/pages';
+import dayjs from 'dayjs';
 
 // Zod schema for validation
 const formSchema = z.object({
@@ -52,6 +54,10 @@ const customModules = {
 
 
 const ReportCreate = () => {
+  const { id: appointmentId } = useParams();
+  const { data: appointmentData, isLoading } = useGetAppointmentByIdQuery(appointmentId)
+  const appointment = appointmentData?.content;
+
   const routeParams = useParams();
   const navigate = useNavigate();
   const { handleSubmit, control, formState: { errors }, watch, setValue } = useForm<ReportFormValues>({
@@ -119,24 +125,32 @@ const ReportCreate = () => {
 
   };
 
-  console.log(activeStep === steps.length - 1 ? 'submit' : 'next')
+  if (isLoading) {
+    return <ContentLoading />
+  }
+
+  if (!appointment || appointment?.status !== 'ATTEND') {
+    return <Typography className='p-16' color='textSecondary'>Invalid appointment</Typography>
+  }
+
 
   return (
     <div className="flex flex-col justify-center mt-8 w-lg p-32 gap-16">
       <div className="flex">
         <Typography className="text-20 md:text-24 font-extrabold tracking-tight leading-none">
-          Create report
+          Report Form
         </Typography>
       </div>
       <div className="flex gap-24 mt-4 pb-8">
-        <div className="flex gap-8 items-center ">
+        <div className='flex items-center gap-8 '>
           <CalendarMonth />
-          <Typography className="">2024-10-01</Typography>
+          <Typography className='' >{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
         </div>
-        <div className="flex gap-8 items-center">
+        <div className='flex items-center gap-8'>
           <AccessTime />
-          <Typography className="">08:00 - 09:00</Typography>
+          <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
         </div>
+        <UserLabel label='Created for' profile={appointment?.studentInfo?.profile} />
       </div>
       <Stepper activeStep={activeStep} alternativeLabel className="mb-16 flex">
         {steps.map((label, index) => (

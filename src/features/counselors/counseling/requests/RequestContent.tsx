@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Chip, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, FormControlLabel, IconButton, List, ListItem, ListItemButton, Paper, Radio, RadioGroup, TextField, Tooltip, Typography } from '@mui/material'
 import { useGetCounselorAppointmentRequestsQuery } from './requests-api'
-import { AppLoading, ContentLoading, DateRangePicker, FilterTabs, NavLinkAdapter, Pagination, RequestItem, SelectField, SortingToggle, UserListItem, closeDialog, openDialog } from '@/shared/components'
+import { AppLoading, ContentLoading, DateRangePicker, FilterTabs, NavLinkAdapter, Pagination, RequestItem, SelectField, SortingToggle, SubHeading, UserListItem, closeDialog, openDialog } from '@/shared/components'
 import { AccessTime, CalendarMonth, ChevronRight, Circle, Edit, EditNote } from '@mui/icons-material';
 import { Link } from 'react-router-dom'
 import { ChangeEvent, Fragment, useEffect, useState } from 'react';
@@ -72,11 +72,12 @@ const RequestsContent = () => {
   const appointmentRequests = data?.content.data
 
 
-  useRequestsSocketListener(account?.profile.id, refetch)
-
+  const pendingRequests = appointmentRequests?.filter(item => item.status === `WAITING`)
+  const resolvedRequests = appointmentRequests?.filter(item => item.status !== `WAITING`)
 
   const dispatch = useAppDispatch()
 
+  useRequestsSocketListener(account?.profile.id, refetch)
 
   if (isLoading) {
     return <AppLoading />
@@ -84,7 +85,7 @@ const RequestsContent = () => {
 
 
   return (
-    <div className='p-32 flex flex-col gap-16 container mx-auto max-w-screen-lg'>
+    <div className='p-32 flex flex-col gap-16 container mx-auto'>
       <Box className='flex gap-32 justify-between'>
         <div className='flex gap-32'>
           <DateRangePicker
@@ -114,19 +115,57 @@ const RequestsContent = () => {
           isFetching
             ? <ContentLoading />
             : !appointmentRequests?.length
-              ? <Typography color='text.secondary' variant='h5' className='p-16'>No appointment requests</Typography>
-              : appointmentRequests?.map(appointment =>
-                <Paper
-                  key={appointment.id}
-                  className="shadow"
-                  sx={{ bgcolor: 'background.paper' }}
-                >
-                  <RequestItem
-                    appointment={appointment}
-                    onUserClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
-                  />
-                </Paper >
-              )}
+              ? <Typography color='text.secondary' variant='h5' className='p-16'>No Appointment requests</Typography>
+              // : appointmentRequests?.map(appointment =>
+              //   <Paper
+              //     key={appointment.id}
+              //     className="shadow"
+              //     sx={{ bgcolor: 'background.paper' }}
+              //   >
+              //     <RequestItem
+              //       appointment={appointment}
+              //       onUserClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
+              //     />
+              //   </Paper >
+              // )}
+              : <div className='space-y-16'>
+                {
+                  pendingRequests?.length > 0 && (
+                    <div className='flex flex-col gap-16'>
+                      {resolvedRequests?.length > 0 && (
+                        <SubHeading title='Pending Requests' />
+                      )}
+                      {
+                        pendingRequests.map((appointment) => (
+                          <RequestItem
+                            appointment={appointment}
+                            onUserClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
+                          />
+                        ))
+                      }
+                      {resolvedRequests?.length > 0 && <Divider />}
+                    </div>
+                  )
+                }
+                {
+                  resolvedRequests?.length > 0 && (
+                    <div className='flex flex-col gap-16'>
+                      {pendingRequests?.length > 0 && (
+                        <SubHeading title='Resovled requests' />
+                      )}
+                      {
+                        resolvedRequests.map((appointment) => (
+                          <RequestItem
+                            appointment={appointment}
+                            onUserClick={() => dispatch(openStudentView(appointment.student.id.toString()))}
+                          />
+                        ))
+                      }
+                    </div>
+                  )
+                }
+              </div>
+        }
       </List >
       <Pagination
         page={page}

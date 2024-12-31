@@ -37,6 +37,7 @@ import { quillModules } from '@/shared/configs';
 import { ref } from 'firebase/storage';
 import { useCreateContributedQuestionCardMutation, useGetAllCategoriesQuery, useGetCategoryByIdQuery, useGetContributedQuestionCardByIdQuery, useUpdateContributedQuestionCardByIdMutation } from '@/shared/pages';
 import { validateHTML } from '@/shared/utils';
+import { counselingTypeLabel } from '@/shared/constants';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -79,7 +80,7 @@ function CounselorQnaForm() {
 
   const question = questionData?.content
 
-  const defaultValues: FormValues = {title: '', question: '', answer: '' };
+  const defaultValues: FormValues = { title: '', question: '', answer: '' };
 
   const { control, handleSubmit, watch, formState, reset, register, setValue } = useForm<FormValues>({
     mode: 'onChange',
@@ -227,18 +228,17 @@ function CounselorQnaForm() {
         <div className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
           {editMode ? 'Edit your Q&A' : 'Contribute an Q&A'}
         </div>
-        <Paper className="p-16 mt-16 shadow rounded-2xl">
+        <Typography color='textSecondary'>Your questions will be added to FQA board. </Typography>
+        <Divider  className='my-16'/>
+        <div className="">
           <form onSubmit={handleSubmit(onSubmit)} className="px-0">
-            <div className="mb-24">
-              <Typography variant="h6">Submit your question</Typography>
-              <Typography color='textSecondary'>Your questions will be added to question board. </Typography>
-            </div>
-            <div className="space-y-32">
+            <div className="space-y-16">
               <Controller
                 name="category"
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
+                    groupBy={(option) => counselingTypeLabel[option.type]}
                     className="mt-16"
                     {...field}
                     options={categories}
@@ -288,6 +288,8 @@ function CounselorQnaForm() {
                 placeholder='Enter the question...'
               />
 
+              <Divider className='pt-16'/>
+
               <QuillEditor
                 label='Answer'
                 value={watch('answer')}
@@ -298,7 +300,7 @@ function CounselorQnaForm() {
 
             </div>
 
-            <div className="flex items-center justify-end mt-32 pt-24">
+            <div className="flex items-center justify-end mt-32 pt-24 gap-16">
               <Button onClick={() => navigate('.')} color="primary">
                 Cancel
               </Button>
@@ -314,7 +316,7 @@ function CounselorQnaForm() {
               </Button>
             </div>
           </form>
-        </Paper>
+        </div>
       </div>
       {(isPosting || isEditing) && <BackdropLoading />}
 

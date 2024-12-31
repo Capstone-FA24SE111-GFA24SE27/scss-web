@@ -7,7 +7,7 @@ type PageSimple = {
 	children?: ReactNode;
 };
 
-function FusePageSimpleSidebarContent(props: PageSimple) {
+function PageSimpleSidebarContent(props: PageSimple) {
 	const { innerScroll, children } = props;
 
 	if (!children) {
@@ -16,9 +16,9 @@ function FusePageSimpleSidebarContent(props: PageSimple) {
 
 	return (
 		<Scrollbar>
-			<div className="FusePageSimple-sidebarContent">{children}</div>
+			<div className="PageSimple-sidebarContent">{children}</div>
 		</Scrollbar>
 	);
 }
 
-export default FusePageSimpleSidebarContent;
+export default PageSimpleSidebarContent;

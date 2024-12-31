@@ -6,7 +6,7 @@ import NavbarContent from './NavbarContent';
 import { navbarToggle, selectNavbar } from './navbar-slice';
 import { useAppDispatch, useAppSelector } from '@/shared/store';
 
-const navbarWidth = 280;
+const navbarWidth = 320;
 
 type StyledNavBarProps = {
 	theme?: Theme;

@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { openStudentView } from '../../counselors-layout-slice';
 import { useSolveCounselingDemandMutation } from './student-demands-api';
 import { useState } from 'react'
+import SolveDemandDialog from './SolveDemandDialog';
 
 type StudentDemandsItemPropsType = {
 	demand: CounselingDemand;
@@ -54,7 +55,7 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 										icon: <Check fontSize='small' />,
 										onClick: () => {
 											dispatch(openDialog({
-												children: <SolveCounselingDemandDialog demand={demand} />
+												children: <SolveDemandDialog demand={demand} />
 											}))
 										},
 										disabled: demand.status !== 'PROCESSING'
@@ -117,8 +118,8 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 							label='Assigned by'
 						/>
 						<div className='flex items-center gap-8'>
-							<Typography className='text-sm text-text-secondary w-64'>Priority:</Typography>
-							<Typography className='text-sm font-bold' color={priorityColor[demand.priorityLevel]}>{demand.priorityLevel}</Typography>
+							<Typography className='text-text-secondary w-80'>Priority:</Typography>
+							<Typography className='font-bold' color={priorityColor[demand.priorityLevel]}>{demand.priorityLevel}</Typography>
 						</div>
 					</Box>
 				</div>
@@ -128,64 +129,3 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 }
 
 export default StudentDemandsItem;
-
-
-const SolveCounselingDemandDialog = ({ demand }: { demand: CounselingDemand }) => {
-	const [solve, { isLoading: isSolving }] = useSolveCounselingDemandMutation()
-	const [summarize, setSummarize] = useState(``)
-	const dispatch = useAppDispatch();
-	const handleCancelAppointment = () => {
-		solve({
-			counselingDemandId: demand.id.toString(),
-			summarizeNote: summarize
-		}).unwrap()
-			.then(() => {
-				dispatch(closeDialog())
-			})
-
-	}
-	return (
-		<div className='w-[40rem]'>
-			<DialogTitle id="alert-dialog-title">Solve the selected demand?</DialogTitle>
-			<DialogContent>
-				<DialogContentText id="alert-dialog-description">
-					<div>
-						Give the summarize
-					</div>
-					<div>
-						<TextField
-							autoFocus
-							margin="dense"
-							name={'Summazie'}
-							label={'Summazie'}
-							fullWidth
-							multiline
-							rows={6}
-							value={summarize}
-							className='mt-16'
-							slotProps={{
-								inputLabel: {
-									shrink: true,
-								}
-							}}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								setSummarize(event.target.value);
-							}} />
-					</div>
-				</DialogContentText>
-			</DialogContent>
-			<DialogActions>
-				<Button onClick={() => dispatch(closeDialog())} color="primary">
-					Cancel
-				</Button>
-				<Button
-					onClick={handleCancelAppointment}
-					color="secondary" variant='contained'
-					disabled={!summarize || isSolving}
-				>
-					Confirm
-				</Button>
-			</DialogActions>
-		</div>
-	);
-}

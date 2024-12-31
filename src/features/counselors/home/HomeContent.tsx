@@ -1,4 +1,4 @@
-import { ContentLoading, CounselorAppointmentItem, NavLinkAdapter, RequestItem, Scrollbar, StatChange, StatsCard } from '@/shared/components'
+import { ContentLoading, CounselorAppointmentItem, NavLinkAdapter, RequestItem, Scrollbar, StatChange, StatsCard, SubHeading } from '@/shared/components'
 import { CalendarMonth, Cancel, CheckCircle, Class, Description, DoDisturbOn, DoNotDisturb, Pending } from '@mui/icons-material'
 import { Box, Button, Divider, Paper, Typography } from '@mui/material'
 import React from 'react'
@@ -18,20 +18,15 @@ import { motion } from 'framer-motion';
 import { motionVariants } from '@/shared/configs'
 import FeedbackTab from '@/features/managers/management/counselors/counselor/FeedbackTab'
 import CounselorFeedbackTab from './CounselorFeedback'
+import { firstDayOfMonth, firstDayPreviousMonth, lastDayOfMonth, lastDayOfPreviousMonth, today } from '@/shared/constants'
 
 const HomeContent = () => {
   const account = useAppSelector(selectAccount)
-  const today = dayjs().format('YYYY-MM-DD');
   const dispatch = useAppDispatch()
-  const firstDayOfMonth = dayjs().startOf('month').format('YYYY-MM-DD');
-  const lastDayOfMonth = dayjs().endOf('month').format('YYYY-MM-DD');
-
-  const firstDayPreviousMonth = dayjs().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
-  const lastDayOfPreviousMonth = dayjs().subtract(1, 'month').endOf('month').format('YYYY-MM-DD');
 
   const { data: pendingRequestsData, isLoading: isLoadingRequest, refetch: refetchRequest } = useGetCounselorAppointmentRequestsQuery({
     dateFrom: today,
-    dateTo: lastDayOfMonth,
+    // dateTo: lastDayOfMonth,
     status: `WAITING`,
   })
 
@@ -39,7 +34,7 @@ const HomeContent = () => {
 
   const { data: upcomingAppointmentsData, isLoading: isLoadingAppointment, refetch: refetchAppointments } = useGetCounselorCounselingAppointmentQuery({
     fromDate: today,
-    toDate: lastDayOfMonth,
+    // toDate: lastDayOfMonth,
     status: `WAITING`,
   });
 
@@ -113,7 +108,7 @@ const HomeContent = () => {
 
   const completedQuestions = totalQuestions?.content?.data.filter(qna => qna.answer) || []
 
-  const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED','FLAGGED'].includes(qna.status)) || []
+  const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED', 'FLAGGED'].includes(qna.status)) || []
 
 
   const unansweredQuestionList = qnaData?.content?.data?.filter(question => !question.answer) || []
@@ -130,9 +125,9 @@ const HomeContent = () => {
   const navigate = useNavigate()
   return (
     <section className='w-full container mx-auto'>
-
-      <div className='p-16 flex flex-col gap-16 '>
-        <Typography className='text-xl font-bold text-text-disabled'>Counseling Overview - {getCurrentMonthYear()}</Typography>
+      <div className='p-16 flex flex-col gap-16 mt-8'>
+        <SubHeading title={`Appointments - ${getCurrentMonthYear()}`} size='large' />
+        {/* <Typography className='text-xl font-bold text-text-disabled'></Typography>
         <Box className='flex justify-between w-full gap-16'>
 
           <StatsCard
@@ -144,11 +139,11 @@ const HomeContent = () => {
               previous: totalAppointmentsPreviousMonth?.content?.data.length,
             }}
             icon={<Description />}
-            color="primary"  // You can set color to primary, secondary, success, error, etc.
+            color="primary"  
           />
 
           <StatsCard
-            title="Completed Counseling"
+            title="Completed Appointment"
             total={completedAppointments?.content?.data.length}
             statChange={{
               prefixText: 'Last month',
@@ -156,7 +151,7 @@ const HomeContent = () => {
               previous: completedAppointmentsPreviousMonth?.content?.data.length,
             }}
             icon={<CheckCircle />}
-            color="success"  // You can set color to primary, secondary, success, error, etc.
+            color="success"  
           />
           <StatsCard
             title="Canceled Appontments"
@@ -167,7 +162,7 @@ const HomeContent = () => {
               previous: canceledAppointmentsPreviousMonth?.content?.data.length,
             }}
             icon={<DoDisturbOn />}
-            color="error"  // You can set color to primary, secondary, success, error, etc.
+            color="error"  
           />
           <StatsCard
             title="Appointment Requests"
@@ -178,9 +173,9 @@ const HomeContent = () => {
               previous: appointmentRequestsPreviousMonth?.content?.data.length,
             }}
             icon={<Pending />}
-            color="warning"  // You can set color to primary, secondary, success, error, etc.
+            color="warning"  
           />
-        </Box>
+        </Box> */}
         <Box className='grid grid-cols-12 gap-16'>
           <Paper className='col-span-4 shadow p-16'>
             <div className='flex justify-between items-center px-8'>
@@ -191,7 +186,7 @@ const HomeContent = () => {
                 onClick={() => navigate(`/counseling/requests`)}
               >View all</Button>
             </div>
-            <Scrollbar className='flex flex-col gap-8 min-h-sm max-h-md overflow-y-auto p-4 divide-y-2 mt-8'>
+            <Scrollbar className='flex flex-col gap-16 min-h-md max-h-lg overflow-y-auto p-4 mt-8'>
               {
                 isLoadingRequest
                   ? <ContentLoading />
@@ -217,7 +212,7 @@ const HomeContent = () => {
               >View all</Button>
             </div>
 
-            <Scrollbar className="flex flex-col gap-8 min-h-sm max-h-md overflow-y-auto p-4 ">
+            <Scrollbar className="flex flex-col gap-8 min-h-md max-h-lg overflow-y-auto p-4 ">
               {
                 isLoadingAppointment
                   ? <ContentLoading />
@@ -233,7 +228,7 @@ const HomeContent = () => {
                           {groupedAppointments[dateLabel].map(appointment => (
                             <div key={appointment.id} className='py-8'>
                               {/* @ts-ignored */}
-                              <CounselorAppointmentItem appointment={appointment} />
+                              <CounselorAppointmentItem appointment={appointment} openDetail/>
                             </div>
                           ))}
                         </div>
@@ -243,14 +238,15 @@ const HomeContent = () => {
             </Scrollbar>
           </Paper>
         </Box>
-        <Paper className={`flex flex-col gap-16 bg-white p-16 shadow`}>
+        {/* <Paper className={`flex flex-col gap-16 bg-white p-16 shadow`}>
           <Typography className='font-semibold text-xl px-8'>Recent Feedbacks</Typography>
           <CounselorFeedbackTab />
-        </Paper>
+        </Paper> */}
 
       </div >
       <div className='p-16 flex flex-col gap-16 mt-8'>
-        <Typography className='text-2xl font-bold text-text-disabled'>Question & Answer Overview - {getCurrentMonthYear()}</Typography>
+        <SubHeading title={`Questions & Answers - ${getCurrentMonthYear()}`} size='large' />
+        {/* <Typography className='text-2xl font-bold text-text-disabled'>Question & Answer Overview - {getCurrentMonthYear()}</Typography>
         <Box className='flex justify-between w-full gap-16'>
           <StatsCard
             title="Total Questions"
@@ -261,7 +257,7 @@ const HomeContent = () => {
               previous: 0,
             }}
             icon={<Class />}
-            color="primary"  // You can set color to primary, secondary, success, error, etc.
+            color="primary" 
           />
 
           <StatsCard
@@ -273,7 +269,7 @@ const HomeContent = () => {
               previous: 0,
             }}
             icon={<CheckCircle fontSize='large' />}
-            color="success"  // You can set color to primary, secondary, success, error, etc.
+            color="success" 
           />
 
           <StatsCard
@@ -285,10 +281,9 @@ const HomeContent = () => {
               previous: 0,
             }}
             icon={<DoNotDisturb fontSize='large' />}
-            color="error"  // You can set color to primary, secondary, success, error, etc.
+            color="error" 
           />
-
-        </Box>
+        </Box> */}
         <Box className='grid gap-16'>
           <Paper className='shadow p-16'>
             <div className='flex justify-between items-center px-8'>
@@ -311,7 +306,6 @@ const HomeContent = () => {
               }
             </Scrollbar>
           </Paper>
-
         </Box>
       </div >
     </section>

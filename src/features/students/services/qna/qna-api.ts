@@ -99,14 +99,29 @@ export const studentQnasApi = api
         }),
         invalidatesTags: ['qna']
       }),
-      createChatSessionStudent: build.mutation<CreateChatSessionResponse,number>({
+      createChatSessionStudent: build.mutation<CreateChatSessionResponse, number>({
         query: (questionCardId) => ({
           url: `/api/question-cards/student/chat-session/create/${questionCardId}`,
           method: 'POST'
         }),
         invalidatesTags: ['qna']
+      }),
+      sendQuestionFeedbackStudent: build.mutation<void, SendQuestionFeedbackStudent>({
+        query: ({ questionCardId, feedback }) => ({
+          url: `/api/question-cards/feedback/${questionCardId}`,
+          method: 'POST',
+          body: feedback,
+        }),
+        invalidatesTags: ['qna']
+      }),
+      acceptQuestionStudent: build.mutation<void, number>({
+        query: (questionCardId) => ({
+          url: `/api/question-cards/accept/${questionCardId}`,
+          method: 'POST',
+        }),
+        invalidatesTags: ['qna']
+      }),
 
-      })
     })
   })
 
@@ -119,7 +134,9 @@ export const {
   useGetBanInfoQuery,
   useCloseQuestionStudentMutation,
   useDeleteQuestionStudentMutation,
-  useCreateChatSessionStudentMutation
+  useCreateChatSessionStudentMutation,
+  useSendQuestionFeedbackStudentMutation,
+  useAcceptQuestionStudentMutation
 } = studentQnasApi
 
 export type GetStudentQuestionsApiResponse = ApiResponse<PaginationContent<Question>>
@@ -161,3 +178,14 @@ export type BanInfo = {
   }[]
   ban: boolean;
 };
+
+
+export type SendQuestionFeedbackStudent = {
+  questionCardId: number,
+  feedback: Feedback
+}
+
+export type Feedback = {
+  comment: string,
+  rating: number,
+}

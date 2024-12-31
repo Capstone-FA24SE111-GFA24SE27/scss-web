@@ -18,7 +18,6 @@ import { useState, ChangeEvent } from 'react';
 
 function CounselorListContent() {
 	const [page, setPage] = useState(1);
-
 	const search = useAppSelector(selectSearchTerm);
 	const filter = useAppSelector(selectFilter);
 	const counselorType = useAppSelector(selectCounselorType);

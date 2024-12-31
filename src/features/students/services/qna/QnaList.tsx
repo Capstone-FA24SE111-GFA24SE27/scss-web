@@ -137,9 +137,9 @@ const QnaList = () => {
 	// }, [socket, account]);
 
 
-	if (isLoading) {
-		return <ContentLoading />;
-	}
+	// if (isLoading) {
+	// 	return <ContentLoading />;
+	// }
 
 
 	return (
@@ -147,7 +147,7 @@ const QnaList = () => {
 			variants={container}
 			initial='hidden'
 			animate='show'
-			className='container w-full p-32 max-w-xl mx-auto space-y-16'
+			className='container w-full p-32 mx-auto space-y-16'
 		>
 			<div className='flex gap-16'>
 				<SearchField onSearch={handleSearch} className='w-xs' />
@@ -204,17 +204,20 @@ const QnaList = () => {
 			</div>
 
 			<div className='space-y-16'>
-				{!qnaList?.length ? (
-					<Typography variant='h5' color='textSecondary'>
-						No questions found.
-					</Typography>
-				) : (
-					qnaList.map((qna) => {
-						return (
-							<QnaItem key={qna.id} qna={qna} expanded={expanded} openAnswers={openAnswers} toggleAccordion={toggleAccordion} />
-						)
-					})
-				)}
+				{
+					isLoading ?
+						<ContentLoading />
+						: !qnaList?.length ? (
+							<Typography variant='h5' color='textSecondary'>
+								No questions found.
+							</Typography>
+						) : (
+							qnaList.map((qna) => {
+								return (
+									<QnaItem key={qna.id} qna={qna} expanded={expanded} openAnswers={openAnswers} toggleAccordion={toggleAccordion} />
+								)
+							})
+						)}
 				<Pagination
 					page={page}
 					count={qnaData?.content.totalPages}

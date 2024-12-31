@@ -14,7 +14,8 @@ interface DateRangePickerProps {
   labelEnd?: string;
   showClearButton?: boolean;
   className?: string;
-  initialLabelShrink?: boolean; // New prop to control label shrink behavior
+  initialLabelShrink?: boolean;
+  size?: 'small' | 'medium'
 }
 
 const DateRangePicker = ({
@@ -26,7 +27,8 @@ const DateRangePicker = ({
   labelEnd = "End Date",
   showClearButton = false,
   className = "",
-  initialLabelShrink = false, // Default to false
+  initialLabelShrink = false, 
+  size = "medium",
 }: DateRangePickerProps) => {
   const handleDateChange = (date: Dayjs | null, callback: (formattedDate: string) => void) => {
     const formattedDate = date ? date.format('YYYY-MM-DD') : '';

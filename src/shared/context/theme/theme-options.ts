@@ -235,14 +235,15 @@ export const defaultThemeOptions = {
 				root: {
 					// borderRadius: 8,
 					'&.Mui-selected': {
-						backgroundColor: 'secondary.dark',
+						// backgroundColor: 'secondary.dark',
+						backgroundColor: defaultPalette.secondary.hover,
 						// boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
 						'&:hover': {
-							backgroundColor: 'secondary.light', // Customize background color on hover when selected
+							backgroundColor: defaultPalette.secondary.hover, // Customize background color on hover when selected
 						},
 					},
 					'&:hover': {
-						backgroundColor: 'secondary.light', // Customize background color on hover when not selected
+						backgroundColor: 'primary.light'
 					},
 				},
 			},
@@ -269,7 +270,7 @@ export const defaultThemeOptions = {
 			styleOverrides: {
 				root: {
 					'&.Mui-selected': {
-						backgroundColor: 'secondary.main', // Change this to your desired color
+						backgroundColor: 'secondary.main',
 					},
 					'&:hover, &:focus': {
 						backgroundColor: 'secondary.light',

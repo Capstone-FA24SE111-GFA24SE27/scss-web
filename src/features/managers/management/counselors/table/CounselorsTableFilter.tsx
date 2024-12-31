@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import CounselorListFilterButton from './CounselorListFilterButton'
 import { Box, IconButton, Rating, Slider, Tooltip, Typography } from '@mui/material'
-import { AcademicFilter, DateRangePicker, SelectField } from '@/shared/components'
+import { AcademicFilter, DateRangePicker, SearchField, SelectField } from '@/shared/components'
 import dayjs from 'dayjs'
 import { useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSpecializationId } from './counselor-list-slice'
+import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSearchTerm, setSpecializationId } from './counselor-list-slice'
 import { useGetCounselorExpertisesQuery, useGetNonAcademicTopicsQuery } from '@/shared/services'
 import { Close, Female, Male } from '@mui/icons-material'
 
@@ -54,18 +54,40 @@ const CounselorsTableFilter = () => {
       dispatch(setRatingFrom(value[0])); // Update ratingFrom
     }
   };
-
   const handleRatingFromChange = (valueFrom: number | null) => {
-    dispatch(setRatingFrom(valueFrom || undefined));
-    dispatch(setRatingTo(valueFrom ? 5 : undefined));
+    if (valueFrom !== null && filter.ratingTo !== null && valueFrom > filter.ratingTo) {
+      dispatch(setRatingFrom(filter.ratingTo));
+    } else {
+      dispatch(setRatingFrom(valueFrom || undefined));
+    }
+  };
+
+  const handleRatingToChange = (valueTo: number | null) => {
+    if (valueTo !== null && filter.ratingFrom !== null && valueTo < filter.ratingFrom) {
+      dispatch(setRatingTo(filter.ratingFrom));
+    } else {
+      dispatch(setRatingTo(valueTo || undefined));
+    }
   };
 
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
 
+  const handleSearch = (searchTerm: string) => {
+    dispatch(setSearchTerm(searchTerm))
+  }
 
 
   return (
-    <div className='px-16 flex flex-col gap-16 rounded-lg w-sm'>
+    <div className='px-16 flex flex-col gap-16 rounded-lg'>
+      <div className='mt-8'>
+        <Typography className="font-semibold text-lg mb-8">Select by gender</Typography>
+        <div className="flex items-center gap-8">
+          <SearchField
+            onSearch={handleSearch}
+            className='mt-8'
+          />
+        </div>
+      </div>
       <div>
         <Typography className='font-semibold text-lg mb-8'>Select available date range</Typography>
         <DateRangePicker
@@ -82,7 +104,6 @@ const CounselorsTableFilter = () => {
           counselingType === 'ACADEMIC'
             ? <AcademicFilter
               className='mt-8'
-
               onDepartmentChange={handleDepartmentChange}
               onMajorChange={handleMajorChange}
               onSpecializationChange={handleSpecializationChange}
@@ -97,7 +118,6 @@ const CounselorsTableFilter = () => {
               showClearOptions
             />
         }
-
       </div>
       <div>
         <Typography className="font-semibold text-lg mb-8">Filter by rating</Typography>
@@ -111,7 +131,13 @@ const CounselorsTableFilter = () => {
               value={filter.ratingFrom || null}
               onChange={(_, value) => handleRatingFromChange(value)}
             />
-            <Typography className='text-lg text-text-secondary'>and up</Typography>
+            <Typography className='text-lg text-text-secondary'>to</Typography>
+            <Rating
+              size='medium'
+              name="rating-from"
+              value={filter.ratingTo || null}
+              onChange={(_, value) => handleRatingToChange(value)}
+            />
           </Box>
         </Box>
       </div>

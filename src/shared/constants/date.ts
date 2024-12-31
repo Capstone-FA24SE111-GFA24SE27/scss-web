@@ -21,3 +21,24 @@ export const lastDayOf3PreviousMonth = dayjs().subtract(3, 'month').endOf('month
 
 export const firstDay4PreviousMonth = dayjs().subtract(3, 'month').startOf('month').format('YYYY-MM-DD');
 export const lastDayOf4PreviousMonth = dayjs().subtract(3, 'month').endOf('month').format('YYYY-MM-DD');
+
+
+export const periodDateRange: Record<string, DateRange> = {
+  month: {
+    from: firstDayOfMonth,
+    to: lastDayOfMonth,
+  },
+  week: {
+    from: lastDayOfWeek,
+    to: today,
+  },
+  day: {
+    from: today,
+    to: today,
+  },
+};
+
+type DateRange = {
+  from: string;
+  to: string;
+};

@@ -11,6 +11,7 @@ import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { ChangeEvent, ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ApproveAppointmentDialog from './ApproveAppointmentDialog';
 
 
 const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRequest, onUserClick?: () => void }) => {
@@ -57,27 +58,6 @@ const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRe
         </ListItem>
 
         <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
-          {/* <ListItemButton
-            onClick={onUserClick}
-            className='w-full rounded shadow '
-          >
-            {
-              role === 'STUDENT'
-                ? <UserListItem
-                  fullName={appointment?.counselor.profile.fullName}
-                  avatarLink={appointment?.counselor.profile.avatarLink}
-                  phoneNumber={appointment?.counselor.profile.phoneNumber}
-                  email={appointment?.counselor.email}
-                />
-                : <UserListItem
-                  fullName={appointment?.student.profile.fullName}
-                  avatarLink={appointment?.student.profile.avatarLink}
-                  phoneNumber={appointment?.student.profile.phoneNumber}
-                  email={appointment?.student.email}
-                />
-            }
-          </ListItemButton> */}
-
           {
             role === 'STUDENT'
               ? <UserLabel
@@ -97,28 +77,6 @@ const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRe
           <Typography className='w-72' color='textSecondary'>Reason: </Typography>
           <ExpandableText text={appointment.reason} limit={175} />
         </div>
-        {/* <Tooltip title={`View ${appointment.student.profile.fullName}'s profile`}>
-          <ListItemButton
-            onClick={onUserClick}
-            className='w-full rounded shadow '
-          >
-            {
-              role === 'STUDENT'
-                ? <UserListItem
-                  fullName={appointment?.counselor.profile.fullName}
-                  avatarLink={appointment?.counselor.profile.avatarLink}
-                  phoneNumber={appointment?.counselor.profile.phoneNumber}
-                  email={appointment?.counselor.email}
-                />
-                : <UserListItem
-                  fullName={appointment?.student.profile.fullName}
-                  avatarLink={appointment?.student.profile.avatarLink}
-                  phoneNumber={appointment?.student.profile.phoneNumber}
-                  email={appointment?.student.email}
-                />
-            }
-          </ListItemButton>
-        </Tooltip> */}
       </div>
       <Box className='flex justify-end w-full gap-16 bg-primary-light/5 '>
         {
@@ -183,102 +141,5 @@ const RequestsItem = ({ appointment, onUserClick }: { appointment: AppointmentRe
   )
 }
 
-const ApproveAppointmentDialog = ({ appointment }: { appointment: AppointmentRequest }) => {
-  console.log(appointment.meetingType)
-  const [approveAppointmentRequestOnline] = useApproveAppointmentRequestOnlineMutation();
-  const [approveAppointmentRequestOffline] = useApproveAppointmentRequestOfflineMutation();
-  const [meetUrl, setMeetUrl] = useState('')
-  const [address, setAddress] = useState('')
-  const dispatch = useAppDispatch()
-
-  const handleApproveRequest = () => {
-    const meetingDetails = {}
-    if (appointment.meetingType === 'ONLINE') {
-      meetingDetails['meetUrl'] = meetUrl
-      approveAppointmentRequestOnline({
-        requestId: appointment.id,
-        meetingDetails
-      })
-    } else {
-      meetingDetails['address'] = address
-      approveAppointmentRequestOffline({
-        requestId: appointment.id,
-        meetingDetails
-      })
-    }
-    dispatch(closeDialog())
-  }
-
-  return (
-    <div>
-      <DialogTitle id="alert-dialog-title">Approve this appointment request?</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          <div>
-            {
-              appointment.meetingType === 'ONLINE' ?
-                <div>
-                  <Typography>The couseling appointment will be conducted ONLINE.</Typography>
-                  <Typography>
-                    Please enter your meet URL.
-                  </Typography>
-                </div>
-                :
-                <div>
-                  <Typography>The couseling appointment will be conducted OFFLINE.</Typography>
-                  <Typography>
-                    Please enter your address.
-                  </Typography>
-                </div>
-            }
-          </div>
-          <div>
-            {
-              appointment.meetingType === 'ONLINE'
-                ? <TextField
-                  autoFocus
-                  margin="dense"
-                  name={'meetUrl'}
-                  label={'Meeting Url'}
-                  fullWidth
-                  value={meetUrl}
-                  variant="standard"
-                  className='mt-16'
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setMeetUrl(event.target.value);
-                  }} />
-                : <TextField
-                  autoFocus
-                  margin="dense"
-                  name={'address'}
-                  label={'Address'}
-                  fullWidth
-                  value={address}
-                  variant="standard"
-                  className='mt-16'
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setAddress(event.target.value);
-                  }}
-                />
-            }
-          </div>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => dispatch(closeDialog())}
-          color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => handleApproveRequest()}
-          color="secondary" variant='contained'
-          disabled={!meetUrl && !address}
-        >
-          Confirm
-        </Button>
-      </DialogActions>
-    </div>
-  )
-}
 
 export default RequestsItem

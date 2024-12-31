@@ -109,6 +109,9 @@ export const counselorQnaApi = api
         query: (args) => ({
           url: `/api/question-cards/review/${args.id}/${args.status}`,
           method: 'POST',
+          params: {
+            reviewReason: args.reviewReason,
+          },
         }),
         invalidatesTags: ['qna'],
       }),
@@ -182,6 +185,7 @@ export type AnswerQuestionApiArg = {
 export type PostReviewQuestionArg = {
   id: number;
   status: 'PENDING' | 'VERIFIED' | 'FLAGGED' | 'REJECTED';
+  reviewReason: string;
 };
 export type PostReviewQuestionResponse = {
   data: ApiMessage;

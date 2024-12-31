@@ -9,12 +9,6 @@ import { filterClose, selectFilter } from './counselor-list-slice';
 import CounselorListSidebarContent from './CounselorListSidebarContent';
 
 
-const Root = styled(PageSimple)(({ theme }) => ({
-  // '& .PageSimple-header': {
-  //   backgroundColor: theme.palette.background.paper
-  // },
-}));
-
 /**
  * The ContactsApp page.
  */
@@ -30,12 +24,16 @@ function CounselingList() {
   const isMobile = false
   return (
     <div>
-      <Root
+      <PageSimple
         className='!min-h-screen'
         header={<CounselorListHeader />}
         content={<CounselorList />}
         ref={pageLayout}
-        rightSidebarContent={<CounselorListSidebarContent />}
+        rightSidebarContent={
+          <div className='p-24 '>
+            <CounselorListSidebarContent />
+          </div>
+        }
         rightSidebarOpen={filter.open}
         rightSidebarOnClose={() => dispatch(filterClose())}
         rightSidebarVariant="permanent"

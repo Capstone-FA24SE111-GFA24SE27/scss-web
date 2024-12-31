@@ -1,4 +1,4 @@
-import { ExpandableText, NavLinkAdapter, UserLabel, RenderHTML } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, RenderHTML, openDialog } from '@/shared/components';
 import React, { SyntheticEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -10,6 +10,9 @@ import {
 	ExpandMore,
 	HelpOutlineOutlined,
 	Lock,
+	RateReview,
+	ThumbUp,
+	ThumbUpOutlined,
 } from '@mui/icons-material';
 import {
 	Accordion,
@@ -19,12 +22,15 @@ import {
 	Box,
 	Button,
 	Chip,
+	Divider,
 	Paper,
+	Rating,
 	Typography,
 	styled,
 } from '@mui/material';
 import { Question } from '@/shared/types';
 import {
+	useAcceptQuestionStudentMutation,
 	useCloseQuestionStudentMutation,
 	useCreateChatSessionStudentMutation,
 	useDeleteQuestionStudentMutation,
@@ -37,7 +43,7 @@ import { openCounselorView } from '../../students-layout-slice';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
 import dayjs from 'dayjs';
-
+import QnaSendFeedbackDialog from './QnaSendFeedbackDialog';
 
 export const StyledAccordionSummary = styled(AccordionSummary)({
 	display: 'flex',
@@ -45,12 +51,12 @@ export const StyledAccordionSummary = styled(AccordionSummary)({
 });
 
 type Props = {
-	expanded: number | boolean;
-	toggleAccordion: (
+	expanded?: number | boolean;
+	toggleAccordion?: (
 		panel: number
 	) => (_: SyntheticEvent, _expanded: boolean) => void;
 	qna: Question;
-	openAnswers: boolean;
+	openAnswers?: boolean;
 };
 const item = {
 	hidden: { opacity: 0, y: 20 },
@@ -69,6 +75,7 @@ const QnaItem = (props: Props) => {
 	const account = useAppSelector(selectAccount);
 
 	const [closeQuestion] = useCloseQuestionStudentMutation();
+	const [acceptAnswer] = useAcceptQuestionStudentMutation();
 	const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteQuestionStudentMutation();
 	const [createChatSession] = useCreateChatSessionStudentMutation();
 
@@ -81,7 +88,6 @@ const QnaItem = (props: Props) => {
 	};
 
 	const handleCloseQuestion = async () => {
-
 		useConfirmDialog(
 			{
 				title: 'Are you sure you want to close the question?',
@@ -98,8 +104,25 @@ const QnaItem = (props: Props) => {
 				dispatch
 			}
 		)
+	}
 
-
+	const handleAcceptAnswer = async () => {
+		useConfirmDialog(
+			{
+				title: 'Confirm accepting this answer?',
+				confirmButtonFunction: async () => {
+					const result = await acceptAnswer(qna.id)
+					// @ts-ignore
+					if (result?.data?.status === 200) {
+						useAlertDialog({
+							title: `Answer accepted`,
+							dispatch
+						})
+					}
+				},
+				dispatch
+			}
+		)
 	}
 
 	const handleCreateChat = async (qna: Question) => {
@@ -153,22 +176,27 @@ const QnaItem = (props: Props) => {
 	return (
 		<motion.div variants={item}>
 			<Paper className='overflow-hidden shadow'>
-				<Accordion
-					className='shadow'
-					expanded={expanded === qna.id || openAnswers}
-					onChange={toggleAccordion(qna.id)}
+				<div
+					className='shadow '
+				// expanded={expanded === qna.id || openAnswers}
+				// onChange={toggleAccordion && toggleAccordion(qna.id)}
 				>
-					<AccordionSummary
-						// expandIcon={<ExpandMore />}
-						expandIcon={<ExpandMore sx={{ fontSize: '3rem', height: '6rem' }} />}
+					<div
+						className='p-16 space-y-16'
+					// expandIcon={<ExpandMore />}
+					// expandIcon={<ExpandMore sx={{ fontSize: '3rem', height: '6rem' }} />}
 
 					>
 						<div className='flex flex-col gap-8 w-full'>
+							<Typography className='w-full pr-8 font-semibold text-lg'>
+								{qna.title}
+							</Typography>
+							<Typography color='textSecondary' className=''>Created at {dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
 							<div className='flex gap-8'>
 								{qna.answer ? (
 									<Chip icon={<CheckCircleOutlineOutlined />} label='Answered' color='success' size='small' variant='outlined' />
 								) : (
-									<HelpOutlineOutlined color='disabled' />
+									<Chip icon={<HelpOutlineOutlined />} label='Not Answered' size='small' variant='outlined' />
 								)}
 
 								<Chip
@@ -182,10 +210,22 @@ const QnaItem = (props: Props) => {
 									size='small'
 								/>
 								<Chip
-									label={qna.status}
+									label={qna.status?.toLowerCase()}
 									color={statusColor[qna.status as string]}
 									size='small'
+									className='!capitalize'
 								/>
+								{
+									qna.accepted && (
+										< Chip
+											icon={<ThumbUpOutlined />}
+											label={`Accepted`}
+											size='small'
+											variant='filled'
+										/>
+									)
+								}
+
 								{qna.closed && (
 									<Chip
 										icon={<Lock />}
@@ -193,8 +233,9 @@ const QnaItem = (props: Props) => {
 										variant='outlined'
 										size='small'
 									/>
-								)
-								}
+								)}
+
+
 								<div className='w-full flex justify-end pr-8'>
 									{/* <Chip
 										label={`Created at ${dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}`}
@@ -205,7 +246,7 @@ const QnaItem = (props: Props) => {
 
 								{countUnreadMessages() ? (
 									<Chip
-										label={countUnreadMessages()}
+										label={`${countUnreadMessages()} unread messages`}
 										size='small'
 										variant='filled'
 										color='secondary'
@@ -214,71 +255,94 @@ const QnaItem = (props: Props) => {
 									''
 								)}
 							</div>
-							<Typography color='textSecondary' className=''>Created at {dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-							<div className='flex items-center flex-1 gap-8'>
 
-								<Typography className='w-full pr-8 font-semibold'>
-									{qna.title}
-								</Typography>
+						</div>
+
+						<div className='flex'>
+							<div className='flex flex-col gap-8'>
+								{RenderHTML(qna.content)}
+								{
+									qna.counselor && (
+										<UserLabel
+											label={`${([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status]} by`}
+											profile={qna?.counselor.profile}
+											email={qna?.counselor?.email}
+											onClick={() => {
+												dispatch(
+													openCounselorView(
+														qna?.counselor.profile.id.toString()
+													)
+												);
+											}}
+										/>
+									)
+								}
+								{!qna.counselor ? (
+									<Typography
+										className='px-8 italic'
+										color='textDisabled'
+									>
+										{'No counselor has taken this question'}
+									</Typography>
+								)
+									: qna.answer ? (
+										<div>
+											{RenderHTML(qna.answer)}
+										</div>
+									)
+										: qna.reviewReason
+											? <div className='flex gap-8'>
+												<Typography
+													className='text-text-secondary'
+												>
+													Flagged reason:
+												</Typography>
+												<Typography
+													className='font-semibold'
+													color='error'
+												>
+													{qna.reviewReason}
+												</Typography>
+											</div>
+											: <Typography
+												className='italic'
+												color='textDisabled'
+											>
+												{'The counselor has not answered the question'}
+											</Typography>
+								}
+								{
+									qna?.feedback && (
+										<>
+											<Divider />
+											<div className='flex items-start gap-16 '>
+												<Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
+												<div className='flex-1'>
+													<div>
+														<div className='flex items-center gap-8'>
+															<Rating
+																size='medium'
+																value={qna.feedback?.rating}
+																readOnly
+															/>
+															<Typography color='text.secondary'>{dayjs(qna.feedback?.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
+														</div>
+													</div>
+													<ExpandableText className='pl-4 mt-8' text={qna.feedback?.comment} limit={96} />
+													{/* <Typography className='pl-8 mt-8' sx={{ color: 'text.secondary' }}>{qna.feedback.comment}</Typography> */}
+												</div>
+											</div>
+										</>
+
+									)
+
+								}
+
 							</div>
 						</div>
-					</AccordionSummary>
+					</div>
 
-					<AccordionDetails className='flex'>
-						<div className='flex flex-col gap-8'>
-							{RenderHTML(qna.content)}
-							{
-								qna.counselor && (
-									<UserLabel
-										label={`${([`PENDING`].includes(qna.status) || qna.answer) ? 'Answered' : statusLabel[qna.status] } by`}
-										profile={qna?.counselor.profile}
-										email={qna?.counselor?.email}
-										onClick={() => {
-											dispatch(
-												openCounselorView(
-													qna?.counselor.profile.id.toString()
-												)
-											);
-										}}
-									/>
-								)
-							}
-							{!qna.counselor ? (
-								<Typography
-									className='px-8 italic'
-									color='textDisabled'
-								>
-									{'No counselor has taken this question'}
-								</Typography>
-							)
-								: qna.answer ? (
-									<div>
-										{RenderHTML(qna.answer)}
-									</div>
-								)
-									: qna.reviewReason
-										? <div className='flex gap-8'>
-											<Typography
-												className='text-text-secondary'
-											>
-												Flagged reason:
-											</Typography>
-											<Typography
-												className='font-semibold'
-												color='error'
-											>
-												{qna.reviewReason}
-											</Typography>
-										</div>
-										: <Typography
-											className='italic'
-											color='textDisabled'
-										>
-											{'The counselor has not answered the question'}
-										</Typography>
-							}
-						</div>
-					</AccordionDetails>
+
 					<Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5 '>
 						{/* <div className='flex items-start w-112'>
 							<IconButton><ThumbUpOutlined /></IconButton>
@@ -306,6 +370,18 @@ const QnaItem = (props: Props) => {
 						) : (
 							<></>
 						)}
+
+						{qna.answer && !qna.accepted && (
+							<Button
+								variant='outlined'
+								color='secondary'
+								startIcon={<ThumbUp />}
+								onClick={handleAcceptAnswer}
+							>
+								Accept
+							</Button>
+						)}
+
 						{qna.status == 'PENDING' && !qna.answer ? (
 							<Button
 								variant='contained'
@@ -337,11 +413,33 @@ const QnaItem = (props: Props) => {
 								Start to Chat
 							</Button>
 						)}
+
+						{qna.closed && !qna.feedback && (
+							<Button
+								variant='contained'
+								color='secondary'
+								startIcon={<RateReview />}
+								onClick={(e) => {
+									e.stopPropagation()
+									dispatch(openDialog({
+										children: (
+											<QnaSendFeedbackDialog
+												questionCard={qna}
+											/>
+										)
+									}))
+								}}
+							>
+								Leave a review
+							</Button>
+						)}
+
 					</Box>
-				</Accordion>
+				</div>
 			</Paper>
 		</motion.div>
 	);
 };
 
 export default QnaItem;
+

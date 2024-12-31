@@ -3,7 +3,7 @@ import { lazy } from 'react';
 import { converastionsRoutes } from './conversation';
 import { myQnaRoutes } from './my-qna';
 import { counselorFaqRoutes } from './counselor-faq';
-import { publicQnaRoutes } from '@/shared/pages';
+import { counselorPublicQnaRoutes } from './counselor-public-qna';
 
 
 export const qnaRoutes: RouteObject[] = [
@@ -12,7 +12,7 @@ export const qnaRoutes: RouteObject[] = [
     children: [
       ...converastionsRoutes,
       ...myQnaRoutes,
-      ...publicQnaRoutes,
+      ...counselorPublicQnaRoutes,
       ...counselorFaqRoutes
     ]
   },

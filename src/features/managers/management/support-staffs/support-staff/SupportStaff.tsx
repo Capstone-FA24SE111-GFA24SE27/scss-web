@@ -1,5 +1,5 @@
-import { Mail, Phone } from '@mui/icons-material';
-import { Paper, Rating, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { Cake, CakeOutlined, Mail, Phone } from '@mui/icons-material';
+import { Avatar, Paper, Rating, Tab, Tabs, Tooltip, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AppLoading, Breadcrumbs, Gender, Heading, PageSimple } from '@shared/components';
 import { useEffect, useRef, useState } from 'react';
@@ -8,6 +8,7 @@ import { useGetSupportStaffManagementQuery, useGetSupportStaffsManagementQuery }
 import OverviewTab from './OverviewTab';
 import DemandsTab from './DemandTab';
 import FollowingStudentsTab from './FollowingStudentsTab';
+import dayjs from 'dayjs';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -50,83 +51,83 @@ function SupportStaff() {
 
   return (
     <Root
+      header={
+        <div className='bg-white w-full'>
+          <div className='px-24 py-16 space-y-16 w-full'>
+            <Breadcrumbs
+              parents={[
+                {
+                  label: "Management",
+                  url: `${location.pathname}`
+                },
+                {
+                  label: "Support Staffs",
+                  url: `/management/students`
+                }
+              ]}
+              currentPage={supportStaffData?.profile.fullName}
+            />
+            <div className="flex flex-auto items-center">
+              <div className='flex relative'>
+                <Avatar
+                  sx={{
+                    color: (theme) => theme.palette.text.secondary
+                  }}
+                  className="flex-0 size-72"
+                  alt="user photo"
+                  src={supportStaffData?.profile.avatarLink}
+                >
+                  {supportStaffData?.profile.fullName}
+                </Avatar>
+                <Gender gender={supportStaffData?.profile.gender} className='absolute bottom-0 right-0'/> 
+              </div>
+              <div className="flex flex-col min-w-0 mx-16">
+                <Heading title={`${supportStaffData?.profile.fullName}`} />
+                <div className='flex justify-between mt-8 gap-32'>
+                  <div
+                    className="flex items-center"
+                    role="button"
+                  >
+                    <Phone fontSize='small' />
+                    <Typography className="ml-8 leading-6">{supportStaffData?.profile.phoneNumber}</Typography>
+                  </div>
+                  <div
+                    className="flex items-center"
+                    role="button"
+                  >
+                    <Mail fontSize='small' />
+                    <Typography className="ml-8 leading-6">{supportStaffData?.profile?.email || ``}</Typography>
+                  </div>
+                  {/* <div className="flex items-center">
+                    <Cake fontSize='small' />
+                    <div className="ml-8 leading-6">{dayjs(supportStaffData.profile.dateOfBirth).format('DD-MM-YYYY')}</div>
+                  </div> */}
+                </div>
+              </div>
+            </div>
+          </ div>
+          <Tabs
+            value={tabValue}
+            onChange={handleChangeTab}
+            indicatorColor="secondary"
+            textColor="secondary"
+            variant="scrollable"
+            scrollButtons="auto"
+            classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
+          >
+            <Tab
+              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              label="Demands"
+            />
+            <Tab
+              className="text-lg font-semibold min-h-40 min-w-64 px-16"
+              label="Following students"
+            />
+          </Tabs>
+        </div>
+      }
       content={
         <div className='w-full'>
-          <div className='bg-white'>
-            <div className='p-16 px-32 space-y-16 '>
-              <Breadcrumbs
-                parents={[
-                  {
-                    label: "Management",
-                    url: `${location.pathname}`
-                  },
-                  {
-                    label: "Support Staffs",
-                    url: `/management/supportStaffs`
-                  }
-                ]}
-                currentPage={supportStaffData?.profile.fullName}
-              />
-              <div className='flex relative gap-32 md:gap-64'>
-                <div className='flex gap-32'>
-                  <div className='w-full h-full relative'>
-                    <img src={supportStaffData?.profile.avatarLink} className='size-144 border rounded-full object-cover' />
-                    <div className='absolute top-112 bg-white rounded-full border left-112'>
-                      <Gender gender={supportStaffData?.profile.gender} />
-                    </div>
-                  </div>
-                  <div className='flex flex-col gap-8 w-full mt-8 '>
-                    <Heading
-                      title={supportStaffData?.profile.fullName}
-                    />
-                    <div className='flex justify-between divide-x-1 border-t mt-16'>
-                      <div
-                        className="flex flex-1 items-center p-8 min-w-136"
-                        role="button"
-                      >
-                        <Phone fontSize='small' />
-                        <Typography className="ml-8">{supportStaffData?.profile.phoneNumber}</Typography>
-                      </div>
-                      <div
-                        className="flex flex-1 items-center p-8 min-w-136"
-                        role="button"
-                      >
-                        <Mail fontSize='small' />
-                        <Typography className="ml-8">{supportStaffData?.profile?.email || ``}</Typography>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </ div>
-            <Tabs
-              value={tabValue}
-              onChange={handleChangeTab}
-              indicatorColor="secondary"
-              textColor="secondary"
-              variant="scrollable"
-              scrollButtons="auto"
-              classes={{ root: 'w-full h-32 border-b bg-background-paper px-16' }}
-            >
-              {/* <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Overview"
-            /> */}
-              <Tab
-                className="text-lg font-semibold min-h-40 min-w-64 px-16"
-                label="Demands"
-              />
-              <Tab
-                className="text-lg font-semibold min-h-40 min-w-64 px-16"
-                label="Following students"
-              />
-              {/* <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Profile"
-            /> */}
-            </Tabs>
-          </div>
           <div className="w-full p-16 h-full" >
             <Paper className='p-16 h-full shadow'>
               <div className="w-full pr-8">

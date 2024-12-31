@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import { specialRoutes } from '@shared/configs';
 import { counselingRoutes } from './counseling';
 import { qnaRoutes } from './qna';
@@ -12,9 +12,13 @@ const CounselorsLayout = lazy(() => import('./counselors-layout'))
 
 export const counselorsRoutes: RouteObject[] = [
   {
-    path: '/',
+    path: '',
     element: <CounselorsLayout />,
     children: [
+      {
+        index: true,
+        element: <Navigate to={`home`} />,
+      },
       ...homeRoutes,
       ...counselingRoutes,
       ...qnaRoutes,
