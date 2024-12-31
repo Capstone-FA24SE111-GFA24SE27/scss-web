@@ -220,7 +220,7 @@ const CreateDemandForm = () => {
 	return (
 		<PageSimple
 			header={
-				<div className='flex flex-col gap-8 px-32 pt-32'>
+				<div className='flex flex-col gap-8 px-32 pt-16'>
 					<motion.div
 						initial={{ x: 20, opacity: 0 }}
 						animate={{
@@ -282,16 +282,16 @@ const CreateDemandForm = () => {
 									/> */}
 										<Button
 											variant='outlined'
-											color='secondary'
+											component={NavLinkAdapter}
+											role='button'
+											to='counselors'
 											className='px-32 whitespace-nowrap'
-											onClick={() => {}}
 										>
 											Pick counselor
 										</Button>
 										<Typography>or</Typography>
 										<Button
 											variant='outlined'
-											color='secondary'
 											className='px-32 whitespace-nowrap'
 											onClick={handleQuickMatching}
 										>

@@ -36,12 +36,12 @@ export type Counselor = {
 	academicDegree: string;
 	department?: Department;
 	major?: Major;
-  specializedSkills?: string,
-  otherSkills?: string,
-  workHistory?: string,
-  achievements?: string,
-  qualifications?: QualificationList,
-  certifications?: CertificationList
+	specializedSkills?: string;
+	otherSkills?: string;
+	workHistory?: string;
+	achievements?: string;
+	qualifications?: QualificationList;
+	certifications?: CertificationList;
 };
 
 export type Student = {
@@ -65,6 +65,8 @@ export type Specialization = {
 	id: number;
 	name: string;
 	code: string;
+	majorId?: string | number;
+	departmentId?: string | number;
 };
 
 export type Department = {
@@ -85,9 +87,9 @@ export type Expertise = {
 	name: string;
 };
 
-export type QualificationList = Qualification[]
+export type QualificationList = Qualification[];
 
-export type CertificationList = Certification[]
+export type CertificationList = Certification[];
 
 export type Certification = {
 	id: number;

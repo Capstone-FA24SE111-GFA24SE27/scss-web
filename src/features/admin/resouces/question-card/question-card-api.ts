@@ -74,8 +74,7 @@ type GetQuestionCardAdminArgs = {
 	size?: number;
 };
 
-type PostCreateQuestionPublicStatusAdminResponse =
-	ApiResponse<ContributedQuestionCategory>;
+type PostCreateQuestionPublicStatusAdminResponse = ApiMessage;
 type PostCreateQuestionPublicStatusAdminArgs = {
 	questionCardId: string | number;
 	questionCardPublicStatus: 'PENDING' | 'HIDE' | 'VISIBLE';

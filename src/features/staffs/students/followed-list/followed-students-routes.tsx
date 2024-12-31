@@ -1,14 +1,14 @@
 import { CounselorView, studentRoutes, StudentView } from '@/shared/pages';
-import StudentList from '@/shared/pages/student-list/StudentList';
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
-import CreateDemandForm from '../CreateDemandForm';
-import FollowStudentButton from '../FollowStudentButton';
 import CreateDemandButton from '../CreateDemandButton';
 
 const StaffFollowedStudentLayout = lazy(
 	() => import('./StaffFollowedStudentsLayout')
 );
+// const CounselorListForStaff = lazy(
+// 	() => import('../../counselors/CounselorListForStaff')
+// );
 
 export const staffFollowedStudentsRoutes: RouteObject[] = [
 	{
@@ -20,12 +20,8 @@ export const staffFollowedStudentsRoutes: RouteObject[] = [
 				element: <StudentView actionButton={<CreateDemandButton />} />,
 			},
 			// {
-			// 	path: 'student/:id/create-demand',
-			// 	element: <CreateDemandForm />,
-			// },
-			// {
-			// 	path: ':id/create-demand',
-			// 	element: <CreateDemandForm />,
+			// 	path: 'counselors',
+			// 	element: <CounselorListForStaff />,
 			// },
 			...studentRoutes,
 		],

@@ -14,6 +14,10 @@ export const adminQuestionCardCategoryRoutes: RouteObject[] = [
 				path: 'create',
 				element: <CreateQuestionCardCategoryForm />,
 			},
+			{
+				path: 'update/:id',
+				element: <CreateQuestionCardCategoryForm />,
+			},
 		],
 	},
 ];

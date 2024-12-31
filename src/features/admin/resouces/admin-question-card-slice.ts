@@ -10,6 +10,7 @@ const initialState = {
 	problemTagSearch: '',
 	problemTagCategorySearch: '',
 	timeSlotsSearch: '',
+	academicTab: 0,
 };
 /**
  * The filter slice.
@@ -21,12 +22,16 @@ export const adminResourceSlice = createSlice({
 		setQuestionSearch: (state, action) => {
 			state.questionCardSearch = action.payload;
 		},
+		setAcademicTab: (state, action) => {
+			state.academicTab = action.payload;
+		},
 	},
 	selectors: {
 		selectResourceState: (state) => state,
 		selectAdminQuestionCardSearchCategory: (state) =>
 			state.questionCardCategorySearch,
 		selectAdminQuestionCardSearch: (state) => state.questionCardSearch,
+		selectAdminAcademicTab: (state) => state.academicTab,
 	},
 });
 /**
@@ -34,11 +39,12 @@ export const adminResourceSlice = createSlice({
  */
 rootReducer.inject(adminResourceSlice);
 const injectedSlice = adminResourceSlice.injectInto(rootReducer);
-export const {setQuestionSearch} = adminResourceSlice.actions;
+export const { setQuestionSearch, setAcademicTab } = adminResourceSlice.actions;
 export const {
 	selectAdminQuestionCardSearch,
 	selectAdminQuestionCardSearchCategory,
 	selectResourceState,
+	selectAdminAcademicTab,
 } = injectedSlice.selectors;
 
 export default adminResourceSlice.reducer;

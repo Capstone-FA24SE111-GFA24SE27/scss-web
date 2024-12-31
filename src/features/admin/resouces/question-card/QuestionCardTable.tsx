@@ -89,14 +89,36 @@ function QuestionCardTable() {
 				accessorKey: 'publicStatus',
 				header: 'Public Status',
 				Cell: ({ row }) => (
-					<Typography>{row.original.publicStatus}</Typography>
+					<Typography
+						className='font-semibold'
+						color={
+							row.original.publicStatus === 'HIDE'
+								? 'textDisabled'
+								: 'primary'
+						}
+					>
+						{row.original.publicStatus}
+					</Typography>
 				),
 			},
 			{
 				accessorKey: 'status',
 				header: 'Status',
 				Cell: ({ row }) => (
-					<Typography>{row.original.status}</Typography>
+					<Typography
+						className='font-semibold'
+						color={
+							row.original.status === 'VERIFIED'
+								? 'success'
+								: row.original.status === 'FLAGGED'
+								? 'error'
+								: row.original.status === 'REJECTED'
+								? 'warning'
+								: 'textDisabled'
+						}
+					>
+						{row.original.status}
+					</Typography>
 				),
 			},
 		],
@@ -146,7 +168,7 @@ function QuestionCardTable() {
 						Update public status
 					</MenuItem>,
 				]}
-				enableRowSelection={false}
+				enableRowSelection={true}
 				renderTopToolbarCustomActions={({ table }) => {
 					const { rowSelection } = table.getState();
 
@@ -161,15 +183,18 @@ function QuestionCardTable() {
 							onClick={() => {
 								const selectedRows =
 									table.getSelectedRowModel().rows;
-								// removeProducts(selectedRows.map((row) => row.original.id));
+								editStatus(
+									selectedRows.map((row) => row.original.id),
+									'HIDE'
+								);
 								table.resetRowSelection();
 							}}
 							className='flex shrink min-w-40 ltr:mr-8 rtl:ml-8'
 							color='secondary'
 						>
-							<Delete />
+							<EditIcon />
 							<span className='hidden mx-8 sm:flex'>
-								Delete selected items
+								Update Public Status of Selected Items
 							</span>
 						</Button>
 					);
@@ -190,16 +215,40 @@ const StatusPicker = ({
 	const [updatePublicStatus] =
 		usePutUpdateQuestionPublicStatusAdminMutation();
 	const [status, setStatus] = useState(initialStatus);
-	const handleUpdate = () => {
+	const handleUpdate = async () => {
 		if (ids && ids.length > 0) {
-			ids.forEach((item) => {
-				updatePublicStatus({
+			let success = 0;
+			let fail = [];
+			for (const item of ids) {
+				const res = await updatePublicStatus({
 					questionCardId: item,
 					questionCardPublicStatus: status as 'HIDE' | 'VISIBLE',
 				});
+				if (res && res.data?.status === 200) {
+					success++;
+				} else {
+					fail.push(item);
+				}
+			}
+			let successTitle = '';
+			let errorTitle = '';
+
+			if (success > 0) {
+				successTitle = `Successfully update ${success} out of ${ids.length} item `;
+			}
+
+			if (fail.length > 0) {
+				errorTitle = `Fail to update ${fail.length} out of ${ids.length} item`;
+			}
+
+			useAlertDialog({
+				dispatch,
+				title: successTitle + '.' + `\n${errorTitle}`,
+				confirmFunction: () => {
+					dispatch(closeDialog());
+				},
 			});
 		}
-    dispatch(closeDialog())
 	};
 
 	return (
@@ -215,7 +264,7 @@ const StatusPicker = ({
 					id='status'
 					name='Public status'
 					label='Public status'
-          select
+					select
 					fullWidth
 					variant='standard'
 					onChange={(e) => {
