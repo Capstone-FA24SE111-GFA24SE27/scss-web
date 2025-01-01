@@ -31,16 +31,20 @@ import {
 	useGetQuestionCardAdminQuery,
 	usePutUpdateQuestionPublicStatusAdminMutation,
 } from './question-card-api';
-import { selectAdminQuestionCardSearch } from '../admin-question-card-slice';
+import {
+	selectAdminQuestionCardSearch,
+	selectAdminQuestionTab,
+} from '../admin-resource-slice';
 import EditIcon from '@mui/icons-material/Edit';
 import { Controller } from 'react-hook-form';
 
 function QuestionCardTable() {
-	const [tabValue, setTabValue] = React.useState(0);
+	const tabValue = useAppSelector(selectAdminQuestionTab);
 
 	const search = useAppSelector(selectAdminQuestionCardSearch);
 
 	const questionTabs = [
+		{ label: 'All', value: '' },
 		{ label: 'Academic', value: 'ACADEMIC' },
 		{ label: 'Non Academic', value: 'NON_ACADEMIC' },
 	];
@@ -53,7 +57,10 @@ function QuestionCardTable() {
 	const { data, isLoading } = useGetQuestionCardAdminQuery({
 		page: pagination.pageIndex + 1,
 		keyword: search,
-		type: questionTabs[tabValue].value as 'ACADEMIC' | 'NON_ACADEMIC',
+		type:
+			questionTabs[tabValue].value === ''
+				? undefined
+				: (questionTabs[tabValue].value as 'ACADEMIC' | 'NON_ACADEMIC'),
 	});
 	const dispatch = useAppDispatch();
 

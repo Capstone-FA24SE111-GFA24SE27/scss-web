@@ -14,19 +14,20 @@ import {
 	TextField,
 } from '@mui/material';
 import { useAppDispatch } from '@shared/store';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import {
 	useGetDepartmentsAdminQuery,
 	useGetMajorsAdminQuery,
+	useGetSpecializationByIdQuery,
 	usePostCreateSpecializationByIdAdminMutation,
 	usePutUpdateSpecializationByIdAdminMutation,
 } from '../academic-data-admin-api';
 import { initial } from 'lodash';
 import { useAlertDialog } from '@/shared/hooks';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowBack } from '@mui/icons-material';
 import { navigateUp } from '@/shared/utils';
 
@@ -51,16 +52,26 @@ type Props = {
 
 const CreateUpdateSpecializationForm = (props: Props) => {
 	const { initialSpecializationInfo: initialSpecializationInfo } = props;
+	const { id } = useParams();
 	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const { data: departments, isLoading: isLoadingDepartment } =
-		useGetDepartmentsAdminQuery();
+	const { data: fetchedSpecialization, isLoading: isLoadingInitial } =
+		useGetSpecializationByIdQuery(id, { skip: !id });
 
-	const { data: majors, isLoading: isLoadingMajor } =
-		useGetMajorsAdminQuery();
+	const { data: departmentsData, isLoading: isLoadingDepartment } =
+		useGetDepartmentsAdminQuery({
+			size: 999,
+		});
 
+	const { data: majorsData, isLoading: isLoadingMajor } =
+		useGetMajorsAdminQuery({
+			size: 999,
+		});
+
+	const departments = departmentsData?.data;
+	const majors = majorsData?.data;
 	const defaultValues = initialSpecializationInfo
 		? initialSpecializationInfo
 		: {
@@ -70,15 +81,22 @@ const CreateUpdateSpecializationForm = (props: Props) => {
 				majorId: '',
 		  };
 
-	const { handleSubmit, control, formState, watch } = useForm<FormType>({
-		resolver: zodResolver(schema),
-		defaultValues,
-		mode: 'onChange',
-	});
+	const { handleSubmit, control, formState, watch, reset } =
+		useForm<FormType>({
+			resolver: zodResolver(schema),
+			defaultValues,
+			mode: 'onChange',
+		});
 
 	const formData = watch();
 
 	const { isValid, isDirty, errors } = formState;
+
+	useEffect(() => {
+		if (!isLoadingInitial && fetchedSpecialization) {
+			reset(fetchedSpecialization);
+		}
+	}, [isLoadingInitial]);
 
 	const [updateSpecialization] =
 		usePutUpdateSpecializationByIdAdminMutation();
@@ -87,9 +105,32 @@ const CreateUpdateSpecializationForm = (props: Props) => {
 		if (isDirty && isValid) {
 			if (initialSpecializationInfo) {
 				updateSpecialization({
-					id: initialSpecializationInfo.id,
 					...data,
-				}).unwrap();
+				})
+					.unwrap()
+					.then((res) => {
+						if (schema.safeParse(res).success) {
+							useAlertDialog({
+								dispatch,
+								title: 'Update specialization successfully',
+							});
+						} else {
+							useAlertDialog({
+								dispatch,
+								title: 'result not type of specialization',
+							});
+						}
+						navigate(-1);
+					})
+					.catch((err) => {
+						console.error('Error update department', err);
+						useAlertDialog({
+							dispatch,
+							title: 'Error updating department',
+							color: 'error',
+						});
+						navigate(-1);
+					});
 			} else {
 				addSpecialization(data)
 					.unwrap()
@@ -106,15 +147,16 @@ const CreateUpdateSpecializationForm = (props: Props) => {
 								title: 'result not type of Specialization',
 							});
 						}
+						navigate(-1);
 					})
 					.catch((err) => {
 						console.error('Error create Specialization', err);
-						dispatch(closeDialog());
 						useAlertDialog({
 							dispatch,
 							title: 'Error creating Specialization',
 							color: 'error',
 						});
+						navigate(-1);
 					});
 			}
 		}
@@ -139,18 +181,20 @@ const CreateUpdateSpecializationForm = (props: Props) => {
 						color='inherit'
 					>
 						<ArrowBack />
-						<span className='flex mx-4 font-medium'>Specializations Table</span>
+						<span className='flex mx-4 font-medium'>
+							Specializations Table
+						</span>
 					</Button>
 				</motion.div>
 
 				<Heading
 					title={
-						initialSpecializationInfo
+						initialSpecializationInfo || id !== undefined
 							? 'Update specialization'
 							: 'Create specialization'
 					}
 					description={
-						initialSpecializationInfo
+						initialSpecializationInfo || id !== undefined
 							? 'Update specialization infos'
 							: 'Enter specialization infors'
 					}
@@ -243,7 +287,7 @@ const CreateUpdateSpecializationForm = (props: Props) => {
 			<div className='flex items-center justify-end gap-16 px-32'>
 				<Button
 					className='px-16 '
-					onClick={() => dispatch(closeDialog())}
+					onClick={() => navigate(-1)}
 					color='primary'
 				>
 					Cancel
@@ -256,7 +300,9 @@ const CreateUpdateSpecializationForm = (props: Props) => {
 					disabled={!isDirty || !isValid}
 					onClick={handleSubmit(handleSubmitForm)}
 				>
-					{initialSpecializationInfo ? 'Update' : 'Add'}
+					{initialSpecializationInfo || id !== undefined
+						? 'Update'
+						: 'Add'}
 				</Button>
 			</div>
 		</div>

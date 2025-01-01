@@ -1,5 +1,10 @@
 import { Semester } from '@/shared/services';
-import { Department, Major, Specialization } from '@/shared/types';
+import {
+	Department,
+	Major,
+	PaginationContent,
+	Specialization,
+} from '@/shared/types';
 import { apiService, ApiResponse, ApiMessage } from '@shared/store';
 
 const addTagTypes = [
@@ -48,21 +53,51 @@ export const academicDataAdminApi = apiService
 				}),
 				providesTags: ['specializations'],
 			}),
-			getDepartmentsAdmin: build.query<Department[], void>({
-				query: () => ({
-					url: `/api/academic/departments`,
+			getDepartmentsAdmin: build.query<
+				PaginationContent<Department>,
+				GetAcademicDataApiArgs
+			>({
+				query: ({ keyword, sortBy, sortDirection, page, size }) => ({
+					url: `/api/academic/departments/filter`,
+					params: {
+						keyword,
+						sortBy,
+						sortDirection,
+						page,
+						size,
+					},
 				}),
 				providesTags: ['departments'],
 			}),
-			getMajorsAdmin: build.query<Major[], void>({
-				query: () => ({
-					url: `/api/academic/majors`,
+			getMajorsAdmin: build.query<
+				PaginationContent<Major>,
+				GetAcademicDataApiArgs
+			>({
+				query: ({ keyword, sortBy, sortDirection, page, size }) => ({
+					url: `/api/academic/majors/filter`,
+					params: {
+						keyword,
+						sortBy,
+						sortDirection,
+						page,
+						size,
+					},
 				}),
 				providesTags: ['majors'],
 			}),
-			getSpecializationsAdmin: build.query<Specialization[], void>({
-				query: () => ({
-					url: `/api/academic/specializations`,
+			getSpecializationsAdmin: build.query<
+				PaginationContent<Specialization>,
+				GetAcademicDataApiArgs
+			>({
+				query: ({ keyword, sortBy, sortDirection, page, size }) => ({
+					url: `/api/academic/specializations/filter`,
+					params: {
+						keyword,
+						sortBy,
+						sortDirection,
+						page,
+						size,
+					},
 				}),
 				providesTags: ['specializations'],
 			}),
@@ -228,4 +263,12 @@ type postCreateSpecializationByIdAdminArgs = {
 	code: string;
 	departmentId: string | number;
 	majorId: string | number;
+};
+
+type GetAcademicDataApiArgs = {
+	keyword?: string;
+	sortBy?: string;
+	sortDirection?: 'ASC' | 'DESC';
+	page?: number;
+	size?: number;
 };

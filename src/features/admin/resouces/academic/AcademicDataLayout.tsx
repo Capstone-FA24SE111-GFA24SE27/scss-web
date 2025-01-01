@@ -1,4 +1,9 @@
-import { FilterTabs, Heading, PageSimple } from '@/shared/components';
+import {
+	FilterTabs,
+	Heading,
+	PageSimple,
+	SearchField,
+} from '@/shared/components';
 import { Box, Button, IconButton, Tab, Tabs } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { navigateUp } from '@/shared/utils';
@@ -11,8 +16,16 @@ import { SemesterTable } from './semester';
 import { clsx } from 'clsx';
 import {
 	selectAdminAcademicTab,
+	selectDepartmentFilter,
+	selectMajorFilter,
+	selectSemesterSearchAdmin,
+	selectSpecializationFilter,
 	setAcademicTab,
-} from '../admin-question-card-slice';
+	setDepartmentFilterSearchTerm,
+	setMajorFilterSearchTerm,
+	setSemesterAdminSearch,
+	setSpecializationFilterSearchTerm,
+} from '../admin-resource-slice';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 type Props = {};
 
@@ -24,6 +37,13 @@ const AcademicDataLayout = (props: Props) => {
 	const isMobile = false;
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
 	const dispatch = useAppDispatch();
+
+	const departmentSearch = useAppSelector(selectDepartmentFilter).keyword;
+	const majorSearch = useAppSelector(selectMajorFilter).keyword;
+	const specializationSearch = useAppSelector(
+		selectSpecializationFilter
+	).keyword;
+	const semesterSearch = useAppSelector(selectSemesterSearchAdmin);
 
 	const navigate = useNavigate();
 
@@ -47,6 +67,21 @@ const AcademicDataLayout = (props: Props) => {
 		dispatch(setAcademicTab(newValue));
 	};
 
+	const handleSearch = (searchTerm: string) => {
+		if (tabValue === 0) {
+			dispatch(setDepartmentFilterSearchTerm(searchTerm));
+		}
+		if (tabValue === 1) {
+			dispatch(setMajorFilterSearchTerm(searchTerm));
+		}
+		if (tabValue === 2) {
+			dispatch(setSpecializationFilterSearchTerm(searchTerm));
+		}
+		if (tabValue === 3) {
+			dispatch(setSemesterAdminSearch(searchTerm));
+		}
+	};
+
 	const handleCreate = () => {
 		navigate(`${adminAcademicTabs[tabValue].value}/form`);
 	};
@@ -55,14 +90,14 @@ const AcademicDataLayout = (props: Props) => {
 		<PageSimple
 			ref={pageLayout}
 			header={
-				<>
-					<div className='flex items-center justify-between p-32'>
+				<div className='flex flex-col gap-16 p-32'>
+					<div className='flex items-center justify-between '>
 						<Heading
 							title='Problem Tags Management'
 							description='Manage problem tags'
 						/>
 					</div>
-					<div className='flex justify-between px-32 py-16'>
+					<div className='flex justify-between '>
 						<FilterTabs
 							tabValue={tabValue}
 							onChangeTab={handleChangeTab}
@@ -83,7 +118,43 @@ const AcademicDataLayout = (props: Props) => {
 							{tabValue === 2 && 'Create Specialization'}
 						</Button>
 					</div>
-				</>
+					{tabValue === 0 && (
+						<SearchField
+							label='Search data'
+							placeholder='Enter keyword...'
+							onSearch={handleSearch}
+							className='w-full'
+							value={departmentSearch}
+						/>
+					)}
+					{tabValue === 1 && (
+						<SearchField
+							label='Search data'
+							placeholder='Enter keyword...'
+							onSearch={handleSearch}
+							className='w-full'
+							value={majorSearch}
+						/>
+					)}
+					{tabValue === 2 && (
+						<SearchField
+							label='Search data'
+							placeholder='Enter keyword...'
+							onSearch={handleSearch}
+							className='w-full'
+							value={specializationSearch}
+						/>
+					)}
+					{tabValue === 3 && (
+						<SearchField
+							label='Search data'
+							placeholder='Enter keyword...'
+							onSearch={handleSearch}
+							className='w-full'
+							value={semesterSearch}
+						/>
+					)}
+				</div>
 			}
 			content={
 				<>

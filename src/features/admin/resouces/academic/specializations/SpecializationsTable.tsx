@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
-import { type MRT_ColumnDef } from 'material-react-table';
+import { useEffect, useMemo, useState } from 'react';
+import { MRT_Updater, type MRT_ColumnDef } from 'material-react-table';
 import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
 import _ from 'lodash';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
+import { CheckCircle, Delete, Edit, RemoveCircle } from '@mui/icons-material';
 import { useAppDispatch } from '@shared/store';
 import {
 	useGetDepartmentsAdminQuery,
@@ -13,54 +13,66 @@ import {
 	useGetSpecializationsAdminQuery,
 } from '../academic-data-admin-api';
 import { Major, Specialization } from '@/shared/types';
+import { useAppSelector } from '@shared/store';
+import {
+	selectSpecializationFilter,
+	setSpecializationFilter,
+} from '../../admin-resource-slice';
+import { useNavigate } from 'react-router-dom';
 
 function SpecializationsTable() {
-	//   const [pagination, setPagination] = useState({
-	//     pageIndex: 0,
-	//     pageSize: 10,
-	//   });
-	//   console.log(pagination)
+	const filter = useAppSelector(selectSpecializationFilter);
+	const { keyword, page, size, sortDirection } = filter;
 
-	const [departmentsCache, setDepartmentsCache] = useState(new Map());
-	const [majorsCache, setMajorsCache] = useState(new Map());
+	const [pagination, setPagination] = useState({
+		pageIndex: page - 1,
+		pageSize: size,
+	});
 
-	const { data: departments, isLoading: isLoadingDepartment } =
-		useGetDepartmentsAdminQuery();
+	const { data: departmentsData, isLoading: isLoadingDepartment } =
+		useGetDepartmentsAdminQuery({ size: 999 });
 
-	const { data: majors, isLoading: isLoadingMajor } =
-		useGetMajorsAdminQuery();
+	const { data: majorsData, isLoading: isLoadingMajor } =
+		useGetMajorsAdminQuery({
+			size: 999,
+		});
 
-	const { data, isLoading } = useGetSpecializationsAdminQuery();
+	const { data, isLoading } = useGetSpecializationsAdminQuery({
+		keyword,
+		page: pagination.pageIndex + 1,
+		size: pagination.pageSize,
+		sortDirection: sortDirection as 'ASC' | 'DESC',
+	});
 
+	console.log('spe', data);
+	const departments = departmentsData?.data;
+	const majors = majorsData?.data;
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (pagination) {
+			dispatch(
+				setSpecializationFilter({
+					page: pagination.pageIndex + 1,
+					size: pagination.pageSize,
+					...filter,
+				})
+			);
+		}
+	}, [pagination]);
 
 	const findDepartmentById = (id: string | number) => {
 		if (id !== null) {
-			if (departmentsCache.has(id)) {
-				return departmentsCache.get(id);
-			}
 			const result = departments.find((item) => item.id === id);
-			if (result) {
-				setDepartmentsCache((prevCache) =>
-					new Map(prevCache).set(id, result)
-				);
-			}
-			return result ? 'No Department' : result;
+			return !result ? 'No Department' : result.name;
 		}
 	};
 
 	const findMajorById = (id: string | number) => {
 		if (id !== null) {
-			if (majorsCache.has(id)) {
-				return majorsCache.get(id);
-			}
 			const result = majors.find((item) => item.id === id);
-			if (result) {
-				setMajorsCache((prevCache) =>
-					new Map(prevCache).set(id, result)
-				);
-			}
-			return result ? 'No Major' : result;
+			return !result ? 'No Major' : result.name;
 		}
 	};
 
@@ -81,6 +93,12 @@ function SpecializationsTable() {
 			//       }).catch(err => console.error(err))
 			// 			},
 			// 		});
+		}
+	};
+
+	const updateSpecialization = (id: number) => {
+		if (id !== null) {
+			navigate(`specialization/form/${id}`);
 		}
 	};
 
@@ -114,7 +132,7 @@ function SpecializationsTable() {
 				Cell: ({ row }) => (
 					<Typography>
 						{majors && majors.length > 0
-							? findDepartmentById(row.original.majorId)
+							? findMajorById(row.original.majorId)
 							: ''}
 					</Typography>
 				),
@@ -130,11 +148,27 @@ function SpecializationsTable() {
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
-				data={data ? data : []}
+				data={data?.data || []}
 				columns={columns}
-				enablePagination={true}
-				rowCount={data?.length || 0}
+				manualPagination
+				rowCount={data?.totalElements || 0}
+				onPaginationChange={setPagination}
+				state={{ pagination }}
+				enableRowNumbers={false}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
+					<MenuItem
+						key={0}
+						onClick={() => {
+							updateSpecialization(row.original.id);
+							closeMenu();
+							table.resetRowSelection();
+						}}
+					>
+						<ListItemIcon>
+							<Edit />
+						</ListItemIcon>
+						Update
+					</MenuItem>,
 					<MenuItem
 						key={0}
 						onClick={() => {

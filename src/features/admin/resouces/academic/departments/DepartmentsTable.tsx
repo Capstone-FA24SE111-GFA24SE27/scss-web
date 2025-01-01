@@ -1,6 +1,11 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
+import {
+	ContentLoading,
+	DataTable,
+	NavLinkAdapter,
+	SearchField,
+} from '@shared/components';
 import { Chip, ListItemIcon, Menu, MenuItem, Paper } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -9,25 +14,50 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, Edit, RemoveCircle } from '@mui/icons-material';
 import { ProblemTag, TimeSlot } from '@/shared/types/admin';
-import { useAppDispatch } from '@shared/store';
+import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 import { ContributedQuestionCategory, Department } from '@/shared/types';
 import {
 	useDeleteDepartmentByIdAdminMutation,
 	useGetDepartmentsAdminQuery,
 } from '../academic-data-admin-api';
+import {
+	selectDepartmentFilter,
+	setDepartmentFilter,
+} from '../../admin-resource-slice';
 function DepartmentsTable() {
-	//   const [pagination, setPagination] = useState({
-	//     pageIndex: 0,
-	//     pageSize: 10,
-	//   });
-	//   console.log(pagination)
+	const filter = useAppSelector(selectDepartmentFilter);
+	const { keyword, page, size, sortDirection } = filter;
 
-	const { data, isLoading } = useGetDepartmentsAdminQuery();
+	console.log(keyword)
+
+	const [pagination, setPagination] = useState({
+		pageIndex: page - 1,
+		pageSize: size,
+	});
+
+	const { data, isLoading } = useGetDepartmentsAdminQuery({
+		keyword,
+		page: pagination.pageIndex + 1,
+		size: pagination.pageSize,
+		sortDirection: sortDirection as 'ASC' | 'DESC',
+	});
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	console.log(data);
 	const [removeDepartment] = useDeleteDepartmentByIdAdminMutation();
+
+	const handlePagination = (value) => {
+		console.log(value());
+		// setPagination(value);
+		// dispatch(
+		// 	setDepartmentFilter({
+		// 		page: value.pageIndex + 1,
+		// 		size: value.pageSize,
+		// 		...filter,
+		// 	})
+		// );
+	};
 
 	const removeProduct = (id: number) => {
 		if (id) {
@@ -70,17 +100,34 @@ function DepartmentsTable() {
 		[]
 	);
 
+	
+
+	useEffect(() => {
+		if (pagination) {
+			dispatch(
+				setDepartmentFilter({
+					page: pagination.pageIndex + 1,
+					size: pagination.pageSize,
+					...filter,
+				})
+			);
+		}
+	}, [pagination]);
+
 	if (isLoading) {
 		return <ContentLoading />;
 	}
 
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
+			
 			<DataTable
-				data={data ? data : []}
+				data={data?.data || []}
 				columns={columns}
-				enablePagination={true}
-				rowCount={data?.length || 0}
+				manualPagination={true}
+				rowCount={data?.totalElements || 0}
+				onPaginationChange={setPagination}
+				state={{ pagination }}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
 					<MenuItem
 						key={0}
