@@ -21,12 +21,12 @@ export const questionCardsApi = apiService
 				GetQuestionCardAdminArgs
 			>({
 				query: ({
-					keyword = '',
+					keyword,
 					status,
 					publicStatus,
-					type = 'ACADEMIC',
-					sortBy,
-					sortDirection = 'ASC',
+					type,
+					sortBy = 'createdDate',
+					sortDirection = 'DESC',
 					page = 0,
 					size = 10,
 				}) => ({

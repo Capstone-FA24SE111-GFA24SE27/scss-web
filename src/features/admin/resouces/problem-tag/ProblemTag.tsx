@@ -1,4 +1,3 @@
-
 import { FilterTabs, Heading, PageSimple } from '@/shared/components';
 import { Box, IconButton, Tab, Tabs } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
@@ -43,24 +42,24 @@ const ProblemTag = (props: Props) => {
 			ref={pageLayout}
 			header={
 				<>
-					<div className='flex items-center justify-between p-32'>
+					<div className='flex flex-col gap-16 p-32'>
 						<Heading
 							title='Problem Tags Management'
 							description='Manage problem tags'
 						/>
-					</div>
-					<div className='flex justify-between px-32 py-16'>
-						<FilterTabs
-							tabValue={tabValue}
-							onChangeTab={handleChangeTab}
-							tabs={problemTagTabs}
-						/>
-						<div>
-							{tabValue === 0 ? (
-								<CreateProblemTagButton />
-							) : (
-								<CreateCategoryButton />
-							)}
+						<div className='flex justify-between '>
+							<FilterTabs
+								tabValue={tabValue}
+								onChangeTab={handleChangeTab}
+								tabs={problemTagTabs}
+							/>
+							<div>
+								{tabValue === 0 ? (
+									<CreateProblemTagButton />
+								) : (
+									<CreateCategoryButton />
+								)}
+							</div>
 						</div>
 					</div>
 				</>
