@@ -13,6 +13,7 @@ const Faq = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const account = useAppSelector(selectAccount)
   const isCounselor = [`ACADEMIC_COUNSELOR`, `NON_ACADEMIC_COUNSELOR`].includes(account.role)
+  const [selectedType, setSelectedType] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [isShowingOnlyMyQna, setIsShowingOnlyMyQna] = useState(false);
   const [tabValue, setTabValue] = useState(0);
@@ -36,13 +37,13 @@ const Faq = () => {
   };
 
 
-  const categoryTypeTab = [
+  const typeOptions = [
     { label: 'All', value: '' },
     { label: 'Academic', value: 'ACADEMIC' },
     { label: 'Non-Academic', value: 'NON_ACADEMIC' },
   ];
 
-  const categoryOptions = categories?.filter(category => !categoryTypeTab[tabValue].value || category.type === categoryTypeTab[tabValue].value)
+  const categoryOptions = categories?.filter(category => !typeOptions[tabValue].value || category.type === typeOptions[tabValue].value)
     .map(category => ({
       label: category.name,
       value: category.id,
@@ -55,6 +56,10 @@ const Faq = () => {
 
   const handleSelectCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(event.target.value);
+  };
+
+  const handleSelectType = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedType(event.target.value);
   };
 
 
@@ -83,32 +88,40 @@ const Faq = () => {
           <SearchField onSearch={handleSearch} className='w-full' />
           {/* <ContentSearch onSearch={handleSearch} /> */}
           <div className='flex justify-between w-full mt-16'>
-            <FilterTabs
-              tabs={categoryTypeTab}
-              tabValue={tabValue}
-              onChangeTab={handleChangeTab}
-            />
-            <SelectField
-              label='Category'
-              options={categoryOptions}
-              value={selectedCategory}
-              onChange={handleSelectCategory}
-              className='pr-8 outline-none w-200'
-              size={isCounselor ? 'small' : 'medium'}
-              showClearOptions
-            />
+
+            <div className='flex gap-16'>
+              <SelectField
+                label='Type'
+                options={typeOptions}
+                value={selectedType}
+                onChange={handleSelectType}
+                className='pr-8 outline-none w-200'
+                size={isCounselor ? 'small' : 'medium'}
+                showClearOptions
+              />
+              <SelectField
+                label='Category'
+                options={categoryOptions}
+                value={selectedCategory}
+                onChange={handleSelectCategory}
+                className='pr-8 outline-none w-400'
+                size={isCounselor ? 'small' : 'medium'}
+                showClearOptions
+              />
+            </div>
+            <div className='flex justify-end w-full px-8'>
+              {
+                isCounselor && (
+                  <CheckboxField
+                    label='Show my Q&A only'
+                    checked={isShowingOnlyMyQna}
+                    onChange={handleCheckboxClose}
+                  />
+                )
+              }
+            </div>
           </div>
-          <div className='flex justify-end w-full px-8'>
-            {
-              isCounselor && (
-                <CheckboxField
-                  label='Show my Q&A only'
-                  checked={isShowingOnlyMyQna}
-                  onChange={handleCheckboxClose}
-                />
-              )
-            }
-          </div>
+
           <div className='mt-16 space-y-16'>
             {
               isFetching || isLoading

@@ -5,7 +5,7 @@ const QnaDetail = lazy(() => import('./QnaDetail'))
 
 export const qnaDetailRoutes: RouteObject[] = [
     {
-        path: ':id',
+        path: 'qna-detail/:id',
         element: <QnaDetail />,
         children: [
         ]

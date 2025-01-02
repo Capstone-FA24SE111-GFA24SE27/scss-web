@@ -128,6 +128,10 @@ export const counselorQnaApi = api
         }),
         invalidatesTags: ['qna'],
       }),
+      refreshQnaCounselor: build.mutation<void, void>({
+        queryFn: () => ({ data: undefined }),
+        invalidatesTags: ['qna'],
+      }),
     })
   })
 
@@ -140,7 +144,8 @@ export const {
   useEditAnswerMutation,
   useCloseQuestionCounselorMutation,
   usePostFlagQuestionStatusMutation,
-  usePostReviewQuestionStatusMutation
+  usePostReviewQuestionStatusMutation,
+  useRefreshQnaCounselorMutation,
 } = counselorQnaApi
 
 export type GetQuestionsApiResponse = ApiResponse<PaginationContent<Question>>

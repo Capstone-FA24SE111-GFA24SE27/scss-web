@@ -50,14 +50,14 @@ const ChatBox = (props: Props) => {
 	const messagesRef = useRef<HTMLDivElement>(null);
 	const [sendMessage, { isLoading: isSendingMessage }] = useSendMessageMutation();
 	const [readMessage] = useReadMessageMutation();
-	const [uploadProgress, setUploadProgress] = useState(0); // Track upload progress
+	const [uploadProgress, setUploadProgress] = useState(0);
 	const isUploadingImage = uploadProgress > 0 && uploadProgress < 100
 	const socket = useSocket();
 	const chatListeners = useAppSelector(selectChatListeners);
 	const account = useAppSelector(selectAccount);
 	const dispatch = useAppDispatch();
 	const passiveCallback = useAppSelector(selectPassiveChatCallback);
-
+	const isStudent = account.role === roles.STUDENT
 	const handleSendMessage = useThrottle(() => {
 		sendMessage({
 			sessionId: qna?.chatSession?.id,
@@ -95,7 +95,7 @@ const ChatBox = (props: Props) => {
 	}
 
 	const handleViewUser = () => {
-		account.role === roles.STUDENT
+		isStudent
 			? dispatch(openCounselorView(qna?.counselor?.id.toString()))
 			: dispatch(openStudentView(qna?.student?.id.toString()))
 	}
@@ -104,11 +104,9 @@ const ChatBox = (props: Props) => {
 		if (qna) {
 			dispatch(setChatSessionId(qna.chatSession?.id));
 			setMessages(qna.chatSession?.messages)
-			// console.log(qna.chatSession?.messages)
 
 			if (qna.chatSession?.messages.length > 0) {
 				const latestMessage = qna.chatSession?.messages[qna.chatSession?.messages.length - 1];
-				// console.log('latest',latestMessage)
 				if (latestMessage.sender.id !== account.id && !latestMessage.read) {
 					try {
 						readMessage(qna.chatSession?.id);
@@ -120,17 +118,14 @@ const ChatBox = (props: Props) => {
 		}
 
 		return () => {
-			dispatch(closeChatSession());
+			// dispatch(closeChatSession());
 		};
 	}, [qna]);
 
 	useEffect(() => {
-		// console.log('chat box', qna, socket, chatListeners, passiveCallback);
 		if (!qna.closed && socket && chatListeners && passiveCallback) {
-			// console.log('asdawd2');
-			if (chatListeners.findIndex(item => item.chatSession.id === qna.chatSession.id) > -1) {
-				// console.log('asdawd3	');
-				socket.off(`/user/${qna.chatSession.id}/chat`);
+			if (chatListeners.findIndex(item => item.chatSession?.id === qna.chatSession?.id) > -1) {
+				socket.off(`/user/${qna.chatSession?.id}/chat`);
 				const cb = (data: Message) => {
 					if (data.sender.id !== account.id && !data.read) {
 						readMessage(data.chatSessionId);
@@ -144,21 +139,19 @@ const ChatBox = (props: Props) => {
 				};
 
 				socket.on(`/user/${qna.chatSession?.id}/chat`, cb);
-				// console.log(`active /user/${qna.chatSession?.id}/chat`)
 			}
 
 			return () => {
 				socket.off(`/user/${qna.chatSession?.id}/chat`);
 				if (
 					!qna.closed &&
-					chatListeners.findIndex(item => item.chatSession.id === qna.chatSession.id) > -1 &&
+					chatListeners.findIndex(item => item.chatSession?.id === qna.chatSession?.id) > -1 &&
 					passiveCallback
 				) {
 					socket.on(
 						`/user/${qna.chatSession?.id}/chat`, (data) =>
 						passiveCallback(data, qna)
 					);
-					// console.log(`resume passive /user/${qna.chatSession?.id}/chat`)
 				}
 			};
 		}
@@ -171,12 +164,8 @@ const ChatBox = (props: Props) => {
 		}
 	}, [messages, messagesRef, account]);
 
-	let otherPerson = null;
-	if (qna.counselor) {
-		otherPerson = qna.counselor;
-	} else {
-		otherPerson = qna.student;
-	}
+	const otherPerson = isStudent ? qna?.counselor : qna?.student;
+
 	return (
 		<div className='relative flex flex-col w-full h-full min-w-320'>
 			<div className='p-16 space-y-8 bg-background-paper'>
@@ -185,17 +174,23 @@ const ChatBox = (props: Props) => {
 						src={otherPerson?.profile.avatarLink}
 						alt='Student image'
 					/>
-					<Typography variant='h6' className='font-semibold'>
-						{otherPerson?.profile.fullName}
-					</Typography>
+					<div>
+						<Typography variant='h6' className='font-semibold'>
+							{otherPerson?.profile.fullName}
+						</Typography>
+						{/* <Typography className=''>
+							{otherPerson?.profile.fullName}
+						</Typography> */}
+					</div>
 				</Button>
 				<div className='flex items-center flex-1 gap-8 pl-16'>
 					{/* <Divider orientation='vertical' /> */}
-					{qna.answer ? (
+					{/* {qna.answer ? (
 						<CheckCircleOutlineOutlined color='success' />
 					) : (
 						<HelpOutlineOutlined color='disabled' />
-					)}
+					)} */}
+					<HelpOutlineOutlined color='disabled' />
 					<Typography className='w-full pr-8 font-semibold'>
 						{qna?.title}
 					</Typography>

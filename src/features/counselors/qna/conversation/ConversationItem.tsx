@@ -30,20 +30,21 @@ const ConversationItem = (props: Props) => {
 
 
   return (
-    <ListItemButton className='flex-col items-start p-4 rounded' selected={Number(id) == qnaItem.id}
+    <ListItemButton className='flex-col items-start p-0 rounded' selected={Number(id) == qnaItem.id}
       onClick={onClick}
     >
       <Tooltip title={qnaItem.title}>
-        <div className="flex items-center flex-1 gap-8">
-          {
+        <div className="flex items-center flex-1 gap-8 pl-10 pt-4">
+          {/* {
             qnaItem.answer
               ? <CheckCircleOutlineOutlined color='success' />
               : <HelpOutlineOutlined color='disabled' />
-          }
+          } */}
+          <HelpOutlineOutlined color='disabled' />
           <Typography className="w-full pr-8 font-semibold line-clamp-1">{qnaItem?.title}</Typography>
         </div>
       </Tooltip>
-      <div className="flex items-center w-full gap-8 p-8"
+      <div className="flex items-center w-full gap-8 py-4 px-4"
       >
         <Avatar src={qnaItem.student.profile.avatarLink} alt='Student image' />
         <div className="w-full ml-4">
@@ -57,7 +58,6 @@ const ConversationItem = (props: Props) => {
           </div>
         </div>
       </div>
-      <Divider />
     </ListItemButton>
   )
 }

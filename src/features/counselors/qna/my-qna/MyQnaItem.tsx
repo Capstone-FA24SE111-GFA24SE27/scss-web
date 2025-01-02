@@ -6,7 +6,11 @@ import {
 	RenderHTML,
 	QuillEditor,
 	closeDialog,
-	BackdropLoading
+	BackdropLoading,
+	setBackdropLoading,
+	openDrawer,
+	ExpandableContent,
+	ItemMenu
 } from '@/shared/components';
 import {
 	ArrowForward,
@@ -26,6 +30,7 @@ import {
 	ThumbDownOutlined,
 	ThumbUp,
 	ThumbUpOutlined,
+	Visibility,
 } from '@mui/icons-material';
 import {
 	Accordion,
@@ -69,7 +74,7 @@ import { useGetMessagesQuery } from '@/shared/components/chat/chat-api';
 import { validateHTML } from '@/shared/utils';
 import dayjs from 'dayjs';
 import QnaRejectForm from './QnaRejectFormDialog';
-import AnswerQuestionDialog from './AnswerQuestionDialog';
+import AnswerQuestionView from './AnswerQuestionView';
 
 const item = {
 	hidden: { opacity: 0, y: 20 },
@@ -101,10 +106,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 	};
 
 
-	const [closeQuestion] = useCloseQuestionCounselorMutation();
-	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
-	const [flagQuestion] = usePostFlagQuestionStatusMutation();
-
+	const [closeQuestion, { isLoading: isLoadingCloseQuestion }] = useCloseQuestionCounselorMutation();
 
 	const handleRejectQuestion = () => {
 		dispatch(openDialog({
@@ -125,25 +127,20 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 				closeQuestion(qna.id)
 					.unwrap()
 					.then((result) => {
-						console.log('close qna', result);
-						// if (result?.data?.status === 200) {
-						// 	useAlertDialog({
-						// 		title: result.data.message,
-						// 		dispatch,
-						// 	});
-						// 	setExpanded(false);
-						// } else {
-						// 	useAlertDialog({
-						// 		title: result.data.message,
-						// 		dispatch: dispatch,
-						// 	});
-						// }
+						useAlertDialog({
+							title: `Question has been closed successfully`,
+							dispatch,
+						});
 					})
 					.catch((err) => console.log(err));
 			},
 			dispatch,
 		});
 	};
+
+	useEffect(() => {
+		dispatch(setBackdropLoading(isLoadingCloseQuestion))
+	}, [isLoadingCloseQuestion]);
 
 	const dispatch = useAppDispatch();
 
@@ -158,14 +155,34 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 		<motion.div variants={item}>
 			<Paper className='overflow-hidden shadow'>
 				<div className='p-16 space-y-16'>
-					<div className='flex flex-col gap-16'>
-						<Typography className='w-full pr-8 font-semibold'>
-							{qna.title}
-						</Typography>
+					<div className='flex flex-col gap-8'>
+						<div className='flex justify-between'>
+							<Typography className='w-full pr-8 font-semibold text-lg'>
+								{qna.title}
+							</Typography>
+							<ItemMenu
+								menuItems={[
+									{
+										label: 'View details',
+										onClick: () => {
+											// if (openDetail) {
+											// 	dispatch(openDialog({
+											// 		children: <AppointmentDetail id={appointment.id.toString()} />
+											// 	}))
+											// 	return;
+											// }
+											navigate(`qna-detail/${qna.id}`)
+											// handleCloseDialog()
+										},
+										icon: <Visibility fontSize='small' />
+									},
+								]}
+							/>
+						</div>
 						<div className='flex gap-8 items-center'>
 							<UserLabel
 								profile={qna?.student?.profile}
-								label='Asked by'
+								label='Questioned by'
 								email={qna?.student.email}
 								onClick={() => {
 									dispatch(
@@ -220,7 +237,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								qna.accepted && (
 									< Chip
 										icon={<ThumbUpOutlined />}
-										label={`Accepted by student`}
+										label={`Accepted by ${qna?.student.profile.fullName}`}
 										size='small'
 										variant='filled'
 									/>
@@ -229,9 +246,9 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 						</div>
 					</div>
 					<div className='flex flex-col justify-start gap-16'>
-						<Typography className='w-full pr-8'>
+						<ExpandableContent>
 							{RenderHTML(qna.content)}
-						</Typography>
+						</ExpandableContent>
 						<Divider />
 						<div>
 							{
@@ -244,8 +261,8 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 												color='secondary'
 												startIcon={<EditNote fontSize='large' />}
 												onClick={() => {
-													dispatch(openDialog({
-														children: <AnswerQuestionDialog qna={qna} />
+													dispatch(openDrawer({
+														children: <AnswerQuestionView qna={qna} />
 													}))
 												}}
 											>
@@ -305,7 +322,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 
 
 				<Box className='flex justify-end w-full gap-16 px-16 py-8 bg-primary-light/5'>
-					{!qna?.closed && qna?.accepted && (
+					{!qna?.closed && (
 						<Button
 							variant='outlined'
 							color='secondary'
@@ -348,8 +365,8 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 									color='secondary'
 									startIcon={<RateReview />}
 									onClick={() => {
-										dispatch(openDialog({
-											children: <AnswerQuestionDialog qna={qna} />
+										dispatch(openDrawer({
+											children: <AnswerQuestionView qna={qna} />
 										}))
 									}}
 								>
@@ -359,26 +376,15 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 
 						)}
 					{qna.chatSession && (
-						<>
-							<Button
-								variant='contained'
-								color='secondary'
-								onClick={handleChat}
-								disabled={!qna?.answer}
-								endIcon={<ChatBubbleOutline />}
-							>
-								Chat
-							</Button>
-							{/* <Button
-									variant='contained'
-									color='primary'
-									onClick={handleSelectChat}
-									endIcon={<ArrowForward />}
-									disabled={qna?.closed}
-								>
-									Go to conversations
-								</Button> */}
-						</>
+						<Button
+							variant='contained'
+							color='secondary'
+							onClick={handleChat}
+							disabled={!qna?.answer}
+							endIcon={<ChatBubbleOutline />}
+						>
+							Chat
+						</Button>
 					)}
 				</Box>
 			</Paper>

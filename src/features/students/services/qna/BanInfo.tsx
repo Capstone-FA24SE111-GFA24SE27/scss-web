@@ -1,21 +1,12 @@
+import { NavLinkAdapter } from '@/shared/components';
+import { ArrowBack, HelpOutlineOutlined, Warning } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Chip } from '@mui/material';
 import Button from '@mui/material/Button';
-import { Link, useNavigate, useParams } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { Controller, useForm } from 'react-hook-form';
-import _ from 'lodash';
-import TextField from '@mui/material/TextField';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { ArrowBack, ArrowLeft, HelpOutlineOutlined, Warning } from '@mui/icons-material';
-import { NavLinkAdapter } from '@/shared/components';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, FormControl, FormControlLabel, FormHelperText, MenuItem, Radio, RadioGroup } from '@mui/material';
-import { useState, useEffect } from 'react';
-import { BanInfo as BanInfoType, useEditQuestionMutation, useGetBanInfoQuery, useGetStudentQuestionQuery, usePostQuestionMutation } from './qna-api';
-import { formatDateTime } from '@/shared/utils';
 import dayjs from 'dayjs';
-import { statusColor } from '@/shared/constants';
-import { useGetAcademicTopicsQuery, useGetNonAcademicTopicsQuery } from '@/shared/services';
+import { z } from 'zod';
+import { BanInfo as BanInfoType } from './qna-api';
 
 
 const formSchema = z.object({

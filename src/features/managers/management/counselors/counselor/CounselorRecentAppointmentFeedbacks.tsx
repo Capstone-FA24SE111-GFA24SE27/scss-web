@@ -10,7 +10,7 @@ import { ContentLoading, ExpandableText, FeedbackItem, Heading, ItemMenu, openDi
 import { motionVariants } from '@/shared/configs';
 import dayjs from 'dayjs';
 import { AppointmentDetail } from '@/shared/pages';
-import { firstDayOfMonth, lastDayOfMonth } from '@/shared/constants';
+import { firstDayOfMonth, lastDayOfMonth, today } from '@/shared/constants';
 
 
 const CounselorRecentAppointmentFeedbacks = ({ counselorId }: { counselorId?: string }) => {
@@ -18,31 +18,17 @@ const CounselorRecentAppointmentFeedbacks = ({ counselorId }: { counselorId?: st
   const id = counselorId || routeId
   // const { data: counselorFeedbacksData, isLoading } = useGetCounselorFeedbacksQuery({ counselorId: Number(id) })
   const { data: appointmentsData, isLoading } = useGetCounselorAppointmentsManagementQuery({
-    // fromDate: dayjs().subtract(3, 'month').startOf('month').format("YYYY-MM-DD"),
-    // toDate: dayjs().add(1, 'month').endOf("month").format("YYYY-MM-DD"),
-    fromDate: firstDayOfMonth,
-    toDate: lastDayOfMonth,
     counselorId: Number(id),
     size: 9999,
   });
   const counselorAppointmentsWithFeedback = appointmentsData?.content.data?.filter(item => item.appointmentFeedback)?.slice(9)
   const dispatch = useAppDispatch()
 
-  const [expanded, setExpanded] = useState<number | boolean>(false);
-
-  const toggleAccordion = (panel: number) => (_: SyntheticEvent, _expanded: boolean) => {
-    setExpanded(_expanded ? panel : false);
-  };
-  const navigate = useNavigate()
-
-
-  if (isLoading) {
-    return <ContentLoading />
-  }
+  console.log(appointmentsData?.content.data)
   
   return (
     <Paper className='p-16 shadow space-y-16 h-sm'>
-      <Typography className="font-semibold text-2xl">Recent Appointment Feedbacks</Typography>
+      <Typography className="font-semibold text-2xl">Appointment Feedbacks</Typography>
       {
         !counselorAppointmentsWithFeedback?.length
           ? <div className='text-center p-32'>

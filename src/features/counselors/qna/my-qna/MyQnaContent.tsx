@@ -16,6 +16,7 @@ import {
 	counselorQnaApi,
 	useAnswerQuestionMutation,
 	useGetMyCounselorQuestionsQuery,
+	useRefreshQnaCounselorMutation,
 } from '../qna-api';
 import MyQnaItem from './MyQnaItem';
 import {
@@ -95,19 +96,22 @@ const MyQnaContent = () => {
 	const pendingQuestions = qnaList.filter(item => !item.answer)
 	const completedQuestion = qnaList.filter(item => item.answer)
 
+	const [refreshQna] = useRefreshQnaCounselorMutation();
+
+
 	useEffect(() => {
 		if (socket && account) {
 			const cb = (data) => {
-				console.log('asdasdw', data);
+				console.log(`✨`, data)
+
 				if (data) {
-					refetch();
-					counselorQnaApi.util.invalidateTags(['qna']);
+					// refetch();
+					// counselorQnaApi.util.invalidateTags(['qna']);
+					refreshQna()
 				}
 			};
-
 			const id = account.profile.id;
 			socket.on(`/user/${id}/question`, cb);
-			console.log(`/user/${id}/question`, socket);
 			return () => {
 				socket.off(`/user/${id}/question`);
 			};

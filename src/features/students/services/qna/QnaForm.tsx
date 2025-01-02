@@ -12,6 +12,7 @@ import {
 	LinearProgress,
 	Box,
 	Divider,
+	Autocomplete,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,6 +40,8 @@ import { ref } from 'firebase/storage';
 import { QuillEditor } from '@/shared/components';
 import { validateHTML } from '@/shared/utils';
 import { useSearchAllPublicQuestionCardsMutation } from '@/shared/pages';
+import { useGetStudentDocumentQuery } from '../../students-api';
+import { Department, Major } from '@/shared/types';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -51,10 +54,26 @@ const formSchema = z.object({
 	questionType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
 		errorMap: () => ({ message: 'Please select a question type' }),
 	}),
-	departmentId: z.string().optional(),
-	majorId: z.string().optional(),
-	specializationId: z.string().optional(),
-	expertiseId: z.string().optional(),
+	// departmentId: z.string().optional(),
+	// majorId: z.string().optional(),
+	// specializationId: z.string().optional(),
+	// expertiseId: z.string().optional(),
+	department: z.object({
+		id: z.number(),
+		name: z.string(),
+	}).nullable().optional(),
+	major: z.object({
+		id: z.number(),
+		name: z.string(),
+	}).nullable().optional(),
+	specialization: z.object({
+		id: z.number(),
+		name: z.string(),
+	}).nullable().optional(),
+	expertise: z.object({
+		id: z.number(),
+		name: z.string(),
+	}).nullable().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -63,7 +82,7 @@ function QnaForm() {
 	const { questionId } = useParams();
 	const navigate = useNavigate();
 	const editMode = Boolean(questionId);
-	
+
 	const { data: questionData } = useGetStudentQuestionQuery(questionId || `0`,
 		{
 			skip: !editMode,
@@ -85,17 +104,24 @@ function QnaForm() {
 
 	const { errors, isValid, dirtyFields } = formState;
 
-	// Conditional fields data
-	const { data: departments, isLoading: loadingDepartments } = useGetDepartmentsQuery();
-	const { data: majors, isLoading: loadingMajors } = useGetMajorsByDepartmentQuery(watch('departmentId'), {
-		skip: !watch('departmentId'),
+	const questionType = watch('questionType')
+
+	const { data: departmentsData, isLoading: isLoadingDepartments } = useGetDepartmentsQuery();
+	const departments = departmentsData || [];
+
+	const { data: majorsData, isLoading: isLoadingMajors } = useGetMajorsByDepartmentQuery(watch("department")?.id.toString(), {
+		skip: !watch("department")
 	});
-	const { data: specializations, isLoading: loadingSpecializations } = useGetSpecializationsByMajorQuery(
-		watch('majorId'),
-		{
-			skip: !watch('majorId'),
-		}
-	);
+	const majors = majorsData || [];
+
+	const { data: counselorExpertisesData, isLoading: isLoadingCounselorExpertises } = useGetCounselorExpertisesQuery()
+	const expertises = counselorExpertisesData?.content || []
+	// const { data: specializations, isLoading: loadingSpecializations } = useGetSpecializationsByMajorQuery(
+	// 	watch("major")?.id.toString(),
+	// 	{
+	// 		skip: !watch('major'),
+	// 	}
+	// );
 
 	const [searchPublicQna, { isLoading: isLoadingSearch }] = useSearchAllPublicQuestionCardsMutation()
 
@@ -118,9 +144,10 @@ function QnaForm() {
 								title: data.title,
 								content: data.content,
 								questionType: data.questionType,
-								departmentId: data.departmentId,
-								majorId: data.majorId,
-								specializationId: data.specializationId,
+								departmentId: data.department?.id,
+								majorId: data.major?.id,
+								expertiseId: data.expertise?.id,
+								// specializationId: data.specializationId,
 							}
 						})
 							.unwrap()
@@ -152,9 +179,9 @@ function QnaForm() {
 							title: data.title,
 							content: data.content,
 							questionType: data.questionType,
-							departmentId: data.departmentId,
-							majorId: data.majorId,
-							specializationId: data.specializationId,
+							departmentId: data.department?.id,
+							majorId: data.major?.id,
+							expertiseId: data.expertise?.id,
 						})
 							.unwrap()
 							.then(() => {
@@ -168,8 +195,10 @@ function QnaForm() {
 							.catch(error => useAlertDialog({
 								dispatch,
 								color: 'error',
-								confirmButtonTitle : `Edit question`,
-								title: error?.data.message === `Expertise not found with name: none` ? `Question does have not have enough context`: `Error creating question`
+								confirmButtonTitle: `Ok`,
+								title: error?.data.message === `Expertise not found with name: none`
+									? `Question does have not have enough context`
+									: (error?.data.message || `Error creating question`)
 							}))
 					}
 				})
@@ -189,6 +218,17 @@ function QnaForm() {
 		}
 	}, [editMode, questionData, reset]);
 
+
+
+	const { data: studentDocumentData } = useGetStudentDocumentQuery();
+	const studentProfile = studentDocumentData?.content.studentProfile
+	useEffect(() => {
+		reset({
+			department: studentProfile?.department || undefined,
+			major: studentProfile?.major || undefined,
+		})
+	}, [studentProfile]);
+
 	if (banInfo?.ban) {
 		return <BanInfo banInfo={banInfo} />
 	}
@@ -196,7 +236,6 @@ function QnaForm() {
 	return (
 		<div className="container flex flex-col items-center px-32 my-16 w-xl">
 			<div className="flex flex-col w-full ">
-				<Typography variant="h4"></Typography>
 				<div className="">
 					<Button
 						component={NavLinkAdapter}
@@ -223,7 +262,7 @@ function QnaForm() {
 							<Typography variant="h6">Submit your question</Typography>
 							<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
 						</div> */}
-						<div className="space-y-16 px-16">
+						<div className="space-y-32 px-16">
 							{/* Question Type Radio Group */}
 							<Controller
 								name="questionType"
@@ -259,9 +298,153 @@ function QnaForm() {
 								value={watch('content')}
 								onChange={(value) => setValue('content', value, { shouldValidate: true })}
 								error={errors.content?.message}
-								label='Content'
+							// label='Content'
 							/>
 
+							{
+								questionType === 'ACADEMIC'
+									? <div className=''>
+										< div className=''>
+											{/* <Typography className='text-lg font-semibold text-primary'>Select department</Typography> */}
+											<Controller
+												name="department"
+												control={control}
+												render={({ field }) => (
+													<Autocomplete
+														className="mt-16"
+														{...field}
+														options={departments}
+														getOptionLabel={(option) => option.name}
+														onChange={(_, value) => {
+															field.onChange(value);
+															setValue('major', null);
+															// setValue('specialization', null);
+														}}
+														value={field.value || null}
+														renderInput={(params) => (
+															<TextField
+																{...params}
+																label="Department"
+																variant="outlined"
+																error={!!errors.department}
+																helperText={errors.department?.message}
+																slotProps={{
+																	input: {
+																		...params.InputProps,
+																		endAdornment: (
+																			<React.Fragment>
+																				{isLoadingDepartments ? <CircularProgress color="inherit" size={20} /> : null}
+																				{params.InputProps.endAdornment}
+																			</React.Fragment>
+																		),
+																	},
+																}}
+															/>
+														)}
+													/>
+												)}
+											/>
+
+											{/* <Typography className='mt-16 text-lg font-semibold text-primary'>Select major</Typography> */}
+											<Controller
+												name="major"
+												control={control}
+												render={({ field }) => (
+													<Autocomplete
+														className="mt-16"
+														{...field}
+														options={majors}
+														getOptionLabel={(option) => option.name}
+														onChange={(_, value) => {
+															field.onChange(value);
+															setValue('specialization', null);
+														}}
+														value={field.value || null}
+														renderInput={(params) => (
+															<TextField
+																{...params}
+																label="Major"
+																variant="outlined"
+																error={!!errors.major}
+																slotProps={{
+																	input: {
+																		...params.InputProps,
+																		endAdornment: (
+																			<React.Fragment>
+																				{isLoadingMajors ? <CircularProgress color="inherit" size={20} /> : null}
+																				{params.InputProps.endAdornment}
+																			</React.Fragment>
+																		),
+																	},
+																}}
+															/>
+														)}
+													/>
+												)}
+											/>
+
+											{/* <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization</Typography>
+											<Controller
+												name="specialization"
+												control={control}
+												render={({ field }) => (
+													<Autocomplete
+														className="mt-16"
+														{...field}
+														options={specializations}
+														getOptionLabel={(option) => option.name}
+														onChange={(_, value) => field.onChange(value)}
+														value={field.value || null}
+														renderInput={(params) => (
+															<TextField
+																{...params}
+																label="Specialization"
+																variant="outlined"
+																error={!!errors.specialization}
+															/>
+														)}
+													/>
+												)}
+											/> */}
+										</div>
+									</div>
+									: < div className=''>
+										{/* <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise</Typography> */}
+										<Controller
+											name="expertise"
+											control={control}
+											render={({ field }) => (
+												<Autocomplete
+													{...field}
+													options={expertises}
+													className='mt-16'
+													getOptionLabel={(option) => option.name}
+													onChange={(_, value) => field.onChange(value)}
+													value={field.value || null}
+													renderInput={(params) => (
+														<TextField
+															{...params}
+															label="Expertise "
+															variant="outlined"
+															error={!!errors.expertise}
+															slotProps={{
+																input: {
+																	...params.InputProps,
+																	endAdornment: (
+																		<React.Fragment>
+																			{isLoadingCounselorExpertises ? <CircularProgress color="inherit" size={20} /> : null}
+																			{params.InputProps.endAdornment}
+																		</React.Fragment>
+																	),
+																},
+															}}
+														/>
+													)}
+												/>
+											)}
+										/>
+									</div>
+							}
 						</div>
 
 						<div className="flex items-center justify-end mt-32 pt-24 gap-8">

@@ -107,8 +107,8 @@ const PublicQnaItem = (props: Props) => {
             {RenderHTML(publicQna.answer)}
           </AccordionDetails>
           <Box className='flex justify-end w-full gap-8 px-16 py-8 bg-primary-light/5 '>
-            <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
-            <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button>
+            {/* <Button variant='outlined' size='small' color='secondary' startIcon={<Flag />}>Report</Button>
+            <Button variant='outlined' size='small' color='secondary' startIcon={<Feedback />}>Give feedback</Button> */}
           </Box>
         </Accordion>
       </Paper>

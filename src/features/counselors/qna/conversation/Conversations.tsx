@@ -101,10 +101,10 @@ const Conversation = () => {
 						<Typography className='text-3xl font-extrabold'>
 							Conversations
 						</Typography>
-						<Scrollbar className='space-y-8 overflow-y-auto !h-[calc(100vh-180px)]'>
+							<Scrollbar className='space-y-8 overflow-y-auto !h-[calc(100vh-180px)] w-xs pr-8'>
 							{qnaList.length === 0 ? (
 								<Typography
-									className='w-full text-lg text-center'
+									className='w-full text-lg'
 									color='textSecondary'
 								>
 									No conversations found
