@@ -25,7 +25,6 @@ const CounselorQuestionsAnalytics = ({ isAcademic }: { isAcademic: boolean }) =>
   });
 
   const questions = questionsData?.content?.filter(item => isAcademic ? item.counselor?.academicDegree : !item.counselor?.academicDegree)
-  console.log(`💖` ,questions)
 
   const groupedByMonth = groupQuestionsByDays(questions, `month`);
   const groupedByWeek = groupQuestionsByDays(questions, `week`);
@@ -164,6 +163,7 @@ const CounselorQuestionsAnalytics = ({ isAcademic }: { isAcademic: boolean }) =>
       }))
       .sort((a, b) => b.averageRating - a.averageRating);
 
+  console.log(`😉`, questions?.filter(question => question.feedback))
   return (
     <div className="space-y-8">
       <div className="flex justify-between gap-16">

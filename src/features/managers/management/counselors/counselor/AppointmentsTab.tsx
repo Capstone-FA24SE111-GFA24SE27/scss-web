@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { AppointmentReport, ContentLoading, DataTable, NavLinkAdapter, openDialog } from '@shared/components';
+import { AppointmentReport, ContentLoading, DataTable, DateRangePicker, NavLinkAdapter, openDialog } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -23,12 +23,18 @@ function AppointmentTab() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+
   const dispatch = useAppDispatch()
   const { data, isLoading } = useGetCounselorAppointmentsManagementQuery({
     counselorId: Number(id),
     page: pagination.pageIndex + 1,
+    fromDate: startDate,
+    toDate: endDate,
   })
-  console.log(data)
+
+
 
 
   const removeProducts = (ids: string[]) => {
@@ -93,10 +99,20 @@ function AppointmentTab() {
   // if (isLoading) {
   //   return <ContentLoading />;
   // }
-
+  const handleStartDateChange = (date: string) => setStartDate(date);
+  const handleEndDateChange = (date: string) => setEndDate(date);
 
   return (
     <Paper className='shadow p-8'>
+      {/* <div className='flex justify-end w-full mt-8'>
+        <DateRangePicker
+          startDate={startDate ? dayjs(startDate) : null}
+          endDate={endDate ? dayjs(endDate) : null}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+          className='h-48'
+        />
+      </div> */}
       <DataTable
         data={data?.content.data || []}
         columns={columns}

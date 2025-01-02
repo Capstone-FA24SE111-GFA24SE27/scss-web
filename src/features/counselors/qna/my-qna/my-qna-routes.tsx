@@ -14,7 +14,7 @@ export const myQnaRoutes: RouteObject[] = [
         path: ':id',
         element: <MyQnaChat />,
       },
-      // ...qnaDetailRoutes
+      ...qnaDetailRoutes
     ]
   },
 ];

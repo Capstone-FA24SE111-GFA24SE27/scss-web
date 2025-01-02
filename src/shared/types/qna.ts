@@ -3,12 +3,12 @@ import { Account, Counselor, Student } from './user';
 
 export type QuestionPayload = {
 	content: string;
-	questionType: 'ACADEMIC' | 'NON_ACADEMIC';
-	specializationId?: string;
-	departmentId?: string;
-	majorId?: string;
-	expertiseId?: string;
 	title: string;
+	questionType: 'ACADEMIC' | 'NON_ACADEMIC';
+	specializationId?: number;
+	departmentId?: number;
+	majorId?: number;
+	expertiseId?: number;
 };
 export type SendMessageApiArg = {
 	content: string;

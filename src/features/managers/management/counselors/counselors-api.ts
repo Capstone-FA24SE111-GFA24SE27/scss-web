@@ -173,6 +173,12 @@ export const counselorsMangementApi = api
         }),
         providesTags: ['counselors', 'appointments',]
       }),
+      getCounselorQnaFeedbacks: build.query<GetCounselorQnaFeedbacksApResponse, GetCounselorFeedbacksApiArg>({
+        query: ({ counselorId }) => ({
+          url: `/api/manage/counselors/question-card/feedback/filter/${counselorId}`,
+        }),
+        providesTags: ['counselors', 'qna',]
+      }),
       getCounselorCounselingSlots: build.query<GetCounselingSlotsResponse, number>({
         query: (counselorId) => ({
           url: `/api/manage/counselors/${counselorId}/counseling-slots`,
@@ -230,7 +236,8 @@ export const {
   useGetCounselorFeedbacksQuery,
   useGetCounselorCounselingSlotsQuery,
   useGetCounselorQuestionCardsManagementQuery,
-  useGetCounselorScheduleAppointmentsQuery
+  useGetCounselorScheduleAppointmentsQuery,
+  useGetCounselorQnaFeedbacksQuery
 } = counselorsMangementApi
 
 
@@ -342,11 +349,15 @@ export type GetCounselingAppointmentApiResponse = ApiResponse<PaginationContent<
 
 
 export type GetCounselorFeedbacksApResponse = ApiResponse<PaginationContent<AppointmentFeedbacksApManagement>>
+export type GetCounselorQnaFeedbacksApResponse = ApiResponse<PaginationContent<QnaFeedbacksApManagement>>
 
 export type AppointmentFeedbacksApManagement = AppointmentFeedback & {
   appointment: Appointment
 }
 
+export type QnaFeedbacksApManagement = AppointmentFeedback & {
+  questionCard: Question
+}
 
 export type GetCounselorFeedbacksApiArg = {
   counselorId: number

@@ -189,7 +189,7 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
           </Tooltip>
         </div>
 
-        <div className='pl-16 border-l-2 border-secondary-main'>
+        <div className='pl-16 border-l'>
           <Tooltip title={`View ${appointment.studentInfo.profile.fullName}'s profile`}>
             <ListItemButton
               onClick={() => {

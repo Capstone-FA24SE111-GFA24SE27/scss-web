@@ -249,7 +249,7 @@ export function groupQuestionsByCounselingType(appointments: Partial<Question>[]
 export const groupFeedbacksByRating = (data = []) => {
   const ratingsCount = [0, 0, 0, 0, 0];
   data.forEach((item) => {
-    const rating = item.appointmentFeedback ? item.appointmentFeedback?.rating : item.feedback?.rating;
+    const rating = item.appointmentFeedback ? item.appointmentFeedback?.rating : item.feedback?.rating || 0;
     if (rating >= 1 && rating <= 5) {
       ratingsCount[rating - 1] += 1;
     }

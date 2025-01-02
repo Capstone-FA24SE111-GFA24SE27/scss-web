@@ -72,7 +72,7 @@ const PublicQna = () => {
     <div className='w-full py-16 px-32 container mx-auto'>
       <div className=''>
         {/* <Typography className='text-lg mb-8 text-text-secondary px-16'>
-          All questions and answers asked by students
+          All questions and answers Questioned by students
         </Typography> */}
       </div>
       <div className='w-full mt-16'>

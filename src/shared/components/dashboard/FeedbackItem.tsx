@@ -11,44 +11,52 @@ import { motion } from 'framer-motion';
 export type FeedbackItem = {
   feedback: Feedback,
   profile: Profile,
-  handleOpenDetail: () => void
+  handleOpenDetail?: () => void
 }
-const FeedbackItem = ({ feedback, profile, handleOpenDetail }) => {
+const FeedbackItem = ({
+  feedback,
+  profile,
+  handleOpenDetail
+}: FeedbackItem) => {
   const dispatch = useAppDispatch();
+
+  const viewDetailDialog = () => {
+
+    dispatch(openDialog({
+      children: <AppointmentDetail id={feedback.id.toString()} />
+    }))
+  }
+
   return (
     <motion.div
       variants={motionVariants.item}
       key={feedback.id}
     >
-      <Paper className='flex justify-between items-start shadow'>
-        <div className='flex gap-16 items-start p-16'>
+      <Paper className='flex items-start shadow'>
+        <div className='flex gap-16 p-16 flex-1'>
           <Avatar
             className='size-32'
             alt={profile.fullName}
             src={profile.avatarLink}
           />
-          <div>
+          <div className='w-full '>
             <Typography className='font-semibold'>{profile.fullName}</Typography>
             <Typography className='text-text-disabled font-normal text-sm'>{dayjs(feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
             <Rating value={feedback.rating} readOnly />
-            <ExpandableText text={feedback.comment} limit={300} />
+            <ExpandableText text={feedback.comment} limit={100} className='w-full' />
+
           </div>
         </div>
-        <ListItem
-          className='bg-black p-0 mt-32'
-          secondaryAction={
-            <ItemMenu
-              menuItems={[
-                {
-                  label: 'View Source',
-                  onClick: handleOpenDetail,
-                  icon: <Visibility fontSize='small' />
-                },
-              ]}
-            />
-          }
-        >
-        </ListItem>
+
+        <ItemMenu
+          menuItems={[
+            {
+              label: 'View Source',
+              onClick: handleOpenDetail || viewDetailDialog,
+              icon: <Visibility fontSize='small' />
+            },
+          ]}
+        />
       </Paper>
 
     </motion.div>

@@ -503,7 +503,7 @@ function QuickBooking() {
                     </FormControl>
                   </div> */}
 
-                  {
+                  {/* {
                     counselingType === 'ACADEMIC'
                       ? <div className=''>
                         < div className=''>
@@ -518,8 +518,8 @@ function QuickBooking() {
                                 options={departments}
                                 getOptionLabel={(option) => option.name}
                                 onChange={(_, value) => {
-                                  field.onChange(value); // Update department selection in the form
-                                  setValue('major', null); // Reset major and specialization
+                                  field.onChange(value);
+                                  setValue('major', null);
                                   setValue('specialization', null);
                                 }}
                                 value={field.value || null}
@@ -536,7 +536,6 @@ function QuickBooking() {
                             )}
                           />
 
-                          {/* Major Selection */}
                           <Typography className='mt-16 text-lg font-semibold text-primary'>Select major</Typography>
                           <Controller
                             name="major"
@@ -548,8 +547,8 @@ function QuickBooking() {
                                 options={majors}
                                 getOptionLabel={(option) => option.name}
                                 onChange={(_, value) => {
-                                  field.onChange(value); // Update major selection in the form
-                                  setValue('specialization', null); // Reset specialization
+                                  field.onChange(value);
+                                  setValue('specialization', null);
                                 }}
                                 value={field.value || null}
                                 renderInput={(params) => (
@@ -564,58 +563,57 @@ function QuickBooking() {
                             )}
                           />
 
-                          {/* Specialization Selection */}
-                          {/* <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization</Typography>
-                      <Controller
-                        name="specialization"
-                        control={control}
-                        render={({ field }) => (
-                          <Autocomplete
-                            className="mt-16"
-                            {...field}
-                            options={specializations}
-                            getOptionLabel={(option) => option.name}
-                            onChange={(_, value) => field.onChange(value)}
-                            value={field.value || null}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Specialization"
-                                variant="outlined"
-                                error={!!errors.specialization}
+                          <Typography className='mt-16 text-lg font-semibold text-primary'>Select Specialization</Typography>
+                          <Controller
+                            name="specialization"
+                            control={control}
+                            render={({ field }) => (
+                              <Autocomplete
+                                className="mt-16"
+                                {...field}
+                                options={specializations}
+                                getOptionLabel={(option) => option.name}
+                                onChange={(_, value) => field.onChange(value)}
+                                value={field.value || null}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Specialization"
+                                    variant="outlined"
+                                    error={!!errors.specialization}
+                                  />
+                                )}
                               />
                             )}
                           />
-                        )}
-                      /> */}
                         </div>
                       </div>
                       : < div className=''>
-                        {/* <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise</Typography>
-                    <Controller
-                      name="expertise"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={expertises}
-                          className='mt-16'
-                          getOptionLabel={(option) => option.name}
-                          onChange={(_, value) => field.onChange(value)}
-                          value={field.value || null}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Expertise "
-                              variant="outlined"
-                              error={!!errors.expertise}
+                        <Typography className='text-lg font-semibold text-primary'>Select counselor's expertise</Typography>
+                        <Controller
+                          name="expertise"
+                          control={control}
+                          render={({ field }) => (
+                            <Autocomplete
+                              {...field}
+                              options={expertises}
+                              className='mt-16'
+                              getOptionLabel={(option) => option.name}
+                              onChange={(_, value) => field.onChange(value)}
+                              value={field.value || null}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Expertise "
+                                  variant="outlined"
+                                  error={!!errors.expertise}
+                                />
+                              )}
                             />
                           )}
                         />
-                      )}
-                    /> */}
                       </div>
-                  }
+                  } */}
 
 
                   <div className="grid grid-cols-3 gap-16">

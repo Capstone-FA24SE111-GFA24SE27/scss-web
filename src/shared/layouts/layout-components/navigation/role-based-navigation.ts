@@ -212,7 +212,7 @@ const counselorNavigation: NavigationOptions = {
 			items: [
 				{
 					icon: Class,
-					name: 'Asked Questions',
+					name: 'My Questions',
 					route: 'my-qna',
 				},
 				{

@@ -26,7 +26,7 @@ function QnaTab() {
   const dispatch = useAppDispatch()
   const { data, isLoading } = useGetCounselorQuestionCardsManagementQuery({
     counselorId: Number(id),
-    page: pagination.pageIndex,
+    page: pagination.pageIndex + 1,
   })
   const [page, setPage] = useState(1);
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {

@@ -49,7 +49,7 @@ const HomeContent = () => {
   const { data: qnaData, isLoading: isLoadingQuestions, refetch: refetchQna } = useGetStudentQuestionsQuery({
   })
   const askingQuestions = qnaData?.content.data.filter(item => !item.closed)
-  useQuestionsSocketListener(account?.profile.id, refetchRequest)
+  useQuestionsSocketListener(account?.profile.id, refetchQna)
 
   const navigate = useNavigate()
   return (

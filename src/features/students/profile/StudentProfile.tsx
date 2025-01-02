@@ -162,6 +162,7 @@ function StudentProfile({ }: StudentProfileProps) {
                     Counseling infomation
                   </Typography>
                   <Button
+                    color='secondary'
                     startIcon={<Edit />}
                     onClick={() => {
                       dispatch(openDialog({

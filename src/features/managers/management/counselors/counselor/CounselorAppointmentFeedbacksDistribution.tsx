@@ -11,9 +11,8 @@ const CounselorAppointmentFeedbacksDistribution = ({ counselorId }: { counselorI
   const { id: routeId } = useParams()
   const id = counselorId || routeId
   const { data: appointmentsData } = useGetCounselorAppointmentsManagementQuery({
-    fromDate: dayjs().subtract(3, 'month').startOf('month').format("YYYY-MM-DD"),
-    // to: dayjs().endOf("month").format("YYYY-MM-DD"),
-    toDate: dayjs().add(1, 'month').endOf("month").format("YYYY-MM-DD"),
+    fromDate: firstDayOfMonth,
+    toDate: lastDayOfMonth,
     counselorId: Number(id),
     size: 9999,
   });
@@ -22,7 +21,7 @@ const CounselorAppointmentFeedbacksDistribution = ({ counselorId }: { counselorI
 
   const totalFeedbacks = ratings.reduce((a, b) => a + b, 0);
   const averageRating = calculateAverageRating(ratings)
-  
+
   const ratingSeries = ratings?.reverse()
 
   const chartOptions: ApexCharts.ApexOptions = {
