@@ -311,7 +311,7 @@ const PageSimple = forwardRef<
 								open={rightSidebarOpen}
 								onClose={rightSidebarOnClose}
 							>
-								<Suspense fallback={<AppLoading />}>
+								<Suspense fallback={<AppLoading className='p-32'/>}>
 									{rightSidebarContent}
 								</Suspense>
 							</PageSimpleSidebar>

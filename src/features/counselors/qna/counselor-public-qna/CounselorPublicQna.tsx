@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import QnaSidebarContent from './CounselorPublicQnaSidebarContent';
 import { Faq } from '@/shared/pages';
+import PublicQna from '@/shared/pages/public-qna/PublicQna';
 
 const CounselorPublicQna = () => {
 	const routeParams = useParams();
@@ -62,7 +63,7 @@ const CounselorPublicQna = () => {
 					<div className='flex items-center justify-between p-32  bg-background-paper'>
 						<Heading
 							title='Public Questions & Answers'
-							description='All Q&A from students and answered by our counselors'
+							description='All Q&As from students answered by our counselors'
 						/>
 					</div>
 				</div>
@@ -79,7 +80,7 @@ const CounselorPublicQna = () => {
 			rightSidebarWidth={480}
 			content={
 				<div className='w-full'>
-					<Faq />
+					<PublicQna />
 				</div>
 			}
 		/>

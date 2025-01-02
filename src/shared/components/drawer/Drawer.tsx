@@ -13,6 +13,10 @@ function ReusableDrawer() {
 
     return (
         <Drawer
+            sx={{
+                color: '#fff',
+                zIndex: (theme) => theme.zIndex.drawer
+            }}
             onClose={() => dispatch(closeDrawer())}
             anchor={options.anchor || 'right'}
             open={options.open}

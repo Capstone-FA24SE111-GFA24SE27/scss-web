@@ -33,15 +33,9 @@ const CounselorRecentQuestionFeedbacks = ({ counselorId }: { counselorId?: strin
   };
   const navigate = useNavigate()
 
-
-  if (isLoading) {
-    return <ContentLoading />
-  }
-
-
   return (
     <Paper className='p-16 shadow space-y-16 h-sm'>
-      <Typography className="font-semibold text-2xl">Recent Q&A Feedbacks</Typography>
+      <Typography className="font-semibold text-2xl">Q&A Feedbacks</Typography>
       {
         !counselorAppointmentsWithFeedback?.length
           ? <div className='text-center p-32'>

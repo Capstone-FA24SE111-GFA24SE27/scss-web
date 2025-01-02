@@ -66,7 +66,7 @@ const Qna = () => {
 					<div className='flex items-center justify-between py-16 px-32 bg-background-paper'>
 						<Heading
 							title='Questions and Answers'
-							description='Offering a collection of Q&A and resolve student concerns.'
+							description='Resolving student concerns with questions and answers.'
 						/>
 						<div className='flex gap-8'>
 							{!location?.pathname.includes('conversations') && (

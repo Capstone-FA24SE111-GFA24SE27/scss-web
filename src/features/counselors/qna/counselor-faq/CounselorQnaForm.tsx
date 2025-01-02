@@ -139,11 +139,13 @@ function CounselorQnaForm() {
                 })
                 navigate(-1);
               })
-              .catch(error => useAlertDialog({
-                dispatch,
-                color: 'error',
-                title: 'Error creating question',
-              }))
+              .catch(error => {
+                useAlertDialog({
+                  dispatch,
+                  color: 'error',
+                  title: error?.data.message || 'Error creating question',
+                })
+              })
           }
         })
 
@@ -229,7 +231,7 @@ function CounselorQnaForm() {
           {editMode ? 'Edit your Q&A' : 'Contribute an Q&A'}
         </div>
         <Typography color='textSecondary'>Your questions will be added to FQA board. </Typography>
-        <Divider  className='my-16'/>
+        <Divider className='my-16' />
         <div className="">
           <form onSubmit={handleSubmit(onSubmit)} className="px-0">
             <div className="space-y-16">
@@ -288,7 +290,7 @@ function CounselorQnaForm() {
                 placeholder='Enter the question...'
               />
 
-              <Divider className='pt-16'/>
+              <Divider className='pt-16' />
 
               <QuillEditor
                 label='Answer'

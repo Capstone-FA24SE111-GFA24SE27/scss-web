@@ -1,22 +1,16 @@
-import { NavLinkAdapter, PageSimple } from '@/shared/components';
+import { PageSimple } from '@/shared/components';
+import { StudentView } from '@/shared/pages';
 import { Close } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import {  useGetMyCounselorQuestionsQuery } from './qna/qna-api'
-import useChatNotification from '@/shared/components/chat/useChatNotification'
-import { Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@shared/store';
+import { Outlet } from 'react-router-dom';
 import { closeStudentView, selectStudentView } from './counselors-layout-slice';
-import { StudentView } from '@/shared/pages';
 const Counselors = () => {
   const dispatch = useAppDispatch()
   const isMobile = false
   const studentView = useAppSelector(selectStudentView)
   const isOpenStudentView = Boolean(studentView)
 
-  const { data: qnaData, refetch, isLoading } = useGetMyCounselorQuestionsQuery({})
-  const qnaList = qnaData?.content?.data
-
-	useChatNotification(useGetMyCounselorQuestionsQuery);
 
   return (
     <PageSimple

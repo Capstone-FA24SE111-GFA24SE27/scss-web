@@ -37,87 +37,24 @@ import { statusColor } from '@/shared/constants';
 import { Question } from '@/shared/types';
 import dayjs from 'dayjs';
 
-const QnaDetail = ({ id, questionCard }: { id?: number, questionCard?: Question }) => {
+type QnaProps = {
+	id?: number,
+	questionCard?: Question
+}
+const QnaDetail = ({ id, questionCard }: QnaProps) => {
 	const routeParams = useParams();
 	const { id: qnaRouteId } = routeParams as { id: string };
 	const qnaId = id || qnaRouteId
 	const { data, isLoading } = useGetCounselorQnaDetailQuery(qnaId?.toString(), { skip: !qnaId || questionCard !== undefined });
-	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
-	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
-	const location = useLocation();
+	const qna = questionCard || data?.content;
 
 	if (isLoading) {
 		return <ContentLoading />;
 	}
 
-	const qna = questionCard || data?.content;
-
 	if (!qna) {
 		return <Typography className=''>No question found </Typography>;
 	}
-
-	const handleNavigateBack = () => { };
-
-	const handleLocalNavigate = (route: string) => {
-		const pathSegments = location.pathname.split('/').filter(Boolean);
-
-		// Create a new path using the first two segments
-		const newPath = `/${pathSegments[0]}/${route}`;
-
-		return newPath;
-	};
-
-	const handleVerify = () => {
-		useConfirmDialog({
-			dispatch: dispatch,
-			title: 'Are you sure you want to verify this question?',
-			confirmButtonFunction: async () => {
-				const result = await reviewQuestion({
-					id: qna.id,
-					status: 'VERIFIED',
-				});
-				useAlertDialog({
-					title: result.data.message,
-					dispatch: dispatch,
-				});
-				if (result.data.status === 200) {
-					navigate(-1);
-				}
-			},
-		});
-	};
-
-	const handleReject = () => {
-		useConfirmDialog({
-			dispatch: dispatch,
-			title: 'Are you sure you want to reject this question?',
-			confirmButtonFunction: async () => {
-				const result = await reviewQuestion({
-					id: qna.id,
-					status: 'REJECTED',
-				});
-				if (result?.data?.status === 200) {
-					useAlertDialog({
-						title: 'Question is rejected successfully',
-						dispatch: dispatch,
-					});
-					navigate(-1);
-				} else {
-					useAlertDialog({
-						title: result.data.message,
-						dispatch: dispatch,
-					});
-				}
-			},
-		});
-	};
-
-	const handleFlag = () => {
-		dispatch(openDialog({
-			children: <QnaFlagForm qna={qna} />
-		}))
-	};
 
 	return (
 		<div className='relative w-full h-full p-16 min-w-sm'>

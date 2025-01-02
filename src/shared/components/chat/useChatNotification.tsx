@@ -18,20 +18,17 @@ import { studentQnasApi } from '@/features/students/services/qna/qna-api';
 import { counselorQnaApi } from '@/features/counselors/qna/qna-api';
 import { chatApi } from './chat-api';
 
-const useChatNotification = (fetchData: any) => {
+const useChatNotification = (qnaList: any) => {
 	const socket = useSocket();
 	const dispatch = useAppDispatch();
 	const chatListeners = useAppSelector(selectChatListeners);
 
-	if(!fetchData) return;
+	// if(!qnaList) return;
 
-	const { data: qnaData, refetch, isLoading } = fetchData({})
-	const qnaList = qnaData?.content?.data
-
-	console.log(qnaList)
+	console.log(`🎁`, qnaList)
 
 	useEffect(() => {
-		if (socket && qnaList && qnaList.length > 0) {
+		if (socket && qnaList?.length) {
 			const cb = (data: Message, qna: Question) => {
 				enqueueSnackbar(data.content, {
 					key: data.id,
@@ -67,8 +64,6 @@ const useChatNotification = (fetchData: any) => {
 				}
 			})
 
-			console.log(qnaList);
-
 			qnaList.forEach((qnaItem) => {
 				if (qnaItem.chatSession && chatListeners.findIndex(item => item.id === qnaItem.id) < 0) {
 					
@@ -76,10 +71,8 @@ const useChatNotification = (fetchData: any) => {
 						`/user/${qnaItem.chatSession.id}/chat`,
 						(data) => cb(data, qnaItem)
 					);
-					console.log(
-						`passive /user/${qnaItem.chatSession.id}/chat`,
-						result
-					);
+
+					console.log(`🎉` )
 					listenersList.push(qnaItem);
 				}
 			});

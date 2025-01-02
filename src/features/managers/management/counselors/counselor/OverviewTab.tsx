@@ -21,6 +21,7 @@ import { useState } from 'react'
 import { useGetAllCounselingDemandsQuery } from '@/features/managers/dashboard/overview/overview-api'
 import { periodDateRange } from '@/shared/constants'
 import CounselorDemandsOverview from './CounselorDemandsOverview'
+import { MonthCalendar } from '@mui/x-date-pickers'
 
 const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
   const { id: routeId } = useParams()
@@ -46,19 +47,6 @@ const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
     toDate: lastDayOfMonth,
     counselorId: Number(id)
   });
-  const { data: completedAppointments } = useGetCounselorAppointmentsManagementQuery({
-    status: `ATTEND`,
-    fromDate: firstDayOfMonth,
-    toDate: lastDayOfMonth,
-    counselorId: Number(id)
-  });
-
-  const { data: canceledAppointments } = useGetCounselorAppointmentsManagementQuery({
-    status: `CANCELED`,
-    fromDate: firstDayOfMonth,
-    toDate: lastDayOfMonth,
-    counselorId: Number(id)
-  });
 
 
   const { data: appointmentRequests, refetch: refetchAppointmentRequests } = useGetCounselorAppointmentRequestsManagementQuery({
@@ -71,22 +59,6 @@ const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
 
 
   const { data: totalAppointmentsPreviousMonth } = useGetCounselorAppointmentsManagementQuery({
-    size: 9999,
-    fromDate: firstDayPreviousMonth,
-    toDate: lastDayOfPreviousMonth,
-    counselorId: Number(id)
-
-  });
-  const { data: completedAppointmentsPreviousMonth } = useGetCounselorAppointmentsManagementQuery({
-    status: `ATTEND`,
-    size: 9999,
-    fromDate: firstDayPreviousMonth,
-    toDate: lastDayOfPreviousMonth,
-    counselorId: Number(id)
-
-  });
-  const { data: canceledAppointmentsPreviousMonth } = useGetCounselorAppointmentsManagementQuery({
-    status: `CANCELED`,
     size: 9999,
     fromDate: firstDayPreviousMonth,
     toDate: lastDayOfPreviousMonth,
@@ -124,14 +96,16 @@ const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
 
   const demands = demandsDataAll?.content.filter(demand => demand.counselor?.id === Number(counselorId))
 
+  const completedAppointments = totalAppointments?.content.data?.filter(item => item.status === 'ATTEND')
+  const completedAppointmentsPreviousMonth = totalAppointmentsPreviousMonth?.content.data?.filter(item => item.status === 'ATTEND')
 
   const completedQuestions = totalQuestions?.content?.data.filter(qna => qna.answer) || []
   const rejectedQuestions = totalQuestions?.content?.data.filter(qna => ['REJECTED', 'FLAGGED'].includes(qna.status)) || []
 
   const completedQuestionsPreviousMonth = totalQuestionsPreviousMonth?.content?.data.filter(qna => qna.answer) || []
-  const rejectedQuestionsPreviousMonth = totalQuestionsPreviousMonth?.content?.data.filter(qna => ['REJECTED', 'FLAGGED'].includes(qna.status)) || []
+  // const rejectedQuestionsPreviousMonth = totalQuestionsPreviousMonth?.content?.data.filter(qna => ['REJECTED', 'FLAGGED'].includes(qna.status)) || []
 
-  console.log(totalAppointments)
+  console.log(`😎`, totalAppointments)
   return (
     <section className='w-full container'>
       <div className='p-16 flex flex-col gap-16 '>
@@ -158,11 +132,11 @@ const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
 
           <StatsCard
             title="Completed Appointment"
-            total={completedAppointments?.content?.data.length}
+            total={completedAppointments?.length}
             statChange={{
               prefixText: 'Last month',
-              current: completedAppointments?.content?.data.length,
-              previous: completedAppointmentsPreviousMonth?.content?.data.length,
+              current: completedAppointments?.length,
+              previous: completedAppointmentsPreviousMonth?.length,
             }}
             icon={<CheckCircle />}
             color="success"  // You can set color to primary, secondary, success, error, etc.

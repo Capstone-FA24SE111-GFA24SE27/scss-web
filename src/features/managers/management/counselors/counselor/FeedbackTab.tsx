@@ -1,12 +1,12 @@
 import { Role } from '@/shared/types';
 import { ArrowForward, CheckCircleOutlineOutlined, Description, ExpandMore, HelpOutlineOutlined, Search, ThumbDownOutlined, ThumbUpOutlined } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, FormControlLabel, IconButton, InputAdornment, ListItem, MenuItem, Paper, Rating, Switch, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Button, Divider, FormControlLabel, IconButton, InputAdornment, ListItem, MenuItem, Paper, Rating, Switch, TextField, Typography } from '@mui/material';
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { motion } from 'framer-motion';
-import { useGetCounselorFeedbacksQuery } from '../counselors-api';
+import { useGetCounselorFeedbacksQuery, useGetCounselorQnaFeedbacksQuery } from '../counselors-api';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SyntheticEvent, useState } from 'react'
-import { ContentLoading, ExpandableText, Heading, ItemMenu, openDialog } from '@/shared/components';
+import { ChangeEvent, SyntheticEvent, useState } from 'react'
+import { ContentLoading, ExpandableText, FeedbackItem, Heading, ItemMenu, Pagination, SubHeading, openDialog } from '@/shared/components';
 import { motionVariants } from '@/shared/configs';
 import dayjs from 'dayjs';
 import { AppointmentDetail } from '@/shared/pages';
@@ -17,16 +17,16 @@ const FeedbackTab = () => {
   const { id } = useParams()
   const { data: counselorFeedbacksData, isLoading } = useGetCounselorFeedbacksQuery({ counselorId: Number(id) })
   const counselorFeedbacks = counselorFeedbacksData?.content?.data
+
+  const { data: counselorQnaFeedbacksData, isLoading: isLoadingQnaFeedback } = useGetCounselorQnaFeedbacksQuery({ counselorId: Number(id) })
+  const counselorQnaFeedbacks = counselorQnaFeedbacksData?.content?.data
+
   const dispatch = useAppDispatch()
+  const [page, setPage] = useState(1);
 
-  const [expanded, setExpanded] = useState<number | boolean>(false);
-
-  const toggleAccordion = (panel: number) => (_: SyntheticEvent, _expanded: boolean) => {
-    setExpanded(_expanded ? panel : false);
+  const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   };
-  const navigate = useNavigate()
-
-
   if (isLoading) {
     return <ContentLoading />
   }
@@ -40,65 +40,66 @@ const FeedbackTab = () => {
     )
   }
   return (
-    <div className=''>
-      {
-        counselorFeedbacks?.length > 0 && (
-          <motion.div
-            variants={motionVariants.container}
-            initial="hidden"
-            animate="show"
-            className=''
-          >
-            <div className='grid grid-cols-3 gap-16'>
-              {counselorFeedbacks?.map((feedback) => (
-                <motion.div
-                  variants={motionVariants.item}
-                  key={feedback.id}
-                >
-                  <Paper className='bg-background-paper flex justify-between items-start shadow'>
-                    <div className='flex gap-16 items-start  p-16'>
-                      <Avatar
-                        className='size-32'
-                        alt={feedback.appointment.studentInfo.profile.fullName}
-                        src={feedback.appointment.studentInfo?.profile.avatarLink}
-                      />
-                      <div>
-                        <Typography className='font-semibold'>{feedback.appointment.studentInfo?.profile.fullName}</Typography>
-                        <Typography className='text-text-disabled font-normal text-sm'>{dayjs(feedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
-                        <Rating value={feedback.rating} readOnly />
-                        <ExpandableText text={feedback.comment} limit={300} />
-                      </div>
-                    </div>
-                    <ListItem
-                      className='bg-black p-0 mt-32'
-                      secondaryAction={
-                        <ItemMenu
-                          menuItems={[
-                            {
-                              label: 'View Appointment',
-                              onClick: () => {
-                                dispatch(openDialog({
-                                  children: <AppointmentDetail id={feedback.appointment.id.toString()} />
-                                }))
-                              },
-                              icon: <Description fontSize='small' />
-                            },
-                          ]}
-                        />
-                      }
-                    >
+    <div className='grid grid-cols-2 gap-16 divide-x-2'>
 
-                    </ListItem>
-                  </Paper>
+      <div className='space-y-16'>
+        <SubHeading title='Appointment Feedbacks' />
+        {
+          counselorFeedbacks?.length > 0 && (
+            <motion.div
+              variants={motionVariants.container}
+              initial="hidden"
+              animate="show"
+              className=''
+            >
+              <div className='grid grid-cols-2 md:grid-cols-3 gap-16'>
+                {counselorFeedbacks?.map((feedback) => (
+                  <FeedbackItem
+                    feedback={feedback?.appointment?.appointmentFeedback}
+                    profile={feedback?.appointment?.studentInfo?.profile}
+                  />
+                ))
+                }
+              </div>
+            </motion.div >
+          )
+        }
+        <Pagination
+          page={page}
+          count={counselorFeedbacksData?.content.totalPages}
+          handleChange={handlePageChange}
+        />
+      </div >
+      <div className='space-y-16 pl-16'>
+        <SubHeading title='Qna Feedbacks' />
+        {
+          counselorQnaFeedbacks?.length > 0 && (
+            <motion.div
+              variants={motionVariants.container}
+              initial="hidden"
+              animate="show"
+              className=''
+            >
+              <div className='grid grid-cols-2 md:grid-cols-3 gap-16'>
+                {counselorQnaFeedbacks?.map((feedback) => (
+                  <FeedbackItem
+                    feedback={feedback?.questionCard?.feedback}
+                    profile={feedback?.questionCard?.student?.profile}
+                  />
+                ))
+                }
+              </div>
+            </motion.div >
+          )
+        }
+        <Pagination
+          page={page}
+          count={counselorFeedbacksData?.content.totalPages}
+          handleChange={handlePageChange}
+        />
+      </div >
+    </div>
 
-                </motion.div>
-              ))
-              }
-            </div >
-          </motion.div >
-        )
-      }
-    </div >
   )
 }
 

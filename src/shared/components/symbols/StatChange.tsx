@@ -19,7 +19,7 @@ const StatChange: React.FC<StatChangeProps> = ({ current, previous, prefixText }
     change = 'N/A'; // Impossible to calculate percentage change
     isIncrease = current > 0; // If `current` is positive, it's an increase
   } else if (current === 0) {
-    change = '-100'; // A drop to 0 is a 100% decrease
+    change = -100; // A drop to 0 is a 100% decrease
     isIncrease = false; // Always a decrease in this case
   } else {
     // Calculate percentage change

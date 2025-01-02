@@ -45,7 +45,7 @@ export const studentQnasApi = api
         query: ({ }) => ({
           url: `/api/question-cards/student/filter`,
           params: {
-            status: 'VERIFIED',
+            // status: 'VERIFIED',
             isClosed: false,
             sortBy: 'createdDate',
             sortDirection: 'DESC',
