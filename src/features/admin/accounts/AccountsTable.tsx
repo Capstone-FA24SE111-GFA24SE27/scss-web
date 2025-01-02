@@ -21,8 +21,9 @@ import { clsx } from 'clsx';
 import useDebounceValue from '@/shared/hooks/useDebounceValue';
 import dayjs from 'dayjs';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
-import { useAppDispatch } from '@shared/store';
+import { useAppDispatch, useAppSelector } from '@shared/store';
 import useConfirmDialog from '@/shared/hooks/form/useConfirmDialog';
+import { selectViewAccountSearchTerm } from './admin-view-account-slice';
 
 type Props = {
 	selectedRole: Role;
@@ -30,6 +31,7 @@ type Props = {
 
 const AccountsTable = (props: Props) => {
 	const { selectedRole } = props;
+	const searchTerm = useAppSelector(selectViewAccountSearchTerm)
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
@@ -37,20 +39,17 @@ const AccountsTable = (props: Props) => {
 
 	const dispatch = useAppDispatch();
 
-	const [search, setSearch] = useState('');
-
 	const { data, isLoading } = useGetAccountsQuery({
 		page: pagination.pageIndex + 1,
 		role: selectedRole,
+		search: searchTerm
 	});
 	console.log(data);
 
 	const [blockAccountById] = usePutBlockAccountByIdMutation();
 	const [unblockAccountById] = usePutUnblockAccountByIdMutation();
 
-	const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-		setSearch(useDebounceValue(event.target.value, 500));
-	};
+
 
 	const handleBlockAccount = (id: number) => {
 		console.log(id);
@@ -99,16 +98,26 @@ const AccountsTable = (props: Props) => {
 	};
 	
 	const getParamRole = (role: Role) => {
-		if(role === 'ADMIN'){
-			return ''
+		switch(role){
+			default: {
+				return ''
+			}
+			case 'ACADEMIC_COUNSELOR': {
+				return 'a-counselor'
+			}
+			case 'NON_ACADEMIC_COUNSELOR': {
+				return 'na-counselor'
+			}
+			case 'MANAGER': {
+				return 'manager'
+			}
+			case 'SUPPORT_STAFF': {
+				return 'staff'
+			}
+			case 'STUDENT': {
+				return 'student'
+			}
 		}
-		if(role === 'ACADEMIC_COUNSELOR' || role === 'NON_ACADEMIC_COUNSELOR'){
-			return 'counselor'
-		}
-		if(role === 'MANAGER' || role === 'SUPPORT_STAFF'){
-			return 'generic'
-		}
-		return 'student'
 	}
 
 	// const handleBlockMultipleAccounts = (selected: number[]) => {

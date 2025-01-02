@@ -14,7 +14,7 @@ const Students = () => {
 			<div className='flex items-center justify-between p-32 pb-16'>
 				<Heading
 					title='Students Management'
-					description='Manage academic and non-academic counselors'
+					description='Manage students'
 				/>
 			</div>
 			<div className='flex overflow-hidden h-full w-full gap-32 px-32 '>

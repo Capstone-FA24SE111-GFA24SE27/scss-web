@@ -17,7 +17,7 @@ export const adminRoutes: RouteObject[] = [
     children: [
       {
 				path: '',
-				element: <Navigate to={`dashboard`} />
+				element: <Navigate to={`overall/overview`} />
 			},
         ...specialRoutes,
         ...resourcesRoutes,

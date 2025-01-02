@@ -55,7 +55,6 @@ function DataTable<TData>(props: MaterialReactTableProps<TData>) {
 				enableColumnPinning: true,
 				enableFacetedValues: true,
 				enableRowActions: true,
-				enableRowNumbers: false,
 				enableRowSelection: false, // Disable row selection
 				enableGlobalFilter: false, // Disable the global search functionality
 				muiBottomToolbarProps: {

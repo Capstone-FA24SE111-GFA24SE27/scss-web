@@ -8,24 +8,25 @@ import { z } from 'zod';
 import { useGetOneAccountQuery } from '../admin-accounts-api';
 import AccountDetailAdminViewHeader from './AccountDetailAdminViewHeader';
 import { Paper, Tab, Tabs } from '@mui/material';
-import { Scrollbar } from '@/shared/components';
+import { ContentLoading, Scrollbar } from '@/shared/components';
 import AccountInfoTab from './tabs/AccountInfoTab';
 import { roles } from '@/shared/constants';
+import { checkFirebaseImageUrl, checkImageUrl } from '@/shared/utils';
 
 const currentYear = dayjs().year();
 
 const schema = z.object({
 	id: z.union([z.string(), z.number()]).optional(),
 	avatarLink: z
-		.instanceof(File, { message: 'Image is required' })
-		.refine((file) => isValidImage(file), {
-			message: 'File must be an image',
-		})
-		.refine((file) => file.size <= MAX_FILE_SIZE, {
-			message: 'Image must be less than 5MB',
-		}),
-	email: z.string().email('Invalid email address'), // Validates email format
-	password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
+		.string()
+		.url('Invalid URL')
+		.refine(
+			async (url) =>
+				checkFirebaseImageUrl(url) || (await checkImageUrl(url)),
+			'URL must point to a valid image file (jpeg, png, gif)'
+		),
+	email: z.string().optional(), // Validates email format
+	// password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
 	gender: z.enum(['MALE', 'FEMALE']), // Enum for gender
 	phoneNumber: z
 		.string()
@@ -50,40 +51,65 @@ type Props = {
 
 const GenericAccountAdminView = (props: Props) => {
 	const { id } = props;
+	const [isInitializing, setIsInitializing] = useState(true);
 
 	const { data: genericAccountData, isLoading: isLoadingAccount } =
 		useGetOneAccountQuery({ id }, { skip: !id });
 
-	const counselorAccount: Account | null = genericAccountData?.content;
+	const genericAccount: Account | null = genericAccountData?.content;
 
-	const defaultValues = {
-		avatarLink: counselorAccount?.profile?.avatarLink,
-		email: counselorAccount?.email,
-		// password: counselorAccount?.,
-		gender:
-			counselorAccount?.profile?.gender === 'MALE' ? 'MALE' : 'FEMALE',
-		phoneNumber: counselorAccount?.profile?.phoneNumber,
-		dateOfBirth: dayjs(counselorAccount?.profile?.dateOfBirth).format(
-			'YYYY-MM-DD'
-		),
-		fullName: counselorAccount?.profile?.fullName,
+	const defaultValues = () => {
+		return {
+			avatarLink: genericAccount?.profile?.avatarLink,
+			email: genericAccount?.email,
+			// password: counselorAccount?.,
+			gender:
+				genericAccount?.profile?.gender === 'MALE'
+					? 'MALE'
+					: 'FEMALE',
+			phoneNumber: genericAccount?.profile?.phoneNumber,
+			dateOfBirth: dayjs(genericAccount?.profile?.dateOfBirth).format(
+				'YYYY-MM-DD'
+			),
+			fullName: genericAccount?.profile?.fullName,
+		};
 	};
-
-	console.log(defaultValues);
 
 	const methods = useForm({
 		mode: 'onChange',
-		defaultValues,
+		defaultValues: {},
 		resolver: zodResolver(schema),
 	});
 
-	const { reset, watch, formState } = methods;
+	const { reset, watch, formState, trigger } = methods;
 
 	const formData = watch();
 
+	const initializeDefaultValues = () => {
+		const values = defaultValues();
+		//@ts-ignore
+		reset(values);
+		trigger();
+		setIsInitializing(false);
+	};
+
+	useEffect(() => {
+		if (!isLoadingAccount) {
+			initializeDefaultValues();
+		}
+	}, [isLoadingAccount]);
+
+	useEffect(() => {
+		if (formData) {
+			console.log('form data changing', formData);
+		}
+	}, [formData]);
+
+	if (isLoadingAccount || isInitializing) return <ContentLoading />;
+
 	return (
 		<FormProvider {...methods}>
-			<AccountDetailAdminViewHeader role={roles.SUPPORT_STAFF} />
+			<AccountDetailAdminViewHeader  />
 			<Paper className='flex flex-col flex-auto h-full p-16 overflow-hidden'>
 				<Tabs
 					value={0}

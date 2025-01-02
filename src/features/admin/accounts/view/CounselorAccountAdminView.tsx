@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useGetCounselorAdminQuery } from '../../profiles/counselor/admin-counselor-api';
 import {
 	ContentLoading,
 	FilterTabs,
@@ -17,7 +16,7 @@ import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
 import dayjs from 'dayjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Delete } from '@mui/icons-material';
-import { useGetOneAccountQuery } from '../admin-accounts-api';
+import { useGetCounselorAdminQuery, useGetOneAccountQuery } from '../admin-accounts-api';
 import AccountDetailAdminViewHeader from './AccountDetailAdminViewHeader';
 import {
 	checkFirebaseImageUrl,
@@ -44,7 +43,7 @@ const schemaNonAcademic = z.object({
 				checkFirebaseImageUrl(url) || (await checkImageUrl(url)),
 			'URL must point to a valid image file (jpeg, png, gif)'
 		),
-	email: z.string().email('Invalid email address'), // Validates email format
+	email: z.string().optional(), // Validates email format
 	// password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
 	gender: z.enum(['MALE', 'FEMALE']), // Enum for gender
 	phoneNumber: z
@@ -146,7 +145,7 @@ const schemaAcademic = z.object({
 				(await checkImageUrl(url)) || checkFirebaseImageUrl(url),
 			'URL must point to a valid image file (jpeg, png, gif)'
 		),
-	email: z.string().email('Invalid email address'), // Validates email format
+	email: z.string().optional(), // Validates email format
 	// password: z.string().min(6, 'Password must be at least 6 characters long'), // Minimum password length
 	gender: z.enum(['MALE', 'FEMALE']), // Enum for gender
 	phoneNumber: z
@@ -388,22 +387,12 @@ const CounselorAccountAdminView = (props: Props) => {
 
 	// }, [errors, setFocus]);
 
-	const onSubmit = () => {
-		if (dirtyFields.qualifications) {
-		}
-	};
-
 	if (isLoading || isLoadingAccount || isInitializing)
 		return <ContentLoading />;
 
 	return (
 		<FormProvider {...methods}>
 			<AccountDetailAdminViewHeader
-				role={
-					counselor?.profile?.expertise
-						? roles.NON_ACADEMIC_COUNSELOR
-						: roles.ACADEMIC_COUNSELOR
-				}
 				changeTab={setTabValue}
 			/>
 			<Paper className='flex flex-col flex-auto h-full p-16 overflow-hidden'>

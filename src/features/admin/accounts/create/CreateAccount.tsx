@@ -9,12 +9,15 @@ import {
 	CreateSupportStaffForm,
 } from './forms';
 import { Paper, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAppSelector } from '@shared/store';
+import { selectViewAccountTab } from '../admin-view-account-slice';
 
 const CreateAccount = () => {
 	const { role } = useParams();
-	const [tabValue, setTabValue] = useState(0);
-
+	const tab = useAppSelector(selectViewAccountTab)
+	const [tabValue, setTabValue] = useState(tab);
+	const navigate = useNavigate()
 	const createAccountTabs = [
 		{ label: 'Academic Counselor', value: roles.ACADEMIC_COUNSELOR },
 		{
@@ -34,7 +37,7 @@ const CreateAccount = () => {
 	let createAccountForm = <></>;
 	switch (createAccountTabs[tabValue]?.value) {
 		case roles.STUDENT:
-			createAccountForm = <CreateStudentForm />;
+			navigate(-1)
 			break;
 		case roles.ACADEMIC_COUNSELOR:
 			createAccountForm = <CreateAcademicCounselorForm />;
