@@ -132,16 +132,16 @@ export const counselorsAdminApi = api
   })
 
 export const {
-  useGetCounselorsAcademicAdminQuery,
-  useGetCounselorsNonAcademicAdminQuery,
-  useGetCounselorsAdminQuery,
-  useGetCounselorAdminQuery,
-  useGetCounselingSlotsAdminQuery,
-  useGetCounselorAppointmentsAdminQuery,
-  useGetAppointmentReportAdminQuery,
-  useGetCounselorAppointmentRequestsAdminQuery,
-  useGetCounselorFeedbacksAdminQuery,
-  useGetCounselorCounselingSlotsAdminQuery
+  // useGetCounselorsAcademicAdminQuery,
+  // useGetCounselorsNonAcademicAdminQuery,
+  // useGetCounselorsAdminQuery,
+  // useGetCounselorAdminQuery,
+  // useGetCounselingSlotsAdminQuery,
+  // useGetCounselorAppointmentsAdminQuery,
+  // useGetAppointmentReportAdminQuery,
+  // useGetCounselorAppointmentRequestsAdminQuery,
+  // useGetCounselorFeedbacksAdminQuery,
+  // useGetCounselorCounselingSlotsAdminQuery
   // usePutBlockAccountMutation,
   // usePutUnblockAccountMutation
 } = counselorsAdminApi

@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { ArrowBack, Delete } from '@mui/icons-material';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
-import { useAppDispatch } from '@shared/store';
+import { useAppDispatch, useAppSelector } from '@shared/store';
 import {
 	useGetOneAccountQuery,
 	usePutBlockAccountByIdMutation,
@@ -33,19 +33,21 @@ import ImageInput from '@/shared/components/image/ImageInput';
 import { uploadFile } from '@/shared/services';
 import AvatarAppendForm from '../create/forms/AvatarAppendForm';
 import { roles } from '@/shared/constants';
+import { selectViewAccountTab } from '../admin-view-account-slice';
+import BlockIcon from '@mui/icons-material/Block';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 type Props = {
 	changeTab?: any;
-	role: string;
 };
 
 const AccountDetailAdminViewHeader = (props: Props) => {
-	const { changeTab, role } = props;
-	const { id} = useParams();
+	const { changeTab } = props;
+	const { id, role } = useParams();
 	const dispatch = useAppDispatch();
 
 	const tabFields = {
-		email: 0,
+		// email: 0,
 		gender: 0,
 		phoneNumber: 0,
 		dateOfBirth: 0,
@@ -104,7 +106,6 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	const handleChangeTab = () => {
 		if (changeTab) {
 			const firstError = Object.keys(errors)[0];
-			console.log(tabFields[firstError]);
 			if (Number.isInteger(tabFields[firstError])) {
 				changeTab(tabFields[firstError]);
 			}
@@ -122,63 +123,145 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 		handleTrigger();
 		if (isValid) {
 			if (formData) {
-				if (role === roles.ACADEMIC_COUNSELOR) {
-					console.log('asdasd')
-					const res = updateAcademicCounselor({
-						id,
-						fullName,
-						email,
-						avatarLink,
-						gender,
-						phoneNumber,
-						dateOfBirth,
-						departmentId,
-						majorId,
-						specializedSkills,
-						otherSkills,
-						workHistory,
-						achievements,
-					});
-				}
-				if (role === roles.NON_ACADEMIC_COUNSELOR) {
-					const res = updateNonAcademicCounselor({
-						//@ts-ignore
-						id,
-						fullName,
-						email,
-						avatarLink,
-						gender,
-						phoneNumber,
-						dateOfBirth,
-						expertiseId,
-						specializedSkills,
-						otherSkills,
-						workHistory,
-						achievements,
-					});
-				}
-
-				if (role === roles.MANAGER) {
-					const res = updateManager({
-						id,
-						fullName,
-						email,
-						avatarLink,
-						gender,
-						phoneNumber,
-						dateOfBirth,
-					});
-				}
-				if (role === roles.SUPPORT_STAFF) {
-					const res = updateSupportStaff({
-						id,
-						fullName,
-						email,
-						avatarLink,
-						gender,
-						phoneNumber,
-						dateOfBirth,
-					});
+				switch (role) {
+					default: {
+						break;
+					}
+					case 'a-counselor': {
+						updateAcademicCounselor({
+							id,
+							fullName,
+							email,
+							avatarLink,
+							gender,
+							phoneNumber,
+							dateOfBirth,
+							departmentId,
+							majorId,
+							specializedSkills,
+							otherSkills,
+							workHistory,
+							achievements,
+						})
+							.unwrap()
+							.then((res) => {
+								if (res && res.status === 200) {
+									useAlertDialog({
+										title: res.message,
+										dispatch,
+										color: 'error',
+									});
+									navigate(-1);
+								}
+							})
+							.catch((err) => {
+								useAlertDialog({
+									title: 'An error occur while updating the account',
+									dispatch,
+									color: 'error',
+								});
+							});
+						break;
+					}
+					case 'na-counselor': {
+						updateNonAcademicCounselor({
+							//@ts-ignore
+							id,
+							fullName,
+							email,
+							avatarLink,
+							gender,
+							phoneNumber,
+							dateOfBirth,
+							expertiseId,
+							specializedSkills,
+							otherSkills,
+							workHistory,
+							achievements,
+						})
+							.unwrap()
+							.then((res) => {
+								if (res && res.status === 200) {
+									useAlertDialog({
+										title: res.message,
+										dispatch,
+										color: 'error',
+									});
+									navigate(-1);
+								}
+							})
+							.catch((err) => {
+								useAlertDialog({
+									title: 'An error occur while updating the account',
+									dispatch,
+									color: 'error',
+								});
+							});
+						break;
+					}
+					case 'manager': {
+						updateManager({
+							id,
+							fullName,
+							email,
+							avatarLink,
+							gender,
+							phoneNumber,
+							dateOfBirth,
+						})
+							.unwrap()
+							.then((res) => {
+								if (res && res.status === 200) {
+									useAlertDialog({
+										title: res.message,
+										dispatch,
+										color: 'error',
+									});
+									navigate(-1);
+								}
+							})
+							.catch((err) => {
+								useAlertDialog({
+									title: 'An error occur while updating the account',
+									dispatch,
+									color: 'error',
+								});
+							});
+						break;
+					}
+					case 'staff': {
+						updateSupportStaff({
+							id,
+							fullName,
+							email,
+							avatarLink,
+							gender,
+							phoneNumber,
+							dateOfBirth,
+						})
+							.unwrap()
+							.then((res) => {
+								if (res && res.status === 200) {
+									useAlertDialog({
+										title: res.message,
+										dispatch,
+										color: 'error',
+									});
+									navigate(-1);
+								}
+							})
+							.catch((err) => {
+								useAlertDialog({
+									title: 'An error occur while updating the account',
+									dispatch,
+									color: 'error',
+								});
+							});
+						break;
+					}
+					case 'student': {
+						break;
+					}
 				}
 			}
 		}
@@ -189,7 +272,6 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	}, [errors]);
 
 	const handleBlockAccount = () => {
-		console.log(id);
 		useConfirmDialog({
 			dispatch,
 			confirmButtonFunction: () => {
@@ -204,7 +286,14 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 								});
 							}
 						})
-						.catch((err) => console.log(err))
+						.catch((err) => {
+							console.log(err);
+							useAlertDialog({
+								title: 'An error occur while updating the account',
+								dispatch,
+								color: 'error',
+							});
+						})
 						.finally(() => {
 							refetch();
 						});
@@ -215,7 +304,6 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	};
 
 	const handleUnblockAccount = () => {
-		console.log(id);
 		useConfirmDialog({
 			dispatch,
 			confirmButtonFunction: () => {
@@ -230,7 +318,14 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 								});
 							}
 						})
-						.catch((err) => console.log(err))
+						.catch((err) => {
+							console.log(err);
+							useAlertDialog({
+								title: 'An error occur while updating the account',
+								dispatch,
+								color: 'error',
+							});
+						})
 						.finally(() => {
 							refetch();
 						});
@@ -254,8 +349,6 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 		);
 	};
 
-	console.log('dirty', dirtyFields, isValid, errors);
-
 	useEffect(() => {
 		if (!isLoadingAccount && userViewedAccount) {
 			trigger();
@@ -267,7 +360,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 
 	return (
 		<>
-			<div className='flex flex-col p-32 pb-0 '>
+			<div className='flex flex-col px-32 pt-16 pb-0 '>
 				<motion.div
 					initial={{ x: 20, opacity: 0 }}
 					animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
@@ -314,11 +407,23 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 						initial={{ x: -20 }}
 						animate={{ x: 0, transition: { delay: 0.3 } }}
 					>
-						<Typography className='font-semibold truncate text-16 sm:text-20'>
-							{fullName ||
-								accountData?.content.profile.fullName ||
-								'Account...'}
-						</Typography>
+						<div className='flex gap-8 items-center'>
+							<Typography className='font-semibold truncate text-16 sm:text-20'>
+								{fullName ||
+									accountData?.content.profile.fullName ||
+									'Account...'}
+							</Typography>
+							<Tooltip title={accountData?.content.status}>
+								<div className='flex items-center max-w-40'>
+									{accountData?.content.status ===
+									'ACTIVE' ? (
+										<VerifiedUserIcon className='text-green' />
+									) : (
+										<BlockIcon className='text-red' />
+									)}
+								</div>
+							</Tooltip>
+						</div>
 						<Typography variant='caption' className='font-medium'>
 							{email}
 						</Typography>
@@ -355,7 +460,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 						<Button
 							className='mx-4 whitespace-nowrap'
 							variant='contained'
-							color='secondary'
+							color='primary'
 							disabled={_.isEmpty(dirtyFields)}
 							onClick={handleUpdateAccount}
 						>

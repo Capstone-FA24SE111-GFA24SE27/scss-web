@@ -11,11 +11,19 @@ const AccountDetailAdminView = () => {
 	let view = null;
 
 	switch (role) {
-		case 'counselor': {
+		case 'a-counselor': {
 			view = <CounselorAccountAdminView id={id} />;
 			break;
 		}
-		case 'generic': {
+		case 'na-counselor': {
+			view = <CounselorAccountAdminView id={id} />;
+			break;
+		}
+		case 'manager': {
+			view = <GenericAccountAdminView id={id} />;
+			break;
+		}
+		case 'staff': {
 			view = <GenericAccountAdminView id={id} />;
 			break;
 		}

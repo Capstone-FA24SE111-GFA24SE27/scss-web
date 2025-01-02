@@ -16,13 +16,21 @@ export const problemTagsApi = apiService
 			>({
 				query: ({
 					keyword = '',
-					problemCategoryId = '',
+					problemCategoryId,
 					sortBy = 'createdDate',
-					sortDirection = 'ASC',
+					sortDirection = 'DESC',
 					page = 1,
 					size = 10,
 				}) => ({
-					url: `/api/problem-tags/filter?keyword=${keyword}&problemCategory=${problemCategoryId}&sortBy=${sortBy}&sortDirection=${sortDirection}&page=${page}&size=${size}`,
+					url: `/api/problem-tags/filter`,
+					params: {
+						keyword,
+						problemCategoryId,
+						sortBy,
+						sortDirection,
+						page,
+						size,
+					},
 				}),
 				providesTags: ['tags'],
 			}),
@@ -45,7 +53,7 @@ export const problemTagsApi = apiService
 					body: {
 						name: args.name,
 						point: args.point,
-						categoryId: args.categoryId
+						categoryId: args.categoryId,
 					},
 				}),
 				invalidatesTags: ['tags'],
@@ -58,8 +66,8 @@ export const problemTagsApi = apiService
 					url: `/api/problem-tags/problem-category`,
 					method: 'POST',
 					body: {
-						name: args.name
-					}
+						name: args.name,
+					},
 				}),
 				invalidatesTags: ['tag-categories'],
 			}),
@@ -73,7 +81,7 @@ export const problemTagsApi = apiService
 					body: {
 						name: args.name,
 						point: args.point,
-						categoryId: args.categoryId
+						categoryId: args.categoryId,
 					},
 				}),
 				invalidatesTags: ['tags'],
@@ -86,7 +94,7 @@ export const problemTagsApi = apiService
 					url: `/api/problem-tags/problem-category/${args.id}`,
 					method: 'PUT',
 					body: {
-						name: args.name
+						name: args.name,
 					},
 				}),
 				invalidatesTags: ['tag-categories'],
@@ -122,12 +130,12 @@ export const {
 	usePostProblemTagMutation,
 	usePostProblemTagsCategoryMutation,
 	useUpdateProblemTagMutation,
-	useUpdateProblemTagsCategoryMutation
+	useUpdateProblemTagsCategoryMutation,
 } = problemTagsApi;
 
 type getProblemTagsArgs = {
 	keyword?: string;
-	problemCategoryId?: number;
+	problemCategoryId?: number | string;
 	sortBy?: string;
 	sortDirection?: 'ASC' | 'DESC';
 	page?: number;
@@ -155,25 +163,25 @@ type postProblemTagsCategoryArgs = {
 type postProblemTagsCategoryResponse = ApiResponse<ProblemTagCategory>;
 
 type updateProblemTagArgs = {
-	id: number,
+	id: number;
 	name: string;
 	point: number;
 	categoryId: number;
-}
+};
 type updateProblemTagResponse = ApiResponse<ProblemTag>;
 
 type updateProblemTagsCategoryArgs = {
-	id: number,
+	id: number;
 	name: string;
-}
+};
 type updateProblemTagsCategoryResponse = ApiResponse<ProblemTagCategory>;
 
 type deleteProblemTagArgs = {
-	id: number,
-}
-type deleteProblemTagResponse = {}
+	id: number;
+};
+type deleteProblemTagResponse = {};
 
 type deleteProblemTagsCategoryArgs = {
-	id: number,
-}
-type deleteProblemTagsCategoryResponse = {}
+	id: number;
+};
+type deleteProblemTagsCategoryResponse = {};
