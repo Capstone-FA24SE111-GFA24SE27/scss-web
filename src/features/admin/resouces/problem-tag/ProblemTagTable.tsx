@@ -4,10 +4,10 @@ import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
+import { CheckCircle, Delete, Edit, RemoveCircle } from '@mui/icons-material';
 import {
 	useDeleteProblemTagMutation,
 	useGetProblemTagsQuery,
@@ -17,22 +17,26 @@ import { ProblemTag } from '@/shared/types/admin';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 import {
-	selectAdminQuestionCardCategoryFilter,
-	selectAdminQuestionCardSearch,
+	selectProblemTagCategorySearch,
+	selectProblemTagFilterCategory,
+	selectProblemTagSearch,
+	setSelectedProblemTagUpdate,
 } from '../admin-resource-slice';
+
 function ProblemTagTable() {
-	const keyword = useAppSelector(selectAdminQuestionCardSearch);
-	const catSelected = useAppSelector(selectAdminQuestionCardCategoryFilter);
+	const keyword = useAppSelector(selectProblemTagSearch);
+	const catSelected = useAppSelector(selectProblemTagFilterCategory);
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
 	});
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 
 	const { data, isLoading } = useGetProblemTagsQuery({
 		page: pagination.pageIndex + 1,
 		keyword,
-    problemCategoryId: catSelected?.id
+		problemCategoryId: catSelected?.id,
 	});
 
 	const [removeProblemTag] = useDeleteProblemTagMutation();
@@ -58,6 +62,14 @@ function ProblemTagTable() {
 		}
 	};
 
+	const updateProblemTag = (item: ProblemTag) => {
+		if (item) {
+			dispatch(setSelectedProblemTagUpdate(item));
+			console.log(item)
+			navigate(`update/${item.id}`);
+		}
+	};
+
 	const columns = useMemo<MRT_ColumnDef<ProblemTag>[]>(
 		() => [
 			{
@@ -66,13 +78,6 @@ function ProblemTagTable() {
 				Cell: ({ row }) => <Typography>{row.original.name}</Typography>,
 			},
 
-			{
-				accessorKey: 'point',
-				header: 'Point',
-				Cell: ({ row }) => (
-					<Typography>{row.original.point}</Typography>
-				),
-			},
 			{
 				accessorKey: 'category.name',
 				header: 'Category',
@@ -102,6 +107,19 @@ function ProblemTagTable() {
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
 					<MenuItem
 						key={0}
+						onClick={() => {
+							updateProblemTag(row.original);
+							closeMenu();
+							table.resetRowSelection();
+						}}
+					>
+						<ListItemIcon>
+							<Edit />
+						</ListItemIcon>
+						Update
+					</MenuItem>,
+					<MenuItem
+						key={1}
 						onClick={() => {
 							removeProducts([row.original.id]);
 							closeMenu();

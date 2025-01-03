@@ -246,7 +246,7 @@ export type GetCounselingDemandFilterApiArg = {
 	page?: number;
 };
 
-export type GetMatchCounselorForStudentStaffResponse = ApiResponse<Counselor>;
+export type GetMatchCounselorForStudentStaffResponse = ApiResponse<Counselor[]>;
 export type GetMatchCounselorForStudentStaffArg = {
 	slotId?: number | string;
 	date?: string;
@@ -312,4 +312,4 @@ type GetQuickMatchCounselorForStaffArgs = {
 	specializationId?: string;
 	majorId?: string;
 };
-type GetQuickMatchCounselorForStaffResponse = ApiResponse<Counselor>;
+type GetQuickMatchCounselorForStaffResponse = ApiResponse<Counselor[]>;

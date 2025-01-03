@@ -8,16 +8,16 @@ import {
 	CreateStudentForm,
 	CreateSupportStaffForm,
 } from './forms';
-import { Paper, Typography } from '@mui/material';
+import { Box, Paper, Tab, Tabs, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector } from '@shared/store';
 import { selectViewAccountTab } from '../admin-view-account-slice';
 
 const CreateAccount = () => {
 	const { role } = useParams();
-	const tab = useAppSelector(selectViewAccountTab)
+	const tab = useAppSelector(selectViewAccountTab);
 	const [tabValue, setTabValue] = useState(tab);
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 	const createAccountTabs = [
 		{ label: 'Academic Counselor', value: roles.ACADEMIC_COUNSELOR },
 		{
@@ -26,6 +26,7 @@ const CreateAccount = () => {
 		},
 		{ label: 'Manager', value: roles.MANAGER },
 		{ label: 'Support Staffs', value: roles.SUPPORT_STAFF },
+		{ label: 'Student', value: roles.STUDENT },
 	];
 	useEffect(() => {
 		if (role)
@@ -37,7 +38,7 @@ const CreateAccount = () => {
 	let createAccountForm = <></>;
 	switch (createAccountTabs[tabValue]?.value) {
 		case roles.STUDENT:
-			navigate(-1)
+			setTabValue(0);
 			break;
 		case roles.ACADEMIC_COUNSELOR:
 			createAccountForm = <CreateAcademicCounselorForm />;
@@ -73,11 +74,44 @@ const CreateAccount = () => {
 				/>
 			</div>
 			<div className='px-32 py-16'>
-				<FilterTabs
-					tabs={createAccountTabs}
-					tabValue={tabValue}
-					onChangeTab={handleChangeTab}
-				/>
+				<Tabs
+					value={tabValue}
+					onChange={handleChangeTab}
+					textColor='inherit'
+					variant='scrollable'
+					scrollButtons={false}
+					className='min-h-40'
+					classes={{
+						indicator:
+							'flex justify-center opacity-15 rounded-full w-full h-full',
+					}}
+					TabIndicatorProps={{
+						children: (
+							<Box className='w-full h-full rounded-full bg-primary-light' />
+						),
+					}}
+				>
+					<Tab
+						className='text-lg font-semibold min-h-40 min-w-64 px-16'
+						disableRipple
+						label={'Academic Counselor'}
+					/>
+					<Tab
+						className='text-lg font-semibold min-h-40 min-w-64 px-16'
+						disableRipple
+						label={'Non-Academic Counselor'}
+					/>
+					<Tab
+						className='text-lg font-semibold min-h-40 min-w-64 px-16'
+						disableRipple
+						label={'Manager'}
+					/>
+					<Tab
+						className='text-lg font-semibold min-h-40 min-w-64 px-16'
+						disableRipple
+						label={'Support Staff'}
+					/>
+				</Tabs>
 			</div>
 
 			<Paper className='flex overflow-hidden'>

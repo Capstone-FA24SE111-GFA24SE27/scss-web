@@ -14,6 +14,10 @@ export const timeSlotRoutes: RouteObject[] = [
 				path: 'create',
 				element: <CreateTimeSlotForm />,
 			},
+			{
+				path: 'update/:id',
+				element: <CreateTimeSlotForm />,
+			},
 		],
 	},
 ];

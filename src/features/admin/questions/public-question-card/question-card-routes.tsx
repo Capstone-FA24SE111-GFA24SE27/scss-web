@@ -6,7 +6,7 @@ const QuestionCard = lazy(() => import('./QuestionCardLayout'));
 
 export const adminQuestionCardRoutes: RouteObject[] = [
 	{
-		path: 'questions',
+		path: 'public',
 		element: <QuestionCard />,
 		children: [
 			// {
