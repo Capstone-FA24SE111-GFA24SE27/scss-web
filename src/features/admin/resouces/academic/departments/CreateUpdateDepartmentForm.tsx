@@ -32,6 +32,7 @@ type Props = {
 const CreateUpdateDepartmentForm = (props: Props) => {
 	const { departmentInfo } = props;
 	const { id } = useParams();
+	console.log('id', id);
 	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -63,7 +64,7 @@ const CreateUpdateDepartmentForm = (props: Props) => {
 	const [addDepartment] = usePostCreateDepartmentByIdAdminMutation();
 	const handleSubmitForm = (data: FormType) => {
 		if (isDirty && isValid) {
-			if (initialDepartmentInfo || !_.isNaN(id)) {
+			if (initialDepartmentInfo || id !== undefined) {
 				updateDepartment({
 					...data,
 				})
@@ -154,12 +155,12 @@ const CreateUpdateDepartmentForm = (props: Props) => {
 
 				<Heading
 					title={
-						initialDepartmentInfo
+						initialDepartmentInfo || id !== undefined
 							? 'Update department'
 							: 'Create department'
 					}
 					description={
-						initialDepartmentInfo
+						initialDepartmentInfo || id !== undefined
 							? 'Update department infos'
 							: 'Enter department infors'
 					}
@@ -201,7 +202,7 @@ const CreateUpdateDepartmentForm = (props: Props) => {
 			<div className='flex items-center justify-end gap-16 px-32'>
 				<Button
 					className='px-16 '
-					onClick={() => dispatch(closeDialog())}
+					onClick={() => navigate(-1)}
 					color='primary'
 				>
 					Cancel
@@ -214,7 +215,9 @@ const CreateUpdateDepartmentForm = (props: Props) => {
 					disabled={!isDirty || !isValid}
 					onClick={handleSubmit(handleSubmitForm)}
 				>
-					{initialDepartmentInfo ? 'Update' : 'Add'}
+					{initialDepartmentInfo || id !== undefined
+						? 'Update'
+						: 'Add'}
 				</Button>
 			</div>
 		</div>

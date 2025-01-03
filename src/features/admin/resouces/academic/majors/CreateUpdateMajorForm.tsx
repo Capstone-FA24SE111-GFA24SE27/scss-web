@@ -1,4 +1,9 @@
-import { closeDialog, ContentLoading, Heading, NavLinkAdapter } from '@/shared/components';
+import {
+	closeDialog,
+	ContentLoading,
+	Heading,
+	NavLinkAdapter,
+} from '@/shared/components';
 import { Major } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -10,11 +15,12 @@ import {
 	TextField,
 } from '@mui/material';
 import { useAppDispatch } from '@shared/store';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
 	useGetDepartmentsAdminQuery,
+	useGetMajorByIdQuery,
 	usePostCreateMajorByIdAdminMutation,
 	usePutUpdateMajorByIdAdminMutation,
 } from '../academic-data-admin-api';
@@ -23,7 +29,7 @@ import { useAlertDialog } from '@/shared/hooks';
 import { navigateUp } from '@/shared/utils';
 import { ArrowBack } from '@mui/icons-material';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion';
 const schema = z.object({
 	id: z.union([z.string(), z.number()]).optional(),
 	name: z.string().min(1, 'Please enter Major name'),
@@ -41,13 +47,19 @@ type Props = {
 
 const CreateUpdateMajorForm = (props: Props) => {
 	const { initialMajorInfo: initialMajorInfo } = props;
-    const {id} = useParams()
+	const { id } = useParams();
 	const dispatch = useAppDispatch();
-    const location = useLocation();
+	const location = useLocation();
 	const navigate = useNavigate();
-    
-	const { data: departments, isLoading: isLoadingDepartment } =
-		useGetDepartmentsAdminQuery();
+
+	const { data: fetchedMajor, isLoading: isLoadingInitial } =
+		useGetMajorByIdQuery(id, { skip: !id });
+	const { data: departmentsData, isLoading: isLoadingDepartment } =
+		useGetDepartmentsAdminQuery({
+			size: 999,
+		});
+
+	const departments = departmentsData?.data;
 	const defaultValues = initialMajorInfo
 		? initialMajorInfo
 		: {
@@ -56,25 +68,55 @@ const CreateUpdateMajorForm = (props: Props) => {
 				departmentId: '',
 		  };
 
-	const { handleSubmit, control, formState, watch } = useForm<FormType>({
-		resolver: zodResolver(schema),
-		defaultValues,
-		mode: 'onChange',
-	});
+	const { handleSubmit, control, formState, watch, reset } =
+		useForm<FormType>({
+			resolver: zodResolver(schema),
+			defaultValues,
+			mode: 'onChange',
+		});
 
 	const formData = watch();
 
 	const { isValid, isDirty, errors } = formState;
 
+	useEffect(() => {
+		if (!isLoadingInitial && fetchedMajor) {
+			reset(fetchedMajor);
+		}
+	}, [isLoadingInitial]);
+
 	const [updateMajor] = usePutUpdateMajorByIdAdminMutation();
 	const [addMajor] = usePostCreateMajorByIdAdminMutation();
 	const handleSubmitForm = (data: FormType) => {
 		if (isDirty && isValid) {
-			if (initialMajorInfo || id) {
+			if (initialMajorInfo || id !== undefined) {
 				updateMajor({
-					id: initialMajorInfo.id,
 					...data,
-				}).unwrap();
+				})
+					.unwrap()
+					.then((res) => {
+						if (schema.safeParse(res).success) {
+							useAlertDialog({
+								dispatch,
+								title: 'Update major successfully',
+							});
+						} else {
+							useAlertDialog({
+								dispatch,
+								title: 'result not type of major',
+							});
+						}
+						navigate(-1);
+					})
+					.catch((err) => {
+						console.error('Error update department', err);
+						useAlertDialog({
+							dispatch,
+							title: 'Error updating department',
+							color: 'error',
+						});
+						navigate(-1);
+					});
 			} else {
 				addMajor(data)
 					.unwrap()
@@ -91,10 +133,10 @@ const CreateUpdateMajorForm = (props: Props) => {
 								title: 'result not type of Major',
 							});
 						}
+						navigate(-1);
 					})
 					.catch((err) => {
 						console.error('Error create Major', err);
-						dispatch(closeDialog());
 						useAlertDialog({
 							dispatch,
 							title: 'Error creating Major',
@@ -120,7 +162,7 @@ const CreateUpdateMajorForm = (props: Props) => {
 						className='flex items-center w-fit'
 						component={NavLinkAdapter}
 						role='button'
-						to={navigateUp(location, 2)}
+						to={'/resources/academic'}
 						color='inherit'
 					>
 						<ArrowBack />
@@ -132,7 +174,7 @@ const CreateUpdateMajorForm = (props: Props) => {
 
 				<Heading
 					title={
-						initialMajorInfo
+						initialMajorInfo || id !== undefined
 							? 'Update major'
 							: 'Create major'
 					}
@@ -204,7 +246,7 @@ const CreateUpdateMajorForm = (props: Props) => {
 			<div className='flex items-center justify-end gap-16 px-32'>
 				<Button
 					className='px-16 '
-					onClick={() => dispatch(closeDialog())}
+					onClick={() => navigate(-1)}
 					color='primary'
 				>
 					Cancel
@@ -217,7 +259,7 @@ const CreateUpdateMajorForm = (props: Props) => {
 					disabled={!isDirty || !isValid}
 					onClick={handleSubmit(handleSubmitForm)}
 				>
-					{initialMajorInfo ? 'Update' : 'Add'}
+					{initialMajorInfo || id !== undefined ? 'Update' : 'Add'}
 				</Button>
 			</div>
 		</div>

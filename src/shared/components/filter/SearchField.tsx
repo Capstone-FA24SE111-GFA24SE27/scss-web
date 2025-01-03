@@ -15,6 +15,7 @@ interface SearchFieldProps {
   disabled?: boolean; // Optional prop to disable the search field
   type?: 'text' | 'number' | 'search' | 'password'; // Added type prop
   showClearButton?: boolean; // New prop to toggle the clear button
+  value?: string
 }
 
 const SearchField = ({
@@ -28,8 +29,9 @@ const SearchField = ({
   disabled = false, // Default to false (enabled)
   type = 'text', // Default type to text
   showClearButton = true, // Default to showing the clear button
+  value = ''
 }: SearchFieldProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(value);
 
   // Debounce the search input
   const debounceSearch = useCallback(
@@ -152,7 +154,7 @@ export const ContentSearch = ({
 };
 // const ContentSearch = () => {
 //   return (
-//     <div className='w-full p-32 max-w-xl mx-auto'>
+//     <div className='w-full max-w-xl p-32 mx-auto'>
 //       <Paper className="flex items-center gap-16 p-16 py-8 rounded-full shadow-none border-1">
 //         <Input
 //           startAdornment={

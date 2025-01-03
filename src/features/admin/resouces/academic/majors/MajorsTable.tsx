@@ -1,43 +1,75 @@
-import { useMemo, useState} from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
 import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
 import _ from 'lodash';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
-import { useAppDispatch } from '@shared/store';
-import { useGetDepartmentsAdminQuery, useGetMajorsAdminQuery } from '../academic-data-admin-api';
+import { CheckCircle, Delete, Edit, RemoveCircle } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '@shared/store';
+import {
+	useGetDepartmentsAdminQuery,
+	useGetMajorsAdminQuery,
+} from '../academic-data-admin-api';
 import { Major } from '@/shared/types';
+import { selectMajorFilter, setMajorFilter } from '../../admin-resource-slice';
+import { useNavigate } from 'react-router-dom';
 
 function MajorsTable() {
-	//   const [pagination, setPagination] = useState({
-	//     pageIndex: 0,
-	//     pageSize: 10,
-	//   });
-	//   console.log(pagination)
+	const filter = useAppSelector(selectMajorFilter);
+	const { keyword, page, size, sortDirection } = filter;
 
-	const [departmentsCache, setDepartmentsCache] = useState(new Map())
+	const [pagination, setPagination] = useState({
+		pageIndex: page - 1,
+		pageSize: size,
+	});
 
-	const { data: departments, isLoading: isLoadingDepartment } = useGetDepartmentsAdminQuery();
+	const { data: departmentsData, isLoading: isLoadingDepartment } =
+		useGetDepartmentsAdminQuery({
+			size: 999,
+		});
+	const departments = departmentsData?.data;
+	const { data, isLoading } = useGetMajorsAdminQuery({
+		keyword,
+		page: pagination.pageIndex + 1,
+		size: pagination.pageSize,
+		sortDirection: sortDirection as 'ASC' | 'DESC',
+	});
 
-	const { data, isLoading } = useGetMajorsAdminQuery();
-
-	console.log(data)
+	console.log(data);
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 
 	const findDepartmentById = (id: string | number) => {
-		if(id !== null) {
-			if (departmentsCache.has(id)) {
-				return departmentsCache.get(id);
-			  }
-			  const result = departments.find((item) => item.id === id);
-			  if (result) {
-				setDepartmentsCache((prevCache) => new Map(prevCache).set(id, result));
-			  }
-			  return result ? 'No Department' : result;
+		if (id !== null) {
+			const result = departments.find((item) => item.id === id);
+			return !result ? 'No Department' : result.name;
 		}
-	}
+	};
+
+	// const handlePagination = (value) => {
+	// 	console.log(value);
+	// 	setPagination(value);
+	// 	dispatch(
+	// 		setMajorFilter({
+	// 			page: value.pageIndex + 1,
+	// 			size: value.pageSize,
+	// 			...filter,
+	// 		})
+	// 	);
+	// };
+
+	useEffect(() => {
+		if (pagination) {
+			dispatch(
+				setMajorFilter({
+					page: pagination.pageIndex + 1,
+					size: pagination.pageSize,
+					...filter,
+				})
+			);
+		}
+	}, [pagination]);
 
 	//   const [removeCategory] = useDeleteQuestionCategoryAdminMutation()
 
@@ -59,6 +91,12 @@ function MajorsTable() {
 		}
 	};
 
+	const updateMajor = (id: number) => {
+		if (id !== null) {
+			navigate(`major/form/${id}`);
+		}
+	};
+
 	const columns = useMemo<MRT_ColumnDef<Major>[]>(
 		() => [
 			{
@@ -75,7 +113,13 @@ function MajorsTable() {
 			{
 				accessorKey: 'departmentId',
 				header: 'Department',
-				Cell: ({ row }) => <Typography>{departments && departments.length > 0 ? findDepartmentById(row.original.departmentId) : ''}</Typography>,
+				Cell: ({ row }) => (
+					<Typography>
+						{departments && departments.length > 0
+							? findDepartmentById(row.original.departmentId)
+							: ''}
+					</Typography>
+				),
 			},
 		],
 		[]
@@ -88,11 +132,27 @@ function MajorsTable() {
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
-				data={data ? data : []}
+				data={data?.data || []}
 				columns={columns}
-				enablePagination={true}
-				rowCount={data?.length || 0}
+				manualPagination
+				rowCount={data?.totalElements || 0}
+				onPaginationChange={setPagination}
+				state={{ pagination }}
+				enableRowNumbers={false}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
+					<MenuItem
+						key={0}
+						onClick={() => {
+							updateMajor(row.original.id);
+							closeMenu();
+							table.resetRowSelection();
+						}}
+					>
+						<ListItemIcon>
+							<Edit />
+						</ListItemIcon>
+						Update
+					</MenuItem>,
 					<MenuItem
 						key={0}
 						onClick={() => {

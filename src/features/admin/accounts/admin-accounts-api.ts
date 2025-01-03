@@ -3,6 +3,8 @@ import { roleBasedNavigation } from '@/shared/layouts/layout-components/navigati
 import {
 	Account,
 	CertificationList,
+	CounselingSlot,
+	Counselor,
 	PaginationContent,
 	QualificationList,
 	Role,
@@ -151,6 +153,7 @@ export const adminAccountsApi = apiService
 				}),
 				invalidatesTags: (result, error, arg) => [
 					{ type: 'accounts', id: roles.ACADEMIC_COUNSELOR },
+					'accounts',
 				],
 			}),
 			putUpdateNonAcademicCounselorAccount: build.mutation<
@@ -164,6 +167,7 @@ export const adminAccountsApi = apiService
 				}),
 				invalidatesTags: (result, error, arg) => [
 					{ type: 'accounts', id: roles.NON_ACADEMIC_COUNSELOR },
+					'accounts',
 				],
 			}),
 			putUpdateManagerAccount: build.mutation<
@@ -177,6 +181,7 @@ export const adminAccountsApi = apiService
 				}),
 				invalidatesTags: (result, error, arg) => [
 					{ type: 'accounts', id: roles.MANAGER },
+					'accounts',
 				],
 			}),
 			putUpdateStaffAccount: build.mutation<
@@ -190,7 +195,18 @@ export const adminAccountsApi = apiService
 				}),
 				invalidatesTags: (result, error, arg) => [
 					{ type: 'accounts', id: roles.SUPPORT_STAFF },
+					'accounts',
 				],
+			}),
+
+			getCounselorAdmin: build.query<
+				GetCounselorApiResponse,
+				number | string
+			>({
+				query: (counselorId) => ({
+					url: `/api/manage/counselors/${counselorId}`,
+				}),
+				providesTags: ['accounts'],
 			}),
 		}),
 	});
@@ -209,6 +225,7 @@ export const {
 	usePutUpdateNonAcademicCounselorAccountMutation,
 	usePutUpdateManagerAccountMutation,
 	usePutUpdateStaffAccountMutation,
+	useGetCounselorAdminQuery
 } = adminAccountsApi;
 
 type postCreateSupportStaffAccountRepsonse = ApiMessage;
@@ -253,7 +270,7 @@ type postCreateAcademicCounselorAccountArgs = {
 	certifications?: Omit<CertificationList, 'id'>;
 };
 
-type PutUpdateAcademicCounselorAccountResponse = {};
+type PutUpdateAcademicCounselorAccountResponse = ApiMessage;
 type PutUpdateAcademicCounselorAccountArgs = {
 	avatarLink?: string;
 	email?: string;
@@ -272,7 +289,7 @@ type PutUpdateAcademicCounselorAccountArgs = {
 	id: string | number;
 };
 
-type PutUpdateNonAcademicCounselorAccountResponse = {};
+type PutUpdateNonAcademicCounselorAccountResponse = ApiMessage;
 type PutUpdateNonAcademicCounselorAccountArgs = {
 	avatarLink?: string;
 	email?: string;
@@ -290,7 +307,7 @@ type PutUpdateNonAcademicCounselorAccountArgs = {
 	id: string | number;
 };
 
-type PutUpdateManagerAccountResponse = {};
+type PutUpdateManagerAccountResponse = ApiMessage;
 type PutUpdateManagerAccountArgs = {
 	id: string | number;
 	avatarLink?: string;
@@ -302,7 +319,7 @@ type PutUpdateManagerAccountArgs = {
 	fullName?: string;
 };
 
-type PutUpdateStaffAccountResponse = {};
+type PutUpdateStaffAccountResponse = ApiMessage;
 type PutUpdateStaffAccountArgs = {
 	id: string | number;
 	avatarLink?: string;
@@ -349,7 +366,7 @@ type postCreateAccountArgs = {
 	role: Role;
 };
 
-type postCreateAccountRepsonse = {};
+type postCreateAccountRepsonse = ApiMessage;
 
 type putUpdateAccountStatusArg = {
 	id: number | string;
@@ -371,4 +388,16 @@ type getAccountsArgs = {
 type getOneAccountResponse = ApiResponse<Account>;
 type getOneAccountArgs = {
 	id: number | string;
+};
+type GetCounselorApiResponse = ApiResponse<ManagementCounselor>;
+
+type ManagementCounselor = {
+	profile?: Counselor;
+	availableDateRange: AvailableDateRange;
+	counselingSlot: CounselingSlot[];
+};
+
+type AvailableDateRange = {
+	startDate: string;
+	endDate: string;
 };

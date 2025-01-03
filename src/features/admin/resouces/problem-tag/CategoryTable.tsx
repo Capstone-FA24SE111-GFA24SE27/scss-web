@@ -15,22 +15,19 @@ import {
 } from './problem-tag-api';
 import { ManagementCounselor } from '@/features/managers/management/counselors/counselors-api';
 import { ProblemTag, ProblemTagCategory } from '@/shared/types/admin';
-import { useAppDispatch } from '@shared/store';
+import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
+import { selectAdminQuestionCardSearchCategory } from '../admin-resource-slice';
 function CategoryTable() {
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
 	});
-	console.log(pagination);
+	const keyword = useAppSelector(selectAdminQuestionCardSearchCategory);
 	const dispatch = useAppDispatch();
 	const [tableData, setTableData] = useState([]);
 
-	const { data, isLoading } = useGetProblemTagsCategoriesQuery({
-		page: pagination.pageIndex + 1,
-	});
-
-	console.log(data);
+	const { data, isLoading } = useGetProblemTagsCategoriesQuery({});
 
 	const [removeCategory] = useDeleteProblemTagsCategoryMutation();
 
@@ -68,14 +65,16 @@ function CategoryTable() {
 
 	useEffect(() => {
 		if (data) {
+			const filtered = data.filter((item) => item.name.toLowerCase().includes(keyword.toLowerCase()));
+			console.log(keyword)
 			setTableData(
-				data.slice(
+				filtered.slice(
 					pagination.pageIndex * pagination.pageSize,
 					(pagination.pageIndex + 1) * pagination.pageSize
 				)
 			);
 		}
-	}, [data]);
+	}, [data, keyword]);
 
 	if (isLoading) {
 		return <ContentLoading />;

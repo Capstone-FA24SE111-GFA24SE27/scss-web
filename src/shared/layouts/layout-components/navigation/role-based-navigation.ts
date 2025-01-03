@@ -379,17 +379,17 @@ const adminNavigation: NavigationOptions = {
 		{
 			name: 'Overall',
 			description: 'Data visualization & analytics',
-			route: '',
+			route: 'overall',
 			items: [
 				{
 					icon: Dashboard,
-					name: 'Dashboard',
-					route: 'dashboard',
+					name: 'Overview',
+					route: 'overview',
 				},
 				{
 					icon: Analytics,
-					name: 'Overview',
-					route: 'overview',
+					name: 'Analytics',
+					route: 'analytics',
 				},
 			],
 		},

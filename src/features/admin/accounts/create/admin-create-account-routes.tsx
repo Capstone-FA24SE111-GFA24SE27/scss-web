@@ -6,7 +6,7 @@ const CreateAccount = lazy(()=> import('./CreateAccount'));
 
 export const adminCreateAccountRoutes: RouteObject[] = [
   {
-    path: 'create/:role?',
+    path: 'create',
     element: <CreateAccount />      
      
   },

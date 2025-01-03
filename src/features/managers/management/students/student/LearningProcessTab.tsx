@@ -1,6 +1,5 @@
 import { useGetSemestersQuery } from '@/shared/services';
-import { calculateGPA } from '@/shared/utils';
-import { Add, CakeOutlined, Checklist, Description, EmailOutlined, EventNote, Grade, LocalPhoneOutlined } from '@mui/icons-material';
+import {  Checklist, Description, EventNote, Grade } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Box, DialogActions, DialogContent, DialogTitle, Tab, Tabs } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -10,11 +9,10 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { BackdropLoading, ContentLoading, Gender, NavLinkAdapter, SelectField, closeDialog, openDialog } from '@shared/components';
 import { useAppDispatch } from '@shared/store';
-import dayjs from 'dayjs';
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { StudentDetailAppointmentList, useGetStudentBehaviorAssessmentMutation, useGetStudentDocumentDetailQuery, useGetStudentProblemTagDetailsQuery, useGetStudentStudyDetailQuery } from '@shared/pages/student';
+import { useParams } from 'react-router-dom';
+import {useGetStudentBehaviorAssessmentMutation, useGetStudentDocumentDetailQuery, useGetStudentProblemTagDetailsQuery, useGetStudentStudyDetailQuery } from '@shared/pages/student';
 import StudentGradeChart from '@/shared/pages/student/StudentGradeChart';
 import AcademicTranscript from '@/shared/pages/student/AcademicTranscript';
 import AttendanceReport from '@/shared/pages/student/AttendanceReport';
@@ -38,17 +36,17 @@ function LearningProcess({ id, actionButton }: LearningProcessProps) {
   const [tabValue, setTabValue] = useState(0);
 
 
-  const [displayView, setDisplayView] = useState<'' | 'academic_transcrip' | 'attendance_report'>('')
+  // const [displayView, setDisplayView] = useState<'' | 'academic_transcrip' | 'attendance_report'>('')
   const [selectedSemester, setSelectedSemester] = useState('');
 
   const handleSelectSemester = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedSemester(event.target.value);
   };
   const student = data?.content
-  const navigate = useNavigate();
-  const location = useLocation()
+  // const navigate = useNavigate();
+  // const location = useLocation()
 
-  const studentGpa = calculateGPA(academicTranscriptData?.content)
+  // const studentGpa = calculateGPA(academicTranscriptData?.content)
   const dispatch = useAppDispatch()
 
   const { data: semesterData } = useGetSemestersQuery()

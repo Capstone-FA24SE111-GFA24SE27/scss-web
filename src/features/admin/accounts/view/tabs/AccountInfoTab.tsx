@@ -1,5 +1,5 @@
 import { Account } from '@/shared/types';
-import { Autocomplete, MenuItem, TextField } from '@mui/material';
+import { Autocomplete, MenuItem, TextField, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import React from 'react';
@@ -37,23 +37,33 @@ const AccountInfoTab = (props: Props) => {
 				)}
 			/>
 
-			<Controller
+			{/* <Controller
 				name='email'
 				control={control}
 				render={({ field }) => (
-					<TextField
-						{...field}
-						className='mt-8 mb-16'
-						id='email'
-						label='Email'
-						type='email'
-						variant='outlined'
-						error={!!errors.email}
-						helperText={errors?.email?.message as string}
-						fullWidth
-					/>
+					// <TextField
+					// 	{...field}
+					// 	className='mt-8 mb-16'
+					// 	id='email'
+					// 	label='Email'
+					// 	type='email'
+					// 	contentEditable={false}
+					// 	variant='outlined'
+					// 	error={!!errors.email}
+					// 	helperText={errors?.email?.message as string}
+					// 	fullWidth
+					// />
+					<div className='flex gap-8  mb-16'>
+
+					<Typography className='text-text-disabled'>
+						Email:
+					</Typography>
+					<Typography>
+						{field.value}
+					</Typography>
+					</div>
 				)}
-			/>
+			/> */}
 
 			<Controller
 				control={control}
