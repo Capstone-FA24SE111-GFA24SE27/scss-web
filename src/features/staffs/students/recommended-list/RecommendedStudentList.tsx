@@ -10,9 +10,7 @@ import StudentListItem from '@/shared/pages/student-list/StudentListItem';
 
 
 const RecommendedStudentList = () => {
-
-    const [page, setPage] = useState(1);
-
+	const [page, setPage] = useState(1);
 	const filter = useAppSelector(selectFilter);
 	const dispatch = useDispatch()
 	const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
@@ -39,8 +37,8 @@ const RecommendedStudentList = () => {
 	});
 
 	const students = data?.data;
-  return (
-    <div className='flex flex-col flex-1 gap-16 pb-16 container mx-auto'>
+	return (
+		<div className='flex flex-col flex-1 gap-16 pb-16 container mx-auto'>
 			<Box>
 				<motion.div
 					initial={{ y: 20, opacity: 0 }}
@@ -73,7 +71,7 @@ const RecommendedStudentList = () => {
 				handleChange={handlePageChange}
 			/>
 		</div>
-  )
+	)
 }
 
 export default RecommendedStudentList

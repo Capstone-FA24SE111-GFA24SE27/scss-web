@@ -31,6 +31,7 @@ function Loading(props: LoadingProps) {
         >
             <img
                 src="/assets/images/logo/FPT-education.jpeg" alt=""
+                // src="/assets/icons/scss-icon.png" alt=""
                 width={100} height={100}
                 className='w-[28rem]'
             />

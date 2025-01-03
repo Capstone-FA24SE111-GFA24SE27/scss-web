@@ -141,7 +141,7 @@ const QuestionCardItem = (props: Props) => {
               ) : qna.answer ? (
                 <div>
                   {/* <Typography className='px-8 text-sm italic' color='textDisabled'>Answered at 4:20 11/10/2024</Typography> */}
-                  <Typography className='px-8'>
+                  <Typography className=''>
                     {RenderHTML(qna.answer)}
                   </Typography>
                 </div>

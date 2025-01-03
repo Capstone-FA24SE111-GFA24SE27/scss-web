@@ -35,12 +35,6 @@ function AppointmentTab() {
   })
 
 
-
-
-  const removeProducts = (ids: string[]) => {
-
-  };
-
   const columns = useMemo<MRT_ColumnDef<Appointment>[]>(() => [
     {
       accessorFn: (row) => dayjs(row.startDateTime).format('YYYY-MM-DD'),
@@ -103,74 +97,76 @@ function AppointmentTab() {
   const handleEndDateChange = (date: string) => setEndDate(date);
 
   return (
-    <Paper className='shadow p-8'>
-      {/* <div className='flex justify-end w-full mt-8'>
+    <div className='space-y-8'>
+      <div className='flex justify-end w-full'>
         <DateRangePicker
           startDate={startDate ? dayjs(startDate) : null}
           endDate={endDate ? dayjs(endDate) : null}
           onStartDateChange={handleStartDateChange}
           onEndDateChange={handleEndDateChange}
-          className='h-48'
         />
-      </div> */}
-      <DataTable
-        data={data?.content.data || []}
-        columns={columns}
-        manualPagination
-        rowCount={data?.content.totalElements || 0}
-        onPaginationChange={setPagination}
-        state={{ pagination }}
-        enableColumnFilterModes={false}
-        enableGlobalFilter={false} // Disable global search
-        renderRowActionMenuItems={({ closeMenu, row, table }) => [
-          <MenuItem
-            key={0}
-            onClick={() => {
-              dispatch(openDialog({
-                children: <AppointmentDetail id={row.original.id.toString()} />
-              }))
-              closeMenu();
-              table.resetRowSelection();
-            }}
-          >
-            <ListItemIcon>
-              <Visibility />
-            </ListItemIcon>
-            View Detail
-          </MenuItem>,
-          <MenuItem
-            key={1}
-            onClick={() => {
-              // navigate(`report/${row.original.id}`)
-              dispatch(openDialog({
-                children: <StudentAppointmentReport id={row.original.id.toString()} />
-              }))
-              closeMenu();
-              table.resetRowSelection();
-            }}
-            disabled={!row.original.havingReport}
-          >
-            <ListItemIcon>
-              <Summarize />
-            </ListItemIcon>
-            View Report
-          </MenuItem>
+      </div>
+      <Paper className='shadow p-8'>
 
-        ]}
-        renderTopToolbarCustomActions={({ table }) => {
-          const { rowSelection } = table.getState();
+        <DataTable
+          data={data?.content.data || []}
+          columns={columns}
+          manualPagination
+          rowCount={data?.content.totalElements || 0}
+          onPaginationChange={setPagination}
+          state={{ pagination }}
+          enableColumnFilterModes={false}
+          enableGlobalFilter={false} // Disable global search
+          renderRowActionMenuItems={({ closeMenu, row, table }) => [
+            <MenuItem
+              key={0}
+              onClick={() => {
+                dispatch(openDialog({
+                  children: <AppointmentDetail id={row.original.id.toString()} />
+                }))
+                closeMenu();
+                table.resetRowSelection();
+              }}
+            >
+              <ListItemIcon>
+                <Visibility />
+              </ListItemIcon>
+              View Detail
+            </MenuItem>,
+            <MenuItem
+              key={1}
+              onClick={() => {
+                // navigate(`report/${row.original.id}`)
+                dispatch(openDialog({
+                  children: <StudentAppointmentReport id={row.original.id.toString()} />
+                }))
+                closeMenu();
+                table.resetRowSelection();
+              }}
+              disabled={!row.original.havingReport}
+            >
+              <ListItemIcon>
+                <Summarize />
+              </ListItemIcon>
+              View Report
+            </MenuItem>
 
-          if (Object.keys(rowSelection).length === 0) {
-            return null;
-          }
+          ]}
+          renderTopToolbarCustomActions={({ table }) => {
+            const { rowSelection } = table.getState();
 
-          return (
-            <div>
-            </div>
-          );
-        }}
-      />
-    </Paper>
+            if (Object.keys(rowSelection).length === 0) {
+              return null;
+            }
+
+            return (
+              <div>
+              </div>
+            );
+          }}
+        />
+      </Paper>
+    </div>
 
   );
 }
