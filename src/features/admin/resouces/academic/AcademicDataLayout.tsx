@@ -104,7 +104,7 @@ const AcademicDataLayout = (props: Props) => {
 							tabs={adminAcademicTabs}
 						/>
 
-						<Button
+						{/* <Button
 							variant='contained'
 							color='primary'
 							sx={{ color: 'white' }}
@@ -116,7 +116,7 @@ const AcademicDataLayout = (props: Props) => {
 							{tabValue === 0 && 'Create Department'}
 							{tabValue === 1 && 'Create Major'}
 							{tabValue === 2 && 'Create Specialization'}
-						</Button>
+						</Button> */}
 					</div>
 					{tabValue === 0 && (
 						<SearchField

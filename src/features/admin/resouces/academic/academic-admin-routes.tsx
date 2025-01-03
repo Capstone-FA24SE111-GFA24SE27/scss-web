@@ -17,16 +17,16 @@ export const adminAcademicRoutes: RouteObject[] = [
 		element: <AcademicDataLayout />,
 		children: [],
 	},
-	{
-		path: 'academic/department/form/:id?',
-		element: <CreateUpdateDepartmentForm />,
-	},
-	{
-		path: 'academic/major/form/:id?',
-		element: <CreateUpdateMajorForm />,
-	},
-	{
-		path: 'academic/specialization/form/:id?',
-		element: <CreateUpdateSpecializationForm />,
-	},
+	// {
+	// 	path: 'academic/department/form/:id?',
+	// 	element: <CreateUpdateDepartmentForm />,
+	// },
+	// {
+	// 	path: 'academic/major/form/:id?',
+	// 	element: <CreateUpdateMajorForm />,
+	// },
+	// {
+	// 	path: 'academic/specialization/form/:id?',
+	// 	element: <CreateUpdateSpecializationForm />,
+	// },
 ];

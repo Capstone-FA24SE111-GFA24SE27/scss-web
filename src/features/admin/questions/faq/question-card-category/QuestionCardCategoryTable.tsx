@@ -9,21 +9,28 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, Edit, RemoveCircle } from '@mui/icons-material';
 import { ProblemTag, TimeSlot } from '@/shared/types/admin';
-import { useAppDispatch } from '@shared/store';
+import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 import {
 	useDeleteQuestionCategoryAdminMutation,
 	useGetContributedQuestionCardCategoryQuery,
-} from './question-card-api';
+} from '../question-card-api';
 import { ContributedQuestionCategory } from '@/shared/types';
+import { selectAdminQuestionCardSearchCategory } from '../../admin-question-slice';
 function QuestionCardCategoryTable() {
-	//   const [pagination, setPagination] = useState({
-	//     pageIndex: 0,
-	//     pageSize: 10,
-	//   });
+	const [pagination, setPagination] = useState({
+		pageIndex: 0,
+		pageSize: 10,
+	});
 	//   console.log(pagination)
+	const [tableData, setTableData] = useState([]);
 
-	const { data, isLoading } = useGetContributedQuestionCardCategoryQuery();
+	const keyword = useAppSelector(selectAdminQuestionCardSearchCategory);
+
+	const { data: fetchedData, isLoading } =
+		useGetContributedQuestionCardCategoryQuery();
+	const data = fetchedData?.content;
+
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const [removeCategory] = useDeleteQuestionCategoryAdminMutation();
@@ -72,6 +79,21 @@ function QuestionCardCategoryTable() {
 		[]
 	);
 
+	useEffect(() => {
+		if (data) {
+			const filtered = data.filter((item) =>
+				item.name.toLowerCase().includes(keyword.toLowerCase())
+			);
+			console.log(keyword);
+			setTableData(
+				filtered.slice(
+					pagination.pageIndex * pagination.pageSize,
+					(pagination.pageIndex + 1) * pagination.pageSize
+				)
+			);
+		}
+	}, [data, keyword]);
+
 	if (isLoading) {
 		return <ContentLoading />;
 	}
@@ -79,10 +101,12 @@ function QuestionCardCategoryTable() {
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
-				data={data?.content || []}
+				data={tableData}
 				columns={columns}
-				enablePagination={true}
-				rowCount={data?.content.length || 0}
+				manualPagination
+				onPaginationChange={setPagination}
+				state={{ pagination }}
+				rowCount={tableData?.length}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
 					<MenuItem
 						key={0}

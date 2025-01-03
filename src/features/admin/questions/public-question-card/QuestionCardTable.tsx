@@ -31,12 +31,10 @@ import {
 	useGetQuestionCardAdminQuery,
 	usePutUpdateQuestionPublicStatusAdminMutation,
 } from './question-card-api';
-import {
-	selectAdminQuestionCardSearch,
-	selectAdminQuestionTab,
-} from '../admin-resource-slice';
+
 import EditIcon from '@mui/icons-material/Edit';
 import { Controller } from 'react-hook-form';
+import { selectAdminQuestionCardSearch, selectAdminQuestionTab } from '../admin-question-slice';
 
 function QuestionCardTable() {
 	const tabValue = useAppSelector(selectAdminQuestionTab);

@@ -12,7 +12,7 @@ import {
 	useGetContributedQuestionCardCategoryByIdQuery,
 	usePostCreateQuestionCategoryAdminMutation,
 	usePutUpdateQuestionCategoryAdminMutation,
-} from './question-card-api';
+} from '../question-card-api';
 
 const schema = z.object({
 	name: z.string().min(1, 'Please enter category name'),

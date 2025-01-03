@@ -438,6 +438,23 @@ const adminNavigation: NavigationOptions = {
 		//     ]
 		// },
 		{
+			name: 'Questions',
+			description: "Manage system's questions",
+			route: 'questions',
+			items: [
+				{
+					icon: QuestionAnswerIcon,
+					name: 'Public Questions',
+					route: 'public',
+				},
+				{
+					icon: Assignment,
+					name: 'Contributed Question ',
+					route: 'faq',
+				},
+			],
+		},
+		{
 			name: 'Resources',
 			description: "Manage system's resources",
 			route: 'resources',
@@ -451,16 +468,6 @@ const adminNavigation: NavigationOptions = {
 					icon: Schedule,
 					name: 'Counseling Time Slots',
 					route: 'slots',
-				},
-				{
-					icon: QuestionAnswerIcon,
-					name: 'Questions',
-					route: 'questions',
-				},
-				{
-					icon: QuizIcon,
-					name: 'Question Category',
-					route: 'question-category',
 				},
 				{
 					icon: SchoolIcon,
@@ -500,23 +507,6 @@ const supportStaffNavigation: NavigationOptions = {
 		//     ]
 		// },
 		{
-			name: 'Demand',
-			description: 'Manage demands',
-			route: '',
-			items: [
-				{
-					icon: BookmarkIcon,
-					name: 'Followed Students',
-					route: 'students/followed',
-				},
-				{
-					icon: FmdBadIcon,
-					name: 'Demand',
-					route: 'demand',
-				},
-			],
-		},
-		{
 			name: 'Student',
 			description: 'Find students',
 			route: 'students',
@@ -530,6 +520,23 @@ const supportStaffNavigation: NavigationOptions = {
 					icon: FmdBadIcon,
 					name: 'Recommended Students',
 					route: 'recommended',
+				},
+			],
+		},
+		{
+			name: 'Demand',
+			description: 'Manage demands',
+			route: '',
+			items: [
+				{
+					icon: BookmarkIcon,
+					name: 'Followed Students',
+					route: 'students/followed',
+				},
+				{
+					icon: FmdBadIcon,
+					name: 'Demand',
+					route: 'demand',
 				},
 			],
 		},

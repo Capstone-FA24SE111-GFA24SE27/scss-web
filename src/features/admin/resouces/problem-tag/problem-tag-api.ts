@@ -52,7 +52,7 @@ export const problemTagsApi = apiService
 					method: 'POST',
 					body: {
 						name: args.name,
-						point: args.point,
+						point: 0,
 						categoryId: args.categoryId,
 					},
 				}),
@@ -80,7 +80,7 @@ export const problemTagsApi = apiService
 					method: 'PUT',
 					body: {
 						name: args.name,
-						point: args.point,
+						point: 0,
 						categoryId: args.categoryId,
 					},
 				}),
@@ -150,7 +150,7 @@ type getProblemTagsCategoriesResponse = ProblemTagCategory[];
 
 type postProblemTagArgs = {
 	name: string;
-	point: number;
+	point?: number;
 	categoryId: number;
 };
 
@@ -163,15 +163,15 @@ type postProblemTagsCategoryArgs = {
 type postProblemTagsCategoryResponse = ApiResponse<ProblemTagCategory>;
 
 type updateProblemTagArgs = {
-	id: number;
+	id: number | string;
 	name: string;
-	point: number;
+	point?: number;
 	categoryId: number;
 };
 type updateProblemTagResponse = ApiResponse<ProblemTag>;
 
 type updateProblemTagsCategoryArgs = {
-	id: number;
+	id: number | string;
 	name: string;
 };
 type updateProblemTagsCategoryResponse = ApiResponse<ProblemTagCategory>;

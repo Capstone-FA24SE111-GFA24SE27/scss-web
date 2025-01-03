@@ -1,21 +1,24 @@
 import { PageSimple } from '@/shared/components';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import QuestionCardCategoryTable from './QuestionCardCategoryTable';
-import QuestionCardCategorySidebarContent from './QuestionCardSidebarContent';
-import QuestionCardHeading from './QuestionCardHeading';
-type Props = {};
+import QuestionCardHeading from './ContributedQuestionCardHeading';
+import QuestionCardCategorySidebarContent from './ContributedQuestionCardSidebarContent';
+import QuestionCardCategoryTable from './question-card-category/QuestionCardCategoryTable';
+import { useAppSelector } from '@shared/store';
+import ContributedQuestionTable from './ContributedQuestionTable';
+import { selectContributedQuestionTab } from '../admin-question-slice';
 
-const QuestionCardLayout = () => {
+const ContributedQuestionCardLayout = () => {
 	const pageLayout = useRef(null);
 	const routeParams = useParams();
 	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
 	const isMobile = false;
 	const navigate = useNavigate();
-    const location = useLocation()
+	const location = useLocation();
+	const tab = useAppSelector(selectContributedQuestionTab);
 
 	useEffect(() => {
-		if (routeParams.id || location.pathname.split("/").pop() === "create") {
+		if (routeParams.id || location.pathname.split('/').pop() === 'create') {
 			setRightSidebarOpen(true);
 		} else {
 			setRightSidebarOpen(false);
@@ -29,7 +32,12 @@ const QuestionCardLayout = () => {
 	return (
 		<PageSimple
 			header={<QuestionCardHeading />}
-			content={<QuestionCardCategoryTable />}
+			content={
+				<>
+					{tab === 0 && <ContributedQuestionTable />}
+					{tab === 1 && <QuestionCardCategoryTable />}
+				</>
+			}
 			ref={pageLayout}
 			rightSidebarContent={<QuestionCardCategorySidebarContent />}
 			rightSidebarOpen={rightSidebarOpen}
@@ -41,4 +49,4 @@ const QuestionCardLayout = () => {
 	);
 };
 
-export default QuestionCardLayout;
+export default ContributedQuestionCardLayout;

@@ -35,9 +35,9 @@ const Accounts = () => {
 			label: 'Non-academic Counselor',
 			value: roles.NON_ACADEMIC_COUNSELOR as Role,
 		},
-		{ label: 'Student', value: roles.STUDENT as Role },
 		{ label: 'Manager', value: roles.MANAGER as Role },
 		{ label: 'Support Staffs', value: roles.SUPPORT_STAFF as Role },
+		{ label: 'Student', value: roles.STUDENT as Role },
 	];
 
 	const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
@@ -52,17 +52,14 @@ const Accounts = () => {
 	return (
 		<div className='flex flex-col w-full h-full overflow-hidden'>
 			<div className='flex flex-col gap-16 p-32'>
-				<Heading
-					title='Accounts Table'
-					description='Manage accounts'
-				/>
+				<Heading title='Accounts Table' description='Manage accounts' />
 				<div className='flex items-center justify-between gap-8'>
 					<FilterTabs
 						tabs={accountTabs}
 						tabValue={tabValue}
 						onChangeTab={handleChangeTab}
 					/>
-					{tabValue !== 2 && (
+					{tabValue !== 4 && (
 						<Button
 							variant='contained'
 							color='primary'

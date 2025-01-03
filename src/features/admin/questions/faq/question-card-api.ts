@@ -2,6 +2,7 @@ import {
 	Account,
 	ContributedQuestionCategory,
 	PaginationContent,
+	Question,
 	Role,
 } from '@/shared/types';
 import { apiService, ApiResponse, ApiMessage } from '@shared/store';
@@ -15,6 +16,45 @@ export const questionCardsApi = apiService
 	})
 	.injectEndpoints({
 		endpoints: (build) => ({
+			getContributedQuestionAdmin: build.query<
+				GetContributedQuestionResponse,
+				GetContributedQuestionArgs
+			>({
+				query: ({
+					categoryId,
+					page = 1,
+					counselorId,
+					query,
+					size = 10,
+					sortBy = 'createdDate',
+					sortDirection = 'DESC',
+					status,
+				}) => ({
+					url: `/api/manage/contribution-question-cards/filter`,
+					params: {
+						categoryId,
+						page,
+						counselorId,
+						query,
+						size,
+						sortBy,
+						sortDirection,
+						status,
+					},
+				}),
+				providesTags: ['qna'],
+			}),
+
+			putUpdateContributedQuestionAdmin: build.mutation<
+				PutUpdateQuestionAdminResponse,
+				PutUpdateQuestionAdminArgs
+			>({
+				query: (args) => ({
+					url: `/api/manage/contribution-question-cards/public-status/${args.id}/${args.status}`,
+					method: 'PUT',
+				}),
+				invalidatesTags: ['qna'],
+			}),
 			getContributedQuestionCardCategoryById: build.query<
 				ApiResponse<ContributedQuestionCategory>,
 				string | number
@@ -74,6 +114,8 @@ export const {
 	useDeleteQuestionCategoryAdminMutation,
 	usePostCreateQuestionCategoryAdminMutation,
 	usePutUpdateQuestionCategoryAdminMutation,
+	useGetContributedQuestionAdminQuery,
+	usePutUpdateContributedQuestionAdminMutation,
 } = questionCardsApi;
 
 type GetContributedQuestionCardCategoryResponse = ApiResponse<
@@ -81,9 +123,29 @@ type GetContributedQuestionCardCategoryResponse = ApiResponse<
 >;
 type GetContributedQuestionCardCategoryArgs = {};
 
-type PostCreateQuestionCategoryAdminResponse = ApiResponse<ContributedQuestionCategory>;
+type PostCreateQuestionCategoryAdminResponse =
+	ApiResponse<ContributedQuestionCategory>;
 type PostCreateQuestionCategoryAdminArgs = {
 	id?: string;
 	name: string;
 	type: 'ACADEMIC' | 'NON_ACADEMIC';
+};
+
+type GetContributedQuestionResponse = ApiResponse<PaginationContent<Question>>;
+
+type GetContributedQuestionArgs = {
+	query?: string;
+	status?: 'HIDE' | 'VISIBLE';
+	counselorId?: string | number;
+	categoryId?: string | number;
+	sortBy?: 'createdDate' | 'id';
+	sortDirection?: 'ASC' | 'DESC';
+	page?: number;
+	size?: number;
+};
+
+type PutUpdateQuestionAdminResponse = {};
+type PutUpdateQuestionAdminArgs = {
+	id: string | number;
+	status: 'HIDE' | 'VISIBLE';
 };
