@@ -10,7 +10,7 @@ import { Chip, ListItemIcon, MenuItem, ownerDocument, Paper } from '@mui/materia
 import _ from 'lodash';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
+import { Block, CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { Account, Role } from '@/shared/types';
 import {
 	useGetAccountsQuery,
@@ -258,7 +258,7 @@ const AccountsTable = (props: Props) => {
 						}}
 					>
 						<ListItemIcon>
-							<Delete />
+							<Block />
 						</ListItemIcon>
 						{row.original.status === 'ACTIVE' ? 'Block' : 'Unblock'}
 					</MenuItem>,

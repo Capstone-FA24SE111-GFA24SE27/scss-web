@@ -22,7 +22,12 @@ import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
+import {
+	CheckCircle,
+	Delete,
+	RemoveCircle,
+	Visibility,
+} from '@mui/icons-material';
 import { ProblemTag, TimeSlot } from '@/shared/types/admin';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
@@ -34,7 +39,11 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 import { Controller } from 'react-hook-form';
-import { selectAdminQuestionCardSearch, selectAdminQuestionTab } from '../admin-question-slice';
+import {
+	selectAdminQuestionCardSearch,
+	selectAdminQuestionTab,
+} from '../admin-question-slice';
+import PublicQuestionDetails from './PublicQuestionDetails';
 
 function QuestionCardTable() {
 	const tabValue = useAppSelector(selectAdminQuestionTab);
@@ -156,6 +165,27 @@ function QuestionCardTable() {
 				state={{ pagination }}
 				rowCount={data?.content?.totalElements || 0}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
+					<MenuItem
+						key={1}
+						onClick={() => {
+							dispatch(
+								openDialog({
+									children: (
+										<PublicQuestionDetails
+											qna={row.original}
+										/>
+									),
+								})
+							);
+							closeMenu();
+							table.resetRowSelection();
+						}}
+					>
+						<ListItemIcon>
+							<Visibility />
+						</ListItemIcon>
+						View Detail
+					</MenuItem>,
 					<MenuItem
 						key={0}
 						onClick={() => {

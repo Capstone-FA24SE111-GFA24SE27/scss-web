@@ -1,5 +1,6 @@
 import {
 	Account,
+	ContributedQuestionAdmin,
 	ContributedQuestionCategory,
 	PaginationContent,
 	Question,
@@ -131,7 +132,7 @@ type PostCreateQuestionCategoryAdminArgs = {
 	type: 'ACADEMIC' | 'NON_ACADEMIC';
 };
 
-type GetContributedQuestionResponse = ApiResponse<PaginationContent<Question>>;
+type GetContributedQuestionResponse = ApiResponse<PaginationContent<ContributedQuestionAdmin>>;
 
 type GetContributedQuestionArgs = {
 	query?: string;

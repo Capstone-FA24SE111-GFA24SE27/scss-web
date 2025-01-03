@@ -1,20 +1,37 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
+import {
+	ContentLoading,
+	DataTable,
+	NavLinkAdapter,
+	openDialog,
+} from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
 import { Link, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CheckCircle, Delete, Edit, RemoveCircle } from '@mui/icons-material';
+import {
+	CheckCircle,
+	Delete,
+	Edit,
+	RemoveCircle,
+	Visibility,
+} from '@mui/icons-material';
 import { ProblemTag, TimeSlot } from '@/shared/types/admin';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 
-import { ContributedQuestionCategory, Question } from '@/shared/types';
+import {
+	ContributedQuestionAdmin,
+	ContributedQuestionCategory,
+	Counselor,
+	Question,
+} from '@/shared/types';
 import { useGetContributedQuestionAdminQuery } from './question-card-api';
 import { selectContributedQuestionFilter } from '../admin-question-slice';
+import ContributedQuestionCardDetail from './ContributedQuestionCardDetail';
 function ContributedQuestionTable() {
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
@@ -37,24 +54,32 @@ function ContributedQuestionTable() {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const removeProducts = (ids: number[]) => {
-		if (ids && ids.length > 0) {
-			useConfirmDialog({
-				dispatch,
-				title: 'Are you sure you want to remove the selected category?',
-				confirmButtonFunction: () => {
-					// removeCategory(ids[0])
-					// 	.then((res) => {
-					// 		if (res) {
-					// 			useAlertDialog({
-					// 				dispatch,
-					// 				title: 'Question category removed successfully',
-					// 			});
-					// 		}
-					// 	})
-					// 	.catch((err) => console.error(err));
-				},
-			});
+	// const removeProducts = (ids: number[]) => {
+	// 	if (ids && ids.length > 0) {
+	// 		useConfirmDialog({
+	// 			dispatch,
+	// 			title: 'Are you sure you want to remove the selected category?',
+	// 			confirmButtonFunction: () => {
+	// 				// removeCategory(ids[0])
+	// 				// 	.then((res) => {
+	// 				// 		if (res) {
+	// 				// 			useAlertDialog({
+	// 				// 				dispatch,
+	// 				// 				title: 'Question category removed successfully',
+	// 				// 			});
+	// 				// 		}
+	// 				// 	})
+	// 				// 	.catch((err) => console.error(err));
+	// 			},
+	// 		});
+	// 	}
+	// };
+
+	const getParamRole = (counselor: Counselor) => {
+		if (counselor?.expertise) {
+			return 'na-counselor';
+		} else {
+			return 'a-counselor';
 		}
 	};
 
@@ -64,21 +89,52 @@ function ContributedQuestionTable() {
 		}
 	};
 
-	const columns = useMemo<MRT_ColumnDef<Question>[]>(
+	const columns = useMemo<MRT_ColumnDef<ContributedQuestionAdmin>[]>(
 		() => [
 			{
-				accessorKey: 'name',
-				header: 'Category Name',
+				accessorKey: 'title',
+				header: 'Question Title',
 				Cell: ({ row }) => (
 					<Typography>{row.original.title}</Typography>
 				),
 			},
-
 			{
-				accessorKey: 'type',
-				header: 'Type',
+				accessorKey: 'question',
+				header: 'Question',
 				Cell: ({ row }) => (
-					<Typography>{row.original.publicStatus}</Typography>
+					<Typography>{row.original.question}</Typography>
+				),
+			},
+			{
+				accessorKey: 'status',
+				header: 'Status',
+				Cell: ({ row }) => (
+					<Typography
+						className='font-semibold'
+						color={
+							row.original.status === 'HIDE'
+								? 'textDisabled'
+								: 'primary'
+						}
+					>
+						{row.original.status}
+					</Typography>
+				),
+			},
+			{
+				accessorKey: 'counselor.profile.fullName',
+				header: 'Counselor',
+				Cell: ({ row }) => (
+					<Typography
+						component={NavLinkAdapter}
+						to={`/accounts/${
+							row.original.counselor.id
+						}/${getParamRole(row.original.counselor)}`}
+						className='!underline !text-secondary-main'
+						color='secondary'
+					>
+						{row.original.counselor.profile.fullName}
+					</Typography>
 				),
 			},
 		],
@@ -97,8 +153,29 @@ function ContributedQuestionTable() {
 				manualPagination
 				onPaginationChange={setPagination}
 				state={{ pagination }}
-				rowCount={data?.content?.totalElements || 0}
+				pageCount={data?.content?.totalPages || 1}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
+					<MenuItem
+						key={1}
+						onClick={() => {
+							dispatch(
+								openDialog({
+									children: (
+										<ContributedQuestionCardDetail
+											question={row.original}
+										/>
+									),
+								})
+							);
+							closeMenu();
+							table.resetRowSelection();
+						}}
+					>
+						<ListItemIcon>
+							<Visibility />
+						</ListItemIcon>
+						View Detail
+					</MenuItem>,
 					<MenuItem
 						key={0}
 						onClick={() => {
