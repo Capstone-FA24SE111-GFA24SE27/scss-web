@@ -13,7 +13,6 @@ const CounselorQuestionFeedbacksDistribution = ({ counselorId }: { counselorId?:
 
   const { data: questionsData } = useGetCounselorQuestionCardsManagementQuery({
     from: firstDayOfMonth,
-    // to: dayjs().endOf("month").format("YYYY-MM-DD"),
     to: lastDayOfMonth,
     counselorId: Number(id),
     size: 9999,

@@ -1,7 +1,7 @@
 import { ItemMenu, openDialog } from '@/shared/components';
 import { statusColor } from '@/shared/constants';
 import { Appointment } from '@/shared/types';
-import { CalendarMonth, Circle, Summarize, ViewAgenda } from '@mui/icons-material';
+import { AccessTime, CalendarMonth, Circle, Summarize, ViewAgenda, Visibility } from '@mui/icons-material';
 import { Chip, ListItem, Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useAppDispatch } from '@shared/store';
@@ -30,7 +30,7 @@ function StudentAppointmentItem({ appointment }: { appointment: Appointment }) {
                     children: <AppointmentDetail id={appointment?.id.toString()} />
                   }))
                 },
-                icon: <ViewAgenda fontSize='small' />
+                icon: <Visibility fontSize='small' />
               },
               {
                 label: 'View report',
@@ -52,6 +52,7 @@ function StudentAppointmentItem({ appointment }: { appointment: Appointment }) {
           <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
         </div>
         <div className='flex items-center gap-8'>
+          <AccessTime fontSize='small' />
           <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
         </div>
         <Chip

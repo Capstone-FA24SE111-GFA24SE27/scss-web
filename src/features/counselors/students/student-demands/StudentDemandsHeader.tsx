@@ -5,7 +5,7 @@ import { Heading } from '@shared/components';
  */
 function DemandHeader() {
   return (
-    <div className='p-32 flex justify-between bg-background-paper'>
+    <div className='px-32 py-24 flex justify-between bg-background-paper'>
       <Heading
         title='Counseling Demands'
         description='List counseling demands assigned to the counselor'

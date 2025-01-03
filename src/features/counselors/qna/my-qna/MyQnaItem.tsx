@@ -15,6 +15,7 @@ import {
 import {
 	ArrowForward,
 	ArrowRightAlt,
+	Chat,
 	ChatBubble,
 	ChatBubbleOutline,
 	CheckCircleOutlineOutlined,
@@ -102,7 +103,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 	};
 
 	const handleChat = () => {
-		navigate(`${qna.id}`);
+		navigate(`chat/${qna.id}`);
 	};
 
 
@@ -161,6 +162,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								{qna.title}
 							</Typography>
 							<ItemMenu
+								className='size-24 mr-8'
 								menuItems={[
 									{
 										label: 'View details',
@@ -175,6 +177,14 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 											// handleCloseDialog()
 										},
 										icon: <Visibility fontSize='small' />
+									},
+									{
+										label: 'View chat',
+										onClick: () => {
+											navigate(`chat/${qna.id}`)
+										},
+										icon: <Chat fontSize='small' />,
+										disabled: !qna.chatSession
 									},
 								]}
 							/>
@@ -254,14 +264,16 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 							{
 								qna.answer
 									? <div>
-										<Typography className='font-semibold' color='textSecondary'>Your answer</Typography>
-										<Typography>{RenderHTML(qna.answer)}</Typography>
+										<Typography className='font-semibold text-text-secondary'>Your answer</Typography>
+										<ExpandableContent collapsedHeight={100}>
+											{RenderHTML(qna.answer)}
+										</ExpandableContent>
 										{!qna.closed && (
 											<Button
 												color='secondary'
 												startIcon={<EditNote fontSize='large' />}
 												onClick={() => {
-													dispatch(openDrawer({
+													dispatch(openDialog({
 														children: <AnswerQuestionView qna={qna} />
 													}))
 												}}
@@ -365,7 +377,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 									color='secondary'
 									startIcon={<RateReview />}
 									onClick={() => {
-										dispatch(openDrawer({
+										dispatch(openDialog({
 											children: <AnswerQuestionView qna={qna} />
 										}))
 									}}
@@ -375,7 +387,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 							</div>
 
 						)}
-					{qna.chatSession && (
+					{qna.chatSession && !qna.closed && (
 						<Button
 							variant='contained'
 							color='secondary'

@@ -82,7 +82,7 @@ const MyQnaContent = () => {
 
 	const {
 		data: qnaData,
-		isLoading,
+		isFetching,
 		refetch,
 	} = useGetMyCounselorQuestionsQuery({
 		isClosed: isClosed || undefined,
@@ -118,7 +118,7 @@ const MyQnaContent = () => {
 		}
 	}, [socket, account]);
 
-	// const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
+	// const [answerQuestion, { isFetching: submitingAnswer }] = useAnswerQuestionMutation()
 
 	// const { data: academicTopicsData } = useGetAcademicTopicsQuery();
 	// const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
@@ -149,7 +149,7 @@ const MyQnaContent = () => {
 		setTabValue(newValue);
 	};
 
-	if (isLoading) {
+	if (isFetching) {
 		return <ContentLoading />;
 	}
 

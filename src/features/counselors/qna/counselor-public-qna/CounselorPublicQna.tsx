@@ -60,7 +60,7 @@ const CounselorPublicQna = () => {
 			rightSidebarContent={<QnaSidebarContent />}
 			header={
 				<div className='border-b'>
-					<div className='flex items-center justify-between p-32  bg-background-paper'>
+					<div className='flex items-center justify-between px-32 py-24 bg-background-paper'>
 						<Heading
 							title='Public Questions & Answers'
 							description='All Q&As from students answered by our counselors'

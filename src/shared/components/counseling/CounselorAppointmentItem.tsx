@@ -15,6 +15,7 @@ import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 import { AppointmentDetail } from '@/shared/pages';
 import { splitUserAndReason } from '@/shared/utils';
 import UpdateAppointmentDetailDialog from './UpdateAppointmentDetailDialog';
+import { useAlertDialog } from '@/shared/hooks';
 
 
 type AppointmentPropsItem = {
@@ -291,7 +292,14 @@ const CheckAttendanceDialog = ({ appointment, handleCloseDialog = () => { } }: A
     takeAttendance({
       appointmentId: appointment.id,
       counselingAppointmentStatus: attendanceStatus as AppointmentAttendanceStatus
-    });
+    })
+      .unwrap()
+      .then(() => {
+        useAlertDialog({
+          dispatch,
+          title: 'Attendance status updated successfully',
+        })
+      })
     handleCloseDialog()
     dispatch(closeDialog());
   }

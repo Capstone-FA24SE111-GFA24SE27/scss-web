@@ -23,7 +23,7 @@ function StudentList({ isShowingTab = false }) {
   return (
     <PageSimple
       header={
-        <div className='p-32 pb-16 border-b bg-background-paper'>
+        <div className='px-32 py-24 pb-16 border-b bg-background-paper'>
           <Heading
             title='Student List'
             description='Students in FPTU HCM'

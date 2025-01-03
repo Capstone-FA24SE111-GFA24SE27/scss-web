@@ -7,7 +7,7 @@ import { Button, Stepper, Step, StepLabel, Typography, Box, Switch, FormControlL
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { useCreateAppointmentReportMutation } from './report-api';
 import { useParams, useNavigate } from 'react-router';
-import { ContentLoading, RenderHTML, UserLabel } from '@/shared/components';
+import { BackdropLoading, ContentLoading, RenderHTML, UserLabel } from '@/shared/components';
 import { Scrollbar, closeDialog, openDialog, QuillEditor } from '@/shared/components';
 import { useAppDispatch } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
@@ -92,7 +92,7 @@ const ReportCreate = () => {
   };
 
   const dispatch = useAppDispatch()
-  const [createCounselingMutation] = useCreateAppointmentReportMutation();
+  const [createCounselingMutation, { isLoading: isLoadingCreateReport }] = useCreateAppointmentReportMutation();
 
   const onSubmit = (data: ReportFormValues) => {
     useConfirmDialog({
@@ -105,7 +105,6 @@ const ReportCreate = () => {
         })
           .unwrap()
           .then(() => {
-
             useAlertDialog({
               dispatch,
               title: 'Report created successfully!',
@@ -338,7 +337,9 @@ const ReportCreate = () => {
           </div>
         </Box>
       </form>
-
+      {
+        isLoadingCreateReport && <BackdropLoading  />
+      }
     </div>
   );
 };

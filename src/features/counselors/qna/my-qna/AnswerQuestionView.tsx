@@ -97,7 +97,7 @@ const AnswerQuestionView = ({ qna }: { qna: Question }) => {
 
 
   return (
-    <div className='px-32 my-16 w-xl space-y-4'>
+    <div className='px-32 my-24 w-xl space-y-4'>
       <div className="flex justify-end absolute top-16 right-16 z-10">
         <IconButton
           className=""

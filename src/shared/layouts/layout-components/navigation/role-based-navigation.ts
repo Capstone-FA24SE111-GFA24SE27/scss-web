@@ -212,7 +212,7 @@ const counselorNavigation: NavigationOptions = {
 			items: [
 				{
 					icon: Class,
-					name: 'My Questions',
+					name: 'My Q&As',
 					route: 'my-qna',
 				},
 				{
@@ -244,7 +244,7 @@ const counselorNavigation: NavigationOptions = {
 				},
 				{
 					icon: AssignmentLate,
-					name: 'Student Demands',
+					name: 'Counseling Demands',
 					route: 'student-demands',
 				},
 			],
@@ -511,7 +511,7 @@ const supportStaffNavigation: NavigationOptions = {
 				},
 				{
 					icon: FmdBadIcon,
-					name: 'Demand',
+					name: 'Demands',
 					route: 'demand',
 				},
 			],

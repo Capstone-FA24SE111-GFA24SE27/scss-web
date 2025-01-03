@@ -55,11 +55,27 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
   };
 
   const handleSearchMinGPA = (searchTerm: string) => {
-    dispatch(setMinGPA(Number(searchTerm)));
+    const minGPA = Number(searchTerm);
+
+    if (minGPA > 0 && minGPA <= 10) {
+      const maxGPA = Number(filter.maxGPA); 
+
+      if (minGPA <= maxGPA || isNaN(maxGPA)) {
+        dispatch(setMinGPA(minGPA));
+      }
+    }
   };
 
   const handleSearchMaxGPA = (searchTerm: string) => {
-    dispatch(setMaxGPA(Number(searchTerm)));
+    const maxGPA = Number(searchTerm);
+
+    if (maxGPA > 0 && maxGPA <= 10) {
+      const minGPA = Number(filter.minGPA);
+
+      if (maxGPA >= minGPA || isNaN(minGPA)) {
+        dispatch(setMaxGPA(maxGPA));
+      }
+    }
   };
 
   const handleSelectSemester = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,13 +89,6 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
     }
   };
 
-  const handleAttendanceCountChange = (field: 'fromForAttendanceCount' | 'toForAttendanceCount', value: string) => {
-    if (field === 'fromForAttendanceCount') {
-      dispatch(setFromForAttendanceCount(Number(value) || ''));
-    } else {
-      dispatch(setToForAttendanceCount(Number(value) || ''));
-    }
-  };
 
   const handleAttendancePercentageChange = (field: 'fromForAttendancePercentage' | 'toForAttendancePercentage', value: number | number[]) => {
     if (field === 'fromForAttendancePercentage') {
@@ -94,10 +103,11 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
   };
 
   const handleMinSubjectForAttendanceChange = (value: string) => {
+    console.log(`🌹`, value, Number(value))
     if (Number(value) < 0 || Number(value) > 30) {
       return
     }
-    dispatch(setMinSubjectForAttendance(Number(value) || ''));
+    dispatch(setMinSubjectForAttendance(Number(value)));
   };
 
   const { data: semesterData, isLoading: isLoadingSemesterData } = useGetSemestersQuery();
@@ -110,7 +120,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
     <div className="flex flex-col gap-8">
       {
         shouldShowToggleButton && (
-            <div className="flex justify-start items-center gap-8">
+          <div className="flex justify-start items-center gap-8">
             <CounselorListFilterButton />
             {/* <Typography className="text-xl text-text-disabled">Filter students</Typography> */}
           </div>
@@ -138,7 +148,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
         <Box className="flex gap-16">
           <SearchField
             onSearch={handleSearchMinGPA}
-            label="Min GPA"
+            label="Min"
             placeholder="1.0"
             type="number"
             showClearButton={false}
@@ -147,7 +157,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
           />
           <SearchField
             onSearch={handleSearchMaxGPA}
-            label="Max GPA"
+            label="Max"
             placeholder="9.9"
             type="number"
             showClearButton={false}
@@ -191,7 +201,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
               label="Min Subjects for Attendance"
               placeholder="0 - 30"
               size="small"
-              value={filter.minSubjectForAttendance || ''}
+              value={filter.minSubjectForAttendance}
               onChange={(e) => handleMinSubjectForAttendanceChange(e.target.value)}
               slotProps={{
                 inputLabel: {
@@ -221,7 +231,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
               placeholder="0"
               type="number"
               size="small"
-              value={filter.fromForAttendanceCount || ''}
+              value={filter.fromForAttendanceCount}
               onChange={(e) => {
                 const fromValue = Number(e.target.value) || 0;
                 const toValue = filter.toForAttendanceCount || 1;
@@ -243,7 +253,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
               placeholder="100"
               type="number"
               size="small"
-              value={filter.toForAttendanceCount || ''}
+              value={filter.toForAttendanceCount || 0}
               onChange={(e) => {
                 const toValue = Number(e.target.value) || 1;
                 const fromValue = filter.fromForAttendanceCount || 0;

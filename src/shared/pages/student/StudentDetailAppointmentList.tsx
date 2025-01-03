@@ -11,6 +11,7 @@ import { ChangeEvent, useState } from 'react';
 import { useAppDispatch } from '@shared/store';
 import StudentAppointmentReport from './StudentAppointmentReport';
 import { statusColor } from '@/shared/constants';
+import { StudentDetailAppointmentItem } from '.';
 /**
  * The contact view.
  */
@@ -78,66 +79,10 @@ function StudentDetailAppointmentList({ id }: { id: string }) {
           !appointments?.length
             ? <Typography color='textSecondary'>No appointments found</Typography>
             : appointments?.map((appointment) =>
-              <Paper
+              <StudentDetailAppointmentItem
                 key={appointment.id}
-                className='flex justify-between p-4 rounded shadow'
-              >
-                <ListItem className='flex gap-16 items-center p-4 min-h-32'
-                  secondaryAction={
-                    <ItemMenu
-                      menuItems={[
-                        {
-                          label: 'View report',
-                          disabled: !appointment.havingReport,
-                          onClick: () => {
-                            dispatch(openDialog({
-                              children: <StudentAppointmentReport id={appointment?.id.toString()} />
-                            }))
-                          },
-                          icon: <Summarize fontSize='small' />
-                        },
-
-                      ]}
-                    />
-                  }
-                >
-                  <div className='flex items-center gap-8 '>
-                    <CalendarMonth fontSize='small' />
-                    <Typography className=''>{dayjs(appointment.startDateTime).format('YYYY-MM-DD')}</Typography>
-                  </div>
-                  <div className='flex items-center gap-8'>
-                    <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
-                  </div>
-                  <Chip
-                    label={appointment.meetingType == 'ONLINE' ? 'Online' : 'Offline'}
-                    icon={<Circle color={appointment.meetingType == 'ONLINE' ? 'success' : 'disabled'} fontSize='small' />}
-                    className='items-center font-semibold text-sm'
-                    size='small'
-                  />
-
-                  <Chip
-                    label={appointment.status}
-                    variant='filled'
-                    color={statusColor[appointment.status]}
-                    size='small'
-                    className='text-sm'
-                  />
-                </ListItem>
-                {/* <Button
-                size='small'
-                className='flex gap-8 px-8'
-                color='secondary'
-                disabled={!appointment.havingReport}
-                onClick={() => {
-                  dispatch(openDialog({
-                    children: <StudentAppointmentReport id={appointment?.id.toString()} />
-                  }))
-                  // onClick={() => navigate(`report/${appointment.id}`)}
-                }}
-              >
-                View report
-              </Button> */}
-              </Paper>
+                appointment={appointment}
+              />
             )
         }
       </Box>

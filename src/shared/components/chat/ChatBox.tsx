@@ -169,7 +169,7 @@ const ChatBox = (props: Props) => {
 	return (
 		<div className='relative flex flex-col w-full h-full min-w-320'>
 			<div className='p-16 space-y-8 bg-background-paper'>
-				<Button className='flex items-center gap-16' onClick={handleViewUser}>
+				<Button className='flex items-center gap-16 mt-8' onClick={handleViewUser}>
 					<Avatar
 						src={otherPerson?.profile.avatarLink}
 						alt='Student image'

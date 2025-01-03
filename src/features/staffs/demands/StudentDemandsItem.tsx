@@ -6,6 +6,7 @@ import {
 	NavLinkAdapter,
 	UserLabel,
 	UserListItem,
+	openDrawer,
 } from '@/shared/components';
 import {
 	Box,
@@ -21,6 +22,8 @@ import { CounselingDemand, Student } from '@shared/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { statusColor } from '@/shared/constants';
+import { useAppDispatch } from '@shared/store';
+import { CounselorView } from '@/shared/pages';
 
 type StudentDemandsItemPropsType = {
 	demand: CounselingDemand;
@@ -31,7 +34,7 @@ type StudentDemandsItemPropsType = {
  */
 function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 	const navigate = useNavigate();
-
+	const dispatch = useAppDispatch()
 	return (
 		<>
 			<Paper
@@ -109,6 +112,9 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 						<UserLabel
 							profile={demand.counselor?.profile}
 							label='Assigned to'
+							onClick={() => dispatch(openDrawer({
+								children: <CounselorView id={demand.counselor?.profile.id.toString()} />
+							}))}
 						/>
 
 						<Chip
