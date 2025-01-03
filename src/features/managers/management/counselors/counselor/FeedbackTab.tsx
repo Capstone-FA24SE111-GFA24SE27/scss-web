@@ -52,7 +52,7 @@ const FeedbackTab = () => {
               animate="show"
               className=''
             >
-              <div className='grid grid-cols-2 md:grid-cols-3 gap-16'>
+              <div className='grid grid-cols-2 gap-16'>
                 {counselorFeedbacks?.map((feedback) => (
                   <FeedbackItem
                     feedback={feedback?.appointment?.appointmentFeedback}
@@ -80,7 +80,7 @@ const FeedbackTab = () => {
               animate="show"
               className=''
             >
-              <div className='grid grid-cols-2 md:grid-cols-3 gap-16'>
+              <div className='grid md:grid-cols-2 gap-16'>
                 {counselorQnaFeedbacks?.map((feedback) => (
                   <FeedbackItem
                     feedback={feedback?.questionCard?.feedback}

@@ -16,6 +16,7 @@ const CounselorAppointmentFeedbacksDistribution = ({ counselorId }: { counselorI
     counselorId: Number(id),
     size: 9999,
   });
+  console.log(`XD`, appointmentsData?.content?.data)
 
   const ratings = groupFeedbacksByRating(appointmentsData?.content?.data);
 

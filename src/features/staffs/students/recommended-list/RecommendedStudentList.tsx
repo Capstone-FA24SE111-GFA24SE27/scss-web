@@ -3,16 +3,14 @@ import React, { ChangeEvent, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { selectFilter } from './recommended-list-slice';
 import { useGetRecommendedStudentsStaffQuery } from './recommended-students-api';
-import { AppLoading, Pagination } from '@/shared/components';
+import { AppLoading, ListSkeleton, Pagination } from '@/shared/components';
 import { Box, List, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import StudentListItem from '@/shared/pages/student-list/StudentListItem';
 
 
 const RecommendedStudentList = () => {
-
-    const [page, setPage] = useState(1);
-
+	const [page, setPage] = useState(1);
 	const filter = useAppSelector(selectFilter);
 	const dispatch = useDispatch()
 	const handlePageChange = (event: ChangeEvent<unknown>, value: number) => {
@@ -28,7 +26,7 @@ const RecommendedStudentList = () => {
 		specializationId,
 	} = filter;
 
-	const { data: data, isLoading: isLoadingStudents } = useGetRecommendedStudentsStaffQuery({
+	const { data: data, isFetching: isFetchingStudents } = useGetRecommendedStudentsStaffQuery({
 		keyword: searchTerm,
 		promptForBehavior,
 		semesterIdForBehavior,
@@ -39,16 +37,8 @@ const RecommendedStudentList = () => {
 	});
 
 	const students = data?.data;
-
-	console.log(students)
-	console.log('filter', filter)
-
-	if(isLoadingStudents){
-		return <AppLoading />;
-	}
-
-  return (
-    <div className='flex flex-col flex-1 gap-16 pb-16'>
+	return (
+		<div className='flex flex-col flex-1 gap-16 pb-16 container mx-auto'>
 			<Box>
 				<motion.div
 					initial={{ y: 20, opacity: 0 }}
@@ -56,10 +46,10 @@ const RecommendedStudentList = () => {
 					className='flex flex-col flex-auto w-full max-h-full gap-16'
 				>
 
-					<List className='w-full p-0 m-0'>
+					<List className='w-full flex flex-col gap-8 px-24'>
 						{
-							isLoadingStudents ?
-								<AppLoading />
+							isFetchingStudents ?
+								<ListSkeleton />
 								: !students?.length ? (
 									<div className='flex items-center justify-center flex-1'>
 										<Typography color='text.secondary' variant='h5'>
@@ -81,7 +71,7 @@ const RecommendedStudentList = () => {
 				handleChange={handlePageChange}
 			/>
 		</div>
-  )
+	)
 }
 
 export default RecommendedStudentList

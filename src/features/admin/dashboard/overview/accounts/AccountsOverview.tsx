@@ -54,9 +54,9 @@ const AccountsOverview = (props: Props) => {
 		case 'staff': {
 			view = (
 				<div className='h-full overflow-hidden'>
-					<Scrollbar className='max-h-full overflow-auto'>
-						{/* <CounselorCharts /> */}
-					</Scrollbar>
+					{/* <Scrollbar className='max-h-full overflow-auto'>
+						<CounselorCharts />
+					</Scrollbar> */}
 				</div>
 			);
 			break;

@@ -1,6 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { z } from 'zod';
 import _ from 'lodash';
@@ -47,9 +47,11 @@ function SignInForm() {
 		resolver: zodResolver(schema)
 	});
 
-	const [loginDefault, { isLoading, error }] = useLoginDefaultMutation()
+	const [loginDefault, { isLoading }] = useLoginDefaultMutation()
 
-	const serverError = getApiErrorMessage(error)
+	// const serverError = getApiErrorMessage(error)
+
+	const [serverError, setServerError] = useState(``)
 
 	const { isValid, dirtyFields, errors } = formState;
 
@@ -69,8 +71,8 @@ function SignInForm() {
 				dispatch(setRefreshToken(refreshToken))
 				dispatch(setAccessToken(accessToken))
 			})
-			.catch((error) => {
-				console.error(`E:`, error)
+			.catch((error) => { 
+				setServerError(getApiErrorMessage(error))
 			})
 	}
 

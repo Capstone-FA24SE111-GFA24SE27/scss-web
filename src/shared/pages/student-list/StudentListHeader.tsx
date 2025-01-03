@@ -32,7 +32,6 @@ const StudentListHeader = ({ isShowingTab = false}) => {
 		size: 9999
 	})
 	const problemTags = problemTagsData?.content.data || []
-	console.log(problemTags)
 	// const handleIsIncludeBehavior = (
 	// 	event: React.ChangeEvent<HTMLInputElement>
 	// ) => {
@@ -204,7 +203,6 @@ interface Props {
 
 const TagsSelect: React.FC<Props> = ({ data, selectedValues, onChange }) => {
 	const flatOptions = data.map((item) => item.name);
-	console.log(flatOptions)
 	return (
 		<Autocomplete
 			className="w-full"

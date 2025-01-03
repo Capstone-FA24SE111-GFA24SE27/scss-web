@@ -100,7 +100,7 @@ function StudentListItem(props: StudentListItemPropsType) {
 		<div className=''>
 			<ListItemButton
 				selected={student?.id === Number(id)}
-				className='flex items-start gap-24 px-24 py-16 rounded-lg'
+				className='flex items-start gap-24 px-24 py-16 rounded-lg shadow shadow-secondary-main/20'
 				sx={{ bgcolor: 'background.paper' }}
 				component={NavLinkAdapter}
 				to={`student/${student.profile.id}`}
@@ -109,7 +109,7 @@ function StudentListItem(props: StudentListItemPropsType) {
 					<Avatar
 						alt={student.profile.fullName}
 						src={student.profile.avatarLink}
-						className='size-80'
+						className='size-80 !border !border-secondary-main'
 					/>
 				</ListItemAvatar>
 				<Box className='flex flex-col justify-between gap-8'>

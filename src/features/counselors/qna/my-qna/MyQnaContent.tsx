@@ -3,6 +3,7 @@ import {
 	ContentLoading,
 	FilterTabs,
 	Heading,
+	ListSkeleton,
 	NavLinkAdapter,
 	Pagination,
 	SearchField,
@@ -82,7 +83,7 @@ const MyQnaContent = () => {
 
 	const {
 		data: qnaData,
-		isLoading,
+		isFetching,
 		refetch,
 	} = useGetMyCounselorQuestionsQuery({
 		isClosed: isClosed || undefined,
@@ -118,7 +119,7 @@ const MyQnaContent = () => {
 		}
 	}, [socket, account]);
 
-	// const [answerQuestion, { isLoading: submitingAnswer }] = useAnswerQuestionMutation()
+	// const [answerQuestion, { isFetching: submitingAnswer }] = useAnswerQuestionMutation()
 
 	// const { data: academicTopicsData } = useGetAcademicTopicsQuery();
 	// const { data: nonacademicTopicsData } = useGetNonAcademicTopicsQuery();
@@ -148,11 +149,6 @@ const MyQnaContent = () => {
 	const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue);
 	};
-
-	if (isLoading) {
-		return <ContentLoading />;
-	}
-
 	return (
 		<div className='container w-full h-full mx-auto'>
 			<motion.div
@@ -207,48 +203,51 @@ const MyQnaContent = () => {
 				</div>
 
 				<div className='space-y-16'>
-					{!qnaList.length ? (
-						<div className='p-32 text-center'>
-							<Typography
-								variant='h5'
-								className='text-text-disabled'
-							>
-								No questions found
-							</Typography>
-						</div>
-					) : (
-						<div className='space-y-16'>
-							{
-								pendingQuestions?.length > 0 && (
-									<div className='flex flex-col gap-16'>
-										{completedQuestion?.length > 0 && (
-											<SubHeading title='Pending Questions' />
-										)}
-										{
-											pendingQuestions.map((qna) => (
-												<MyQnaItem key={qna.id} qna={qna} />
-											))
-										}
-										{completedQuestion?.length > 0 && <Divider />}
-									</div>
-								)
-							}
-							{
-								completedQuestion?.length > 0 && (
-									<div className='flex flex-col gap-16'>
-										{pendingQuestions?.length > 0 && (
-											<SubHeading title='Completed Questions' />
-										)}
-										{
-											completedQuestion.map((qna) => (
-												<MyQnaItem key={qna.id} qna={qna} />
-											))
-										}
-									</div>
-								)
-							}
-						</div>
-					)}
+					{
+						isFetching 
+						? <ContentLoading />
+						:!qnaList.length ? (
+							<div className='p-32 text-center'>
+								<Typography
+									variant='h5'
+									className='text-text-disabled'
+								>
+									No questions found
+								</Typography>
+							</div>
+						) : (
+							<div className='space-y-16'>
+								{
+									pendingQuestions?.length > 0 && (
+										<div className='flex flex-col gap-16'>
+											{completedQuestion?.length > 0 && (
+												<SubHeading title='Pending Questions' />
+											)}
+											{
+												pendingQuestions.map((qna) => (
+													<MyQnaItem key={qna.id} qna={qna} />
+												))
+											}
+											{completedQuestion?.length > 0 && <Divider />}
+										</div>
+									)
+								}
+								{
+									completedQuestion?.length > 0 && (
+										<div className='flex flex-col gap-16'>
+											{pendingQuestions?.length > 0 && (
+												<SubHeading title='Completed Questions' />
+											)}
+											{
+												completedQuestion.map((qna) => (
+													<MyQnaItem key={qna.id} qna={qna} />
+												))
+											}
+										</div>
+									)
+								}
+							</div>
+						)}
 				</div>
 				<Pagination
 					page={page}

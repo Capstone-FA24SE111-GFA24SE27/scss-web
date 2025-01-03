@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import { AppLoading, ContentLoading, Pagination } from '@shared/components';
+import { AppLoading, ContentLoading, ListSkeleton, Pagination } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import CounselorListItem from './CounselorListItem';
 import {
@@ -81,10 +81,10 @@ function CounselorListContent() {
 					animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
 					className='flex flex-col flex-auto w-full max-h-full gap-16 pb-16'
 				>
-					<List className='w-full p-0 m-0'>
+					<List className='w-full p-0 m-0 flex flex-col gap-8 px-24'>
 						{isFetchingAcademicCounselors ||
-						isFetchingNonAcademicCounselors ? (
-							<ContentLoading className='h-screen' />
+							isFetchingNonAcademicCounselors ? (
+							<ListSkeleton />
 						) : !counselors?.length ? (
 							<div className='flex items-center justify-center flex-1'>
 								<Typography color='text.secondary' variant='h5'>

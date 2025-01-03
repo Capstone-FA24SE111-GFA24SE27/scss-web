@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { ContentLoading, DataTable, NavLinkAdapter, Pagination, QuestionCardItem, openDialog } from '@shared/components';
+import { ContentLoading, DataTable, DateRangePicker, NavLinkAdapter, Pagination, QuestionCardItem, SearchField, openDialog } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -24,114 +24,50 @@ function QnaTab() {
     pageSize: 10,
   });
   const dispatch = useAppDispatch()
-  const { data, isLoading } = useGetCounselorQuestionCardsManagementQuery({
-    counselorId: Number(id),
-    page: pagination.pageIndex + 1,
-  })
+
   const [page, setPage] = useState(1);
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  const columns = useMemo<MRT_ColumnDef<Question>[]>(() => [
-    {
-      accessorKey: 'student.profile.id',
-      header: 'Student',
-      Cell: ({ row }) => (
-        <Typography
-          component={NavLinkAdapter}
-          to={`/management/student/${row.original.student.profile.id}`}
-          className="!underline !text-secondary-main"
-          color="secondary"
-        >
-          {row.original.student.profile.fullName}
-        </Typography>
-      )
-    },
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      Cell: ({ row }) => (
-        <Chip
-          label={row.original.status}
-          variant='filled'
-          color={statusColor[row.original.status as string]}
-          size='small'
-        />
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
-      )
-    },
-    {
-      accessorKey: 'answer',
-      header: 'Is answered',
-      Cell: ({ row }) => (
-        <div>
-          {Boolean(row.original.answer) ? `true` : `false`}
-        </div>
-      )
-    },
-  ], []);
+  const handleStartDateChange = (date: string) => setStartDate(date);
+  const handleEndDateChange = (date: string) => setEndDate(date);
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+  };
 
-  // if (isLoading) {
-  //   return <ContentLoading />;
-  // }
+
+
+  const { data, isLoading } = useGetCounselorQuestionCardsManagementQuery({
+    counselorId: Number(id),
+    page: pagination.pageIndex + 1,
+    from: startDate,
+    to: endDate,
+    keyword: searchTerm,
+  })
+
   const questions = data?.content?.data
 
   return (
-    // <DataTable
-    //   data={data?.content.data || []}
-    //   columns={columns}
-    //   manualPagination
-    //   rowCount={data?.content.totalElements || 0}
-    //   onPaginationChange={setPagination}
-    //   state={{ pagination }}
-    //   enableColumnFilterModes={false}
-    //   enableGlobalFilter={false} // Disable global search
-    //   renderRowActionMenuItems={({ closeMenu, row, table }) => [
-    //     <MenuItem
-    //       key={0}
-    //       onClick={() => {
-    //         dispatch(openDialog({
-    //           children: <AppointmentDetail id={row.original.id.toString()} />
-    //         }))
-    //         closeMenu();
-    //         table.resetRowSelection();
-    //       }}
-    //     >
-    //       <ListItemIcon>
-    //         <Visibility />
-    //       </ListItemIcon>
-    //       View Detail
-    //     </MenuItem>,
-    //     <MenuItem
-    //       key={1}
-    //       onClick={() => {
-    //         navigate(`report/${row.original.id}`)
-    //         closeMenu();
-    //         table.resetRowSelection();
-    //       }}
-    //     >
-    //       <ListItemIcon>
-    //         <Summarize />
-    //       </ListItemIcon>
-    //       View Report
-    //     </MenuItem>
-
-    //   ]}
-    //   renderTopToolbarCustomActions={({ table }) => {
-    //     const { rowSelection } = table.getState();
-
-    //     if (Object.keys(rowSelection).length === 0) {
-    //       return null;
-    //     }
-
-    //     return (
-    //       <div>
-    //       </div>
-    //     );
-    //   }}
-    // />
-    <div>
+    <div className='space-y-8'>
+      <div className='flex gap-16'>
+        <SearchField
+          label='Question keyword'
+          placeholder='Enter question keyword'
+          onSearch={handleSearch}
+          className='w-full'
+        />
+        <DateRangePicker
+          startDate={startDate ? dayjs(startDate) : null}
+          endDate={endDate ? dayjs(endDate) : null}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+        />
+      </div>
       <div className='flex flex-col gap-16'>
         {
           !questions?.length

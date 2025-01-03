@@ -26,7 +26,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 		<>
 			<ListItemButton
 				selected={counselor?.id == Number(id)}
-				className="p-8 flex gap-24 items-start px-24 py-16 justify-between bg-background-paper"
+				className="p-8 flex gap-24 items-start px-24 py-16 justify-between bg-background-paper rounded-lg shadow shadow-secondary-main/20"
 				component={NavLinkAdapter}
 				to={`counselor/${counselor.profile.id}`}
 			>
@@ -35,7 +35,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 						<Avatar
 							alt={counselor.profile.fullName}
 							src={counselor.profile.avatarLink}
-							className='size-80'
+							className='size-80 !border border-secondary-main'
 						/>
 					</ListItemAvatar>
 					<Box className='flex flex-col gap-8 justify-between'>
@@ -80,7 +80,6 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 					({counselor?.rating}/5)
 				</div> */}
 			</ListItemButton >
-			<Divider />
 		</>
 	);
 }

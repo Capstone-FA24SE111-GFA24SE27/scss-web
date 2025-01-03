@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import { AppLoading, ContentLoading, Pagination } from '@shared/components';
+import { AppLoading, ContentLoading, ListSkeleton, Pagination } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import StudentListItem from './StudentListItem';
 import { useState, ChangeEvent } from 'react';
@@ -44,7 +44,7 @@ function StudentListContent() {
 		minSubjectForAttendance
 	} = filter;
 
-	const { data: data, isLoading: isLoadingStudents } = useGetStudentsFilterQuery({
+	const { data: data, isFetching: isFetchingStudents } = useGetStudentsFilterQuery({
 		keyword: searchTerm,
 		isUsingPrompt,
 		promptForBehavior,
@@ -68,11 +68,6 @@ function StudentListContent() {
 	});
 
 	const students = data?.data;
-
-	if (isLoadingStudents) {
-		return <AppLoading />;
-	}
-
 	return (
 		<div className="flex flex-col flex-1 gap-16 pb-16">
 			<Box>
@@ -82,17 +77,22 @@ function StudentListContent() {
 					className="flex flex-col flex-auto w-full max-h-full gap-16"
 				>
 					<List className="w-full flex gap-8 px-24 py-8">
-						{!students?.length ? (
-							<div className="flex items-center justify-center flex-1">
-								<Typography color="text.secondary" variant="h5">
-									There are no students!
-								</Typography>
-							</div>
-						) : (
-							students.map((item) => (
-								<StudentListItem key={item.id} student={item} />
-							))
-						)}
+						{
+							isFetchingStudents
+								? (
+									<ListSkeleton />
+								)
+								: !students?.length ? (
+									<div className="flex items-center justify-center flex-1">
+										<Typography color="text.secondary" variant="h5">
+											There are no students!
+										</Typography>
+									</div>
+								) : (
+									students.map((item) => (
+										<StudentListItem key={item.id} student={item} />
+									))
+								)}
 					</List>
 				</motion.div>
 			</Box>

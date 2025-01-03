@@ -11,3 +11,4 @@ export {
     BackdropLoading
 }
 export * from "./backdrop";
+export * from "./skeleton";

@@ -75,9 +75,9 @@ const QnaItem = (props: Props) => {
 	const account = useAppSelector(selectAccount);
 
 	const [closeQuestion] = useCloseQuestionStudentMutation();
-	const [acceptAnswer] = useAcceptQuestionStudentMutation();
+	const [acceptAnswer, { isLoading: isLoadingAcceptAnswer }] = useAcceptQuestionStudentMutation();
 	const [deleteQuestion, { isLoading: isDeletingQuestion }] = useDeleteQuestionStudentMutation();
-	const [createChatSession] = useCreateChatSessionStudentMutation();
+	const [createChatSession, { isLoading: isLoadingCreateChat }] = useCreateChatSessionStudentMutation();
 
 	const handleSelectChat = (qna: Question) => {
 		if (qna.chatSession) {
@@ -286,9 +286,9 @@ const QnaItem = (props: Props) => {
 										</Typography>
 									)
 										: qna.answer ? (
-											<div>
+											<ExpandableContent collapsedHeight={100}>
 												{RenderHTML(qna.answer)}
-											</div>
+											</ExpandableContent>
 										)
 											: qna.reviewReason
 												? <div className='flex gap-8'>
@@ -348,7 +348,7 @@ const QnaItem = (props: Props) => {
 							<IconButton><ThumbUpOutlined /></IconButton>
 							<IconButton><ThumbDownOutlined /></IconButton>
 						  </div> */}
-						{qna.status == 'PENDING' && !qna.answer ? (
+						{qna.status == 'PENDING' && !qna.answer && (
 							<Button
 								variant='outlined'
 								color='secondary'
@@ -358,31 +358,9 @@ const QnaItem = (props: Props) => {
 							>
 								Delete
 							</Button>
-						) : qna.status == 'VERIFIED' && !qna?.closed ? (<></>
-							// <Button
-							// 	variant='outlined'
-							// 	color='secondary'
-							// 	startIcon={<Lock />}
-							// 	onClick={() => handleCloseQuestion()}
-							// >
-							// 	Close
-							// </Button>
-						) : (
-							<></>
 						)}
 
-						{qna.answer && !qna.closed && !qna.accepted && (
-							<Button
-								variant='outlined'
-								color='secondary'
-								startIcon={<ThumbUp />}
-								onClick={handleAcceptAnswer}
-							>
-								Accept
-							</Button>
-						)}
-
-						{qna.status == 'PENDING' && !qna.answer ? (
+						{qna.status == 'PENDING' && !qna.answer && (
 							<Button
 								variant='contained'
 								color='secondary'
@@ -392,25 +370,29 @@ const QnaItem = (props: Props) => {
 							>
 								Edit Question
 							</Button>
-						) : qna.chatSession ? (
+						)}
+
+						{!qna.closed && qna.status == 'VERIFIED' && qna?.answer && (
 							<Button
 								variant='contained'
 								color='secondary'
 								startIcon={<ChatBubbleOutline />}
 								onClick={() => handleSelectChat(qna)}
-								disabled={!qna.counselor}
+								disabled={!qna.counselor || isLoadingCreateChat}
 							>
-								Chat
+								{qna.chatSession ? `Chat` : `Start to Chat`}
 							</Button>
-						) : (
+						)}
+
+						{qna.answer && !qna.closed && !qna.accepted && (
 							<Button
-								variant='contained'
+								variant='outlined'
 								color='secondary'
-								startIcon={<ChatBubbleOutline />}
-								onClick={() => handleSelectChat(qna)}
-								disabled={!qna.counselor || qna.status !== 'VERIFIED'}
+								startIcon={<ThumbUp />}
+								onClick={handleAcceptAnswer}
+								disabled={isLoadingAcceptAnswer}
 							>
-								{qna.closed ? 'Chat History' : 'Start to Chat'}
+								Accept
 							</Button>
 						)}
 

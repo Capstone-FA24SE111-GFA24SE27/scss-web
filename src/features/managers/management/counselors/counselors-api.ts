@@ -191,6 +191,7 @@ export const counselorsMangementApi = api
           page,
           from,
           to,
+          keyword,
           size
         }) => ({
           url: `/api/question-cards/manage/counselor/filter/${counselorId}`,
@@ -198,6 +199,7 @@ export const counselorsMangementApi = api
             page,
             from,
             to,
+            keyword,
             size
           }
         }),

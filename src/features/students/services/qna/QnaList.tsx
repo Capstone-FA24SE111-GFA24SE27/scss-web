@@ -103,7 +103,7 @@ const QnaList = () => {
 	const {
 		data: qnaData,
 		refetch,
-		isLoading,
+		isFetching,
 	} = useGetStudentQuestionsQuery({
 		status: statusTabs[tabValue].value,
 		keyword: searchTerm,
@@ -205,7 +205,7 @@ const QnaList = () => {
 
 			<div className='space-y-16'>
 				{
-					isLoading ?
+					isFetching ?
 						<ContentLoading />
 						: !qnaList?.length ? (
 							<Typography variant='h5' color='textSecondary'>

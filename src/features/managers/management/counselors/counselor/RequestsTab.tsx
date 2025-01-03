@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { ContentLoading, DataTable, NavLinkAdapter, openDialog } from '@shared/components';
+import { ContentLoading, DataTable, DateRangePicker, NavLinkAdapter, openDialog } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -23,6 +23,11 @@ function RequestsTable() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const handleStartDateChange = (date: string) => setStartDate(date);
+  const handleEndDateChange = (date: string) => setEndDate(date);
+
 
   const { data, isLoading } = useGetCounselorAppointmentRequestsManagementQuery({
     counselorId: Number(id),
@@ -93,47 +98,59 @@ function RequestsTable() {
 
 
   return (
-    <Paper className='shadow p-8'>
-      <DataTable
-        data={data?.content.data || []}
-        columns={columns}
-        manualPagination
-        rowCount={data?.content.totalElements || 0}
-        onPaginationChange={setPagination}
-        state={{ pagination }}
-        enableColumnFilterModes={false}
-        enableGlobalFilter={false} // Disable global search
-        renderRowActionMenuItems={({ closeMenu, row, table }) => [
-          <MenuItem
-            key={0}
-            onClick={() => {
-              dispatch(openDialog({
-                children: <AppointmentDetail id={row.original.id.toString()} />
-              }))
-              closeMenu();
-              table.resetRowSelection();
-            }}
-          >
-            <ListItemIcon>
-              <Visibility />
-            </ListItemIcon>
-            View Detail
-          </MenuItem>,
-        ]}
-        renderTopToolbarCustomActions={({ table }) => {
-          const { rowSelection } = table.getState();
+    <div className='space-y-8'>
+      <div className='flex justify-end'>
+        <DateRangePicker
+          startDate={startDate ? dayjs(startDate) : null}
+          endDate={endDate ? dayjs(endDate) : null}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+        />
+      </div>
 
-          if (Object.keys(rowSelection).length === 0) {
-            return null;
-          }
+      <Paper className='shadow p-8'>
+        <DataTable
+          data={data?.content.data || []}
+          columns={columns}
+          manualPagination
+          rowCount={data?.content.totalElements || 0}
+          onPaginationChange={setPagination}
+          state={{ pagination }}
+          enableColumnFilterModes={false}
+          enableGlobalFilter={false} // Disable global search
+          renderRowActionMenuItems={({ closeMenu, row, table }) => [
+            <MenuItem
+              key={0}
+              onClick={() => {
+                dispatch(openDialog({
+                  children: <AppointmentDetail id={row.original.id.toString()} />
+                }))
+                closeMenu();
+                table.resetRowSelection();
+              }}
+            >
+              <ListItemIcon>
+                <Visibility />
+              </ListItemIcon>
+              View Detail
+            </MenuItem>,
+          ]}
+          renderTopToolbarCustomActions={({ table }) => {
+            const { rowSelection } = table.getState();
 
-          return (
-            <div>
-            </div>
-          );
-        }}
-      />
-    </Paper>
+            if (Object.keys(rowSelection).length === 0) {
+              return null;
+            }
+
+            return (
+              <div>
+              </div>
+            );
+          }}
+        />
+      </Paper>
+    </div>
+
   );
 }
 
