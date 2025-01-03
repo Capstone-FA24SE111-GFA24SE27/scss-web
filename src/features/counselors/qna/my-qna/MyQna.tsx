@@ -24,7 +24,7 @@ function MyQna() {
   return (
     <PageSimple
       header={
-        <div className='p-32 bg-background-paper'>
+        <div className='px-32 py-24 bg-background-paper'>
           <Heading title='My Questions' description='List of your assigned questions for the counselor to answer' />
         </div>
       }

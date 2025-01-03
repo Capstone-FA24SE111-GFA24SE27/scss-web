@@ -1,4 +1,4 @@
-import { BackdropLoading, ContentLoading, ItemMenu, UserListItem, openDialog } from '@/shared/components';
+import { BackdropLoading, ContentLoading, ItemMenu, UserListItem, openDialog, openDrawer } from '@/shared/components';
 import { counselingTypeColor, priorityColor, statusColor } from '@/shared/constants';
 import { CalendarMonth, Circle, Summarize } from '@mui/icons-material';
 import {
@@ -15,8 +15,9 @@ import {
 import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
 import { useGetDemandByIdQuery } from './demand-api';
-import { StudentAppointmentReport, StudentDetailAppointmentItem } from '../student';
+import { StudentAppointmentReport, StudentDetailAppointmentItem, StudentView } from '../student';
 import { useAppDispatch } from '@shared/store';
+import { CounselorView } from '../counselor';
 
 const DemandDetail = ({ id }: { id?: string }) => {
   const { id: demandRouteId } = useParams()
@@ -94,7 +95,10 @@ const DemandDetail = ({ id }: { id?: string }) => {
             Student
           </Typography>
           <UserListItem
-            className='ml-4'
+            onClick={() => dispatch(openDrawer({
+              children: <StudentView id={demand.student.profile.id.toString()} />
+            }))}
+            className='ml-4 bg-primary-light/5 p-8 shadow'
             fullName={demand.student.profile.fullName}
             avatarLink={demand.student.profile.avatarLink}
             phoneNumber={demand.student.profile.phoneNumber}
@@ -110,7 +114,10 @@ const DemandDetail = ({ id }: { id?: string }) => {
             Assignee
           </Typography>
           <UserListItem
-            className='ml-4'
+            onClick={() => dispatch(openDrawer({
+              children: <CounselorView id={demand.counselor.profile.id.toString()} />
+            }))}
+            className='ml-4 bg-primary-light/5 p-8 shadow'
             fullName={demand.counselor.profile.fullName}
             avatarLink={demand.counselor.profile.avatarLink}
             phoneNumber={demand.counselor.profile.phoneNumber}
@@ -123,7 +130,7 @@ const DemandDetail = ({ id }: { id?: string }) => {
             Assigner
           </Typography>
           <UserListItem
-            className='ml-4'
+            className='ml-4 bg-primary-light/5 p-8 shadow'
             fullName={demand.supportStaff.profile.fullName}
             avatarLink={demand.supportStaff.profile.avatarLink}
             phoneNumber={demand.supportStaff.profile.phoneNumber}

@@ -21,6 +21,7 @@ import { useAlertDialog } from '@/shared/hooks';
 import { isApiSuccess, useAppDispatch } from '@shared/store';
 import QnaTab from './QnaTab';
 import ProfileTab from './ProfileTab';
+import DemandTab from './DemandTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -367,11 +368,15 @@ function Counseling() {
             />
             <Tab
               className="px-16 text-lg font-semibold min-h-40 min-w-64"
-              label="Feedbacks"
+              label="Q&As"
             />
             <Tab
               className="px-16 text-lg font-semibold min-h-40 min-w-64"
-              label="Q&A"
+              label="Feedbacks"
+            />
+             <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Demands"
             />
             <Tab
               className="px-16 text-lg font-semibold min-h-40 min-w-64"
@@ -390,9 +395,10 @@ function Counseling() {
                   {tabValue === 1 && <AppointmentsTable />}
                   {tabValue === 2 && <RequestsTable />}
                   {tabValue === 3 && <ScheduleTab />}
-                  {tabValue === 4 && <FeedbackTab />}
-                  {tabValue === 5 && <QnaTab />}
-                  {tabValue === 6 && <ProfileTab />}
+                  {tabValue === 4 && <QnaTab />}
+                  {tabValue === 5 && <FeedbackTab />}
+                  {tabValue === 6 && <DemandTab />}
+                  {tabValue === 7 && <ProfileTab />}
                 </div>
               </div>
             </div>
