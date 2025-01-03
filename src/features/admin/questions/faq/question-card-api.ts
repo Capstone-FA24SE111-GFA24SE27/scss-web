@@ -145,7 +145,7 @@ type GetContributedQuestionArgs = {
 	size?: number;
 };
 
-type PutUpdateQuestionAdminResponse = {};
+type PutUpdateQuestionAdminResponse = ApiMessage;
 type PutUpdateQuestionAdminArgs = {
 	id: string | number;
 	status: 'HIDE' | 'VISIBLE';

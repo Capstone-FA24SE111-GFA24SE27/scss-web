@@ -1,12 +1,22 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
 import {
+	closeDialog,
 	ContentLoading,
 	DataTable,
 	NavLinkAdapter,
 	openDialog,
 } from '@shared/components';
-import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
+import {
+	Chip,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	ListItemIcon,
+	MenuItem,
+	Paper,
+	TextField,
+} from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
 import { Link, useNavigate } from 'react-router-dom';
@@ -29,7 +39,10 @@ import {
 	Counselor,
 	Question,
 } from '@/shared/types';
-import { useGetContributedQuestionAdminQuery } from './question-card-api';
+import {
+	useGetContributedQuestionAdminQuery,
+	usePutUpdateContributedQuestionAdminMutation,
+} from './question-card-api';
 import { selectContributedQuestionFilter } from '../admin-question-slice';
 import ContributedQuestionCardDetail from './ContributedQuestionCardDetail';
 function ContributedQuestionTable() {
@@ -83,9 +96,15 @@ function ContributedQuestionTable() {
 		}
 	};
 
-	const updateVisibility = (id: number) => {
+	const updateVisibility = (id: number, initialStatus: string) => {
 		if (id !== null) {
-			navigate(`update/${id}`);
+			dispatch(
+				openDialog({
+					children: (
+						<StatusPicker id={id} initialStatus={initialStatus} />
+					),
+				})
+			);
 		}
 	};
 
@@ -179,7 +198,10 @@ function ContributedQuestionTable() {
 					<MenuItem
 						key={0}
 						onClick={() => {
-							updateVisibility(row.original.id);
+							updateVisibility(
+								row.original.id,
+								row.original.status
+							);
 							closeMenu();
 							table.resetRowSelection();
 						}}
@@ -222,5 +244,83 @@ function ContributedQuestionTable() {
 		</Paper>
 	);
 }
+
+const StatusPicker = ({
+	id,
+	initialStatus,
+}: {
+	id: number;
+	initialStatus: string;
+}) => {
+	const dispatch = useAppDispatch();
+	const [updateStatus] = usePutUpdateContributedQuestionAdminMutation();
+	const [status, setStatus] = useState(initialStatus);
+	const handleUpdate = async () => {
+		updateStatus({
+			id: id,
+			status: status as 'HIDE' | 'VISIBLE',
+		})
+			.unwrap()
+			.then((res) => {
+				if (res.status === 200) {
+					useAlertDialog({
+						dispatch,
+						title: 'Update status successfully',
+					});
+				}
+			})
+			.catch((err) => {
+				useAlertDialog({
+					dispatch,
+					title: 'An error occur while updating status',
+				});
+			});
+	};
+
+	return (
+		<div className='min-w-320'>
+			<DialogTitle id='alert-dialog-title'>
+				Please select the status you want to update to
+			</DialogTitle>
+			<DialogContent>
+				<TextField
+					autoFocus
+					required
+					margin='dense'
+					id='status'
+					name='Public status'
+					label='Public status'
+					select
+					fullWidth
+					variant='standard'
+					onChange={(e) => {
+						setStatus(e.target.value);
+					}}
+					value={status}
+				>
+					<MenuItem key={'Hide'} value={'HIDE'}>
+						{'Hide'}
+					</MenuItem>
+
+					<MenuItem key={'Visible'} value={'VISIBLE'}>
+						{'Visible'}
+					</MenuItem>
+				</TextField>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={() => dispatch(closeDialog())} color='primary'>
+					Cancel
+				</Button>
+				<Button
+					color='secondary'
+					variant='contained'
+					onClick={handleUpdate}
+				>
+					Update
+				</Button>
+			</DialogActions>
+		</div>
+	);
+};
 
 export default ContributedQuestionTable;
