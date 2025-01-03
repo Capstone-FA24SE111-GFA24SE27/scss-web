@@ -7,6 +7,7 @@ import { profileRoutes, settingsRoutes } from '@/shared/pages';
 import { adminProfilesRoutes } from './profiles/admin-profiles-routes';
 import { adminAccountsRoutes } from './accounts/admin-accounts-routes';
 import { adminDashboardRoutes } from './dashboard';
+import { adminQuestionRoutes } from './questions';
 
 const AdminLayout = lazy(() => import('./admin-layout'))
 
@@ -26,6 +27,7 @@ export const adminRoutes: RouteObject[] = [
         ...profileRoutes,
         ...settingsRoutes,
         ...adminDashboardRoutes,
+        ...adminQuestionRoutes
     ],
   },
 

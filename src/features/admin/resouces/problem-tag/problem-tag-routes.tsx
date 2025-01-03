@@ -16,7 +16,15 @@ export const problemTagsRoutes: RouteObject[] = [
 				element: <CreateCategoryForm />,
 			},
 			{
+				path: 'category/update/:id',
+				element: <CreateCategoryForm />,
+			},
+			{
 				path: 'create',
+				element: <CreateProblemTagForm />,
+			},
+			{
+				path: 'update/:id',
 				element: <CreateProblemTagForm />,
 			},
 		],

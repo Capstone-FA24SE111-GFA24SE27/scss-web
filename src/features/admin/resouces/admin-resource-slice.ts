@@ -5,19 +5,18 @@ import { rootReducer } from '@shared/store';
  */
 
 const initialState = {
-	questionCardSearch: '',
-	questionCardCategorySearch: '',
+	selectedProblemTagUpdate: null,
+	selectedProblemTagCategoryUpdate: null,
 	problemTagSearch: '',
 	problemTagCategorySearch: '',
+	selectedProblemTagCategory: undefined,
 	timeSlotsSearch: '',
-	selectedQuestionCategory: undefined,
 	academicTab: 0,
-	questionCardtab: 0,
 	semesterSearch: undefined,
 	departmentFilter: {
 		keyword: undefined,
 		page: 1,
-		size: 5,
+		size: 10,
 		sortDirection: 'DESC',
 	},
 	majorFilter: {
@@ -40,20 +39,14 @@ export const adminResourceSlice = createSlice({
 	name: 'adminResourceSlice',
 	initialState,
 	reducers: {
-		setQuestionSearch: (state, action) => {
-			state.questionCardSearch = action.payload;
-		},
-		setSelectedQuestionCategory: (state, action) => {
-			state.selectedQuestionCategory = action.payload;
-		},
-		setQuestionCategorySearch: (state, action) => {
-			state.questionCardCategorySearch = action.payload;
-		},
 		setAcademicTab: (state, action) => {
 			state.academicTab = action.payload;
 		},
-		setQuestionTab: (state, action) => {
-			state.questionCardtab = action.payload;
+		setSelectedFilterProblemTagCategory: (state, action) => {
+			state.selectedProblemTagCategory = action.payload;
+		},
+		setSelectedProblemTagUpdate: (state, action) => {
+			state.selectedProblemTagUpdate = action.payload;
 		},
 		setDepartmentFilter: (state, action) => {
 			state.departmentFilter = action.payload;
@@ -76,20 +69,35 @@ export const adminResourceSlice = createSlice({
 		setSemesterAdminSearch: (state, action) => {
 			state.semesterSearch = action.payload;
 		},
+		setProblemTagSearch: (state, action) => {
+			state.problemTagSearch = action.payload;
+		},
+		setProblemTagCategorySearch: (state, action) => {
+			state.problemTagCategorySearch = action.payload;
+		},
+		setTimeSlotSearch: (state, action) => {
+			state.timeSlotsSearch = action.payload;
+		},
+		setProblemTagCategoryUpdate: (state, action) => {
+			state.selectedProblemTagCategoryUpdate = action.payload;
+		},
 	},
 	selectors: {
 		selectResourceState: (state) => state,
-		selectAdminQuestionCardCategoryFilter: (state) =>
-			state.selectedQuestionCategory,
-		selectAdminQuestionCardSearchCategory: (state) =>
-			state.questionCardCategorySearch,
-		selectAdminQuestionCardSearch: (state) => state.questionCardSearch,
 		selectAdminAcademicTab: (state) => state.academicTab,
-		selectAdminQuestionTab: (state) => state.academicTab,
 		selectDepartmentFilter: (state) => state.departmentFilter,
 		selectMajorFilter: (state) => state.majorFilter,
 		selectSpecializationFilter: (state) => state.specializationFilter,
 		selectSemesterSearchAdmin: (state) => state.semesterSearch,
+		selectProblemTagSearch: (state) => state.problemTagSearch,
+		selectProblemTagCategorySearch: (state) =>
+			state.problemTagCategorySearch,
+		selectProblemTagFilterCategory: (state) =>
+			state.selectedProblemTagCategory,
+		selectTimeSlotSearch: (state) => state.timeSlotsSearch,
+		selectProblemTagUpdate: (state) => state.selectedProblemTagUpdate,
+		selectProblemTagCategoryUpdate: (state) =>
+			state.selectedProblemTagCategoryUpdate,
 	},
 });
 /**
@@ -98,11 +106,9 @@ export const adminResourceSlice = createSlice({
 rootReducer.inject(adminResourceSlice);
 const injectedSlice = adminResourceSlice.injectInto(rootReducer);
 export const {
-	setQuestionSearch,
-	setSelectedQuestionCategory,
-	setQuestionCategorySearch,
 	setAcademicTab,
-	setQuestionTab,
+	setProblemTagCategorySearch,
+	setProblemTagSearch,
 	setDepartmentFilter,
 	setMajorFilter,
 	setSpecializationFilter,
@@ -110,18 +116,24 @@ export const {
 	setMajorFilterSearchTerm,
 	setSpecializationFilterSearchTerm,
 	setSemesterAdminSearch,
+	setSelectedFilterProblemTagCategory,
+	setTimeSlotSearch,
+	setSelectedProblemTagUpdate,
+	setProblemTagCategoryUpdate,
 } = adminResourceSlice.actions;
 export const {
-	selectAdminQuestionCardSearch,
-	selectAdminQuestionCardSearchCategory,
 	selectResourceState,
 	selectAdminAcademicTab,
-	selectAdminQuestionTab,
 	selectDepartmentFilter,
 	selectMajorFilter,
 	selectSpecializationFilter,
 	selectSemesterSearchAdmin,
-	selectAdminQuestionCardCategoryFilter,
+	selectProblemTagCategorySearch,
+	selectProblemTagSearch,
+	selectProblemTagFilterCategory,
+	selectTimeSlotSearch,
+	selectProblemTagUpdate,
+	selectProblemTagCategoryUpdate,
 } = injectedSlice.selectors;
 
 export default adminResourceSlice.reducer;

@@ -32,7 +32,7 @@ export type Question = {
 	difficultyLevel: 'Easy' | 'Medium' | 'Hard';
 	reviewReason?: string;
 	publicStatus?: 'HIDE' | 'PENDING' | 'VISIBLE';
-	accepted: boolean,
+	accepted: boolean;
 	feedback: QuestionFeedback;
 };
 
@@ -63,6 +63,16 @@ export type ContributedQuestionCategory = {
 	type: 'ACADEMIC' | 'NON_ACADEMIC';
 };
 
+export type ContributedQuestionAdmin = {
+	id: number;
+	title: string;
+	question: string;
+	category: ContributedQuestionCategory;
+	counselor: Counselor;
+	status: 'HIDE' | 'VISIBLE';
+	answer: string;
+};
+
 export type QuestionFeedback = {
 	id: number;
 	rating: number;
@@ -71,7 +81,6 @@ export type QuestionFeedback = {
 	createdAt: number;
 };
 
-
 export type Feedback = {
 	id: number;
 	rating: number;
@@ -79,4 +88,3 @@ export type Feedback = {
 	appointmentId: number;
 	createdAt: number;
 };
-

@@ -127,7 +127,7 @@ const CreateDemandForm = () => {
 		{ skip: !reason }
 	);
 
-	const quickMatchCounselor = quickMatchData?.content || null;
+	const quickMatchCounselor = quickMatchData?.content[0] || null;
 	console.log(error);
 
 	const onSubmit = () => {
@@ -151,8 +151,9 @@ const CreateDemandForm = () => {
 	};
 
 	const handleSelectCounselor = (counselor: Counselor) => {
+		console.log('select', counselor);
 		if (counselor) {
-			setValue('counselorId', counselor.profile.id);
+			setValue('counselorId', counselor?.profile?.id);
 			dispatch(setSelectedCounselor(counselor));
 		} else {
 			setValue('counselorId', null);
@@ -178,7 +179,7 @@ const CreateDemandForm = () => {
 
 	useEffect(() => {
 		if (counselor) {
-			setValue('counselorId', counselor.profile.id);
+			setValue('counselorId', counselor?.profile?.id);
 		}
 	}, [counselor]);
 

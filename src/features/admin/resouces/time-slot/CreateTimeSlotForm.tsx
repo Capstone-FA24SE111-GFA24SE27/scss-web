@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { usePostCreateTimeSlotMutation } from './time-slot-api';
+import {
+	useGetTimeSlotByIdQuery,
+	usePostCreateTimeSlotMutation,
+	usePutUpdateTimeSlotMutation,
+} from './time-slot-api';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button, Paper, TextField, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { TimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useAlertDialog } from '@/shared/hooks';
@@ -12,9 +16,17 @@ import { useAppDispatch } from '@shared/store';
 
 const schema = z.object({
 	slotCode: z.string().min(1, 'Slot Code is required'),
-	startTime: z.string().min(6, 'Time is required'),
+	startTime: z
+		.string()
+		.refine((value) => /^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(value), {
+			message: 'Valid slot start time is required.',
+		}),
 
-	endTime: z.string().min(6, 'Time is required'),
+	endTime: z
+		.string()
+		.refine((value) => /^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(value), {
+			message: 'Valid slot end time is required.',
+		}),
 
 	name: z.string().min(1, 'Slot name is required'),
 });
@@ -23,15 +35,23 @@ type FormType = Required<z.infer<typeof schema>>;
 
 const CreateTimeSlotForm = () => {
 	const navigate = useNavigate();
+	const { id } = useParams();
+
 	const [createTimeSlot] = usePostCreateTimeSlotMutation();
+	const [updateTimeSlot] = usePutUpdateTimeSlotMutation();
+
+	const { data, isLoading } = useGetTimeSlotByIdQuery(id, { skip: !id });
+
+	const initialData = data?.content;
+
 	const defaultValues = {
-		slotCode: '',
-		startTime: '',
-		endTime: '',
-		name: '',
+		slotCode: initialData?.slotCode || '',
+		startTime: initialData?.startTime || '',
+		endTime: initialData?.endTime || '',
+		name: initialData?.name || '',
 	};
 
-	const { control, formState, watch, handleSubmit, setValue } =
+	const { control, formState, watch, handleSubmit, setValue, reset } =
 		useForm<FormType>({
 			// @ts-ignore
 			defaultValues,
@@ -43,35 +63,65 @@ const CreateTimeSlotForm = () => {
 	const { isValid, dirtyFields, errors } = formState;
 
 	const onSubmit = () => {
-		// useAlertDialog({
-		// 	dispatch,
-		// 	title: 'Time slot created successfully',
-		// });
-		// navigate(-1);
-		createTimeSlot({
-			slotCode: formData.slotCode,
-			name: formData.name,
-			startTime: {
-				hour: dayjs(formData.startTime).hour(),
-				minute: dayjs(formData.startTime).minute(),
-				second: 0,
-				nano: 0,
-			},
-			endTime: {
-				hour: dayjs(formData.endTime).hour(),
-				minute: dayjs(formData.endTime).minute(),
-				second: 0,
-				nano: 0,
-			},
-		})
-			.unwrap()
-			.then((res) => {})
-			.catch((err) => console.log('err creating time slot', err));
+		if (id) {
+			updateTimeSlot({
+				id,
+				slotCode: formData.slotCode,
+				name: formData.name,
+				startTime: formData.startTime,
+				endTime: formData.endTime,
+			})
+				.unwrap()
+				.then((res) => {
+					if (res && res.status === 200) {
+						useAlertDialog({
+							dispatch,
+							title: 'Time slot updated successfully',
+						});
+					}
+					navigate(-1);
+				})
+				.catch((err) => {
+					console.log('err updating time slot', err);
+					useAlertDialog({
+						dispatch,
+						title: 'An error occur while updating time slots',
+						color: 'error',
+					});
+				});
+		} else {
+			createTimeSlot({
+				slotCode: formData.slotCode,
+				name: formData.name,
+				startTime: formData.startTime,
+				endTime: formData.endTime,
+			})
+				.unwrap()
+				.then((res) => {
+					if (res && res.status === 201) {
+						useAlertDialog({
+							dispatch,
+							title: 'Time slot created successfully',
+						});
+					}
+					navigate(-1);
+				})
+				.catch((err) => {
+					console.log('err creating time slot', err);
+					useAlertDialog({
+						dispatch,
+						title: 'An error occur while creating time slots',
+						color: 'error',
+					});
+				});
+		}
 	};
 
 	useEffect(() => {
-		console.log(formData.startTime);
-	}, [formData.startTime]);
+		if (!isLoading && data && data.content) {
+			reset(data.content);
+		}
+	}, [isLoading]);
 
 	return (
 		<div className='flex w-full h-full p-16 pt-32'>
@@ -79,7 +129,9 @@ const CreateTimeSlotForm = () => {
 				<Paper className='container flex flex-col flex-auto gap-32 p-32 mt-32'>
 					<div className=''>
 						<Typography className='text-2xl font-bold tracking-tight'>
-							Create new time slot
+							{id !== undefined
+								? 'Update time slot'
+								: 'Create new time slot'}
 						</Typography>
 					</div>
 					<div className='flex flex-col w-full gap-16'>
@@ -125,11 +177,13 @@ const CreateTimeSlotForm = () => {
 								name='startTime'
 								render={({ field }) => (
 									<TimePicker
-										value={dayjs(field.value)}
+										value={dayjs(field.value, 'HH:mm:ss')}
 										label='Start time'
 										onChange={(newValue) => {
 											console.log('startTime', newValue);
-											field.onChange(newValue.format());
+											field.onChange(
+												newValue.format('HH:mm:ss')
+											);
 										}}
 									/>
 								)}
@@ -139,7 +193,7 @@ const CreateTimeSlotForm = () => {
 								name='endTime'
 								render={({ field }) => (
 									<TimePicker
-										value={dayjs(field.value)}
+										value={dayjs(field.value, 'HH:mm:ss')}
 										slotProps={{
 											textField: {
 												helperText:
@@ -149,14 +203,15 @@ const CreateTimeSlotForm = () => {
 										label='End time'
 										minTime={
 											formData &&
-											dayjs(formData.startTime).add(
-												30,
-												'minute'
-											)
+											dayjs(
+												formData.startTime,
+												'HH:mm:ss'
+											).add(30, 'minute')
 										}
 										onChange={(newValue) => {
-											console.log('endtime', newValue);
-											field.onChange(newValue.format());
+											field.onChange(
+												newValue.format('HH:mm:ss')
+											);
 										}}
 									/>
 								)}
@@ -176,8 +231,8 @@ const CreateTimeSlotForm = () => {
 								disabled={
 									!formData.name ||
 									!formData.slotCode ||
-									!dayjs(formData.startTime).isValid() ||
-									!dayjs(formData.endTime).isValid()
+									!formData.startTime ||
+									!formData.endTime
 								}
 								onClick={handleSubmit(onSubmit)}
 							>

@@ -4,14 +4,17 @@ import { Button, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { selectAdminQuestionTab, setQuestionTab } from '../admin-resource-slice';
+import {
+	selectAdminQuestionTab,
+	setQuestionTab,
+} from '../admin-question-slice';
 
 const QuestionCardHeading = () => {
 	const navigate = useNavigate();
 	const tab = useAppSelector(selectAdminQuestionTab);
 	const [tabValue, setTabValue] = useState(tab);
-	const dispatch = useAppDispatch()
-	
+	const dispatch = useAppDispatch();
+
 	const questionTabs = [
 		{ label: 'All', value: '' },
 		{ label: 'Academic', value: 'ACADEMIC' },

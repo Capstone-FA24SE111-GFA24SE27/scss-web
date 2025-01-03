@@ -14,13 +14,17 @@ import { z } from 'zod';
 import {
 	useGetProblemTagsCategoriesQuery,
 	usePostProblemTagMutation,
+	useUpdateProblemTagMutation,
 } from './problem-tag-api';
-import { useAppDispatch } from '@shared/store';
+import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
+import {
+	selectProblemTagUpdate,
+	setSelectedProblemTagUpdate,
+} from '../admin-resource-slice';
 
 const schema = z.object({
 	name: z.string().min(1, 'Please enter problem tag name'),
-	point: z.number().min(0, 'Pleaser enter problem tag point'),
 	category: z.object({
 		id: z.number(),
 		name: z.string(),
@@ -31,15 +35,15 @@ type FormType = Required<z.infer<typeof schema>>;
 
 const CreateProblemTagForm = () => {
 	const navigate = useNavigate();
-
+	const { id } = useParams();
+	const initial = useAppSelector(selectProblemTagUpdate);
 	const { data: categories, isLoading } = useGetProblemTagsCategoriesQuery(
 		{}
 	);
 
 	const defaultValues = {
-		name: '',
-		point: 0,
-		categoryId: null,
+		name: initial?.name || '',
+		category: initial?.category || '',
 	};
 
 	const { control, formState, watch, handleSubmit, setValue } =
@@ -53,37 +57,65 @@ const CreateProblemTagForm = () => {
 	const { isValid, dirtyFields, errors } = formState;
 
 	const [createProblemTag] = usePostProblemTagMutation();
+	const [updateProblemTag] = useUpdateProblemTagMutation();
 	const dispatch = useAppDispatch();
 
 	const onSubmit = () => {
-		console.log({
-			name: formData.name,
-			point: formData.point,
-			categoryId: formData.category.id,
-		})
-		createProblemTag({
-			name: formData.name,
-			point: formData.point,
-			categoryId: formData.category.id,
-		})
-			.unwrap()
-			.then((result) => {
-				if (result.status === 200) {
+		if (id) {
+			updateProblemTag({
+				id,
+				name: formData.name,
+				categoryId: formData.category.id,
+			})
+				.unwrap()
+				.then((result) => {
+					if (result.status === 200) {
+						useAlertDialog({
+							dispatch,
+							title: 'Problem tag updated successfully',
+						});
+					}
+					dispatch(setSelectedProblemTagUpdate(null));
+					navigate(-1);
+				})
+				.catch((err) => {
+					console.log(err);
 					useAlertDialog({
 						dispatch,
-						title: 'Problem tag created successfully',
+						title: 'An error occur while updating the problem tag',
+						color: 'error',
 					});
-					navigate(-1);
-				}
-				console.log('create pt result', result);
+				});
+		} else {
+			createProblemTag({
+				name: formData.name,
+				categoryId: formData.category.id,
 			})
-			.catch((err) => console.log(err));
+				.unwrap()
+				.then((result) => {
+					if (result.status === 200) {
+						useAlertDialog({
+							dispatch,
+							title: 'Problem tag created successfully',
+						});
+					}
+					navigate(-1);
+				})
+				.catch((err) => {
+					console.log(err);
+					useAlertDialog({
+						dispatch,
+						title: 'An error occur while creating problem tag',
+						color: 'error',
+					});
+				});
+		}
 	};
 
 	return (
 		<div className='flex flex-col w-full max-w-4xl p-16'>
 			<div className='mt-32 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl'>
-				Create Problem Tag
+				{id ? 'Update Problem Tag' : 'Create Problem Tag'}
 			</div>
 
 			<Paper className='container flex flex-col flex-auto gap-32 p-32 mt-32'>
@@ -108,14 +140,16 @@ const CreateProblemTagForm = () => {
 							/>
 						)}
 					/>
-					<Controller
+					{/* <Controller
 						control={control}
 						name='point'
 						render={({ field }) => (
 							<TextField
 								{...field}
-								onChange={(e)=>{
-									field.onChange(Number.parseInt(e.target.value))
+								onChange={(e) => {
+									field.onChange(
+										Number.parseInt(e.target.value)
+									);
 								}}
 								label='Point'
 								placeholder='Point...'
@@ -126,7 +160,7 @@ const CreateProblemTagForm = () => {
 								fullWidth
 							/>
 						)}
-					/>
+					/> */}
 					<Controller
 						control={control}
 						name='category'
@@ -138,7 +172,7 @@ const CreateProblemTagForm = () => {
 								getOptionLabel={(option) => option.name}
 								onChange={(_, value) => {
 									field.onChange(value);
-									console.log(field.value)
+									console.log(field.value);
 								}}
 								value={field.value || null}
 								renderInput={(params) => (
@@ -146,7 +180,7 @@ const CreateProblemTagForm = () => {
 										{...params}
 										label='Category'
 										placeholder='Category...'
-										id='category '
+										id='category'
 										error={!!errors.category}
 										helperText={errors?.category?.message}
 										fullWidth

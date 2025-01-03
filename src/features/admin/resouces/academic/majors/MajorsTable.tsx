@@ -138,7 +138,7 @@ function MajorsTable() {
 				rowCount={data?.totalElements || 0}
 				onPaginationChange={setPagination}
 				state={{ pagination }}
-				enableRowNumbers={false}
+				enableRowActions={false}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
 					<MenuItem
 						key={0}

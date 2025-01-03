@@ -23,12 +23,12 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Close } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import {
-	selectAdminQuestionCardCategoryFilter,
-	selectAdminQuestionCardSearch,
-	selectAdminQuestionCardSearchCategory,
-	setQuestionCategorySearch,
-	setQuestionSearch,
-	setSelectedQuestionCategory,
+	selectProblemTagCategorySearch,
+	selectProblemTagFilterCategory,
+	selectProblemTagSearch,
+	setProblemTagCategorySearch,
+	setProblemTagSearch,
+	setSelectedFilterProblemTagCategory,
 } from '../admin-resource-slice';
 import { size } from 'lodash';
 import { useGetProblemTagsCategoriesQuery } from './problem-tag-api';
@@ -48,9 +48,9 @@ const ProblemTag = (props: Props) => {
 	];
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const catSearch = useAppSelector(selectAdminQuestionCardSearchCategory);
-	const catSelected = useAppSelector(selectAdminQuestionCardCategoryFilter);
-	const questionSearch = useAppSelector(selectAdminQuestionCardSearch);
+	const catSearch = useAppSelector(selectProblemTagCategorySearch);
+	const catSelected = useAppSelector(selectProblemTagFilterCategory);
+	const problemTagSearch = useAppSelector(selectProblemTagSearch);
 
 	const { data: categoryData, isLoading } = useGetProblemTagsCategoriesQuery({
 		page: 1,
@@ -70,15 +70,15 @@ const ProblemTag = (props: Props) => {
 	};
 
 	const handleSearch = (searchTerm: string) => {
-		dispatch(setQuestionSearch(searchTerm));
+		dispatch(setProblemTagSearch(searchTerm));
 	};
 
 	const handleSearchCat = (searchTerm: string) => {
-		dispatch(setQuestionCategorySearch(searchTerm));
+		dispatch(setProblemTagCategorySearch(searchTerm));
 	};
 
 	const handleCategorySelect = (cat: ProblemTagCategory) => {
-		dispatch(setSelectedQuestionCategory(cat));
+		dispatch(setSelectedFilterProblemTagCategory(cat));
 	};
 
 	return (
@@ -106,13 +106,13 @@ const ProblemTag = (props: Props) => {
 							</div>
 						</div>
 						{tabValue === 0 && (
-							<div className='flex items-center gap-8 flex-wrap'>
+							<div className='flex flex-wrap items-center gap-8'>
 								<SearchField
 									label='Search question'
 									placeholder='Enter keyword...'
 									onSearch={handleSearch}
 									className='flex-1 min-w-256'
-									value={questionSearch}
+									value={problemTagSearch}
 								/>
 								<Autocomplete
 									className='flex-1 min-w-256'

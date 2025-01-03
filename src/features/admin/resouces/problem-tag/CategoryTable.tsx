@@ -4,27 +4,26 @@ import { ContentLoading, DataTable, NavLinkAdapter } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
+import { CheckCircle, Delete, Edit, RemoveCircle } from '@mui/icons-material';
 import {
 	useDeleteProblemTagsCategoryMutation,
 	useGetProblemTagsCategoriesQuery,
-	useGetProblemTagsQuery,
 } from './problem-tag-api';
-import { ManagementCounselor } from '@/features/managers/management/counselors/counselors-api';
 import { ProblemTag, ProblemTagCategory } from '@/shared/types/admin';
 import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
-import { selectAdminQuestionCardSearchCategory } from '../admin-resource-slice';
+import { selectProblemTagCategorySearch, setProblemTagCategoryUpdate } from '../admin-resource-slice';
+import { useNavigate } from 'react-router-dom';
 function CategoryTable() {
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
 	});
-	const keyword = useAppSelector(selectAdminQuestionCardSearchCategory);
+	const keyword = useAppSelector(selectProblemTagCategorySearch);
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const [tableData, setTableData] = useState([]);
 
 	const { data, isLoading } = useGetProblemTagsCategoriesQuery({});
@@ -63,10 +62,20 @@ function CategoryTable() {
 		[]
 	);
 
+	const updateCategory = (item: ProblemTagCategory) => {
+		if (item) {
+			console.log(item)
+			dispatch(setProblemTagCategoryUpdate(item));
+			navigate(`category/update/${item.id}`);
+		}
+	};
+
+
 	useEffect(() => {
 		if (data) {
-			const filtered = data.filter((item) => item.name.toLowerCase().includes(keyword.toLowerCase()));
-			console.log(keyword)
+			const filtered = data.filter((item) =>
+				item.name.toLowerCase().includes(keyword.toLowerCase())
+			);
 			setTableData(
 				filtered.slice(
 					pagination.pageIndex * pagination.pageSize,
@@ -84,14 +93,27 @@ function CategoryTable() {
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
 				data={tableData}
+				rowCount={tableData.length}
 				columns={columns}
 				manualPagination
-				rowCount={data ? data.length : 1}
 				onPaginationChange={setPagination}
 				state={{ pagination }}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
 					<MenuItem
 						key={0}
+						onClick={() => {
+							updateCategory(row.original);
+							closeMenu();
+							table.resetRowSelection();
+						}}
+					>
+						<ListItemIcon>
+							<Edit />
+						</ListItemIcon>
+						Update
+					</MenuItem>,
+					<MenuItem
+						key={1}
 						onClick={() => {
 							removeProducts([row.original.id]);
 							closeMenu();

@@ -17,34 +17,28 @@ export const timeSlotsApi = apiService
 				}),
 				providesTags: ['time-slots'],
 			}),
+			getTimeSlotById: build.query<
+				ApiResponse<TimeSlot>,
+				number | string
+			>({
+				query: (id) => ({
+					url: `/api/manage/counselors/counselling-slots/${id}`,
+				}),
+				providesTags: ['time-slots'],
+			}),
 			postCreateTimeSlot: build.mutation<
 				postCreateTimeSlotResponse,
 				postCreateTimeSlotArgs
 			>({
-				query: ({
-                    slotCode,
-                    name,
-                    startTime,
-                    endTime,
-                }) => ({
+				query: ({ slotCode, name, startTime, endTime }) => ({
 					url: `/api/manage/counselors/counselling-slots`,
 					method: 'POST',
 					body: {
-                        slotCode,
-                        name,
-                        startTime : {
-                            hour: startTime.hour,
-                            minute: startTime.minute,
-                            second: 0,
-                            nano: 0
-                        },
-                        endTime : {
-                            hour: endTime.hour,
-                            minute: endTime.hour,
-                            second: 0,
-                            nano: 0
-                        },
-                    }
+						slotCode,
+						name,
+						startTime,
+						endTime,
+					},
 				}),
 				invalidatesTags: ['time-slots'],
 			}),
@@ -53,9 +47,15 @@ export const timeSlotsApi = apiService
 				putUpdateTimeSlotResponse,
 				putUpdateTimeSlotArgs
 			>({
-				query: (arg) => ({
-					url: `/api/manage/counselors/counselling-slots/${arg}`,
+				query: ({ id, slotCode, name, startTime, endTime }) => ({
+					url: `/api/manage/counselors/counselling-slots/${id}`,
 					method: 'PUT',
+					body: {
+						slotCode,
+						name,
+						startTime,
+						endTime,
+					},
 				}),
 				invalidatesTags: ['time-slots'],
 			}),
@@ -73,17 +73,24 @@ export const timeSlotsApi = apiService
 	});
 
 export const {
-    useDeleteTimeSlotMutation,
-    useGetTimeSlotsQuery,
-    usePostCreateTimeSlotMutation,
-    usePutUpdateTimeSlotMutation
+	useDeleteTimeSlotMutation,
+	useGetTimeSlotsQuery,
+	usePostCreateTimeSlotMutation,
+	usePutUpdateTimeSlotMutation,
+	useGetTimeSlotByIdQuery,
 } = timeSlotsApi;
 
-type getTimeSlotsArgs = {}
+type getTimeSlotsArgs = {};
 
 type getTimeSlotsResponse = ApiResponse<TimeSlot[]>;
 
-type putUpdateTimeSlotArgs = number | string;
+type putUpdateTimeSlotArgs = {
+	id: number | string;
+	slotCode: string;
+	name: string;
+	startTime: string;
+	endTime: string;
+};
 type putUpdateTimeSlotResponse = ApiResponse<TimeSlot>;
 
 type deleteTimeSlotArgs = number | string;
@@ -93,16 +100,6 @@ type postCreateTimeSlotResponse = ApiMessage;
 type postCreateTimeSlotArgs = {
 	slotCode: string;
 	name: string;
-	startTime: {
-		hour: number;
-		minute: number;
-		second: number;
-		nano: number;
-	};
-	endTime: {
-		hour: number;
-		minute: number;
-		second: number;
-		nano: number;
-	};
+	startTime: string;
+	endTime: string;
 };

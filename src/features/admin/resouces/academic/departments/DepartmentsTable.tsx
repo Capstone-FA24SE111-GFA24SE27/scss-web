@@ -128,6 +128,7 @@ function DepartmentsTable() {
 				rowCount={data?.totalElements || 0}
 				onPaginationChange={setPagination}
 				state={{ pagination }}
+				enableRowActions={false}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
 					<MenuItem
 						key={0}
