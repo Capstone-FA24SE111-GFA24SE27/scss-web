@@ -86,7 +86,7 @@ function StudentsTable() {
       Cell: ({ row }) => (
         <div className="flex items-center justify-center">
           <img
-            className="w-full max-h-40 max-w-40 block rounded"
+            className="block w-full rounded max-h-40 max-w-40"
             src={row.original.profile.avatarLink}
             alt={row.original.profile.fullName}
           />
@@ -212,7 +212,7 @@ function StudentsTable() {
 
   return (
     <Paper
-      className="flex flex-col flex-auto shadow overflow-hidden rounded-b-0 w-full h-full"
+      className="flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0"
     >
       <DataTable
         data={data?.data || []}
@@ -220,6 +220,7 @@ function StudentsTable() {
         manualPagination
         rowCount={data?.totalElements || 1}
         onPaginationChange={setPagination}
+        enableRowActions={false}
         state={{ pagination }}
         renderRowActionMenuItems={({ closeMenu, row, table }) => [
           <MenuItem
@@ -256,7 +257,7 @@ function StudentsTable() {
               color="secondary"
             >
               <Delete />
-              <span className="hidden sm:flex mx-8">Delete selected items</span>
+              <span className="hidden mx-8 sm:flex">Delete selected items</span>
             </Button>
           );
         }}

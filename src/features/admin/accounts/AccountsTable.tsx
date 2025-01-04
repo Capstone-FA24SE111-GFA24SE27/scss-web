@@ -56,7 +56,6 @@ const AccountsTable = (props: Props) => {
 		role: selectedRole,
 		search: searchTerm,
 	});
-	console.log(data);
 
 	const [blockAccountById] = usePutBlockAccountByIdMutation();
 	const [unblockAccountById] = usePutUnblockAccountByIdMutation();

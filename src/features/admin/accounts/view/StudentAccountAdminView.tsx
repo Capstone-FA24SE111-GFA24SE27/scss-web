@@ -15,6 +15,9 @@ import { checkFirebaseImageUrl, checkImageUrl } from '@/shared/utils';
 import GeneralInformation from '@/features/managers/management/students/student/GeneralInformation';
 import LearningProcess from '@/features/managers/management/students/student/LearningProcessTab';
 import CounselingProfile from '@/features/managers/management/students/student/CounselingProfile';
+import RequestsTab from '@/features/managers/management/students/student/RequestsTab';
+import AppointmentsTable from '@/features/managers/management/students/student/AppointmentsTab';
+import QnaTab from '@/features/managers/management/students/student/QnaTab';
 
 const currentYear = dayjs().year();
 
@@ -104,12 +107,6 @@ const StudentAccountAdminView = (props: Props) => {
 		}
 	}, [isLoadingAccount]);
 
-	useEffect(() => {
-		if (formData) {
-			console.log('form data changing', formData);
-		}
-	}, [formData]);
-
 	if (isLoadingAccount || isInitializing) return <ContentLoading />;
 
 	return (
@@ -128,22 +125,38 @@ const StudentAccountAdminView = (props: Props) => {
 					}}
 				>
 					<Tab
-						className='text-lg font-semibold min-h-40 min-w-64 px-16'
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
 						label='General Information'
 					/>
 					<Tab
-						className='text-lg font-semibold min-h-40 min-w-64 px-16'
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
 						label='Learning Process'
 					/>
 					<Tab
-						className='text-lg font-semibold min-h-40 min-w-64 px-16'
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
 						label='Counseling'
 					/>
+					<Tab
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
+						label='Appointments'
+					/>
+					<Tab
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
+						label='Requests'
+					/>
+
+					<Tab
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
+						label='Q&As'
+					/>
 				</Tabs>
-				<Scrollbar className='flex-1 w-full max-h-full overflow-auto py-16'>
+				<Scrollbar className='flex-1 w-full max-h-full py-16 overflow-auto'>
 					{tabValue === 0 && <GeneralInformation />}
 					{tabValue === 1 && <LearningProcess />}
 					{tabValue === 2 && <CounselingProfile />}
+					{tabValue === 3 && <AppointmentsTable />}
+					{tabValue === 4 && <RequestsTab />}
+					{tabValue === 5 && <QnaTab />}
 				</Scrollbar>
 			</Paper>
 		</FormProvider>

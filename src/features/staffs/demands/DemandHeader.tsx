@@ -8,8 +8,8 @@ type Props = {};
 const DemandHeader = (props: Props) => {
 	return (
 		<div className='flex items-center justify-between p-32 border-b bg-background-paper'>
-			<Heading title='Demand' description='List of demands' />
-      <CreateDemandButton color={'primary'} />
+			<Heading title='Demand List' description='Manage your demands' />
+			<CreateDemandButton color={'primary'} />
 		</div>
 	);
 };
