@@ -6,7 +6,7 @@ import {
 import { selectAccount, useAppSelector } from '@shared/store';
 import { ChangeEvent, useState } from 'react';
 import { useGetAllCategoriesQuery, useSearchContributedQuestionCardsQuery } from './faq-api';
-import FaqItem from './faqItem'
+import FaqItem from './FaqItem'
 
 const Faq = () => {
   const [page, setPage] = useState(1);
