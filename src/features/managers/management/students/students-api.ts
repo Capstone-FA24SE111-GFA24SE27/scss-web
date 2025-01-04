@@ -1,4 +1,4 @@
-import { Appointment, AppointmentFeedback, AppointmentReportType, AppointmentRequest, Student, PaginationContent, Profile } from '@/shared/types';
+import { Appointment, AppointmentFeedback, AppointmentReportType, AppointmentRequest, Student, PaginationContent, Profile, Question } from '@/shared/types';
 import { ApiResponse, apiService as api } from '@shared/store'
 
 
@@ -6,6 +6,7 @@ export const addTagTypes = [
   'students',
   'counselingSlots',
   'appointments',
+  'qna',
 ] as const;
 
 
@@ -86,7 +87,7 @@ export const studentsMangementApi = api
       }),
       getStudentAppointmentsManagement: build.query<GetStudentAppointmentsApiResponse, GetStudentAppointmentsApiArg>({
         query: ({ studentId }) => ({
-          url: `/api/manage/students/appointment/filter/${studentId}`,
+          url: `/api/students/appointment/filter/12?/${studentId}`,
         }),
         providesTags: ['students', 'appointments']
       }),
@@ -96,9 +97,29 @@ export const studentsMangementApi = api
         }),
         providesTags: ['students', 'appointments']
       }),
-      getStudentAppointmentRequestsManagement: build.query<GetCounselingAppointmentApiResponse, number>({
-        query: (studentId) => ({
-          url: `/api/manage/students/appointment-request/${studentId}`,
+      getStudentAppointmentRequestsManagement: build.query<GetCounselingAppointmentApiResponse, GetCounselorAppointmentRequestsApiArg>({
+        query: ({
+          dateFrom = '',
+          dateTo = '',
+          status = '',
+          sortBy = 'id',
+          sortDirection = 'DESC',
+          page = 1,
+          size = 10,
+          meetingType = undefined,
+          counselorId
+        }) => ({
+          url: `/api/booking-counseling/manage/student/appointment-request/${counselorId}`,
+          params: {
+            dateFrom,
+            dateTo,
+            status,
+            sortBy,
+            sortDirection,
+            page,
+            meetingType,
+            size,
+          }
         }),
         providesTags: ['students', 'appointments',]
       }),
@@ -113,6 +134,26 @@ export const studentsMangementApi = api
           url: `/api/manage/students/${studentId}/counseling-slots`,
         }),
         providesTags: ['counselingSlots'],
+      }),
+      getStudentQuestionCardsManagement: build.query<GetStudentQuestionCardsManagementApiResponse, GetStudentQuestionCardsManagementApiArg>({
+        query: ({
+          studentId,
+          page,
+          from,
+          to,
+          keyword,
+          size
+        }) => ({
+          url: `/api/question-cards/manage/student/filter/${studentId}`,
+          params: {
+            page,
+            from,
+            to,
+            keyword,
+            size
+          }
+        }),
+        providesTags: ['qna'],
       }),
     })
   })
@@ -131,7 +172,8 @@ export const {
   useGetAppointmentReportManagementQuery,
   useGetStudentAppointmentRequestsManagementQuery,
   useGetStudentFeedbacksQuery,
-  useGetStudentCounselingSlotsQuery, // Add this line for the new hook
+  useGetStudentCounselingSlotsQuery,
+  useGetStudentQuestionCardsManagementQuery
 } = studentsMangementApi
 
 
@@ -220,4 +262,32 @@ export type AppointmentFeedbacksApManagement = AppointmentFeedback & {
 
 export type GetStudentFeedbacksApiArg = {
   studentId: number
+}
+
+export type GetStudentQuestionCardsManagementApiResponse = ApiResponse<PaginationContent<Question>>
+
+export type GetStudentQuestionCardsManagementApiArg = {
+  sortBy?: string;
+  keyword?: string;
+  type?: 'ACADEMIC' | 'NON-ACADEMIC' | '';
+  studentCode?: string;
+  sortDirection?: 'ASC' | 'DESC';
+  page?: number;
+  studentId: number,
+  status?: string;
+  size?: number;
+  from?: string;
+  to?: string;
+}
+
+export type GetCounselorAppointmentRequestsApiArg = {
+  sortDirection?: 'ASC' | 'DESC',
+  sortBy?: string,
+  page?: number,
+  counselorId: number,
+  dateFrom?: string,
+  dateTo?: string,
+  meetingType?: string;
+  status?: string;
+  size?: number;
 }

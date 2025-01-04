@@ -36,7 +36,8 @@ export const counselorsMangementApi = api
       }),
       getCounselorsManagement: build.query<GetCounselorsApiResponse, GetCounselorsApiArg>({
         query: ({
-          type, page = 1,
+          type,
+          page = 1,
           ratingFrom = '',
           ratingTo = '',
           search = '',
@@ -49,6 +50,7 @@ export const counselorsMangementApi = api
           specializationId,
           expertiseId,
           size = 10,
+          gender,
         }) => ({
           url: type === 'ACADEMIC'
             ? `/api/manage/counselors/academic`
@@ -67,6 +69,7 @@ export const counselorsMangementApi = api
             specializationId,
             expertiseId,
             size,
+            gender
           }
         }),
         providesTags: ['counselors']
@@ -259,6 +262,7 @@ export type GetCounselorsApiArg = {
   majorId?: number | '';
   expertiseId?: number | '';
   size?: number;
+  gender?: string;
 }
 
 export type GetCounselorApiResponse = ApiResponse<ManagementCounselor>

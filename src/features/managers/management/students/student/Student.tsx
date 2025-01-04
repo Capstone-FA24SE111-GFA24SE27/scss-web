@@ -11,6 +11,7 @@ import ScheduleTab from './ScheduleTab';
 import CounselingProfile from './CounselingProfile';
 import LearningProcess from './LearningProcessTab';
 import GeneralInformation from './GeneralInformation';
+import QnaTab from './QnaTab';
 
 
 const Root = styled(PageSimple)(({ theme }) => ({
@@ -114,6 +115,22 @@ function Student() {
               className="text-lg font-semibold min-h-40 min-w-64 px-16"
               label="Counseling"
             />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Appointments"
+            />
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Requests"
+            />
+            {/* <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Schedule"
+            /> */}
+            <Tab
+              className="px-16 text-lg font-semibold min-h-40 min-w-64"
+              label="Q&As"
+            />
           </Tabs>
         </div>
       }
@@ -125,6 +142,10 @@ function Student() {
                 {tabValue === 0 && <GeneralInformation />}
                 {tabValue === 1 && <LearningProcess />}
                 {tabValue === 2 && <CounselingProfile />}
+                {tabValue === 3 && <AppointmentsTable />}
+                {tabValue === 4 && <RequestsTable />}
+                {/* {tabValue === 5 && <ScheduleTab />} */}
+                {tabValue === 5 && <QnaTab />}
               </div>
             </Paper>
           </div >
