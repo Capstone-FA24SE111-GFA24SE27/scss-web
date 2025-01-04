@@ -6,11 +6,23 @@ import {
 	FilterTabs,
 	NavLinkAdapter,
 } from '@shared/components';
-import { Chip, ListItemIcon, MenuItem, ownerDocument, Paper } from '@mui/material';
+import {
+	Chip,
+	ListItemIcon,
+	MenuItem,
+	ownerDocument,
+	Paper,
+} from '@mui/material';
 import _ from 'lodash';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Block, CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
+import {
+	Block,
+	CheckCircle,
+	Delete,
+	RemoveCircle,
+	VerifiedUser,
+} from '@mui/icons-material';
 import { Account, Role } from '@/shared/types';
 import {
 	useGetAccountsQuery,
@@ -31,7 +43,7 @@ type Props = {
 
 const AccountsTable = (props: Props) => {
 	const { selectedRole } = props;
-	const searchTerm = useAppSelector(selectViewAccountSearchTerm)
+	const searchTerm = useAppSelector(selectViewAccountSearchTerm);
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
@@ -42,14 +54,12 @@ const AccountsTable = (props: Props) => {
 	const { data, isLoading } = useGetAccountsQuery({
 		page: pagination.pageIndex + 1,
 		role: selectedRole,
-		search: searchTerm
+		search: searchTerm,
 	});
 	console.log(data);
 
 	const [blockAccountById] = usePutBlockAccountByIdMutation();
 	const [unblockAccountById] = usePutUnblockAccountByIdMutation();
-
-
 
 	const handleBlockAccount = (id: number) => {
 		console.log(id);
@@ -96,29 +106,29 @@ const AccountsTable = (props: Props) => {
 			title: 'Are you sure you want to unblock this account?',
 		});
 	};
-	
+
 	const getParamRole = (role: Role) => {
-		switch(role){
+		switch (role) {
 			default: {
-				return ''
+				return '';
 			}
 			case 'ACADEMIC_COUNSELOR': {
-				return 'a-counselor'
+				return 'a-counselor';
 			}
 			case 'NON_ACADEMIC_COUNSELOR': {
-				return 'na-counselor'
+				return 'na-counselor';
 			}
 			case 'MANAGER': {
-				return 'manager'
+				return 'manager';
 			}
 			case 'SUPPORT_STAFF': {
-				return 'staff'
+				return 'staff';
 			}
 			case 'STUDENT': {
-				return 'student'
+				return 'student';
 			}
 		}
-	}
+	};
 
 	// const handleBlockMultipleAccounts = (selected: number[]) => {
 	// 	console.log(selected);
@@ -156,7 +166,9 @@ const AccountsTable = (props: Props) => {
 				Cell: ({ row }) => (
 					<Typography
 						component={NavLinkAdapter}
-						to={`/accounts/${row.original.profile.id}/${getParamRole(row.original.role)}`}
+						to={`/accounts/${
+							row.original.profile.id
+						}/${getParamRole(row.original.role)}`}
 						className='!underline !text-secondary-main'
 						color='secondary'
 					>
@@ -258,7 +270,11 @@ const AccountsTable = (props: Props) => {
 						}}
 					>
 						<ListItemIcon>
-							<Block />
+							{row.original.status === 'ACTIVE' ? (
+								<Block />
+							) : (
+								<VerifiedUser />
+							)}
 						</ListItemIcon>
 						{row.original.status === 'ACTIVE' ? 'Block' : 'Unblock'}
 					</MenuItem>,

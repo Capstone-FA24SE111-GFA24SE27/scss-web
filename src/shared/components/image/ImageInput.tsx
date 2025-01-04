@@ -15,7 +15,7 @@ import React, {
 import UploadIcon from '@mui/icons-material/Upload';
 import clsx from 'clsx';
 import ImageIcon from '@mui/icons-material/Image';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 import { Clear } from '@mui/icons-material';
 import { fetchImageAsFile } from '@/shared/utils';
 
@@ -141,6 +141,7 @@ const ImageInput = (props: Props) => {
 
 	return (
 		<div className='w-full h-full '>
+			<Typography className='text-sm text-center text-text-secondary'>Image size must be less than 5MB</Typography>
 			<div
 				onDragEnter={handleDrag}
 				onDragOver={handleDrag}

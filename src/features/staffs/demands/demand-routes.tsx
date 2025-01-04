@@ -1,4 +1,9 @@
-import { CounselorView, StudentView, demandRoutes, studentRoutes } from '@/shared/pages';
+import {
+	CounselorView,
+	StudentView,
+	demandRoutes,
+	studentRoutes,
+} from '@/shared/pages';
 import { lazy } from 'react';
 import { RouteObject } from 'react-router-dom';
 import UpdateDemandForm from './UpdateDemandForm';
@@ -20,14 +25,15 @@ export const staffDemandRoutes: RouteObject[] = [
 				element: <StudentView actionButton={null} />,
 			},
 			...studentRoutes,
-			{
-				path: 'update/:id',
-				element: <UpdateDemandForm />
-			},
+
 			{
 				path: ':id',
-				element: <DemandDetail />
-			}
+				element: <DemandDetail />,
+			},
 		],
+	},
+	{
+		path: 'demand/update/:demandId',
+		element: <UpdateDemandForm />,
 	},
 ];

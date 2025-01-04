@@ -449,7 +449,7 @@ const adminNavigation: NavigationOptions = {
 				},
 				{
 					icon: Assignment,
-					name: 'Contributed Question ',
+					name: 'Frequently Asked Question ',
 					route: 'faq',
 				},
 			],

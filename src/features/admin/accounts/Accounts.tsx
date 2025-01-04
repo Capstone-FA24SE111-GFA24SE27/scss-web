@@ -50,8 +50,8 @@ const Accounts = () => {
 	};
 
 	return (
-		<div className='flex flex-col w-full h-full overflow-hidden'>
-			<div className='flex flex-col gap-16 p-32'>
+		<div className='flex flex-col w-full h-full gap-16 p-32 pb-0 overflow-hidden'>
+			<div className='flex flex-col gap-16 '>
 				<Heading title='Accounts Table' description='Manage accounts' />
 				<div className='flex items-center justify-between gap-8'>
 					<FilterTabs

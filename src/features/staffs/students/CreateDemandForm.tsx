@@ -15,16 +15,14 @@ import {
 	Typography,
 } from '@mui/material';
 import {
+	ContentLoading,
 	Heading,
-	LoadingButton,
 	NavLinkAdapter,
 	PageSimple,
-	UserLabel,
 } from '@/shared/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import CounselorPicker from '../counselors/CounselorPicker';
 import CounselorListItem from '../counselors/CounselorListItem';
 import { Counselor } from '@/shared/types';
 import { useDispatch } from 'react-redux';
@@ -60,9 +58,6 @@ const schema = z.object({
 		.or(z.literal('')),
 	issueDescription: z.string().min(1, 'Please enter issue description'),
 	causeDescription: z.string().min(1, 'Please enter cause description'),
-	// demandType: z.enum(['ACADEMIC', 'NON_ACADEMIC'], {
-	// 	errorMap: () => ({ message: 'Please select a demand type' }),
-	// }),
 });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -92,7 +87,6 @@ const CreateDemandForm = () => {
 		additionalInformation: createDemandFormData?.additionalInformation,
 		issueDescription: createDemandFormData?.issueDescription,
 		causeDescription: createDemandFormData?.causeDescription,
-		// demandType: createDemandFormData.matchType
 	};
 
 	const { control, formState, watch, handleSubmit, setValue, trigger } =
@@ -126,9 +120,7 @@ const CreateDemandForm = () => {
 		},
 		{ skip: !reason }
 	);
-
 	const quickMatchCounselor = quickMatchData?.content[0] || null;
-	console.log(error);
 
 	const onSubmit = () => {
 		createDemand({
@@ -143,11 +135,19 @@ const CreateDemandForm = () => {
 						dispatch,
 						title: 'Demand created successfully',
 					});
-					navigate(-1);
+					navigate('/demand');
 				}
 				console.log('create demand result', result);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {console.log(err)
+				useAlertDialog({
+					dispatch,
+					title: 'An error occur while creating demand',
+					color: 'error'
+				})
+				navigate('/students/followed');
+
+			});
 	};
 
 	const handleSelectCounselor = (counselor: Counselor) => {
@@ -169,11 +169,8 @@ const CreateDemandForm = () => {
 
 	const handleQuickMatching = () => {
 		trigger('issueDescription');
-		trigger('causeDescription');
-		if (formData.issueDescription && formData.causeDescription) {
-			setReason(
-				`${formData.issueDescription}\n${formData.causeDescription}`
-			);
+		if (formData.issueDescription) {
+			setReason(formData.issueDescription);
 		}
 	};
 
@@ -194,6 +191,10 @@ const CreateDemandForm = () => {
 			handleSelectCounselor(null);
 		}
 	}, [isError]);
+
+	if (isLoading || isLoadingStudentData) {
+		return <ContentLoading />;
+	}
 
 	if (!studentStatus?.content.followed || !studentStatus?.content.your) {
 		return (
@@ -268,19 +269,12 @@ const CreateDemandForm = () => {
 			rightSidebarVariant='temporary'
 			scroll={isMobile ? 'normal' : 'content'}
 			content={
-				<div className='flex w-full h-full overflow-hidden'>
+				<div className='flex w-full h-full mx-32 overflow-hidden'>
 					<div className='flex flex-col flex-1 w-full h-full'>
 						<Paper className='flex flex-col w-full gap-32 p-32 mt-32 overflow-auto'>
 							<div className='flex flex-col w-full gap-16'>
 								<div className='flex flex-col items-center gap-16'>
 									<div className='flex items-center w-full gap-8'>
-										{/* <Controller
-										control={control}
-										name='counselorId'
-										render={({ field }) => (
-											
-										)}
-									/> */}
 										<Button
 											variant='outlined'
 											component={NavLinkAdapter}
@@ -393,34 +387,6 @@ const CreateDemandForm = () => {
 											)}
 										/>
 									</div>
-									{/* <div className='flex-1'>
-									<Controller
-										control={control}
-										name='demandType'
-										render={({ field }) => (
-											<TextField
-												{...field}
-												select
-												label='Demand Type'
-												variant='outlined'
-												error={!!errors.demandType}
-												fullWidth
-												helperText={
-													errors.demandType?.message
-												}
-											>
-												<MenuItem value={'ACADEMIC'}>
-													Academic
-												</MenuItem>
-												<MenuItem
-													value={'NON_ACADEMIC'}
-												>
-													Non Academic
-												</MenuItem>
-											</TextField>
-										)}
-									/>
-								</div> */}
 								</div>
 
 								<div className=''>
@@ -571,14 +537,13 @@ const CreateDemandForm = () => {
 									<Button
 										variant='contained'
 										color='secondary'
-										// disabled={
-										// 	!counselor ||
-										// 	!formData.counselorId ||
-										// 	!formData.contactNote ||
-										// 	!formData.issueDescription ||
-										// 	!formData.causeDescription ||
-										// 	!formData.priorityLevel
-										// }
+										disabled={
+											!counselor ||
+											!formData.counselorId ||
+											!formData.contactNote ||
+											!formData.issueDescription ||
+											!formData.causeDescription
+										}
 										onClick={handleSubmit(onSubmit)}
 									>
 										Confirm
