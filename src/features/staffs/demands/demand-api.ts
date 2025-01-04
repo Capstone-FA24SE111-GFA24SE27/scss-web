@@ -285,7 +285,10 @@ export type PostCreateDemandByStudentIdArg = {
 type PutUpdateDemandByDemandIdArgs = {
 	counselingDemandId: number | string;
 	body: {
+		counselorId: number | string;
+		priorityLevel: PriorityLevelType;
 		additionalInformation: string;
+		issueDescription: string;
 		causeDescription: string;
 		contactNote: string;
 	};

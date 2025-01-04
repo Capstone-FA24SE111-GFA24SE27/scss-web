@@ -28,20 +28,35 @@ import { motion } from 'framer-motion';
 import CounselorListItem from '../counselors/CounselorListItem';
 import { Counselor } from '@/shared/types';
 import { useAppDispatch, useAppSelector } from '@shared/store';
-import {
-	selectCounselor,
-	setSelectedCounselor,
-} from '../counselors/counselor-list-slice';
 import useAlertDialog from '@/shared/hooks/form/useAlertDialog';
 import { ArrowBack, Close } from '@mui/icons-material';
+import {
+	clearDemand,
+	selectCounselorUpdateDemand,
+	selectUpdateDemandCounselorFormData,
+	setAdditionalInfo,
+	setCauseDescription,
+	setContactNote,
+	setCounselor,
+	setCounselorId,
+	setIssueDescription,
+	setPriorityLevel,
+} from './update-demand-slice';
+import { selectCounselor } from '../counselors/counselor-list-slice';
 
 const schema = z.object({
+	counselorId: z.number().min(1, 'Counselor ID is required'),
 	contactNote: z.string().min(1, 'Please enter contact note'),
+	priorityLevel: z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT'], {
+		errorMap: () => ({ message: 'Please select priority level' }),
+	}),
+	departmentId: z.string().optional(),
 	additionalInformation: z
 		.string()
 		.min(2, 'Please enter valid infomation')
 		.optional()
 		.or(z.literal('')),
+	issueDescription: z.string().min(1, 'Please enter issue description'),
 	causeDescription: z.string().min(1, 'Please enter cause description'),
 });
 
@@ -52,9 +67,10 @@ const UpdateDemandForm = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const counselor = useAppSelector(selectCounselor);
-
-	const { data: initialData, isLoading: isLoadingInitial } =
-		useGetDemandByIdForStaffQuery(demandId, { skip: !demandId });
+	const initialData = useAppSelector(selectUpdateDemandCounselorFormData);
+	const selectedCounselor = useAppSelector(selectCounselorUpdateDemand);
+	// const { data: initialData, isLoading: isLoadingInitial } =
+	// 	useGetDemandByIdForStaffQuery(demandId, { skip: !demandId });
 
 	const [reason, setReason] = useState(null);
 
@@ -65,18 +81,39 @@ const UpdateDemandForm = () => {
 		setRightSidebarOpen(Boolean(routeParams.id));
 	}, [routeParams]);
 
-	const defaultValues = {
-		contactNote: initialData?.contactNote || '',
-		additionalInformation: initialData?.additionalInformation || '',
-		causeDescription: initialData?.causeDescription || '',
-	};
+	const {
+		data: quickMatchData,
+		isLoading: isLoadingQuickMatch,
+		isError,
+		error,
+	} = useGetMatchCounselorForStudentStaffQuery(
+		{
+			reason,
+		},
+		{ skip: !reason }
+	);
+	const quickMatchCounselor = quickMatchData?.content[0] || null;
 
-	const { control, formState, watch, handleSubmit, setValue, trigger } =
-		useForm<FormType>({
-			// @ts-ignore
-			defaultValues,
-			resolver: zodResolver(schema),
-		});
+	const {
+		control,
+		formState,
+		watch,
+		handleSubmit,
+		setValue,
+		trigger,
+		reset,
+	} = useForm<FormType>({
+		// @ts-ignore
+		defaultValues: {
+			contactNote: initialData?.contactNote || '',
+			additionalInformation: initialData?.additionalInformation || '',
+			causeDescription: initialData?.causeDescription || '',
+			counselorId: initialData?.counselor?.id,
+			priorityLevel: initialData?.priorityLevel || 'LOW',
+			issueDescription: initialData?.issueDescription || '',
+		},
+		resolver: zodResolver(schema),
+	});
 	const formData = watch();
 
 	const { isValid, isDirty, errors } = formState;
@@ -84,35 +121,84 @@ const UpdateDemandForm = () => {
 	const [updateDemand] = usePutUpdateDemandByDemandIdForStaffMutation();
 
 	const onSubmit = () => {
-		updateDemand({
-			body: { ...formData },
-			counselingDemandId: demandId,
-		})
-			.unwrap()
-			.then((result) => {
-				if (result.status === 200) {
+		if (initialData && initialData.demand) {
+			updateDemand({
+				body: { ...formData },
+				counselingDemandId: initialData.demand.id,
+			})
+				.unwrap()
+				.then((result) => {
+					if (result.status === 200) {
+						useAlertDialog({
+							dispatch,
+							title: 'Demand updated successfully',
+						});
+						dispatch(clearDemand());
+						navigate('/demand');
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+
 					useAlertDialog({
 						dispatch,
-						title: 'Demand updated successfully',
+						title: 'An error occur while updating demand',
+						color: 'error',
 					});
-					navigate(-1);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-
-				useAlertDialog({
-					dispatch,
-					title: 'An error occur while updating demand',
-					color: 'error',
 				});
-				navigate(-1);
-			});
+		}
 	};
 
-	if (isLoadingInitial) {
-		return <ContentLoading />;
-	}
+	const handleSelectCounselor = (counselor: Counselor) => {
+		if (counselor) {
+			setValue('counselorId', counselor?.profile?.id);
+		} else {
+			setValue('counselorId', null);
+		}
+	};
+
+	const handleNavigateViewCounselor = (counselor: Counselor) => {
+		if (counselor) {
+			navigate(`counselor/${counselor.profile.id}`);
+		}
+	};
+
+	const handleQuickMatching = () => {
+		trigger('issueDescription');
+		if (formData.issueDescription) {
+			setReason(formData.issueDescription);
+		}
+	};
+
+	useEffect(() => {
+		if (counselor) {
+			setValue('counselorId', counselor?.profile?.id);
+			dispatch(setCounselorId(counselor?.profile?.id));
+			dispatch(setCounselor(counselor));
+		}
+	}, [counselor]);
+
+	useEffect(() => {
+		if (quickMatchCounselor) {
+			handleSelectCounselor(quickMatchCounselor);
+		}
+	}, [quickMatchCounselor]);
+
+	useEffect(() => {
+		if (isError) {
+			handleSelectCounselor(null);
+		}
+	}, [isError]);
+
+	useEffect(() => {
+		if (initialData && !initialData.demand) {
+			navigate('/demand');
+		}
+	}, [initialData]);
+
+	// if (isLoadingInitial) {
+	// 	return <ContentLoading />;
+	// }
 
 	return (
 		<PageSimple
@@ -141,7 +227,7 @@ const UpdateDemandForm = () => {
 					</motion.div>
 
 					<Heading
-						title={`Update demand information for student ${initialData?.student?.profile.fullName}`}
+						title={`Update demand information for student ${initialData?.demand?.student?.profile.fullName}`}
 						description='Enter the required information'
 					/>
 				</div>
@@ -160,14 +246,144 @@ const UpdateDemandForm = () => {
 				</div>
 			}
 			rightSidebarOpen={rightSidebarOpen}
-			rightSidebarOnClose={() => setRightSidebarOpen(false)}
+			rightSidebarOnClose={() => {
+				setRightSidebarOpen(false);
+				navigate(-1);
+			}}
 			rightSidebarVariant='temporary'
 			scroll={isMobile ? 'normal' : 'content'}
 			content={
-				<div className='flex w-full h-full p-32 pt-0 overflow-hidden'>
+				<div className='flex w-full h-full px-32 overflow-hidden'>
 					<div className='flex flex-col flex-1 w-full h-full'>
-						<Paper className='flex flex-col w-full gap-32 p-32 mt-32 overflow-auto'>
+						<Paper className='flex flex-col w-full gap-32 p-32 mt-16 overflow-auto'>
 							<div className='flex flex-col w-full gap-16'>
+								<div className='flex flex-col items-center gap-16'>
+									<div className='flex items-center w-full gap-8'>
+										<Button
+											variant='outlined'
+											component={NavLinkAdapter}
+											role='button'
+											to='counselors'
+											className='px-32 whitespace-nowrap'
+										>
+											Pick counselor
+										</Button>
+										<Typography>or</Typography>
+										<Button
+											variant='outlined'
+											className='px-32 whitespace-nowrap'
+											onClick={handleQuickMatching}
+										>
+											Quick match with a counselor
+										</Button>
+									</div>
+									<div className='w-full'>
+										{isLoadingQuickMatch && (
+											<CircularProgress />
+										)}
+										{isError && (
+											<Typography
+												color='textSecondary'
+												className='text-sm '
+											>
+												Cannot find suitable counselor
+											</Typography>
+										)}
+										{selectedCounselor &&
+										formData.counselorId ? (
+											<>
+												<Typography>
+													Selected counselor:
+												</Typography>
+												<CounselorListItem
+													counselor={
+														selectedCounselor
+													}
+													onClick={
+														handleNavigateViewCounselor
+													}
+												/>
+
+												<div className='flex flex-wrap gap-8 py-8'>
+													<Typography className='font-semibold'>
+														Demand type:
+													</Typography>
+													<Typography>
+														{selectedCounselor.expertise
+															? 'Non academic'
+															: 'Academic'}
+													</Typography>
+												</div>
+											</>
+										) : (
+											<>
+												<Typography
+													color='error'
+													className='text-sm font-semibold'
+												>
+													Please pick a counselor
+												</Typography>
+											</>
+										)}
+									</div>
+								</div>
+
+								<div className='flex flex-wrap items-center justify-between gap-16'>
+									<div className='flex-1'>
+										<Controller
+											control={control}
+											name='priorityLevel'
+											render={({ field }) => (
+												<TextField
+													{...field}
+													select
+													label='Priority Level'
+													fullWidth
+													variant='outlined'
+													value={field.value}
+													onChange={(event) => {
+														const value =
+															event.target.value;
+														field.onChange(value);
+														dispatch(setPriorityLevel(value))
+													}}
+													error={
+														!!errors.priorityLevel
+													}
+													helperText={
+														errors.priorityLevel
+															?.message
+													}
+												>
+													<MenuItem
+														key={'LOW'}
+														value={'LOW'}
+													>
+														Low
+													</MenuItem>
+													<MenuItem
+														key={'MEDIUM'}
+														value={'MEDIUM'}
+													>
+														Medium
+													</MenuItem>
+													<MenuItem
+														key={'HIGH'}
+														value={'HIGH'}
+													>
+														High
+													</MenuItem>
+													<MenuItem
+														key={'URGENT'}
+														value={'URGENT'}
+													>
+														Urgent
+													</MenuItem>
+												</TextField>
+											)}
+										/>
+									</div>
+								</div>
 
 								<div className=''>
 									<Controller
@@ -186,10 +402,49 @@ const UpdateDemandForm = () => {
 													const value =
 														event.target.value;
 													field.onChange(value);
+													dispatch(
+														setContactNote(value)
+													);
 												}}
 												error={!!errors.contactNote}
 												helperText={
 													errors?.contactNote?.message
+												}
+												fullWidth
+											/>
+										)}
+									/>
+								</div>
+
+								<div className=''>
+									<Controller
+										control={control}
+										name='issueDescription'
+										render={({ field }) => (
+											<TextField
+												{...field}
+												label='Issue Description'
+												placeholder='Issue Description...'
+												multiline
+												id='Issue'
+												onChange={(
+													event: React.ChangeEvent<HTMLInputElement>
+												) => {
+													const value =
+														event.target.value;
+													field.onChange(value);
+													dispatch(
+														setIssueDescription(
+															value
+														)
+													);
+												}}
+												error={
+													!!errors.issueDescription
+												}
+												helperText={
+													errors?.issueDescription
+														?.message
 												}
 												fullWidth
 											/>
@@ -214,6 +469,11 @@ const UpdateDemandForm = () => {
 													const value =
 														event.target.value;
 													field.onChange(value);
+													dispatch(
+														setCauseDescription(
+															value
+														)
+													);
 												}}
 												error={
 													!!errors.causeDescription
@@ -245,6 +505,9 @@ const UpdateDemandForm = () => {
 													const value =
 														event.target.value;
 													field.onChange(value);
+													dispatch(
+														setAdditionalInfo(value)
+													);
 												}}
 												error={
 													!!errors.additionalInformation
@@ -260,7 +523,7 @@ const UpdateDemandForm = () => {
 									/>
 								</div>
 
-								<div className='flex items-center justify-end '>
+								<div className='flex items-center justify-end mt-32'>
 									<Button
 										className='mx-8'
 										onClick={() => navigate(-1)}
@@ -270,7 +533,13 @@ const UpdateDemandForm = () => {
 									<Button
 										variant='contained'
 										color='secondary'
-										disabled={!isDirty}
+										disabled={
+											!counselor ||
+											!formData.counselorId ||
+											!formData.contactNote ||
+											!formData.issueDescription ||
+											!formData.causeDescription
+										}
 										onClick={handleSubmit(onSubmit)}
 									>
 										Confirm
@@ -279,7 +548,6 @@ const UpdateDemandForm = () => {
 							</div>
 						</Paper>
 					</div>
-					{/* )} */}
 				</div>
 			}
 		/>

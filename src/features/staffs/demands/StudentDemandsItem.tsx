@@ -17,13 +17,14 @@ import {
 	Rating,
 	Tooltip,
 } from '@mui/material';
-import { AccessTime, Add, ChevronRight, Visibility } from '@mui/icons-material';
+import { AccessTime, Add, ChevronRight, Edit, Visibility } from '@mui/icons-material';
 import { CounselingDemand, Student } from '@shared/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { statusColor } from '@/shared/constants';
 import { useAppDispatch } from '@shared/store';
 import { CounselorView } from '@/shared/pages';
+import { setInitialDemandValue } from './update-demand-slice';
 
 type StudentDemandsItemPropsType = {
 	demand: CounselingDemand;
@@ -57,9 +58,10 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 									},
 									{
 										label: 'Update demand detail',
-										icon: <Add fontSize='small' />,
+										icon: <Edit fontSize='small' />,
 										onClick: () => {
-											navigate(`update/${demand.id}`);
+											dispatch(setInitialDemandValue(demand))
+											navigate(`update`);
 										},
 										disabled: demand.status === 'DONE',
 									},

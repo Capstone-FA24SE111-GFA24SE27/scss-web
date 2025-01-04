@@ -70,8 +70,8 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 					<div className='flex flex-wrap gap-8 mt-8'>
 						{counselor.specializedSkills
 							?.split(`\n`)
-							.map((item) => (
-								<Chip key={item} label={item} size='small' />
+							.map((item, index) => (
+								<Chip key={index} label={item} size='small' />
 							))}
 					</div>
 				</Box>

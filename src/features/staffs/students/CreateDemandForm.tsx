@@ -139,19 +139,18 @@ const CreateDemandForm = () => {
 				}
 				console.log('create demand result', result);
 			})
-			.catch((err) => {console.log(err)
+			.catch((err) => {
+				console.log(err);
 				useAlertDialog({
 					dispatch,
 					title: 'An error occur while creating demand',
-					color: 'error'
-				})
+					color: 'error',
+				});
 				navigate('/students/followed');
-
 			});
 	};
 
 	const handleSelectCounselor = (counselor: Counselor) => {
-		console.log('select', counselor);
 		if (counselor) {
 			setValue('counselorId', counselor?.profile?.id);
 			dispatch(setSelectedCounselor(counselor));
@@ -371,16 +370,16 @@ const CreateDemandForm = () => {
 															?.message
 													}
 												>
-													<MenuItem value={'LOW'}>
+													<MenuItem key={'LOW'} value={'LOW'}>
 														Low
 													</MenuItem>
-													<MenuItem value={'MEDIUM'}>
+													<MenuItem  key={'MEDIUM'} value={'MEDIUM'}>
 														Medium
 													</MenuItem>
-													<MenuItem value={'HIGH'}>
+													<MenuItem key={'HIGH'} value={'HIGH'}>
 														High
 													</MenuItem>
-													<MenuItem value={'URGENT'}>
+													<MenuItem key={'URGENT'} value={'URGENT'}>
 														Urgent
 													</MenuItem>
 												</TextField>
