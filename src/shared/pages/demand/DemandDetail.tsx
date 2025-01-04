@@ -142,12 +142,14 @@ const DemandDetail = ({ id }: { id?: string }) => {
       <Divider />
 
       <div className="flex flex-col gap-16">
-        <div>
-          <Typography className="font-semibold text-text-secondary">
-            Summarize Note
-          </Typography>
-          <Typography>{demand.summarizeNote || 'N/A'}</Typography>
-        </div>
+        {
+          demand.summarizeNote && <div>
+            <Typography className="font-semibold text-text-secondary">
+              Summarize Note
+            </Typography>
+            <Typography>{demand.summarizeNote}</Typography>
+          </div>
+        }
         <div>
           <Typography className="font-semibold text-text-secondary">
             Contact Note

@@ -39,7 +39,7 @@ function DemandTab() {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/counselor/${row.original.counselor.profile.id}`}
+          to={`/management/counselors/counselor/${row.original.counselor.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >
@@ -53,7 +53,7 @@ function DemandTab() {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/student/${row.original.student.profile.id}`}
+          to={`/management/students/student/${row.original.student.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >

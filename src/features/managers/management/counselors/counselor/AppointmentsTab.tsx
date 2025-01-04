@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { type MRT_ColumnDef } from 'material-react-table';
-import { AppointmentReport, ContentLoading, DataTable, DateRangePicker, NavLinkAdapter, openDialog } from '@shared/components';
+import { ContentLoading, DataTable, DateRangePicker, NavLinkAdapter, openDialog } from '@shared/components';
 import { Chip, ListItemIcon, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import _ from 'lodash';
@@ -9,14 +9,12 @@ import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import Button from '@mui/material/Button';
 import { CheckCircle, Circle, Delete, Info, RemoveCircle, Report, Summarize, Visibility } from '@mui/icons-material';
-import { useGetCounselorAppointmentsManagementQuery } from '../counselors-api';
-import { Appointment } from '@/shared/types';
+import { Appointment, AppointmentRequest } from '@/shared/types';
 import dayjs from 'dayjs';
 import { meetingTypeColor, statusColor } from '@/shared/constants';
+import { AppointmentDetail, useGetStudentAppointmentsQuery } from '@/shared/pages';
 import { useAppDispatch } from '@shared/store';
-import { AppointmentDetail, StudentAppointmentReport } from '@/shared/pages';
-function AppointmentTab() {
-
+function RequestsTab() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [pagination, setPagination] = useState({
@@ -25,36 +23,37 @@ function AppointmentTab() {
   });
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-
-  const dispatch = useAppDispatch()
-  const { data, isLoading } = useGetCounselorAppointmentsManagementQuery({
-    counselorId: Number(id),
-    page: pagination.pageIndex + 1,
+  const handleStartDateChange = (date: string) => setStartDate(date);
+  const handleEndDateChange = (date: string) => setEndDate(date);
+  const { data, isLoading } = useGetStudentAppointmentsQuery({
+    id,
     fromDate: startDate,
     toDate: endDate,
+    page: pagination.pageIndex + 1,
   })
 
+  const dispatch = useAppDispatch()
 
   const columns = useMemo<MRT_ColumnDef<Appointment>[]>(() => [
     {
-      accessorFn: (row) => dayjs(row.startDateTime).format('YYYY-MM-DD'),
+      accessorFn: (row) => dayjs(row.requireDate).format('YYYY-MM-DD'),
       header: 'Date',
     },
     {
-      accessorFn: (row) => `${dayjs(row.startDateTime).format('HH:mm')} - ${dayjs(row.endDateTime).format('HH:mm')}`,
+      accessorFn: (row) => `${dayjs(row.startDateTime, "HH:mm:ss").format('HH:mm')} - ${dayjs(row.startDateTime, "HH:mm:ss").format('HH:mm')}`,
       header: 'Time',
     },
     {
       accessorKey: 'fullname',
-      header: 'Student',
+      header: 'Counselor',
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/student/${row.original.studentInfo.profile.id}`}
+          to={`/management/counselors/counselor/${row.original.counselorInfo.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >
-          {row.original.studentInfo.profile.fullName}
+          {row.original.counselorInfo.profile.fullName}
         </Typography>
       )
     },
@@ -82,9 +81,6 @@ function AppointmentTab() {
             icon={<Circle color={meetingTypeColor[row.original.meetingType as string]} />}
             className='items-center font-semibold'
           />
-          <Tooltip title={`Location: ${row.original.address || row.original.meetUrl || ''}`}>
-            <Info />
-          </Tooltip>
         </div>
       )
     },
@@ -93,12 +89,11 @@ function AppointmentTab() {
   // if (isLoading) {
   //   return <ContentLoading />;
   // }
-  const handleStartDateChange = (date: string) => setStartDate(date);
-  const handleEndDateChange = (date: string) => setEndDate(date);
+
 
   return (
     <div className='space-y-8'>
-      <div className='flex justify-end w-full'>
+      <div className='flex justify-end'>
         <DateRangePicker
           startDate={startDate ? dayjs(startDate) : null}
           endDate={endDate ? dayjs(endDate) : null}
@@ -106,8 +101,8 @@ function AppointmentTab() {
           onEndDateChange={handleEndDateChange}
         />
       </div>
-      <Paper className='shadow p-8'>
 
+      <Paper className='shadow p-8'>
         <DataTable
           data={data?.content.data || []}
           columns={columns}
@@ -133,24 +128,6 @@ function AppointmentTab() {
               </ListItemIcon>
               View Detail
             </MenuItem>,
-            <MenuItem
-              key={1}
-              onClick={() => {
-                // navigate(`report/${row.original.id}`)
-                dispatch(openDialog({
-                  children: <StudentAppointmentReport id={row.original.id.toString()} />
-                }))
-                closeMenu();
-                table.resetRowSelection();
-              }}
-              disabled={!row.original.havingReport}
-            >
-              <ListItemIcon>
-                <Summarize />
-              </ListItemIcon>
-              View Report
-            </MenuItem>
-
           ]}
           renderTopToolbarCustomActions={({ table }) => {
             const { rowSelection } = table.getState();
@@ -171,5 +148,5 @@ function AppointmentTab() {
   );
 }
 
-export default AppointmentTab;
+export default RequestsTab;
 

@@ -45,15 +45,15 @@ function AppointmentTable() {
     },
     {
       accessorKey: 'fullname',
-      header: 'Student',
+      header: 'Counselor',
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/counselor/${row.original.studentInfo.profile.id}`}
+          to={`/management/counselors/counselor/${row.original.counselorInfo.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >
-          {row.original.studentInfo.profile.fullName}
+          {row.original.counselorInfo.profile.fullName}
         </Typography>
       )
     },

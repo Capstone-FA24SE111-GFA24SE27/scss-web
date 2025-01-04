@@ -507,7 +507,7 @@ const supportStaffNavigation: NavigationOptions = {
 		//     ]
 		// },
 		{
-			name: 'Student',
+			name: 'Students',
 			description: 'Find students',
 			route: 'students',
 			items: [
@@ -524,7 +524,7 @@ const supportStaffNavigation: NavigationOptions = {
 			],
 		},
 		{
-			name: 'Demand',
+			name: 'Demands',
 			description: 'Manage demands',
 			route: '',
 			items: [
@@ -535,7 +535,7 @@ const supportStaffNavigation: NavigationOptions = {
 				},
 				{
 					icon: FmdBadIcon,
-					name: 'Demand',
+					name: 'Demands',
 					route: 'demand',
 				},
 			],

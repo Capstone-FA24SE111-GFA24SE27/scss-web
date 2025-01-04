@@ -55,7 +55,7 @@ function RequestsTable() {
       Cell: ({ row }) => (
         <Typography
           component={NavLinkAdapter}
-          to={`/management/student/${row.original.student.profile.id}`}
+          to={`/management/students/student/${row.original.student.profile.id}`}
           className="!underline !text-secondary-main"
           color="secondary"
         >

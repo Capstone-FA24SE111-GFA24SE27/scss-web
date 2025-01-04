@@ -132,8 +132,11 @@ const AttendanceReport = ({ id }: { id?: string }) => {
             ))}
           </div>
         </Paper>
-
         <TableContainer component={Paper} className="!w-xl shadow">
+          <Box className="p-16 text-lg font-semibold text-center">
+            {`${absentPercentage}% absent so far (${absentCount} absent on ${totalSlots} total)`}
+          </Box>
+          <Divider />
           <Table>
             <TableHead>
               <TableRow>
@@ -165,10 +168,6 @@ const AttendanceReport = ({ id }: { id?: string }) => {
               }
             </TableBody>
           </Table>
-          <Divider />
-          <Box className="p-16 text-lg font-semibold text-center">
-            {`${absentPercentage}% absent so far (${absentCount} absent on ${totalSlots} total)`}
-          </Box>
         </TableContainer>
       </div>
 

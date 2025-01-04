@@ -4,7 +4,7 @@ import { Box, IconButton, Rating, Slider, Tooltip, Typography } from '@mui/mater
 import { AcademicFilter, DateRangePicker, SearchField, SelectField } from '@/shared/components'
 import dayjs from 'dayjs'
 import { useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSearchTerm, setSpecializationId } from './counselor-list-slice'
+import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setGender, setMajorId, setRatingFrom, setRatingTo, setSearchTerm, setSpecializationId } from './counselor-list-slice'
 import { useGetCounselorExpertisesQuery, useGetNonAcademicTopicsQuery } from '@/shared/services'
 import { Close, Female, Male } from '@mui/icons-material'
 
@@ -13,6 +13,7 @@ const CounselorsTableFilter = () => {
   const availableFrom = useAppSelector(selectFilter).availableFrom
   const availableTo = useAppSelector(selectFilter).availableTo
   const filter = useAppSelector(selectFilter)
+  console.log(filter)
   const dispatch = useAppDispatch()
 
   const { data: expertisesData, isLoading: isLoadingExpertise } = useGetCounselorExpertisesQuery()
@@ -70,7 +71,6 @@ const CounselorsTableFilter = () => {
     }
   };
 
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
 
   const handleSearch = (searchTerm: string) => {
     dispatch(setSearchTerm(searchTerm))
@@ -80,7 +80,7 @@ const CounselorsTableFilter = () => {
   return (
     <div className='px-16 flex flex-col gap-16 rounded-lg'>
       <div className='mt-8'>
-        <Typography className="font-semibold text-lg mb-8">Select by gender</Typography>
+        <Typography className="font-semibold text-lg mb-8">Search by keyword</Typography>
         <div className="flex items-center gap-8">
           <SearchField
             onSearch={handleSearch}
@@ -149,11 +149,11 @@ const CounselorsTableFilter = () => {
             <IconButton
               size='small'
               onClick={() => {
-                setSelectedGender('MALE');
+                dispatch(setGender('MALE'));
                 // field.onChange('MALE');
               }}
               sx={{
-                border: selectedGender === 'MALE' ? '2px solid #1976d2' : 'none',
+                border: filter.gender === 'MALE' ? '2px solid #1976d2' : 'none',
                 borderRadius: '50%', // Keep the border round
               }}
             >
@@ -165,11 +165,11 @@ const CounselorsTableFilter = () => {
             <IconButton
               size='small'
               onClick={() => {
-                setSelectedGender('FEMALE');
+                dispatch(setGender('FEMALE'));
                 // field.onChange('FEMALE');
               }}
               sx={{
-                border: selectedGender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
+                border: filter.gender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
                 borderRadius: '50%',
               }}
             >
@@ -179,12 +179,12 @@ const CounselorsTableFilter = () => {
 
           <div className='flex justify-end flex-1'>
             {
-              selectedGender &&
+              filter.gender &&
               <Tooltip title="Clear gender selection">
                 <IconButton
                   size='small'
                   onClick={() => {
-                    setSelectedGender('');
+                    dispatch(setGender(''));
                     // field.onChange(''); 
                   }}
                   sx={{

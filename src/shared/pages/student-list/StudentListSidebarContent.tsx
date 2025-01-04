@@ -1,4 +1,4 @@
-import { Box, Divider, Typography, ToggleButton, ToggleButtonGroup, Slider, IconButton, TextField } from '@mui/material';
+import { Box, Divider, Typography, ToggleButton, ToggleButtonGroup, Slider, IconButton, TextField, Button } from '@mui/material';
 import { useState } from 'react';
 import CounselorListFilterButton from './StudentListFilterButton';
 import { AcademicFilter, SearchField, SelectField } from '@/shared/components';
@@ -19,12 +19,12 @@ import {
   setToForAttendancePercentage,
   setSemesterIdForAttendance,
   setMinSubjectForAttendance,
+  resetFilter,
 } from './student-list-slice';
-import { Numbers } from '@mui/icons-material';
+import { FilterAltOff, FilterNone, Numbers } from '@mui/icons-material';
 import { useGetSemestersQuery } from '@/shared/services';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import PercentIcon from '@mui/icons-material/Percent';
-import { debounce } from 'lodash';
 
 const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { shouldShowToggleButton?: boolean }) => {
   const filter = useAppSelector(selectFilter);
@@ -32,22 +32,22 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
   const [attendanceType, setAttendanceType] = useState<'COUNT' | 'PERCENTAGE'>('COUNT');
 
   const handleDepartmentChange = (departmentId: string) => {
-    dispatch(setDepartmentId(Number(departmentId) || ''));
+    dispatch(setDepartmentId(Number(departmentId) || undefined));
     if (!departmentId) {
-      dispatch(setMajorId(''));
-      dispatch(setSpecializationId(''));
+      dispatch(setMajorId(undefined));
+      dispatch(setSpecializationId(undefined));
     }
   };
 
   const handleMajorChange = (majorId: string) => {
-    dispatch(setMajorId(Number(majorId) || ''));
+    dispatch(setMajorId(Number(majorId)));
     if (!majorId) {
-      dispatch(setSpecializationId(''));
+      dispatch(setSpecializationId(undefined));
     }
   };
 
   const handleSpecializationChange = (specializationId: string) => {
-    dispatch(setSpecializationId(Number(specializationId) || ''));
+    dispatch(setSpecializationId(Number(specializationId)));
   };
 
   const handleSearch = (searchTerm: string) => {
@@ -56,9 +56,10 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
 
   const handleSearchMinGPA = (searchTerm: string) => {
     const minGPA = Number(searchTerm);
+    console.log(minGPA)
 
     if (minGPA > 0 && minGPA <= 10) {
-      const maxGPA = Number(filter.maxGPA); 
+      const maxGPA = Number(filter.maxGPA);
 
       if (minGPA <= maxGPA || isNaN(maxGPA)) {
         dispatch(setMinGPA(minGPA));
@@ -79,7 +80,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
   };
 
   const handleSelectSemester = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSemesterIdForGPA(Number(event.target.value) || ''));
+    dispatch(setSemesterIdForGPA(Number(event.target.value)));
   };
 
   const handleAttendanceTypeChange = (_: any, newType: 'COUNT' | 'PERCENTAGE') => {
@@ -120,9 +121,16 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
     <div className="flex flex-col gap-8">
       {
         shouldShowToggleButton && (
-          <div className="flex justify-start items-center gap-8">
+          <div className="flex justify-between items-center gap-8">
             <CounselorListFilterButton />
-            {/* <Typography className="text-xl text-text-disabled">Filter students</Typography> */}
+            <Button
+              startIcon={<FilterAltOff />}
+              onClick={() => {
+                dispatch(resetFilter())
+              }}
+            >
+              Clear Filter
+            </Button>
           </div>
         )
       }
@@ -146,23 +154,45 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
         <Divider />
         <Typography className="font-semibold">Filter by average grade</Typography>
         <Box className="flex gap-16">
-          <SearchField
-            onSearch={handleSearchMinGPA}
+          <TextField
             label="Min"
-            placeholder="1.0"
+            placeholder="0"
             type="number"
-            showClearButton={false}
-            startIcon={<Numbers />}
             size="small"
+            disabled={!filter.semesterIdForGPA}
+            value={filter.minGPA}
+            onChange={(e) => {
+              const fromValue = Number(e.target.value) || 0;
+              const toValue = filter.maxGPA || 0;
+              if (!isNaN(toValue) && (fromValue > toValue) || Number(e.target.value) < 0 || Number(e.target.value) > 10) {
+                return
+              }
+              dispatch(setMinGPA(fromValue));
+            }}
+            InputProps={{
+              startAdornment: <Numbers />,
+            }}
           />
-          <SearchField
-            onSearch={handleSearchMaxGPA}
+          {/* To (Count) Field */}
+          <TextField
             label="Max"
             placeholder="9.9"
             type="number"
-            showClearButton={false}
-            startIcon={<Numbers />}
             size="small"
+            disabled={!filter.semesterIdForGPA}
+            value={filter.maxGPA}
+            onChange={(e) => {
+              const toValue = Number(e.target.value) || 0;
+              const fromValue = filter.minGPA || 0;
+              if (!isNaN(fromValue) && (toValue < fromValue) || Number(e.target.value) < 0 || Number(e.target.value) > 10) {
+                return
+              }
+              dispatch(setMaxGPA(toValue));
+            }}
+            InputProps={{
+              startAdornment: <Numbers />,
+            }}
+
           />
           <SelectField
             label="Semester"
@@ -191,7 +221,6 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
               <PercentIcon /> Percentage
             </ToggleButton>
           </ToggleButtonGroup>
-
         </Box>
         <div className='flex gap-16 w-full'>
           <Box className="flex items-center gap-16 w-full flex-1">
@@ -239,13 +268,15 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
                 if (fromValue >= toValue) {
                   dispatch(setToForAttendanceCount(fromValue + 1));
                 }
+                if (Number(e.target.value) < 0 || Number(e.target.value) > 10) {
+                  return
+                }
                 dispatch(setFromForAttendanceCount(fromValue));
               }}
               InputProps={{
                 startAdornment: <Numbers />,
               }}
               disabled={!filter.semesterIdForAttendance}
-
             />
             {/* To (Count) Field */}
             <TextField
@@ -260,6 +291,9 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
                 // Ensure `toForAttendanceCount` is greater than or equal to `fromForAttendanceCount`
                 if (toValue <= fromValue) {
                   dispatch(setFromForAttendanceCount(toValue - 1));
+                }
+                if (Number(e.target.value) < 0 || Number(e.target.value) > 10) {
+                  return
                 }
                 dispatch(setToForAttendanceCount(toValue));
               }}

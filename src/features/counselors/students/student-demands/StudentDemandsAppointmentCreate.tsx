@@ -8,8 +8,8 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { Breadcrumbs, ContentLoading } from '@shared/components';
-import { selectAccount, useAppSelector } from '@shared/store';
+import { BackdropLoading, Breadcrumbs, ContentLoading } from '@shared/components';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -18,6 +18,8 @@ import { z } from 'zod';
 import { useGetCounselorDailySlotsQuery } from '@/features/students/services/counseling/counseling-api';
 import { navigateUp } from '@/shared/utils';
 import { useCreateAppointmentByDemandMutation, useGetCounselingDemandByIdQuery } from './student-demands-api';
+import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
+import { getApiErrorMessage } from '@shared/store';
 
 /**
  * The contact view.
@@ -85,18 +87,37 @@ function StudentDemandsAppointmentCreate() {
   const student = demandData?.student
 
   const location = useLocation();
-
+  const dispatch = useAppDispatch()
   const onSubmit = () => {
-    bookCounselor({
-      demandId: demandId,
-      body: {
-        ...formData,
-        meetURL,
-        address,
-      }
+    useConfirmDialog({
+      dispatch,
+      title: 'Confirm booking',
+      content: `Are you sure to create an appointment at \n ${formData.slotCode}, ${formData.date}`,
+      confirmButtonFunction: () => bookCounselor({
+        demandId: demandId,
+        body: {
+          ...formData,
+          meetURL,
+          address,
+        }
+      })
+        .unwrap()
+        .then(() => {
+          useAlertDialog({
+            dispatch,
+            title: 'Create appointment successfully',
+            confirmFunction: () => navigate(-1)
+          })
+          navigate('../')
+        })
+        .catch(error => {
+          useAlertDialog({
+            dispatch,
+            title: `Create appointment failed ${getApiErrorMessage(error)}`,
+            color: 'error',
+          })
+        })
     })
-      .unwrap()
-      .then(() => navigate('../'))
   }
 
   const handleDateChange = (selectedDate) => {
@@ -183,6 +204,7 @@ function StudentDemandsAppointmentCreate() {
 
   return (
     <>
+      {isBookingCounselor && <BackdropLoading />}
       <div className="relative flex flex-col flex-auto items-center w-md p-24 sm:p-48">
         <div className="w-full max-w-3xl">
           {/* <Breadcrumbs
@@ -203,7 +225,7 @@ function StudentDemandsAppointmentCreate() {
                 backgroundColor: 'background.default',
                 color: 'text.secondary'
               }}
-              className="w-128 h-128 text-64 font-bold"
+              className="size-96 text-64 font-bold"
               src={student.profile.avatarLink}
               alt={student.profile.fullName}
             >
@@ -371,7 +393,7 @@ function StudentDemandsAppointmentCreate() {
               color='secondary'
               className='w-full'
               // disabled={isLoading || isBookingCounselor}
-              disabled={isLoading || isBookingCounselor}
+              disabled={isLoading || isBookingCounselor || !formData?.slotCode}
               onClick={handleSubmit(onSubmit)}>
               Confirm booking
             </Button>
