@@ -20,8 +20,7 @@ const FeedbackItem = ({
 }: FeedbackItem) => {
   const dispatch = useAppDispatch();
 
-  const viewDetailDialog = () => {
-
+  const viewAppointmentDetailDialog = () => {
     dispatch(openDialog({
       children: <AppointmentDetail id={feedback.id.toString()} />
     }))
@@ -52,7 +51,7 @@ const FeedbackItem = ({
           menuItems={[
             {
               label: 'View Source',
-              onClick: handleOpenDetail || viewDetailDialog,
+              onClick: handleOpenDetail || viewAppointmentDetailDialog,
               icon: <Visibility fontSize='small' />
             },
           ]}

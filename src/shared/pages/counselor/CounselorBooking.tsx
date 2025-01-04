@@ -96,7 +96,7 @@ function CounselorBooking() {
         .then(() => {
           useAlertDialog({
             dispatch,
-            title: 'Booking success',
+            title: 'Book counselor successfully',
           })
           navigate('../')
         })

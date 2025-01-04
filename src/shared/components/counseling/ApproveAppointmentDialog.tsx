@@ -8,8 +8,8 @@ import { useState } from 'react';
 
 const ApproveAppointmentDialog = ({ appointment }: { appointment: AppointmentRequest }) => {
   console.log(appointment.meetingType)
-  const [approveAppointmentRequestOnline] = useApproveAppointmentRequestOnlineMutation();
-  const [approveAppointmentRequestOffline] = useApproveAppointmentRequestOfflineMutation();
+  const [approveAppointmentRequestOnline, {isLoading: isLoadingOnline}] = useApproveAppointmentRequestOnlineMutation();
+  const [approveAppointmentRequestOffline, {isLoading: isLoadingOffline}] = useApproveAppointmentRequestOfflineMutation();
   const [meetUrl, setMeetUrl] = useState('')
   const [address, setAddress] = useState('')
   const dispatch = useAppDispatch()
@@ -122,7 +122,7 @@ const ApproveAppointmentDialog = ({ appointment }: { appointment: AppointmentReq
         <Button
           onClick={() => handleApproveRequest()}
           color="secondary" variant='contained'
-          disabled={!meetUrl && !address}
+          disabled={!meetUrl && !address || isLoadingOnline || isLoadingOnline}
         >
           Confirm
         </Button>

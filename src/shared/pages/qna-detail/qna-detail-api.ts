@@ -22,34 +22,41 @@ const qnaDetailApi = api
 				}),
 				providesTags: (result, error, arg) => [{ type: 'qna', id: arg }]
 			}),
+			getStudentQnaDetail: build.query<GetQuestionApiResponse, string>({
+				query: (questionCardId) => ({
+					url: `/api/question-cards/student/${questionCardId}`,
+				}),
+				providesTags: (result, error, arg) => [{ type: 'qna', id: arg }]
+			}),
 			postReviewQuestionStatus: build.mutation<
-        PostReviewQuestionResponse,
-        PostReviewQuestionArg
-      >({
-        query: (args) => ({
-          url: `/api/question-cards/review/${args.id}/${args.status}`,
-          method: 'POST',
-        }),
-        invalidatesTags: ['qna'],
-      }),
-      postFlagQuestionStatus: build.mutation<
-        PostFlagQuestionResponse,
-        PostFlagQuestionArg
-      >({
-        query: (args) => ({
-          url: `/api/question-cards/review/flag/${args.id}`,
-          method: 'POST',
-          body: {
-            'reason': args.body
-          }
-        }),
-        invalidatesTags: ['qna'],
-      }),
+				PostReviewQuestionResponse,
+				PostReviewQuestionArg
+			>({
+				query: (args) => ({
+					url: `/api/question-cards/review/${args.id}/${args.status}`,
+					method: 'POST',
+				}),
+				invalidatesTags: ['qna'],
+			}),
+			postFlagQuestionStatus: build.mutation<
+				PostFlagQuestionResponse,
+				PostFlagQuestionArg
+			>({
+				query: (args) => ({
+					url: `/api/question-cards/review/flag/${args.id}`,
+					method: 'POST',
+					body: {
+						'reason': args.body
+					}
+				}),
+				invalidatesTags: ['qna'],
+			}),
 		}),
 	});
 
 export const {
 	useGetCounselorQnaDetailQuery,
+	useGetStudentQnaDetailQuery,
 	usePostFlagQuestionStatusMutation,
 	usePostReviewQuestionStatusMutation,
 } = qnaDetailApi;

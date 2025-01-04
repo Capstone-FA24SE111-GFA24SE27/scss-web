@@ -5,7 +5,6 @@ import {
   RenderHTML,
   UserLabel,
   closeDialog,
-  closeDrawer,
   openDialog,
   setBackdropLoading
 } from '@/shared/components';
@@ -56,13 +55,13 @@ const AnswerQuestionView = ({ qna }: { qna: Question }) => {
   const dispatch = useAppDispatch()
 
 
-  const handleAnswerQuestion = () => {
-    useConfirmDialog({
-      title: 'Are you sure you want to submit the answer?',
-      confirmButtonFunction: onSubmitAnswer,
-      dispatch,
-    });
-  }
+  // const handleAnswerQuestion = () => {
+  //   useConfirmDialog({
+  //     title: 'Are you sure you want to submit the answer?',
+  //     confirmButtonFunction: onSubmitAnswer,
+  //     dispatch,
+  //   });
+  // }
 
 
   const onSubmitAnswer = () => {
@@ -73,11 +72,11 @@ const AnswerQuestionView = ({ qna }: { qna: Question }) => {
       })
         .unwrap()
         .then(() => {
+          dispatch(closeDialog())
           useAlertDialog({
             title: " Answer edited successfully",
             dispatch,
           })
-          dispatch(closeDrawer())
         })
     } else {
       answerQuestion({
@@ -86,11 +85,11 @@ const AnswerQuestionView = ({ qna }: { qna: Question }) => {
       })
         .unwrap()
         .then(() => {
+          dispatch(closeDialog())
           useAlertDialog({
             title: " Answer submitted successfully",
             dispatch,
           })
-          dispatch(closeDrawer())
         })
     }
   };
@@ -102,7 +101,7 @@ const AnswerQuestionView = ({ qna }: { qna: Question }) => {
         <IconButton
           className=""
           size='large'
-          onClick={() => dispatch(closeDrawer())}
+          onClick={() => dispatch(closeDialog())}
         >
           <Close />
         </IconButton>
@@ -189,7 +188,7 @@ const AnswerQuestionView = ({ qna }: { qna: Question }) => {
       </div>
       <div className="flex items-center justify-end mt-32 pt-24 gap-8">
         <Button
-          onClick={() => dispatch(closeDrawer())}
+          onClick={() => dispatch(closeDialog())}
           color="primary"
           type='button'
         >
@@ -201,18 +200,17 @@ const AnswerQuestionView = ({ qna }: { qna: Question }) => {
           className='m-8'
           disabled={
             submitingAnswer
+            || editingAnswer
             || !answer.length
             || !validateHTML(answer)
             || qna?.answer === answer
           }
-          onClick={() =>
-            handleAnswerQuestion()
-          }
+          onClick={onSubmitAnswer}
         >
           {editMode ? `Save` : `Submit`}
         </Button>
       </div>
-      {(submitingAnswer || editingAnswer) && <BackdropLoading />}
+      {/* {(submitingAnswer || editingAnswer) && <BackdropLoading />} */}
     </div>
   )
 }

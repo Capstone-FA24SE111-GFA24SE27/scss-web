@@ -166,7 +166,7 @@ const QnaList = () => {
 					onChange={handleSelectTopic}
 					className='w-200'
 				/> */}
-				<div className='flex justify-end flex-1 w-full'>
+				{/* <div className='flex justify-end flex-1 w-full'>
 					<FormControlLabel
 						label='Open Answers'
 						control={
@@ -179,7 +179,7 @@ const QnaList = () => {
 							/>
 						}
 					/>
-				</div>
+				</div> */}
 			</div>
 			<div>
 				<div className='flex justify-between'>

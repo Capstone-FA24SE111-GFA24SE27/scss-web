@@ -10,6 +10,7 @@ import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
 	useGetCounselorQnaDetailQuery,
+	useGetStudentQnaDetailQuery,
 	usePostFlagQuestionStatusMutation,
 	usePostReviewQuestionStatusMutation,
 } from './qna-detail-api';
@@ -29,7 +30,7 @@ import {
 	Flag,
 	RemoveCircle,
 } from '@mui/icons-material';
-import { useAppDispatch, useAppSelector } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useConfirmDialog } from '@/shared/hooks';
 import { useAlertDialog } from '@/shared/hooks';
 import QnaFlagForm from './QnaFlagFormDialog';
@@ -42,10 +43,15 @@ type QnaProps = {
 	questionCard?: Question
 }
 const QnaDetail = ({ id, questionCard }: QnaProps) => {
+	const account = useAppSelector(selectAccount)
+	const isStudent = account.role === 'STUDENT'
 	const routeParams = useParams();
 	const { id: qnaRouteId } = routeParams as { id: string };
 	const qnaId = id || qnaRouteId
-	const { data, isLoading } = useGetCounselorQnaDetailQuery(qnaId?.toString(), { skip: !qnaId || questionCard !== undefined });
+	const { data, isLoading } =
+		isStudent
+			? useGetStudentQnaDetailQuery(qnaId?.toString(), { skip: !qnaId || questionCard !== undefined || !isStudent })
+			: useGetCounselorQnaDetailQuery(qnaId?.toString(), { skip: !qnaId || questionCard !== undefined || isStudent });
 	const qna = questionCard || data?.content;
 
 	if (isLoading) {

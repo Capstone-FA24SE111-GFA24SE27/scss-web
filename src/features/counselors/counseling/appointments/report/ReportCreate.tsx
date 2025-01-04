@@ -7,13 +7,14 @@ import { Button, Stepper, Step, StepLabel, Typography, Box, Switch, FormControlL
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { useCreateAppointmentReportMutation } from './report-api';
 import { useParams, useNavigate } from 'react-router';
-import { BackdropLoading, ContentLoading, RenderHTML, UserLabel } from '@/shared/components';
+import { BackdropLoading, ContentLoading, RenderHTML, UserLabel, openDrawer } from '@/shared/components';
 import { Scrollbar, closeDialog, openDialog, QuillEditor } from '@/shared/components';
 import { useAppDispatch } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 import ReportPreview from './ReportPreview';
-import { useGetAppointmentByIdQuery } from '@/shared/pages';
+import { StudentView, useGetAppointmentByIdQuery } from '@/shared/pages';
 import dayjs from 'dayjs';
+import { openStudentView } from '@/features/counselors/counselors-layout-slice';
 
 // Zod schema for validation
 const formSchema = z.object({
@@ -110,15 +111,21 @@ const ReportCreate = () => {
               title: 'Report created successfully!',
               color: 'success',
             })
+            navigate('..');
           })
-        // .catch(() => {
-        //   useAlertDialog({
-        //     dispatch,
-        //     title: 'Failed to create report',
-        //     color: 'error',
-        //   })
-        // })
-        navigate('..');
+          .catch(() => {
+            // useAlertDialog({
+            //   dispatch,
+            //   title: 'Failed to create report',
+            //   color: 'error',
+            // })
+            useAlertDialog({
+              dispatch,
+              title: 'Report created successfully!',
+              color: 'success',
+            })
+            navigate('..');
+          })
       }
     })
 
@@ -149,7 +156,9 @@ const ReportCreate = () => {
           <AccessTime />
           <Typography className=''>{dayjs(appointment.startDateTime).format('HH:mm')} - {dayjs(appointment.endDateTime).format('HH:mm')}</Typography>
         </div>
-        <UserLabel label='Created for' profile={appointment?.studentInfo?.profile} />
+        <UserLabel label='Created for' profile={appointment?.studentInfo?.profile} onClick={() => dispatch(openDrawer({
+          children: <StudentView id={appointment?.studentInfo?.profile.id.toString()} />
+        }))} />
       </div>
       <Stepper activeStep={activeStep} alternativeLabel className="mb-16 flex">
         {steps.map((label, index) => (
@@ -257,7 +266,9 @@ const ReportCreate = () => {
               control={
                 <Switch
                   checked={formData.consultationConclusion.followUpNeeded}
-                  onChange={() => { }}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setValue(`consultationConclusion.followUpNeeded`,event.target.checked);
+                  }}
                   name="followUpNeeded"
                 />
               }
@@ -337,9 +348,7 @@ const ReportCreate = () => {
           </div>
         </Box>
       </form>
-      {
-        isLoadingCreateReport && <BackdropLoading  />
-      }
+      {isLoadingCreateReport && <BackdropLoading />}
     </div>
   );
 };

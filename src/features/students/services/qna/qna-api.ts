@@ -121,6 +121,13 @@ export const studentQnasApi = api
         }),
         invalidatesTags: ['qna']
       }),
+      countOpenQuestion: build.query<ApiResponse<number>, number>({
+        query: (studentId) => ({
+          url: `/api/question-cards/count-open/${studentId}`,
+          method: 'GET',
+        }),
+        providesTags: ['qna']
+      }),
 
     })
   })
@@ -136,7 +143,8 @@ export const {
   useDeleteQuestionStudentMutation,
   useCreateChatSessionStudentMutation,
   useSendQuestionFeedbackStudentMutation,
-  useAcceptQuestionStudentMutation
+  useAcceptQuestionStudentMutation,
+  useCountOpenQuestionQuery
 } = studentQnasApi
 
 export type GetStudentQuestionsApiResponse = ApiResponse<PaginationContent<Question>>

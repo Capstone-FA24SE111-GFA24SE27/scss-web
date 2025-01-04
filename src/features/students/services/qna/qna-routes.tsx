@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { converastionsRoutes } from './conversation';
-import { faqRoutes } from '@/shared/pages';
+import { faqRoutes, qnaDetailRoutes } from '@/shared/pages';
 
 const Qna = lazy(() => import('./Qna'))
 const QnaList = lazy(() => import('./QnaList'))
@@ -26,6 +26,7 @@ export const qnaRoutes: RouteObject[] = [
       },
       ...converastionsRoutes,
       ...faqRoutes,
+      ...qnaDetailRoutes
     ]
   },
 
