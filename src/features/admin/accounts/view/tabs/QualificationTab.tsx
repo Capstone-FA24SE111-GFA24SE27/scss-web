@@ -87,38 +87,15 @@ const QualificationTab = (props: Props) => {
 	});
 	const counselor = data?.content;
 
-	// const methods = useForm<Required<z.infer<typeof schema>>>({
-	// 	mode: 'all',
-	// 	defaultValues: {},
-	// 	resolver: zodResolver(schema),
-	// });
-
-	// const { reset, watch, control, trigger, formState, setFocus } = methods;
-	// const { dirtyFields, errors } = formState;
-
-	// const formData = watch();
-
-	// const useQualificationFieldArray = useFieldArray({
-	// 	control,
-	// 	keyName: 'uid',
-	// 	name: 'qualifications',
-	// });
-
-	// const {
-	// 	fields: qualificationsFields,
-	// 	append: appendQualificationField,
-	// 	update: updateQualificationField,
-	// 	remove: removeQualificationField,
-	// } = useQualificationFieldArray;
-
-	const [updateQualification] = usePutUpdateQualificationMutation();
-	const [addQualification] = usePostCreateQualificationMutation();
+	const [updateQualification, { isLoading: isUpdating }] =
+		usePutUpdateQualificationMutation();
+	const [addQualification, { isLoading: isAdding }] =
+		usePostCreateQualificationMutation();
 
 	const handleUpdate = (index: number, quali: any) => {
 		if (quali) {
 			if (quali.imageUrl instanceof File) {
 				try {
-					setIsLoadingProccess(true);
 					//@ts-ignore
 					handleUploadImage(quali.imageUrl).then((url) => {
 						updateQualification({
@@ -144,7 +121,6 @@ const QualificationTab = (props: Props) => {
 								});
 							});
 					});
-					setIsLoadingProccess(false);
 				} catch (err) {
 					console.error('Image upload failed:', err);
 					useAlertDialog({
@@ -187,7 +163,6 @@ const QualificationTab = (props: Props) => {
 	const handleAdd = (quali: Qualification) => {
 		if (quali) {
 			try {
-				setIsLoadingProccess(true);
 				//@ts-ignore
 				handleUploadImage(quali.imageUrl).then((url) => {
 					addQualification({
@@ -213,7 +188,6 @@ const QualificationTab = (props: Props) => {
 							});
 						});
 				});
-				setIsLoadingProccess(false);
 			} catch (err) {
 				console.error('Image upload failed:', err);
 				useAlertDialog({
@@ -267,7 +241,7 @@ const QualificationTab = (props: Props) => {
 				onClick={handleOpenQualificationAppendDialog}
 			>
 				<div className='flex items-center justify-center border rounded cursor-pointer size-72 hover:opacity-90 text-grey-600'>
-					{isLoadingProcess ? <CircularProgress /> : <Add />}
+					{isAdding || isUpdating ? <CircularProgress /> : <Add />}
 				</div>
 				<Typography className='font-semibold text-text-secondary'>
 					Add Qualification

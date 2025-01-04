@@ -1,7 +1,7 @@
 //@ts-nocheck
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { NavLinkAdapter, openDialog } from '@/shared/components';
 import { motion } from 'framer-motion';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
@@ -45,6 +45,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 	const { changeTab } = props;
 	const { id, role } = useParams();
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate()
 
 	const tabFields = {
 		// email: 0,
@@ -149,12 +150,12 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 									useAlertDialog({
 										title: res.message,
 										dispatch,
-										color: 'error',
 									});
 									navigate(-1);
 								}
 							})
 							.catch((err) => {
+								console.log(err)
 								useAlertDialog({
 									title: 'An error occur while updating the account',
 									dispatch,
@@ -407,7 +408,7 @@ const AccountDetailAdminViewHeader = (props: Props) => {
 						initial={{ x: -20 }}
 						animate={{ x: 0, transition: { delay: 0.3 } }}
 					>
-						<div className='flex gap-8 items-center'>
+						<div className='flex items-center gap-8'>
 							<Typography className='font-semibold truncate text-16 sm:text-20'>
 								{fullName ||
 									accountData?.content.profile.fullName ||

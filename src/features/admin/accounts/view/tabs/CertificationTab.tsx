@@ -43,14 +43,13 @@ const CertificationTab = (props: Props) => {
 	});
 	const counselor = data?.content;
 
-	const [updateCertification] = usePutUpdateCertificationMutation();
-	const [addCertification] = usePostCreateCertificationMutation();
+	const [updateCertification, { isLoading: isUpdating }] = usePutUpdateCertificationMutation();
+	const [addCertification, { isLoading: isAdding }] = usePostCreateCertificationMutation();
 
 	const handleUpdate = (index: number, cert: any) => {
 		if (cert) {
 			if (cert.imageUrl instanceof File) {
 				try {
-					setIsLoadingProccess(true);
 					//@ts-ignore
 					handleUploadImage(cert.imageUrl).then((url) => {
 						updateCertification({
@@ -76,7 +75,6 @@ const CertificationTab = (props: Props) => {
 								});
 							});
 					});
-					setIsLoadingProccess(false);
 				} catch (err) {
 					console.error('Image upload failed:', err);
 					useAlertDialog({
@@ -119,7 +117,6 @@ const CertificationTab = (props: Props) => {
 	const handleAdd = (cert: Certification) => {
 		if (cert) {
 			try {
-				setIsLoadingProccess(true);
 				//@ts-ignore
 				handleUploadImage(cert.imageUrl).then((url) => {
 					addCertification({
@@ -145,7 +142,6 @@ const CertificationTab = (props: Props) => {
 							});
 						});
 				});
-				setIsLoadingProccess(false);
 			} catch (err) {
 				console.error('Image upload failed:', err);
 				useAlertDialog({
@@ -187,7 +183,7 @@ const CertificationTab = (props: Props) => {
 					onClick={handleOpenCertificationAppendDialog}
 				>
 					<div className='flex items-center justify-center border rounded cursor-pointer size-72 hover:opacity-90 text-grey-600'>
-						{isLoadingProcess ? <CircularProgress /> : <Add />}
+						{isAdding || isUpdating ? <CircularProgress /> : <Add />}
 					</div>
 					<Typography className='font-semibold text-text-secondary'>
 						Add Certification
