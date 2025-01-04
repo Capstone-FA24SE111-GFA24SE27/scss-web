@@ -56,8 +56,8 @@ const Header = () => {
 	};
 
 	return (
-		<div className='flex items-center flex-1 bg-background'>
-			<div className='flex flex-col w-full gap-16 p-24'>
+		<div className='flex items-center flex-1'>
+			<div className='flex flex-col w-full gap-16 pt-16 pb-8'>
 				<div className='flex gap-32'>
 					<SearchField
 						onSearch={handleSearch}
