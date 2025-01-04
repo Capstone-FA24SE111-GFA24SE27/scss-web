@@ -10,7 +10,9 @@ import UpdateDemandForm from './UpdateDemandForm';
 import DemandDetail from '@/shared/pages/demand/DemandDetail';
 // import CounselorView from './counselors/CounselorView';
 const Demand = lazy(() => import('./Demand'));
-
+const CounselorListForStaff = lazy(
+	() => import('../counselors/CounselorListForStaff')
+);
 export const staffDemandRoutes: RouteObject[] = [
 	{
 		path: 'demand',
@@ -33,7 +35,17 @@ export const staffDemandRoutes: RouteObject[] = [
 		],
 	},
 	{
-		path: 'demand/update/:demandId',
+		path: 'demand/update',
 		element: <UpdateDemandForm />,
+		children: [
+			{
+				path: 'counselor/:id',
+				element: <CounselorView shouldShowBooking={false} />,
+			},
+		],
+	},
+	{
+		path: 'demand/update/counselors',
+		element: <CounselorListForStaff />,
 	},
 ];

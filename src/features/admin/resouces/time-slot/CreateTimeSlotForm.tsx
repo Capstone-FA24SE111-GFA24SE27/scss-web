@@ -118,6 +118,11 @@ const CreateTimeSlotForm = () => {
 	};
 
 	useEffect(() => {
+		console.log(formData.startTime);
+		console.log(formData.endTime);
+	}, [formData]);
+
+	useEffect(() => {
 		if (!isLoading && data && data.content) {
 			reset(data.content);
 		}
@@ -179,11 +184,30 @@ const CreateTimeSlotForm = () => {
 									<TimePicker
 										value={dayjs(field.value, 'HH:mm:ss')}
 										label='Start time'
+										ampm={false}
 										onChange={(newValue) => {
 											console.log('startTime', newValue);
 											field.onChange(
 												newValue.format('HH:mm:ss')
 											);
+											if (
+												formData.endTime &&
+												newValue
+													.add(30, 'minute')
+													.isAfter(
+														dayjs(
+															formData.endTime,
+															'HH:mm:ss'
+														)
+													)
+											) {
+												setValue(
+													'endTime',
+													newValue
+														.add(30, 'minute')
+														.format('HH:mm:ss')
+												);
+											}
 										}}
 									/>
 								)}
@@ -208,10 +232,31 @@ const CreateTimeSlotForm = () => {
 												'HH:mm:ss'
 											).add(30, 'minute')
 										}
+										disabled={!formData.startTime}
+										ampm={false}
 										onChange={(newValue) => {
-											field.onChange(
-												newValue.format('HH:mm:ss')
-											);
+											if (!formData.startTime) return;
+											if (
+												newValue.isAfter(
+													dayjs(
+														formData.startTime,
+														'HH:mm:ss'
+													).add(30, 'minute')
+												)
+											) {
+												field.onChange(
+													newValue.format('HH:mm:ss')
+												);
+											} else {
+												field.onChange(
+													dayjs(
+														formData.startTime,
+														'HH:mm:ss'
+													)
+														.add(30, 'minute')
+														.format('HH:mm:ss')
+												);
+											}
 										}}
 									/>
 								)}

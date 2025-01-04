@@ -99,12 +99,6 @@ const GenericAccountAdminView = (props: Props) => {
 		}
 	}, [isLoadingAccount]);
 
-	useEffect(() => {
-		if (formData) {
-			console.log('form data changing', formData);
-		}
-	}, [formData]);
-
 	if (isLoadingAccount || isInitializing) return <ContentLoading />;
 
 	return (

@@ -263,8 +263,6 @@ const CounselorAccountAdminView = (props: Props) => {
 	const counselor = data?.content;
 	const counselorAccount: Account | null = counselorAccountData?.content;
 
-	console.log(counselor);
-
 	const defaultValues = () => {
 		return {
 			avatarLink: counselorAccount?.profile?.avatarLink,
@@ -336,12 +334,6 @@ const CounselorAccountAdminView = (props: Props) => {
 			initializeDefaultValues();
 		}
 	}, [isLoading, isLoadingAccount]);
-
-	useEffect(() => {
-		if (formData) {
-			console.log('form data changing', formData);
-		}
-	}, [formData]);
 
 	if (isLoading || isLoadingAccount || isInitializing)
 		return <ContentLoading />;
