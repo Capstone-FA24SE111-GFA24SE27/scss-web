@@ -157,12 +157,12 @@ const AcademicDataLayout = (props: Props) => {
 				</div>
 			}
 			content={
-				<>
+				<div className='w-full h-full px-32'>
 					{tabValue === 0 && <DepartmentsTable />}
 					{tabValue === 1 && <MajorsTable />}
 					{tabValue === 2 && <SpecializationsTable />}
 					{tabValue === 3 && <SemesterTable />}
-				</>
+				</div>
 			}
 			rightSidebarContent={
 				<div className='flex flex-col flex-auto max-w-full w-fit'>

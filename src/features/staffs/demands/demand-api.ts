@@ -76,7 +76,7 @@ export const demandForStaffApi = api
 						gender,
 					},
 				}),
-				providesTags: ['counselor']
+				providesTags: ['counselor'],
 			}),
 			putUpdateDemandByDemandIdForStaff: build.mutation<
 				PutUpdateDemandByDemandIdResponse,
@@ -136,15 +136,25 @@ export const demandForStaffApi = api
 					search = '',
 					sortBy = '',
 					sortDirection = '',
+					departmentId,
+					majorId,
+					specializationId,
 					availableFrom = '',
+					gender,
 					availableTo = '',
 				}) => ({
 					url: `/api/counselors/academic`,
 					params: {
 						search,
 						page,
+						departmentId,
+						majorId,
+						specializationId,
 						availableFrom,
 						availableTo,
+						ratingFrom,
+						gender,
+						ratingTo,
 					},
 				}),
 				providesTags: ['counselors'],
@@ -158,10 +168,12 @@ export const demandForStaffApi = api
 					ratingFrom = '',
 					ratingTo = '',
 					search = '',
+					gender,
 					sortBy = '',
 					sortDirection = '',
 					availableFrom = '',
 					availableTo = '',
+					expertiseId,
 				}) => ({
 					url: `/api/counselors/non-academic`,
 					params: {
@@ -169,6 +181,10 @@ export const demandForStaffApi = api
 						page,
 						availableFrom,
 						availableTo,
+						ratingFrom,
+						ratingTo,
+						gender,
+						expertiseId,
 					},
 				}),
 				providesTags: ['counselors'],
@@ -229,7 +245,7 @@ export const {
 	useGetCounselorsNonAcademicForStaffQuery,
 	useGetDemandByIdForStaffQuery,
 	useGetQuickMatchCounselorForStaffMutation,
-	useGetMatchCounselorForStudentStaffQuery
+	useGetMatchCounselorForStudentStaffQuery,
 } = demandForStaffApi;
 
 type GetDemandByIdArg = number | string;
@@ -269,8 +285,8 @@ export type PostCreateDemandByStudentIdArg = {
 type PutUpdateDemandByDemandIdArgs = {
 	counselingDemandId: number | string;
 	body: {
-		counselorId: number | string;
-		// summarizeNote: string;
+		additionalInformation: string;
+		causeDescription: string;
 		contactNote: string;
 	};
 };
@@ -298,6 +314,11 @@ type GetCounselorsApiArg = {
 	ratingTo?: number;
 	availableFrom?: string;
 	availableTo?: string;
+	specializationId?: number | string;
+	departmentId?: number | string;
+	majorId?: number | string;
+	expertiseId?: number | string;
+	gender?: 'MALE' | 'FEMALE';
 };
 
 type GetCounselorApiAcademicResponse = ApiResponse<

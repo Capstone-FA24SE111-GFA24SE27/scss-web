@@ -7,28 +7,26 @@ import CreateDemandButton from '../CreateDemandButton';
 import CreateDemandForm from '../CreateDemandForm';
 import FollowStudentButton from '../FollowStudentButton';
 
-const StaffRecommendedStudentsLayout = lazy(()=>import('./StaffRecommendedStudentsLayout'))
+const StaffRecommendedStudentsLayout = lazy(
+	() => import('./StaffRecommendedStudentsLayout')
+);
 
 export const staffRecommendedStudentsRoutes: RouteObject[] = [
 	{
-
-		path:'recommended',
-        element: <StaffRecommendedStudentsLayout />,
+		path: 'recommended',
+		element: <StaffRecommendedStudentsLayout />,
 		children: [
-			
-		
 			{
 				path: 'student/:id',
-				element: <StudentView actionButton={<div className='flex items-center gap-16'> <ExcludeStudentButton /> <FollowStudentButton/>  </div>}  />,
+				element: <StudentView actionButton={<FollowStudentButton />} />,
 			},
-			
+
 			{
 				path: 'counselor/:id',
 				element: <CounselorView shouldShowBooking={false} />,
 			},
 			...studentRoutes,
-		]
-		
+		],
 
 		// ],
 		// children: [{

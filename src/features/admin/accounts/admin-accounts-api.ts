@@ -208,6 +208,110 @@ export const adminAccountsApi = apiService
 				}),
 				providesTags: ['accounts'],
 			}),
+
+			postCreateQualification: build.mutation<
+				PutUpdateQualificationResponse,
+				PutUpdateQualificationArgs
+			>({
+				query: ({
+					counselorId,
+					degree,
+					fieldOfStudy,
+					institution,
+					yearOfGraduation,
+					imageUrl,
+				}) => ({
+					url: `/api/account/create/academic-counselor/${counselorId}/qualification`,
+					method: 'POSt',
+					body: {
+						degree,
+						fieldOfStudy,
+						institution,
+						yearOfGraduation,
+						imageUrl,
+					},
+				}),
+				invalidatesTags: ['accounts'],
+			}),
+			postCreateCertification: build.mutation<
+				PutUpdateCertificationResponse,
+				PutUpdateCertificationArgs
+			>({
+				query: ({ counselorId, name, organization, imageUrl }) => ({
+					url: `/api/account/create/academic-counselor/${counselorId}/certification`,
+					method: 'POSt',
+					body: {
+						name,
+						organization,
+						imageUrl,
+					},
+				}),
+				invalidatesTags: ['accounts'],
+			}),
+
+			putUpdateQualification: build.mutation<
+				PutUpdateQualificationResponse,
+				PutUpdateQualificationArgs
+			>({
+				query: ({
+					counselorId,
+					id,
+					degree,
+					fieldOfStudy,
+					institution,
+					yearOfGraduation,
+					imageUrl,
+				}) => ({
+					url: `/api/account/create/counselor/${counselorId}/qualification/${id}`,
+					method: 'PUT',
+					body: {
+						id,
+						degree,
+						fieldOfStudy,
+						institution,
+						yearOfGraduation,
+						imageUrl,
+					},
+				}),
+				invalidatesTags: ['accounts'],
+			}),
+			putUpdateCertification: build.mutation<
+				PutUpdateCertificationResponse,
+				PutUpdateCertificationArgs
+			>({
+				query: ({ counselorId, id, name, organization, imageUrl }) => ({
+					url: `/api/account/create/counselor/${counselorId}/certification/${id}`,
+					method: 'PUT',
+					body: {
+						id,
+						name,
+						organization,
+						imageUrl,
+					},
+				}),
+				invalidatesTags: ['accounts'],
+			}),
+
+			deleteUpdateQualification: build.mutation<
+				DeleteQualificationResponse,
+				DeleteQualificationArgs
+			>({
+				query: ({ counselorId, id }) => ({
+					url: `/api/account/create/counselor/${counselorId}/qualification/${id}`,
+					method: 'DELETE',
+				}),
+				invalidatesTags: ['accounts'],
+			}),
+			deleteUpdateCertification: build.mutation<
+				DeleteCertificationResponse,
+				DeleteCertificationArgs
+			>({
+				query: ({ counselorId, id }) => ({
+					url: `/api/account/create/counselor/${counselorId}/certification/${id}`,
+					method: 'DELETE',
+				}),
+				invalidatesTags: ['accounts'],
+			}),
 		}),
 	});
 
@@ -225,8 +329,46 @@ export const {
 	usePutUpdateNonAcademicCounselorAccountMutation,
 	usePutUpdateManagerAccountMutation,
 	usePutUpdateStaffAccountMutation,
-	useGetCounselorAdminQuery
+	useGetCounselorAdminQuery,
+	useDeleteUpdateCertificationMutation,
+	useDeleteUpdateQualificationMutation,
+	usePostCreateCertificationMutation,
+	usePostCreateQualificationMutation,
+	usePutUpdateCertificationMutation,
+	usePutUpdateQualificationMutation,
 } = adminAccountsApi;
+
+type PutUpdateQualificationResponse = ApiMessage;
+type PutUpdateQualificationArgs = {
+	counselorId: number | string;
+	id: number | string;
+	degree: string;
+	fieldOfStudy: string;
+	institution: string;
+	yearOfGraduation: number | string;
+	imageUrl: string;
+};
+
+type DeleteQualificationResponse = ApiMessage;
+type DeleteQualificationArgs = {
+	counselorId: number | string;
+	id: number | string;
+};
+
+type DeleteCertificationResponse = ApiMessage;
+type DeleteCertificationArgs = {
+	counselorId: number | string;
+	id: number | string;
+};
+
+type PutUpdateCertificationResponse = ApiMessage;
+type PutUpdateCertificationArgs = {
+	counselorId: number | string;
+	id: number | string;
+	name: string;
+	organization: string;
+	imageUrl: string;
+};
 
 type postCreateSupportStaffAccountRepsonse = ApiMessage;
 type postCreateSupportStaffAccountArgs = {

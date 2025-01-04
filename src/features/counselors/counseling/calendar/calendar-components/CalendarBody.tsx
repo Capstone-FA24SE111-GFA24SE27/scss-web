@@ -47,10 +47,10 @@ const CalendarBody = (props: Props) => {
 	const account = useAppSelector(selectAccount);
 	const navigate = useNavigate();
 	const scheduleData = useAppSelector(selectScheduleData);
-	const holidaysData = useAppSelector(selectHolidays);
+	// const holidaysData = useAppSelector(selectHolidays);
 
 	const [appointments, setAppointments] = useState([]);
-	const [holidays, setHolidays] = useState([]);
+	// const [holidays, setHolidays] = useState([]);
 
 	const [dateRange, setDateRange] = useState(null);
 
@@ -62,8 +62,8 @@ const CalendarBody = (props: Props) => {
 		skip: !dateRange,
 	});
 
-	const { data: holidayfetchData, isLoading: loading2 } =
-		useGetHolidayScheduleQuery({});
+	// const { data: holidayfetchData, isLoading: loading2 } =
+	// 	useGetHolidayScheduleQuery({});
 
 	// useEffect(() => {
 	// 	const cb = (data: any) => {
@@ -121,24 +121,24 @@ const CalendarBody = (props: Props) => {
 		}
 	}, [data]);
 
-	useEffect(() => {
-		if (holidayfetchData) {
-			let newData: HolidayScheduleType[] = [];
+	// useEffect(() => {
+	// 	if (holidayfetchData) {
+	// 		let newData: HolidayScheduleType[] = [];
 
-			if (holidaysData) {
-				newData = holidayfetchData.content.filter(
-					(item) =>
-						holidaysData.findIndex(
-							(holiday) => holiday.id === item.id
-						) === -1
-				);
-			} else {
-				newData = holidayfetchData.content;
-			}
+	// 		if (holidaysData) {
+	// 			newData = holidayfetchData.content.filter(
+	// 				(item) =>
+	// 					holidaysData.findIndex(
+	// 						(holiday) => holiday.id === item.id
+	// 					) === -1
+	// 			);
+	// 		} else {
+	// 			newData = holidayfetchData.content;
+	// 		}
 
-			if (newData.length > 0) dispatch(addHolidays(newData));
-		}
-	}, [holidayfetchData]);
+	// 		if (newData.length > 0) dispatch(addHolidays(newData));
+	// 	}
+	// }, [holidayfetchData]);
 
 	useEffect(() => {
 		if (scheduleData && scheduleData.length > 0) {
@@ -156,23 +156,23 @@ const CalendarBody = (props: Props) => {
 		}
 	}, [scheduleData]);
 
-	useEffect(() => {
-		if (holidaysData && holidaysData.length > 0) {
-			const list = holidaysData.map((item) => {
-				return {
-					id: item.id + '-holiday',
-					title: item.name,
-					start: item.startDate,
-					end: item.endDate,
-					extendedProps: {
-						isHoliday: true,
-					},
-				};
-			});
+	// useEffect(() => {
+	// 	if (holidaysData && holidaysData.length > 0) {
+	// 		const list = holidaysData.map((item) => {
+	// 			return {
+	// 				id: item.id + '-holiday',
+	// 				title: item.name,
+	// 				start: item.startDate,
+	// 				end: item.endDate,
+	// 				extendedProps: {
+	// 					isHoliday: true,
+	// 				},
+	// 			};
+	// 		});
 
-			setHolidays(list);
-		}
-	}, [holidaysData]);
+	// 		setHolidays(list);
+	// 	}
+	// }, [holidaysData]);
 
 	const handleDateSelect = (selectInfo: DateSelectArg) => {
 		console.log('dateselect, ', selectInfo);
@@ -182,17 +182,17 @@ const CalendarBody = (props: Props) => {
 
 	const handleEventClick = (clickInfo: EventClickArg) => {
 		clickInfo.jsEvent.preventDefault();
-		if (clickInfo.event.extendedProps.isHoliday) {
-			const chosenHoliday = holidayfetchData.content.find(
-				(item) => item.id == clickInfo.event.id.split('-')[0]
-			);
-			dispatch(openEventDetailDialog(clickInfo, chosenHoliday, 'holiday'));
-		} else {
+		// if (clickInfo.event.extendedProps.isHoliday) {
+		// 	const chosenHoliday = holidayfetchData.content.find(
+		// 		(item) => item.id == clickInfo.event.id.split('-')[0]
+		// 	);
+		// 	dispatch(openEventDetailDialog(clickInfo, chosenHoliday, 'holiday'));
+		// } else {
 			const chosenAppointment = data.content.find(
 				(item) => item.id == clickInfo.event.id
 			);
 			dispatch(openEventDetailDialog(clickInfo, chosenAppointment, 'appointment'));
-		}
+		// }
 
 	};
 
@@ -202,7 +202,7 @@ const CalendarBody = (props: Props) => {
 
 	useAppointmentsSocketListener(account?.profile.id, refetchSchedule)
 
-	if (isLoading || loading2) {
+	if (isLoading ) {
 		return <ContentLoading className='m-32' />;
 	}
 
@@ -219,7 +219,7 @@ const CalendarBody = (props: Props) => {
 				slotMinTime={'7:00:00'}
 				datesSet={handleDatesWithin}
 				select={handleDateSelect}
-				events={[...appointments, ...holidays]}
+				events={appointments}
 				eventContent={(
 					eventInfo: EventContentArg & { event: Event }
 				) => <CalendarAppEventContent eventInfo={eventInfo} />}

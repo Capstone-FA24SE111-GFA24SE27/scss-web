@@ -36,18 +36,20 @@ const CounselorListForStaff = (props: Props) => {
 	const navigate = useNavigate();
 	const [page, setPage] = useState(1);
 	const dispatch = useAppDispatch();
+	const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
 
 	const filter = useAppSelector(selectFilter);
 	const {
+		searchTerm,
+		departmentId,
+		majorId,
+		specializationId,
+		expertiseId,
+		ratingFrom,
+		ratingTo,
+		gender,
 		availableFrom,
 		availableTo,
-		searchTerm,
-		// departmentId,
-		// majorId,
-		// specializationId,
-		// expertiseId,
-		// ratingFrom,
-		// ratingTo,
 	} = filter;
 
 	const {
@@ -56,8 +58,14 @@ const CounselorListForStaff = (props: Props) => {
 	} = useGetCounselorsAcademicForStaffQuery({
 		search: searchTerm,
 		page,
-		availableFrom: availableFrom,
-		availableTo: availableTo,
+		departmentId,
+		majorId,
+		specializationId,
+		ratingFrom,
+		ratingTo,
+		gender,
+		availableFrom,
+		availableTo,
 	});
 	const {
 		data: nonAcademicCounselors,
@@ -65,8 +73,12 @@ const CounselorListForStaff = (props: Props) => {
 	} = useGetCounselorsNonAcademicForStaffQuery({
 		search: filter.searchTerm,
 		page,
-		availableFrom: filter.availableFrom,
-		availableTo: filter.availableTo,
+		expertiseId,
+		ratingFrom,
+		ratingTo,
+		gender,
+		availableFrom,
+		availableTo,
 	});
 
 	const counselors =
@@ -94,89 +106,105 @@ const CounselorListForStaff = (props: Props) => {
 
 	const isMobile = false;
 	return (
-		<div className='overflow-hidden bg-background'>
-			<div className='flex flex-col gap-8 px-32 pt-16'>
-				<motion.div
-					initial={{ x: 20, opacity: 0 }}
-					animate={{
-						x: 0,
-						opacity: 1,
-						transition: { delay: 0.3 },
-					}}
-				>
-					<Button
-						className='flex items-center w-fit'
-						component={NavLinkAdapter}
-						role='button'
-						to={navigateUp(location, 1)}
-						color='inherit'
+		<PageSimple
+			rightSidebarOpen={rightSidebarOpen}
+			rightSidebarOnClose={() => {
+				navigate('.');
+				setRightSidebarOpen(false);
+			}}
+			rightSidebarVariant='temporary'
+			scroll={isMobile ? 'normal' : 'content'}
+			header={
+				<div className='flex flex-col gap-8 px-32 pt-16'>
+					<motion.div
+						initial={{ x: 20, opacity: 0 }}
+						animate={{
+							x: 0,
+							opacity: 1,
+							transition: { delay: 0.3 },
+						}}
 					>
-						<ArrowBack />
-						<span className='flex mx-4 font-medium'>
-							Create Demand Page
-						</span>
-					</Button>
-				</motion.div>
-
-				<Heading
-					title='Counselor List'
-					description='Select a counselor to be assigned for the demand'
-				/>
-			</div>
-			<PageSimple
-				className='!min-h-screen'
-				header={<CounselorListHeader />}
-				content={
-					<>
-						<motion.div
-							initial={{ y: 20, opacity: 0 }}
-							animate={{
-								y: 0,
-								opacity: 1,
-								transition: { delay: 0.2 },
-							}}
-							className='flex flex-col flex-auto w-full max-h-full gap-16 pb-16'
+						<Button
+							className='flex items-center w-fit'
+							component={NavLinkAdapter}
+							role='button'
+							to={navigateUp(location, 1)}
+							color='inherit'
 						>
-							<List className='w-full p-0 m-0'>
-								{isFetchingAcademicCounselors ||
-								isFetchingNonAcademicCounselors ? (
-									<ContentLoading className='h-screen' />
-								) : !counselors?.length ? (
-									<div className='flex items-center justify-center flex-1'>
-										<Typography
-											color='text.secondary'
-											variant='h5'
-										>
-											There are no counselors!
-										</Typography>
-									</div>
-								) : (
-									counselors.map((item) => (
-										<CounselorListItem
-											key={item.profile.id}
-											counselor={item}
-											onClick={handlePickCounselor}
-										/>
-									))
-								)}
-							</List>
-						</motion.div>
-						<Pagination
-							page={page}
-							count={pageCount}
-							handleChange={handlePageChange}
-						/>
-					</>
-				}
-				ref={pageLayout}
-				rightSidebarContent={<CounselorListSidebarContent />}
-				rightSidebarOpen={filter.open}
-				rightSidebarOnClose={() => dispatch(filterClose())}
-				rightSidebarVariant='permanent'
-				scroll={isMobile ? 'normal' : 'content'}
-				rightSidebarWidth={440}
-			/>
-		</div>
+							<ArrowBack />
+							<span className='flex mx-4 font-medium'>
+								Create Demand Page
+							</span>
+						</Button>
+					</motion.div>
+
+					<Heading
+						title='Counselor List'
+						description='Select a counselor to be assigned for the demand'
+					/>
+				</div>
+			}
+			content={
+				<PageSimple
+					className='h-full'
+					header={<CounselorListHeader />}
+					content={
+						<div className='flex-1 overflow-hidden'>
+							<div className='flex-1 overflow-auto'>
+								<motion.div
+									initial={{ y: 20, opacity: 0 }}
+									animate={{
+										y: 0,
+										opacity: 1,
+										transition: { delay: 0.2 },
+									}}
+									className='flex flex-col flex-auto w-full max-h-full gap-16 pb-16'
+								>
+									<List className='w-full gap-8 px-16 m-0'>
+										{isFetchingAcademicCounselors ||
+										isFetchingNonAcademicCounselors ? (
+											<ContentLoading className='h-screen' />
+										) : !counselors?.length ? (
+											<div className='flex items-center justify-center flex-1'>
+												<Typography
+													color='text.secondary'
+													variant='h5'
+												>
+													There are no counselors!
+												</Typography>
+											</div>
+										) : (
+											counselors.map((item, index) => (
+												<CounselorListItem
+													key={index}
+													counselor={item}
+													onClick={
+														handlePickCounselor
+													}
+												/>
+											))
+										)}
+									</List>
+								</motion.div>
+								<Pagination
+									page={page}
+									count={pageCount}
+									handleChange={handlePageChange}
+								/>
+							</div>
+						</div>
+					}
+					ref={pageLayout}
+					rightSidebarContent={<CounselorListSidebarContent />}
+					rightSidebarOpen={filter.open}
+					rightSidebarOnClose={() => {
+						dispatch(filterClose());
+					}}
+					rightSidebarVariant='permanent'
+					rightSidebarWidth={432}
+				/>
+			}
+		/>
 	);
 };
 
