@@ -23,7 +23,7 @@ import { Autocomplete, Chip, InputAdornment, TextField } from '@mui/material';
 import { ProblemTag } from '@/shared/types/admin';
 
 
-const StudentListHeader = ({ isShowingTab = false}) => {
+const StudentListHeader = ({ isShowingTab = false }) => {
 	const filter = useAppSelector(selectFilter);
 	const [tabValue, setTabValue] = useState(0);
 
@@ -75,12 +75,7 @@ const StudentListHeader = ({ isShowingTab = false}) => {
 	const handleSelectSemester = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-		if (event.target.value) {
-			dispatch(setSemesterIdForBehavior(Number(event.target.value)));
-		} else {
-			dispatch(setSemesterIdForBehavior(''));
-		}
-		// dispatch(setPromptForBehavior(''));
+			dispatch(setSemesterIdForBehavior(Number(event.target.value)) || undefined);
 	};
 
 	const handleSwitchChange = (checked: boolean) => {

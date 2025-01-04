@@ -5,56 +5,56 @@ interface StudentListState {
   open: boolean;
   searchTerm: string;
   studentCode: string;
-  specializationId: number | '';
-  departmentId: number | '';
-  majorId: number | '';
-  currentTerm: number | '';
-  semesterIdForGPA: number | '';
-  minGPA: number | '';
-  maxGPA: number | '';
+  specializationId: number ;
+  departmentId: number ;
+  majorId: number ;
+  currentTerm: number ;
+  semesterIdForGPA: number ;
+  minGPA: number ;
+  maxGPA: number ;
   isUsingPrompt: boolean;
-  semesterIdForBehavior: number | '';
+  semesterIdForBehavior: number ;
   promptForBehavior: string;
   sortBy: string;
   sortDirection: 'ASC' | 'DESC';
-  page: number | '';
+  page: number ;
   tab: '' | 'RECOMMENDED';
   behaviorList: string;
   typeOfAttendanceFilter: 'COUNT' | 'PERCENTAGE'; // New state
-  semesterIdForAttendance: number | ''; // New state
-  fromForAttendanceCount: number | ''; // New state
-  toForAttendanceCount: number | ''; // New state
-  fromForAttendancePercentage: number | ''; // New state
-  toForAttendancePercentage: number | ''; // New state
-  minSubjectForAttendance: number | ''; // New state
+  semesterIdForAttendance: number ; // New state
+  fromForAttendanceCount: number ; // New state
+  toForAttendanceCount: number ; // New state
+  fromForAttendancePercentage: number ; // New state
+  toForAttendancePercentage: number ; // New state
+  minSubjectForAttendance: number ; // New state
 }
 
 const initialState: StudentListState = {
   open: true,
-  searchTerm: '',
-  studentCode: '',
-  specializationId: '',
-  departmentId: '',
-  majorId: '',
-  currentTerm: '',
-  semesterIdForGPA: '',
-  minGPA: '',
-  maxGPA: '',
+  searchTerm: undefined,
+  studentCode: undefined,
+  specializationId: undefined,
+  departmentId: undefined,
+  majorId: undefined,
+  currentTerm: undefined,
+  semesterIdForGPA: undefined,
+  minGPA: undefined,
+  maxGPA: undefined,
   isUsingPrompt: false,
-  semesterIdForBehavior: '',
-  promptForBehavior: '',
+  semesterIdForBehavior: undefined,
+  promptForBehavior: undefined,
   sortBy: 'createdDate',
   sortDirection: 'ASC',
-  page: '',
-  tab: '',
-  behaviorList: '',
-  typeOfAttendanceFilter: 'COUNT', // Default value
-  semesterIdForAttendance: '', // Default value
-  fromForAttendanceCount: '', // Default value
-  toForAttendanceCount: '', // Default value
-  fromForAttendancePercentage: '', // Default value
-  toForAttendancePercentage: '', // Default value
-  minSubjectForAttendance: '', // Default value
+  page: undefined,
+  tab: undefined,
+  behaviorList: undefined,
+  typeOfAttendanceFilter: 'COUNT', 
+  semesterIdForAttendance: undefined, 
+  fromForAttendanceCount: undefined, 
+  toForAttendanceCount: undefined, 
+  fromForAttendancePercentage: undefined, 
+  toForAttendancePercentage: undefined, 
+  minSubjectForAttendance: undefined, 
 };
 
 /**
@@ -79,31 +79,31 @@ export const studentListSlice = createSlice({
     setStudentCode: (state, action: PayloadAction<string>) => {
       state.studentCode = action.payload;
     },
-    setSpecializationId: (state, action: PayloadAction<number | ''>) => {
+    setSpecializationId: (state, action: PayloadAction<number>) => {
       state.specializationId = action.payload;
     },
-    setDepartmentId: (state, action: PayloadAction<number | ''>) => {
+    setDepartmentId: (state, action: PayloadAction<number>) => {
       state.departmentId = action.payload;
     },
-    setMajorId: (state, action: PayloadAction<number | ''>) => {
+    setMajorId: (state, action: PayloadAction<number>) => {
       state.majorId = action.payload;
     },
-    setCurrentTerm: (state, action: PayloadAction<number | ''>) => {
+    setCurrentTerm: (state, action: PayloadAction<number>) => {
       state.currentTerm = action.payload;
     },
-    setSemesterIdForGPA: (state, action: PayloadAction<number | ''>) => {
+    setSemesterIdForGPA: (state, action: PayloadAction<number>) => {
       state.semesterIdForGPA = action.payload;
     },
-    setMinGPA: (state, action: PayloadAction<number | ''>) => {
+    setMinGPA: (state, action: PayloadAction<number>) => {
       state.minGPA = action.payload;
     },
-    setMaxGPA: (state, action: PayloadAction<number | ''>) => {
+    setMaxGPA: (state, action: PayloadAction<number>) => {
       state.maxGPA = action.payload;
     },
     setIsUsingPrompt: (state, action: PayloadAction<boolean>) => {
       state.isUsingPrompt = action.payload;
     },
-    setSemesterIdForBehavior: (state, action: PayloadAction<number | ''>) => {
+    setSemesterIdForBehavior: (state, action: PayloadAction<number>) => {
       state.semesterIdForBehavior = action.payload;
     },
     setPromptForBehavior: (state, action: PayloadAction<string>) => {
@@ -115,14 +115,14 @@ export const studentListSlice = createSlice({
     setSortDirection: (state, action: PayloadAction<'ASC' | 'DESC'>) => {
       state.sortDirection = action.payload;
     },
-    setPage: (state, action: PayloadAction<number | ''>) => {
+    setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
     setTab: (state, action: PayloadAction<'' | 'RECOMMENDED'>) => {
       state.tab = action.payload;
     },
-    resetFilter: (state) => {
-      state = initialState;
+    resetFilter: () => {
+      return { ...initialState }
     },
     setBehaviorList: (state, action: PayloadAction<string>) => {
       state.behaviorList = action.payload;
@@ -130,22 +130,22 @@ export const studentListSlice = createSlice({
     setTypeOfAttendanceFilter: (state, action: PayloadAction<'COUNT' | 'PERCENTAGE'>) => {
       state.typeOfAttendanceFilter = action.payload;
     },
-    setSemesterIdForAttendance: (state, action: PayloadAction<number | ''>) => {
+    setSemesterIdForAttendance: (state, action: PayloadAction<number>) => {
       state.semesterIdForAttendance = action.payload;
     },
-    setFromForAttendanceCount: (state, action: PayloadAction<number | ''>) => {
+    setFromForAttendanceCount: (state, action: PayloadAction<number>) => {
       state.fromForAttendanceCount = action.payload;
     },
-    setToForAttendanceCount: (state, action: PayloadAction<number | ''>) => {
+    setToForAttendanceCount: (state, action: PayloadAction<number>) => {
       state.toForAttendanceCount = action.payload;
     },
-    setFromForAttendancePercentage: (state, action: PayloadAction<number | ''>) => {
+    setFromForAttendancePercentage: (state, action: PayloadAction<number>) => {
       state.fromForAttendancePercentage = action.payload;
     },
-    setToForAttendancePercentage: (state, action: PayloadAction<number | ''>) => {
+    setToForAttendancePercentage: (state, action: PayloadAction<number>) => {
       state.toForAttendancePercentage = action.payload;
     },
-    setMinSubjectForAttendance: (state, action: PayloadAction<number | ''>) => {
+    setMinSubjectForAttendance: (state, action: PayloadAction<number>) => {
       state.minSubjectForAttendance = action.payload;
     },
   },

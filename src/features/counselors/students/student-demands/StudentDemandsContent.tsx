@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import { AppLoading, ContentLoading, FilterTabs, Pagination, SearchField, SortingToggle } from '@shared/components';
+import { AppLoading, ContentLoading, FilterTabs, ListSkeleton, Pagination, SearchField, SortingToggle } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import StudentDemandsItem from './StudentDemandsItem';
 import { useState, ChangeEvent } from 'react'
@@ -43,7 +43,7 @@ function StudentDemandsContent() {
         { label: 'Done', value: 'DONE' },
     ];
 
-    const { data } = useGetCounselingDemandCounselorsFilterQuery({
+    const { data, isLoading } = useGetCounselingDemandCounselorsFilterQuery({
         keyword: searchTerm,
         status: statusTabs[tabValue]?.value,
         sortDirection,
@@ -71,20 +71,22 @@ function StudentDemandsContent() {
                     className="flex flex-col flex-auto w-full max-h-full gap-16"
                 >
                     <List className="flex flex-col w-full gap-16 p-0 m-0">
-                        {!counselingDemands?.length
-                            ? <div className="flex items-center justify-center flex-1">
-                                <Typography
-                                    color="text.secondary"
-                                    variant="h5"
-                                >
-                                    There are no demands!
-                                </Typography>
-                            </div>
-                            : counselingDemands.map(item =>
-                                <StudentDemandsItem
-                                    key={item.id}
-                                    demand={item} />
-                            )}
+                        {
+                            isLoading ? <ListSkeleton />
+                                : !counselingDemands?.length
+                                    ? <div className="flex items-center justify-center flex-1">
+                                        <Typography
+                                            color="text.secondary"
+                                            variant="h5"
+                                        >
+                                            There are no demands!
+                                        </Typography>
+                                    </div>
+                                    : counselingDemands.map(item =>
+                                        <StudentDemandsItem
+                                            key={item.id}
+                                            demand={item} />
+                                    )}
                     </List>
                 </motion.div>
             </Box>

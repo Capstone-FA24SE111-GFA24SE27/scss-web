@@ -30,6 +30,7 @@ function CounselorsTable({ type }: { type: CounselingType }) {
     expertiseId,
     ratingFrom,
     ratingTo,
+    gender,
   } = filter;
 
   const { data, isLoading } = useGetCounselorsManagementQuery({
@@ -41,8 +42,10 @@ function CounselorsTable({ type }: { type: CounselingType }) {
     departmentId,
     majorId,
     specializationId,
+    expertiseId,
     ratingFrom,
     ratingTo,
+    gender
   })
   console.log(data)
 
