@@ -25,7 +25,7 @@ function AppointmentTable() {
 
   const { data, isLoading } = useGetStudentAppointmentsQuery({
     id: id,
-    page: pagination.pageIndex,
+    page: pagination.pageIndex + 1,
   })
   console.log(data)
 
