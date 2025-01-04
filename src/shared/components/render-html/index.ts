@@ -1,1 +1,1 @@
-export * from './RenderHTML'
+export * from './renderHTML'

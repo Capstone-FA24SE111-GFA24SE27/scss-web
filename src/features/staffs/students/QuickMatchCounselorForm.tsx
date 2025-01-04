@@ -89,7 +89,7 @@ const QuickMatchCounselorForm = (props: Props) => {
 		})
 			.unwrap()
 			.then((response) => {
-				onPickCounselor(response?.content);
+				// onPickCounselor(response?.content);
 				console.log('res', response);
 			});
 	};
