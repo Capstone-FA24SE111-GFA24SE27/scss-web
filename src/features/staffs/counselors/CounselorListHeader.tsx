@@ -60,14 +60,7 @@ const CounselorListHeader = () => {
 	};
 
 	return (
-		<div className='flex flex-col w-full gap-16 p-24 bg-background'>
-			
-			<div className='flex'>
-				<SearchField onSearch={handleSearch} />
-				<div className='pl-16'>
-					{!filter.open && <CounselorListFilterButton />}
-				</div>
-			</div>
+		<div className='flex items-center justify-between w-full gap-16 p-24 bg-background'>
 			<div>
 				<Tabs
 					value={tabValue}
@@ -101,6 +94,9 @@ const CounselorListHeader = () => {
 						label='Non-Academic Counselors'
 					/>
 				</Tabs>
+			</div>
+			<div className='pl-16'>
+				{!filter.open && <CounselorListFilterButton />}
 			</div>
 		</div>
 	);

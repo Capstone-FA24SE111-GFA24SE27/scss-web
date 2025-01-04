@@ -156,7 +156,7 @@ function QuestionCardTable() {
 	}
 
 	return (
-		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
+		<Paper className='flex flex-col flex-auto w-full h-full mx-32 overflow-hidden shadow rounded-b-0'>
 			<DataTable
 				data={data?.content?.data || []}
 				columns={columns}

@@ -171,7 +171,12 @@ const ProblemTag = (props: Props) => {
 					</div>
 				</>
 			}
-			content={tabValue === 0 ? <ProblemTagTable /> : <CategoryTable />}
+			content={
+				<div className='w-full h-full px-32'>
+				{tabValue === 0 ? <ProblemTagTable /> : <CategoryTable />}
+				</div>
+			
+			}
 			rightSidebarContent={
 				<div className='flex flex-col flex-auto max-w-full w-fit'>
 					<IconButton

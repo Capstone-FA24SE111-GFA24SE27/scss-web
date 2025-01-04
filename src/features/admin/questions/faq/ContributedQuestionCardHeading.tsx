@@ -87,10 +87,10 @@ const QuestionCardHeading = () => {
 	return (
 		<div className='flex flex-col gap-16 p-32'>
 			<Heading
-				title='Contributed Question Table '
-				description='Manage Contributed Questions'
+				title='Frequently Asked Question Table '
+				description='Manage Frequently Asked Questions'
 			/>
-			<div className='items-center justify-between flex'>
+			<div className='flex items-center justify-between'>
 				<FilterTabs
 					tabValue={tabValue}
 					onChangeTab={handleChangeTab}
@@ -105,7 +105,7 @@ const QuestionCardHeading = () => {
 				>
 					<Add />
 					<Typography className='font-semibold'>
-						Add Question Card Category
+						Add Frequently Asked Question Category
 					</Typography>
 				</Button>
 			</div>

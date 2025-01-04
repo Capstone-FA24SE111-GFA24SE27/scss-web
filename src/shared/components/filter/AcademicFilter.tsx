@@ -19,6 +19,9 @@ interface AcademicFilterProps {
   size?: 'small' | 'medium';
   disabled?: boolean;
   showClearOptions?: boolean;
+  initialDeparment?: string;
+  initialMajor?: string;
+  initialSpecialization?: string;
 }
 
 // Custom styled component for the "Clear" option
@@ -38,10 +41,13 @@ const AcademicFilter = ({
   size = 'medium',
   disabled = false,
   showClearOptions = false,
+  initialDeparment = '',
+  initialMajor = '',
+  initialSpecialization= '',
 }: AcademicFilterProps) => {
-  const [selectedDepartment, setSelectedDepartment] = useState<string>('');
-  const [selectedMajor, setSelectedMajor] = useState<string>('');
-  const [selectedSpecialization, setSelectedSpecialization] = useState<string>('');
+  const [selectedDepartment, setSelectedDepartment] = useState<string>(initialDeparment);
+  const [selectedMajor, setSelectedMajor] = useState<string>(initialMajor);
+  const [selectedSpecialization, setSelectedSpecialization] = useState<string>(initialSpecialization);
 
   // Fetch departments
   const { data: departments, isLoading: loadingDepartments } = useGetDepartmentsQuery();

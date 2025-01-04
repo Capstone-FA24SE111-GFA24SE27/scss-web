@@ -13,7 +13,7 @@ import { Controller, FieldArrayWithId, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Certification } from '@/shared/types';
 import clsx from 'clsx';
-import { checkImageUrl } from '@/shared/utils';
+import { checkFirebaseImageUrl, checkImageUrl } from '@/shared/utils';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useEffect } from 'react';
@@ -42,14 +42,29 @@ const schema = z.object({
 			const year = dayjs(date).year();
 			return year >= 1900 && year <= currentYear;
 		}, `Year must be between 1900 and ${currentYear}`),
-	imageUrl: z
-		.instanceof(File, { message: 'Image is required' })
-		.refine((file) => isValidImage(file), {
-			message: 'File must be an image',
-		})
-		.refine((file) => file.size <= MAX_FILE_SIZE, {
-			message: 'Image must be less than 5MB',
-		}),
+	imageUrl: z.union([
+		z
+			.instanceof(File, { message: 'Image not found' })
+			.refine((file) => isValidImage(file), {
+				message: 'File must be an image',
+			})
+			.refine((file) => file.size <= MAX_FILE_SIZE, {
+				message: 'Image must be less than 5MB',
+			}),
+		z
+			.string()
+			.url()
+			.refine(
+				async (url) => {
+					const checkValid = await checkImageUrl(url);
+					return checkFirebaseImageUrl(url) || checkValid;
+				},
+
+				{
+					message: 'Invalid image URL.',
+				}
+			), // Validates URL and checks for image extensions
+	]),
 });
 
 type FormType = Required<z.infer<typeof schema>>;
@@ -67,6 +82,8 @@ const QualificationAppendForm = (props: Props) => {
 	const dispatch = useAppDispatch();
 
 	const isEdit = qualificationData && update && index !== null;
+
+	console.log(qualificationData);
 
 	const defaultValues = isEdit
 		? qualificationData
@@ -106,8 +123,8 @@ const QualificationAppendForm = (props: Props) => {
 		<div className='min-w-320'>
 			<DialogTitle id='alert-dialog-title' className='font-semibold'>
 				{isEdit
-					? 'Update certification infos'
-					: 'Enter certification infos:'}
+					? 'Update qualification infos'
+					: 'Enter qualification infos:'}
 			</DialogTitle>
 			<DialogContent className='space-y-16 '>
 				<Controller
@@ -160,25 +177,27 @@ const QualificationAppendForm = (props: Props) => {
 					name={`yearOfGraduation`}
 					control={control}
 					render={({ field }) => (
-						<DatePicker
-							className='w-full'
-							label='Year of Graduation'
-							value={dayjs(field.value)}
-							minDate={dayjs('1900')}
-							maxDate={dayjs()}
-							disableFuture
-							yearsOrder='desc'
-							slotProps={{
-								textField: {
-									helperText:
-										errors.yearOfGraduation?.message,
-								},
-							}}
-							views={['year']}
-							onChange={(date) => {
-								field.onChange(dayjs(date).format('YYYY'));
-							}}
-						/>
+						<>
+							<DatePicker
+								className='w-full'
+								label='Year of Graduation'
+								value={dayjs(`${field.value}`)}
+								minDate={dayjs('1900')}
+								maxDate={dayjs()}
+								disableFuture
+								yearsOrder='desc'
+								slotProps={{
+									textField: {
+										helperText:
+											errors.yearOfGraduation?.message,
+									},
+								}}
+								views={['year']}
+								onChange={(date) => {
+									field.onChange(dayjs(date).format('YYYY'));
+								}}
+							/>
+						</>
 					)}
 				/>
 				<div className='flex flex-col items-center justify-center flex-1 w-full h-full'>
@@ -232,7 +251,7 @@ const QualificationAppendForm = (props: Props) => {
 							variant='contained'
 							disabled={!isDirty || !isValid}
 							onClick={() => {
-								console.log(qualificationData);
+								console.log(formData);
 								update(index, formData);
 								if (trigger) {
 									trigger();

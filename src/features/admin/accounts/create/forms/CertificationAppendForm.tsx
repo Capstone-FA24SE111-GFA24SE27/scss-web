@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
 import ImageInput from '@/shared/components/image/ImageInput';
 import _ from 'lodash';
+import { checkFirebaseImageUrl, checkImageUrl } from '@/shared/utils';
 
 // z
 // .string()
@@ -26,14 +27,29 @@ import _ from 'lodash';
 const schema = z.object({
 	name: z.string().min(1, 'Please enter certification name'),
 	organization: z.string().min(1, 'Please enter certification organization'),
-	imageUrl: z
-		.instanceof(File, { message: 'Image is required' })
-		.refine((file) => isValidImage(file), {
-			message: 'File must be an image',
-		})
-		.refine((file) => file.size <= MAX_FILE_SIZE, {
-			message: 'Image must be less than 5MB',
-		}),
+	imageUrl: z.union([
+		z
+			.instanceof(File, { message: 'Image not found' })
+			.refine((file) => isValidImage(file), {
+				message: 'File must be an image',
+			})
+			.refine((file) => file.size <= MAX_FILE_SIZE, {
+				message: 'Image must be less than 5MB',
+			}),
+		z
+			.string()
+			.url()
+			.refine(
+				async (url) => {
+					const checkValid = await checkImageUrl(url);
+					return checkFirebaseImageUrl(url) || checkValid;
+				},
+
+				{
+					message: 'Invalid image URL.',
+				}
+			), // Validates URL and checks for image extensions
+	]),
 });
 
 type FormType = Required<z.infer<typeof schema>>;

@@ -16,7 +16,10 @@ import { isValidImage, MAX_FILE_SIZE } from '@/shared/services';
 import dayjs from 'dayjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Delete } from '@mui/icons-material';
-import { useGetCounselorAdminQuery, useGetOneAccountQuery } from '../admin-accounts-api';
+import {
+	useGetCounselorAdminQuery,
+	useGetOneAccountQuery,
+} from '../admin-accounts-api';
 import AccountDetailAdminViewHeader from './AccountDetailAdminViewHeader';
 import {
 	checkFirebaseImageUrl,
@@ -26,6 +29,9 @@ import {
 import DepartmentInfoTab from './tabs/DepartmentInfoTab';
 import WorkExperienceTab from './tabs/WorkExperienceTab';
 import ExpertiseTab from './tabs/ExpertiseTab';
+import EducationTab from './tabs/EducationTab';
+import QualificationTab from './tabs/QualificationTab';
+import CertificationTab from './tabs/CertificationTab';
 
 type Props = {
 	id: string;
@@ -65,74 +71,74 @@ const schemaNonAcademic = z.object({
 	otherSkills: z.string().min(1, 'Other skill is required'),
 	workHistory: z.string().min(1, 'Work history is required'),
 	achievements: z.string().min(1, 'Achievement is required'),
-	qualifications: z.array(
-		z.object({
-			id: z.union([z.string(), z.number()]).optional(),
-			degree: z.string().min(1, 'Degree is required'),
-			fieldOfStudy: z.string().min(1, 'Field of study is required'),
-			institution: z.string().min(1, 'Institution  is required'),
-			yearOfGraduation: z
-				.union([
-					z.string().refine((value) => /^\d{4}$/.test(value), {
-						message: 'Year must be a 4-digit number',
-					}),
-					z
-						.number()
-						.refine((value) => value >= 1000 && value <= 9999, {
-							message: 'Year must be a 4-digit number',
-						}),
-				])
-				.refine(
-					(value) => dayjs(value.toString(), 'YYYY', true).isValid(),
-					{ message: 'Invalid year' }
-				)
-				.refine((date) => {
-					const year = dayjs(date).year();
-					return year >= 1900 && year <= currentYear;
-				}, `Year must be between 1900 and ${currentYear}`),
-			imageUrl: z
-				.string()
-				.url()
-				.refine(
-					async (url) =>
-						checkFirebaseImageUrl(url) ||
-						(await checkImageUrl(url)),
-					{
-						message: 'Invalid image URL.',
-					}
-				), // Validates URL and checks for image extensions
-		})
-	),
-	certifications: z.array(
-		z.object({
-			id: z.union([z.string(), z.number()]).optional(),
-			name: z.string().min(1, 'Please enter'),
-			organization: z.string().min(1, 'Please enter'),
-			imageUrl: z.union([
-				z
-					.instanceof(File, { message: 'Image not found' })
-					.refine((file) => isValidImage(file), {
-						message: 'File must be an image',
-					})
-					.refine((file) => file.size <= MAX_FILE_SIZE, {
-						message: 'Image must be less than 5MB',
-					}),
-				z
-					.string()
-					.url()
-					.refine(
-						async (url) => {
-							const checkValid = await checkImageUrl(url);
-							return checkFirebaseImageUrl(url) || checkValid;
-						},
+	// qualifications: z.array(
+	// 	z.object({
+	// 		id: z.union([z.string(), z.number()]).optional(),
+	// 		degree: z.string().min(1, 'Degree is required'),
+	// 		fieldOfStudy: z.string().min(1, 'Field of study is required'),
+	// 		institution: z.string().min(1, 'Institution  is required'),
+	// 		yearOfGraduation: z
+	// 			.union([
+	// 				z.string().refine((value) => /^\d{4}$/.test(value), {
+	// 					message: 'Year must be a 4-digit number',
+	// 				}),
+	// 				z
+	// 					.number()
+	// 					.refine((value) => value >= 1000 && value <= 9999, {
+	// 						message: 'Year must be a 4-digit number',
+	// 					}),
+	// 			])
+	// 			.refine(
+	// 				(value) => dayjs(value.toString(), 'YYYY', true).isValid(),
+	// 				{ message: 'Invalid year' }
+	// 			)
+	// 			.refine((date) => {
+	// 				const year = dayjs(date).year();
+	// 				return year >= 1900 && year <= currentYear;
+	// 			}, `Year must be between 1900 and ${currentYear}`),
+	// 		imageUrl: z
+	// 			.string()
+	// 			.url()
+	// 			.refine(
+	// 				async (url) =>
+	// 					checkFirebaseImageUrl(url) ||
+	// 					(await checkImageUrl(url)),
+	// 				{
+	// 					message: 'Invalid image URL.',
+	// 				}
+	// 			), // Validates URL and checks for image extensions
+	// 	})
+	// ),
+	// certifications: z.array(
+	// 	z.object({
+	// 		id: z.union([z.string(), z.number()]).optional(),
+	// 		name: z.string().min(1, 'Please enter'),
+	// 		organization: z.string().min(1, 'Please enter'),
+	// 		imageUrl: z.union([
+	// 			z
+	// 				.instanceof(File, { message: 'Image not found' })
+	// 				.refine((file) => isValidImage(file), {
+	// 					message: 'File must be an image',
+	// 				})
+	// 				.refine((file) => file.size <= MAX_FILE_SIZE, {
+	// 					message: 'Image must be less than 5MB',
+	// 				}),
+	// 			z
+	// 				.string()
+	// 				.url()
+	// 				.refine(
+	// 					async (url) => {
+	// 						const checkValid = await checkImageUrl(url);
+	// 						return checkFirebaseImageUrl(url) || checkValid;
+	// 					},
 
-						{
-							message: 'Invalid image URL.',
-						}
-					), // Validates URL and checks for image extensions
-			]),
-		})
-	),
+	// 					{
+	// 						message: 'Invalid image URL.',
+	// 					}
+	// 				), // Validates URL and checks for image extensions
+	// 		]),
+	// 	})
+	// ),
 });
 
 const schemaAcademic = z.object({
@@ -169,80 +175,80 @@ const schemaAcademic = z.object({
 	otherSkills: z.string().min(1, 'Other skill is required'),
 	workHistory: z.string().min(1, 'Work history is required'),
 	achievements: z.string().min(1, 'Achievement is required'),
-	qualifications: z.array(
-		z.object({
-			id: z.union([z.string(), z.number()]).optional(),
-			degree: z.string().min(1, 'Degree is required'),
-			fieldOfStudy: z.string().min(1, 'Field of study is required'),
-			institution: z.string().min(1, 'Institution  is required'),
-			yearOfGraduation: z
-				.union([
-					z.string().refine((value) => /^\d{4}$/.test(value), {
-						message: 'Year must be a 4-digit number as a string',
-					}),
-					z
-						.number()
-						.refine((value) => value >= 1000 && value <= 9999, {
-							message: 'Year must be a 4-digit number',
-						}),
-				])
-				.refine(
-					(value) => dayjs(value.toString(), 'YYYY', true).isValid(),
-					{ message: 'Invalid year' }
-				),
-			imageUrl: z.union([
-				z
-					.instanceof(File, { message: 'Image not found' })
-					.refine((file) => isValidImage(file), {
-						message: 'File must be an image',
-					})
-					.refine((file) => file.size <= MAX_FILE_SIZE, {
-						message: 'Image must be less than 5MB',
-					}),
-				z
-					.string()
-					.url()
-					.refine(
-						(url) => async (url) => {
-							const checkValid = await checkImageUrl(url);
-							return checkFirebaseImageUrl(url) || checkValid;
-						},
-						{
-							message: 'Invalid image URL. ',
-						}
-					), // Validates URL and checks for image extensions
-			]),
-		})
-	),
-	certifications: z.array(
-		z.object({
-			id: z.union([z.string(), z.number()]).optional(),
-			name: z.string().min(1, 'Please enter'),
-			organization: z.string().min(1, 'Please enter'),
-			imageUrl: z.union([
-				z
-					.instanceof(File, { message: 'Image not found' })
-					.refine((file) => isValidImage(file), {
-						message: 'File must be an image',
-					})
-					.refine((file) => file.size <= MAX_FILE_SIZE, {
-						message: 'Image must be less than 5MB',
-					}),
-				z
-					.string()
-					.url()
-					.refine(
-						async (url) => async (url) => {
-							const checkValid = await checkImageUrl(url);
-							return checkFirebaseImageUrl(url) || checkValid;
-						},
-						{
-							message: 'Invalid image URL.',
-						}
-					), // Validates URL and checks for image extensions
-			]),
-		})
-	),
+	// qualifications: z.array(
+	// 	z.object({
+	// 		id: z.union([z.string(), z.number()]).optional(),
+	// 		degree: z.string().min(1, 'Degree is required'),
+	// 		fieldOfStudy: z.string().min(1, 'Field of study is required'),
+	// 		institution: z.string().min(1, 'Institution  is required'),
+	// 		yearOfGraduation: z
+	// 			.union([
+	// 				z.string().refine((value) => /^\d{4}$/.test(value), {
+	// 					message: 'Year must be a 4-digit number as a string',
+	// 				}),
+	// 				z
+	// 					.number()
+	// 					.refine((value) => value >= 1000 && value <= 9999, {
+	// 						message: 'Year must be a 4-digit number',
+	// 					}),
+	// 			])
+	// 			.refine(
+	// 				(value) => dayjs(value.toString(), 'YYYY', true).isValid(),
+	// 				{ message: 'Invalid year' }
+	// 			),
+	// 		imageUrl: z.union([
+	// 			z
+	// 				.instanceof(File, { message: 'Image not found' })
+	// 				.refine((file) => isValidImage(file), {
+	// 					message: 'File must be an image',
+	// 				})
+	// 				.refine((file) => file.size <= MAX_FILE_SIZE, {
+	// 					message: 'Image must be less than 5MB',
+	// 				}),
+	// 			z
+	// 				.string()
+	// 				.url()
+	// 				.refine(
+	// 					(url) => async (url) => {
+	// 						const checkValid = await checkImageUrl(url);
+	// 						return checkFirebaseImageUrl(url) || checkValid;
+	// 					},
+	// 					{
+	// 						message: 'Invalid image URL. ',
+	// 					}
+	// 				), // Validates URL and checks for image extensions
+	// 		]),
+	// 	})
+	// ),
+	// certifications: z.array(
+	// 	z.object({
+	// 		id: z.union([z.string(), z.number()]).optional(),
+	// 		name: z.string().min(1, 'Please enter'),
+	// 		organization: z.string().min(1, 'Please enter'),
+	// 		imageUrl: z.union([
+	// 			z
+	// 				.instanceof(File, { message: 'Image not found' })
+	// 				.refine((file) => isValidImage(file), {
+	// 					message: 'File must be an image',
+	// 				})
+	// 				.refine((file) => file.size <= MAX_FILE_SIZE, {
+	// 					message: 'Image must be less than 5MB',
+	// 				}),
+	// 			z
+	// 				.string()
+	// 				.url()
+	// 				.refine(
+	// 					async (url) => async (url) => {
+	// 						const checkValid = await checkImageUrl(url);
+	// 						return checkFirebaseImageUrl(url) || checkValid;
+	// 					},
+	// 					{
+	// 						message: 'Invalid image URL.',
+	// 					}
+	// 				), // Validates URL and checks for image extensions
+	// 		]),
+	// 	})
+	// ),
 });
 
 const CounselorAccountAdminView = (props: Props) => {
@@ -260,50 +266,6 @@ const CounselorAccountAdminView = (props: Props) => {
 	console.log(counselor);
 
 	const defaultValues = () => {
-		// const certifications = counselor?.profile?.certifications
-		// 	? await Promise.all(
-		// 			counselor?.profile?.certifications.map(
-		// 				async (cert, index) => {
-		// 					const fetchedImage = await fetchImageAsFile(
-		// 						cert.imageUrl,
-		// 						`downloaded-image-${cert.imageUrl}`
-		// 					);
-		// 					console.log({
-		// 						...cert,
-		// 						imageUrl: fetchedImage,
-		// 					});
-
-		// 					return {
-		// 						...cert,
-		// 						imageUrl: fetchedImage,
-		// 					};
-		// 				}
-		// 			)
-		// 	  )
-		// 	: [];
-
-		// const qualifications = counselor?.profile?.qualifications
-		// 	? await Promise.all(
-		// 			counselor?.profile?.qualifications.map(
-		// 				async (qual, index) => {
-		// 					const fetchedImage = await fetchImageAsFile(
-		// 						qual.imageUrl,
-		// 						`downloaded-image-${qual.imageUrl}`
-		// 					);
-		// 					console.log({
-		// 						...qual,
-		// 						imageUrl: fetchedImage,
-		// 					});
-
-		// 					return {
-		// 						...qual,
-		// 						imageUrl: fetchedImage,
-		// 					};
-		// 				}
-		// 			)
-		// 	  )
-		// 	: [];
-
 		return {
 			avatarLink: counselorAccount?.profile?.avatarLink,
 			email: counselorAccount?.email,
@@ -323,8 +285,8 @@ const CounselorAccountAdminView = (props: Props) => {
 			otherSkills: counselor?.profile?.otherSkills,
 			workHistory: counselor?.profile?.workHistory,
 			achievements: counselor?.profile?.achievements,
-			qualifications: counselor?.profile?.qualifications,
-			certifications: counselor?.profile?.certifications,
+			// qualifications: counselor?.profile?.qualifications,
+			// certifications: counselor?.profile?.certifications,
 		};
 	};
 
@@ -345,17 +307,17 @@ const CounselorAccountAdminView = (props: Props) => {
 
 	const formData = watch();
 
-	const useCertificationFieldArray = useFieldArray({
-		control,
-		keyName: 'uid',
-		name: 'certifications',
-	});
+	// const useCertificationFieldArray = useFieldArray({
+	// 	control,
+	// 	keyName: 'uid',
+	// 	name: 'certifications',
+	// });
 
-	const useQualificationFieldArray = useFieldArray({
-		control,
-		keyName: 'uid',
-		name: 'qualifications',
-	});
+	// const useQualificationFieldArray = useFieldArray({
+	// 	control,
+	// 	keyName: 'uid',
+	// 	name: 'qualifications',
+	// });
 
 	const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue);
@@ -381,20 +343,12 @@ const CounselorAccountAdminView = (props: Props) => {
 		}
 	}, [formData]);
 
-	// useEffect(() => {
-	// 	const firstError = Object.keys(errors)[0];
-	// 	console.log('tabfild', tabFields[firstError]);
-
-	// }, [errors, setFocus]);
-
 	if (isLoading || isLoadingAccount || isInitializing)
 		return <ContentLoading />;
 
 	return (
 		<FormProvider {...methods}>
-			<AccountDetailAdminViewHeader
-				changeTab={setTabValue}
-			/>
+			<AccountDetailAdminViewHeader changeTab={setTabValue} />
 			<Paper className='flex flex-col flex-auto h-full p-16 overflow-hidden'>
 				<Tabs
 					value={tabValue}
@@ -419,6 +373,14 @@ const CounselorAccountAdminView = (props: Props) => {
 						className='px-16 text-lg font-semibold min-h-40 min-w-64'
 						label='Work Experience'
 					/>
+					<Tab
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
+						label='Qualifications'
+					/>
+					<Tab
+						className='px-16 text-lg font-semibold min-h-40 min-w-64'
+						label='Certifications'
+					/>
 				</Tabs>
 				<Scrollbar className='flex-1 w-full max-h-full overflow-auto'>
 					{tabValue === 0 && <AccountInfoTab />}
@@ -431,16 +393,9 @@ const CounselorAccountAdminView = (props: Props) => {
 					) : (
 						''
 					)}
-					{tabValue === 2 && (
-						<WorkExperienceTab
-							useQualificationFieldArray={
-								useQualificationFieldArray
-							}
-							useCertificationFieldArray={
-								useCertificationFieldArray
-							}
-						/>
-					)}
+					{tabValue === 2 && <WorkExperienceTab />}
+					{tabValue === 3 && <QualificationTab />}
+					{tabValue === 4 && <CertificationTab />}
 					{/*  */}
 				</Scrollbar>
 			</Paper>

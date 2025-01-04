@@ -29,7 +29,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 	return (
 		<ListItemButton
 			selected={counselor?.id == Number(selectedCounselor?.id)}
-			className='flex '
+			className='flex items-start justify-between gap-24 p-8 px-24 py-16 rounded-lg shadow bg-background-paper shadow-secondary-main/20'
 			sx={{ bgcolor: 'background.paper' }}
 			component={Box}
 			onClick={() => onClick(counselor)}
@@ -39,7 +39,7 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 					<Avatar
 						alt={counselor.profile.fullName}
 						src={counselor.profile.avatarLink}
-						className='size-80'
+						className='size-80 !border border-secondary-main'
 					/>
 				</ListItemAvatar>
 				<Box className='flex flex-col justify-between gap-8'>
@@ -75,17 +75,6 @@ function CounselorListItem(props: CounselorListItemPropsType) {
 							))}
 					</div>
 				</Box>
-			</div>
-
-			<div className='flex gap-8 text-sm text-text-secondary'>
-				<Rating
-					name='simple-controlled'
-					size='small'
-					value={counselor.rating}
-					readOnly
-					precision={0.5}
-				/>
-				({counselor?.rating}/5)
 			</div>
 		</ListItemButton>
 	);
