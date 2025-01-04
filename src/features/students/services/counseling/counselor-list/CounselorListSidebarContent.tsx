@@ -4,7 +4,7 @@ import { Box, IconButton, Rating, Slider, Tooltip, Typography } from '@mui/mater
 import { AcademicFilter, DateRangePicker, SearchField, SelectField } from '@/shared/components'
 import dayjs from 'dayjs'
 import { useAppDispatch, useAppSelector } from '@shared/store'
-import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setMajorId, setRatingFrom, setRatingTo, setSearchTerm, setSpecializationId } from './counselor-list-slice'
+import { selectCounselorType, selectFilter, setAvailableFrom, setAvailableTo, setDepartmentId, setExpertiseId, setGender, setMajorId, setRatingFrom, setRatingTo, setSearchTerm, setSpecializationId } from './counselor-list-slice'
 import { useGetCounselorExpertisesQuery, useGetNonAcademicTopicsQuery } from '@/shared/services'
 import { Close, Female, Male } from '@mui/icons-material'
 
@@ -64,10 +64,6 @@ const CounselorListSidebarContent = () => {
   const handleSearch = (searchTerm: string) => {
     dispatch(setSearchTerm(searchTerm))
   }
-
-
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
-
 
 
   return (
@@ -141,11 +137,11 @@ const CounselorListSidebarContent = () => {
             <IconButton
               size='small'
               onClick={() => {
-                setSelectedGender('MALE');
+                dispatch(setGender('MALE'));
                 // field.onChange('MALE');
               }}
               sx={{
-                border: selectedGender === 'MALE' ? '2px solid #1976d2' : 'none',
+                border: filter.gender === 'MALE' ? '2px solid #1976d2' : 'none',
                 borderRadius: '50%', // Keep the border round
               }}
             >
@@ -157,11 +153,11 @@ const CounselorListSidebarContent = () => {
             <IconButton
               size='small'
               onClick={() => {
-                setSelectedGender('FEMALE');
+                dispatch(setGender('FEMALE'));
                 // field.onChange('FEMALE');
               }}
               sx={{
-                border: selectedGender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
+                border: filter.gender === 'FEMALE' ? '2px solid #d32f2f' : 'none',
                 borderRadius: '50%',
               }}
             >
@@ -171,12 +167,12 @@ const CounselorListSidebarContent = () => {
 
           <div className='flex justify-end flex-1'>
             {
-              selectedGender &&
+              filter.gender &&
               <Tooltip title="Clear gender selection">
                 <IconButton
                   size='small'
                   onClick={() => {
-                    setSelectedGender('');
+                    dispatch(setGender(''));
                     // field.onChange(''); 
                   }}
                   sx={{

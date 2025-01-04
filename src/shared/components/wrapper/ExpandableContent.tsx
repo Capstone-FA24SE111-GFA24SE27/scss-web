@@ -47,7 +47,7 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
           className="absolute bottom-0 left-0 w-full h-60 bg-gradient-to-t from-white to-transparent pointer-events-none"
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.8)", // Adjust for blur effect
-            backdropFilter: "blur(2px)",
+            // backdropFilter: "blur(2px)",
           }}
         ></div>
       )}

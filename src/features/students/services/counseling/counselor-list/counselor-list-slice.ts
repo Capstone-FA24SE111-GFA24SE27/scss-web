@@ -18,6 +18,7 @@ interface CounselorListState {
   expertiseId?: number;
   ratingFrom?: number;
   ratingTo?: number;
+  gender?: string;
 }
 
 const initialState: CounselorListState = {
@@ -27,6 +28,7 @@ const initialState: CounselorListState = {
   counselorType: 'ACADEMIC',
   availableFrom: '',
   availableTo: '',
+  gender: '',
   // specializationId: '',
   // expertiseId: '',
   // departmentId: '',
@@ -84,6 +86,9 @@ export const counselorListSlice = createSlice({
     setRatingTo: (state, action: PayloadAction<number>) => {
       state.ratingTo = action.payload; // New reducer for ratingTo
     },
+    setGender: (state, action: PayloadAction<string>) => {
+      state.gender = action.payload;
+    },
   },
   selectors: {
     selectFilter: (filter) => filter,
@@ -112,8 +117,9 @@ export const {
   setDepartmentId,
   setMajorId,
   setExpertiseId,
-  setRatingFrom, // Export action for ratingFrom
-  setRatingTo, // Export action for ratingTo
+  setRatingFrom,
+  setRatingTo, 
+  setGender,
 } = counselorListSlice.actions;
 
 export const {
