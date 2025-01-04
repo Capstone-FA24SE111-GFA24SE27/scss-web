@@ -6,7 +6,7 @@ import {
 import { selectAccount, useAppSelector } from '@shared/store';
 import { ChangeEvent, useState } from 'react';
 import { useGetAllCategoriesQuery, useSearchContributedQuestionCardsQuery } from './faq-api';
-import FaqItem from './FaqItem';
+import FaqItem from './faqItem'
 
 const Faq = () => {
   const [page, setPage] = useState(1);
@@ -84,7 +84,7 @@ const Faq = () => {
         <div className='flex flex-col mt-80 '>
           {/* Show category here */}
         </div>
-        <div className='flex flex-col w-full container mt-16'>
+        <div className='container flex flex-col w-full mt-16'>
           <SearchField onSearch={handleSearch} className='w-full' />
           {/* <ContentSearch onSearch={handleSearch} /> */}
           <div className='flex justify-between w-full mt-16'>
