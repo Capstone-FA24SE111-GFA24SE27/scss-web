@@ -19,7 +19,7 @@ const DateDetailScheduleView = () => {
 	console.log(appointmentList)
 	const { date: dateRange } = routeParams;
 
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	// const [appointments, setAppointments] = useState([]);
 	const [holiday, setHoliday] = useState([])
 	const dateData = dateRange.split('&');
@@ -62,25 +62,25 @@ const DateDetailScheduleView = () => {
 	// 	}
 	// }, [appointmentList]);
 
-	useEffect(() => {
-		if (holidayList) {
-			setIsLoading(true);
-			const eventsInDateRange = holidayList.filter((item) => {
-				const eventStartDate = new Date(item.startDate);
-				const eventEndDate = new Date(item.endDate);
+	// useEffect(() => {
+	// 	if (holidayList) {
+	// 		setIsLoading(true);
+	// 		const eventsInDateRange = holidayList.filter((item) => {
+	// 			const eventStartDate = new Date(item.startDate);
+	// 			const eventEndDate = new Date(item.endDate);
 
-				return isDateRangeOverlapping(
-					eventStartDate,
-					eventEndDate,
-					startDate,
-					endDate
-				);
-			});
-			setHoliday(eventsInDateRange);
-			console.log(eventsInDateRange)
-			setIsLoading(false);
-		}
-	}, [holidayList]);
+	// 			return isDateRangeOverlapping(
+	// 				eventStartDate,
+	// 				eventEndDate,
+	// 				startDate,
+	// 				endDate
+	// 			);
+	// 		});
+	// 		setHoliday(eventsInDateRange);
+	// 		console.log(eventsInDateRange)
+	// 		setIsLoading(false);
+	// 	}
+	// }, [holidayList]);
 
 	if (isLoading) {
 		return <ContentLoading className='m-32' />;
@@ -96,11 +96,11 @@ const DateDetailScheduleView = () => {
 
 	return (
 		<div className='relative flex flex-col'>
-			<div className='flex w-full p-16 mt-40 gap-8'>
-				<Typography className='leading-none text-3xl'>
+			<div className='flex w-full gap-8 p-16 mt-40'>
+				<Typography className='text-3xl leading-none'>
 					Schedule for
 				</Typography>
-				<Typography className='leading-none text-3xl font-semibold'>
+				<Typography className='text-3xl font-semibold leading-none'>
 					{displayDate(startDate)}
 				</Typography>
 			</div>
