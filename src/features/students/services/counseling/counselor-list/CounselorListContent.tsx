@@ -28,8 +28,9 @@ function CounselorListContent() {
 		majorId,
 		specializationId,
 		expertiseId,
-		ratingFrom,
-		ratingTo,
+		gender,
+		// ratingFrom,
+		// ratingTo,
 	} = filter;
 	console.log(availableFrom, availableTo);
 	const {
@@ -43,8 +44,9 @@ function CounselorListContent() {
 		departmentId,
 		majorId,
 		specializationId,
-		ratingFrom,
-		ratingTo,
+		gender,
+		// ratingFrom,
+		// ratingTo,
 	});
 	const {
 		data: nonAcademicCounselors,
@@ -55,8 +57,9 @@ function CounselorListContent() {
 		availableFrom,
 		availableTo,
 		expertiseId,
-		ratingFrom,
-		ratingTo,
+		gender,
+		// ratingFrom,
+		// ratingTo,
 	});
 
 	const counselors =

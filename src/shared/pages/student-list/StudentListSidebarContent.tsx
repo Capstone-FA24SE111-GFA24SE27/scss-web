@@ -163,8 +163,8 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
             value={filter.minGPA}
             onChange={(e) => {
               const fromValue = Number(e.target.value) || 0;
-              const toValue = filter.maxGPA || 0;
-              if (!isNaN(toValue) && (fromValue > toValue) || Number(e.target.value) < 0 || Number(e.target.value) > 10) {
+              const toValue = filter.maxGPA;
+              if ((!isNaN(toValue) && (fromValue > toValue)) || Number(e.target.value) < 0 || Number(e.target.value) > 10) {
                 return
               }
               dispatch(setMinGPA(fromValue));
@@ -183,8 +183,8 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
             value={filter.maxGPA}
             onChange={(e) => {
               const toValue = Number(e.target.value) || 0;
-              const fromValue = filter.minGPA || 0;
-              if (!isNaN(fromValue) && (toValue < fromValue) || Number(e.target.value) < 0 || Number(e.target.value) > 10) {
+              const fromValue = filter.minGPA;
+              if ((!isNaN(fromValue) && (toValue < fromValue)) || Number(e.target.value) < 0 || Number(e.target.value) > 10) {
                 return
               }
               dispatch(setMaxGPA(toValue));
