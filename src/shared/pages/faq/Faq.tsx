@@ -136,7 +136,8 @@ const Faq = () => {
                       <FaqItem key={contributedQuestion.id} contributedQuestion={contributedQuestion} />
                     )
                   })
-                )}
+                )
+            }
             <Pagination
               page={page}
               count={contributedQuestionsData?.content.totalPages}

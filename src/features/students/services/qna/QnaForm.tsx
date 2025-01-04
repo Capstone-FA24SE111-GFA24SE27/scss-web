@@ -13,6 +13,7 @@ import {
 	Box,
 	Divider,
 	Autocomplete,
+	Chip,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,12 +26,12 @@ import {
 	useGetSpecializationsByMajorQuery,
 } from '@shared/services';
 import { useGetCounselorExpertisesQuery } from '@shared/services';
-import { usePostQuestionMutation, useEditQuestionMutation, useGetStudentQuestionQuery, useGetBanInfoQuery } from './qna-api';
+import { usePostQuestionMutation, useEditQuestionMutation, useGetStudentQuestionQuery, useGetBanInfoQuery, useCountOpenQuestionQuery } from './qna-api';
 import _ from 'lodash';
 import BanInfo from './BanInfo';
-import { BackdropLoading, NavLinkAdapter, RenderHTML } from '@/shared/components';
+import { BackdropLoading, NavLinkAdapter, RenderHTML, closeDialog, openDialog } from '@/shared/components';
 import { ArrowBack } from '@mui/icons-material';
-import { useAppDispatch } from '@shared/store';
+import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
 import ReactQuill from 'react-quill';
@@ -42,6 +43,7 @@ import { validateHTML } from '@/shared/utils';
 import { useSearchAllPublicQuestionCardsMutation } from '@/shared/pages';
 import { useGetStudentDocumentQuery } from '../../students-api';
 import { Department, Major } from '@/shared/types';
+import QnaSuggestionDialog from './QnaSuggestionDialog';
 
 // Define schema with validation
 const formSchema = z.object({
@@ -76,7 +78,7 @@ const formSchema = z.object({
 	}).nullable().optional(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+export type QnaFormValues = z.infer<typeof formSchema>;
 
 function QnaForm() {
 	const { questionId } = useParams();
@@ -88,15 +90,16 @@ function QnaForm() {
 			skip: !editMode,
 		}
 	)
-
+	const account = useAppSelector(selectAccount)
+	const { data: countOpenData } = useCountOpenQuestionQuery(account.profile.id)
 	const { data: banInfoData } = useGetBanInfoQuery()
 	const banInfo = banInfoData
 
 
 	const question = questionData?.content
-	const defaultValues: FormValues = { questionType: 'ACADEMIC', content: '' };
+	const defaultValues: QnaFormValues = { questionType: 'ACADEMIC', content: '' };
 
-	const { control, handleSubmit, watch, formState, reset, register, setValue } = useForm<FormValues>({
+	const { control, handleSubmit, watch, formState, reset, register, setValue } = useForm<QnaFormValues>({
 		mode: 'onChange',
 		defaultValues,
 		resolver: zodResolver(formSchema),
@@ -131,83 +134,113 @@ function QnaForm() {
 	const [editQuestion, { isLoading: isEditing }] = useEditQuestionMutation();
 	const dispatch = useAppDispatch()
 	// Form submission handler
-	const onSubmit = async (data: FormValues) => {
+	const onSubmit = (data: QnaFormValues) => {
+
 		try {
 			if (editMode && questionId) {
-				useConfirmDialog({
-					dispatch: dispatch,
-					title: 'Confirm editing question?',
-					confirmButtonFunction: () => {
-						editQuestion({
-							questionCardId: Number(questionId),
-							question: {
-								title: data.title,
-								content: data.content,
-								questionType: data.questionType,
-								departmentId: data.department?.id,
-								majorId: data.major?.id,
-								expertiseId: data.expertise?.id,
-								// specializationId: data.specializationId,
-							}
-						})
-							.unwrap()
-							.then(() => {
-								useAlertDialog({
-									dispatch,
-									color: 'success',
-									title: 'Question was edit successfully!',
-								})
-								navigate(`../my-qna`);
-							})
-							.catch(error => useAlertDialog({
-								dispatch,
-								color: 'error',
-								title: 'Error editing question',
-							}))
-					}
-				})
+				// useConfirmDialog({
+				// 	dispatch: dispatch,
+				// 	title: 'Confirm editing question?',
+				// 	confirmButtonFunction: () => {
+				// 		editQuestion({
+				// 			questionCardId: Number(questionId),
+				// 			question: {
+				// 				title: data.title,
+				// 				content: data.content,
+				// 				questionType: data.questionType,
+				// 				departmentId: data.department?.id,
+				// 				majorId: data.major?.id,
+				// 				expertiseId: data.expertise?.id,
+				// 				// specializationId: data.specializationId,
+				// 			}
+				// 		})
+				// 			.unwrap()
+				// 			.then(() => {
+				// 				useAlertDialog({
+				// 					dispatch,
+				// 					color: 'success',
+				// 					title: 'Question was edit successfully!',
+				// 				})
+				// 				navigate(`../my-qna`);
+				// 			})
+				// 			.catch(error => useAlertDialog({
+				// 				dispatch,
+				// 				color: 'error',
+				// 				title: 'Error editing question',
+				// 			}))
+				// 	}
+				// })
+				// useConfirmDialog({
+				// 	dispatch: dispatch,
+				// 	title: 'Confirm editing question?',
+				// 	confirmButtonFunction: () => {
+				// 		dispatch(closeDialog())
+						
+				// 	}
+				// })
+				dispatch(openDialog({
+					children: <QnaSuggestionDialog question={question} data={data} />
+				}))
 
 			} else {
-				useConfirmDialog({
-					dispatch: dispatch,
-					title: 'Confirm asking question',
-					content: (
-						<div>{data.title}</div>
-					),
-					confirmButtonFunction: () => {
-						postQuestion({
-							title: data.title,
-							content: data.content,
-							questionType: data.questionType,
-							departmentId: data.department?.id,
-							majorId: data.major?.id,
-							expertiseId: data.expertise?.id,
-						})
-							.unwrap()
-							.then(() => {
-								useAlertDialog({
-									dispatch,
-									color: 'success',
-									title: 'Question was created successfully!',
-								})
-								navigate(`../my-qna`);
-							})
-							.catch(error => useAlertDialog({
-								dispatch,
-								color: 'error',
-								confirmButtonTitle: `Ok`,
-								title: error?.data.message === `Expertise not found with name: none`
-									? `Question does have not have enough context`
-									: (error?.data.message || `Error creating question`)
-							}))
-					}
-				})
+				// useConfirmDialog({
+				// 	dispatch: dispatch,
+				// 	title: 'Confirm asking question',
+				// 	content: (
+				// 		<div>{data.title}</div>
+				// 	),
+				// 	confirmButtonFunction: () => {
+				// 		dispatch(closeDialog())
+						
+				// 	}
+				// })
+				dispatch(openDialog({
+					children: <QnaSuggestionDialog data={data} />
+				}))
+
+				
+				// useConfirmDialog({
+				// 	dispatch: dispatch,
+				// 	title: 'Confirm asking question',
+				// 	content: (
+				// 		<div>{data.title}</div>
+				// 	),
+				// 	confirmButtonFunction: () => {
+				// 		postQuestion({
+				// 			title: data.title,
+				// 			content: data.content,
+				// 			questionType: data.questionType,
+				// 			departmentId: data.department?.id,
+				// 			majorId: data.major?.id,
+				// 			expertiseId: data.expertise?.id,
+				// 		})
+				// 			.unwrap()
+				// 			.then(() => {
+				// 				useAlertDialog({
+				// 					dispatch,
+				// 					color: 'success',
+				// 					title: 'Question was created successfully!',
+				// 				})
+				// 				navigate(`../my-qna`);
+				// 			})
+				// 			.catch(error => useAlertDialog({
+				// 				dispatch,
+				// 				color: 'error',
+				// 				confirmButtonTitle: `Ok`,
+				// 				title: error?.data.message === `Expertise not found with name: none`
+				// 					? `Question does have not have enough context`
+				// 					: (error?.data.message || `Error creating question`)
+				// 			}))
+				// 	}
+				// })
 
 			}
 		} catch (error) {
 			console.error("Failed to submit question:", error);
 		}
 	};
+
+
 	useEffect(() => {
 		if (editMode && questionData) {
 			reset({
@@ -245,37 +278,31 @@ function QnaForm() {
 						Back to My Q&A
 					</Button>
 				</div>
-				<div className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-					{editMode ? 'Edit your question' : 'Ask a question'}
+				<div className='flex justify-between'>
+					<Typography className="mt-8 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+						{editMode ? 'Edit your question' : 'Ask a question'}
+					</Typography>
+
 				</div>
 				<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
-				<Paper className='p-16 mt-16 bg-secondary-main/10 text-secondary-main shadow-0 text-lg'>
-					<Typography className='font-semibold text-lg'>Tips on asking a good question</Typography>
-					<li>Ensure your question hasn't been asked before</li>
-					<li>Keep your question concise and straightforward</li>
-					<li>Double-check your grammar and spelling</li>
-				</Paper>
-				<Divider className='mt-16' />
-				<div className="mt-16 ">
-					<form onSubmit={handleSubmit(onSubmit)} className="px-0">
+				<div className='flex mt-8 gap-8 items-center'>
+					<Typography className='text-lg font-semibold'>
+						Open Q&A:
+					</Typography>
+					<Chip label={`${countOpenData?.content || `?`}/3`} />
+					{/* <Typography className='text-lg'>{countOpenData?.content}/3</Typography> */}
+				</div>
+				<div className="mt-16">
+					<Divider />
+					<form
+						onSubmit={handleSubmit(onSubmit)}
+						className="px-0"
+					>
 						{/* <div className="mb-24">
 							<Typography variant="h6">Submit your question</Typography>
 							<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
 						</div> */}
-						<div className="space-y-32 px-16">
-							{/* Question Type Radio Group */}
-							<Controller
-								name="questionType"
-								control={control}
-								render={({ field }) => (
-									<RadioGroup {...field} row>
-										<FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
-										<FormControlLabel value="NON_ACADEMIC" control={<Radio />} label="Non-academic" />
-									</RadioGroup>
-								)}
-							/>
-							{errors.questionType && <Typography color="error">{errors.questionType.message}</Typography>}
-
+						<div className="space-y-32">
 							<Controller
 								control={control}
 								name="title"
@@ -300,6 +327,20 @@ function QnaForm() {
 								error={errors.content?.message}
 							// label='Content'
 							/>
+
+							<Divider />
+
+							<Controller
+								name="questionType"
+								control={control}
+								render={({ field }) => (
+									<RadioGroup {...field} row>
+										<FormControlLabel value="ACADEMIC" control={<Radio />} label="Academic" />
+										<FormControlLabel value="NON_ACADEMIC" control={<Radio />} label="Non-academic" />
+									</RadioGroup>
+								)}
+							/>
+							{errors.questionType && <Typography color="error">{errors.questionType.message}</Typography>}
 
 							{
 								questionType === 'ACADEMIC'
@@ -465,7 +506,7 @@ function QnaForm() {
 					</form>
 				</div>
 			</div>
-			{(isPosting || isEditing) && <BackdropLoading />}
+			{/* {(isPosting || isEditing) && <BackdropLoading />} */}
 		</div >
 	);
 }

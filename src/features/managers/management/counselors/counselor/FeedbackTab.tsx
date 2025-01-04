@@ -9,7 +9,7 @@ import { ChangeEvent, SyntheticEvent, useState } from 'react'
 import { ContentLoading, ExpandableText, FeedbackItem, Heading, ItemMenu, Pagination, SubHeading, openDialog } from '@/shared/components';
 import { motionVariants } from '@/shared/configs';
 import dayjs from 'dayjs';
-import { AppointmentDetail } from '@/shared/pages';
+import { AppointmentDetail, QnaDetail } from '@/shared/pages';
 
 
 const FeedbackTab = () => {
@@ -85,6 +85,9 @@ const FeedbackTab = () => {
                   <FeedbackItem
                     feedback={feedback?.questionCard?.feedback}
                     profile={feedback?.questionCard?.student?.profile}
+                    handleOpenDetail={() => dispatch(openDialog({
+                      children: <QnaDetail questionCard={feedback.questionCard} />
+                    }))}
                   />
                 ))
                 }

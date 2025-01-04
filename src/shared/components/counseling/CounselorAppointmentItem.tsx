@@ -33,6 +33,84 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
   const navigate = useNavigate();
 
 
+  const CheckAttendanceDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
+    const dispatch = useAppDispatch();
+    const [attendanceStatus, setAttendanceStatus] = useState<AppointmentAttendanceStatus>((appointment.status as AppointmentAttendanceStatus) || 'WAITING');
+    const [takeAttendance, {isLoading}] = useTakeAppointmentAttendanceMutation();
+
+    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setAttendanceStatus((event.target as HTMLInputElement).value as AppointmentAttendanceStatus);
+    }
+
+    const handleTakeAttendance = () => {
+      takeAttendance({
+        appointmentId: appointment.id,
+        counselingAppointmentStatus: attendanceStatus as AppointmentAttendanceStatus
+      })
+        .unwrap()
+        .then(() => {
+          handleCloseDialog()
+          dispatch(closeDialog());
+          useAlertDialog({
+            dispatch,
+            title: 'Attendance status updated successfully',
+          })
+        })
+
+    }
+
+    return (
+      <div>
+        <DialogTitle id="alert-dialog-title">Update attendance for this student</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" className='flex flex-col gap-16'>
+            <div className='flex justify-start gap-16 rounded'>
+              <Avatar
+                alt={appointment.studentInfo.profile.fullName}
+                src={appointment.studentInfo.profile.avatarLink}
+              />
+              <div>
+                <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
+                <Typography color='text.secondary'>{appointment.studentInfo.email || 'counselor@fpt.edu.vn'}</Typography>
+              </div>
+            </div>
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="female"
+                name="radio-buttons-group"
+                value={attendanceStatus}
+                onChange={handleRadioChange}
+              >
+                <div className='flex justify-between gap-16 '>
+                  <FormControlLabel value="ATTEND" control={<Radio color='success' />} label="Attended" className='text-black' />
+                  <FormControlLabel value="ABSENT" control={<Radio color='error' />} label="Absent" className='text-black' />
+                  <Tooltip title='Clear selection'>
+                    <IconButton onClick={() => setAttendanceStatus('WAITING')}>
+                      <Clear />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              </RadioGroup>
+            </FormControl>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => dispatch(closeDialog())} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleTakeAttendance}
+            color="secondary"
+            variant='contained'
+            disabled={appointment.status === attendanceStatus || isLoading}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </div>
+    );
+  }
   return (
     <Paper
       className="flex flex-col shadow"
@@ -279,83 +357,7 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
   );
 }
 
-const CheckAttendanceDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
-  const dispatch = useAppDispatch();
-  const [attendanceStatus, setAttendanceStatus] = useState<AppointmentAttendanceStatus>((appointment.status as AppointmentAttendanceStatus) || 'WAITING');
-  const [takeAttendance] = useTakeAppointmentAttendanceMutation();
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAttendanceStatus((event.target as HTMLInputElement).value as AppointmentAttendanceStatus);
-  }
-
-  const handleTakeAttendance = () => {
-    takeAttendance({
-      appointmentId: appointment.id,
-      counselingAppointmentStatus: attendanceStatus as AppointmentAttendanceStatus
-    })
-      .unwrap()
-      .then(() => {
-        useAlertDialog({
-          dispatch,
-          title: 'Attendance status updated successfully',
-        })
-      })
-    handleCloseDialog()
-    dispatch(closeDialog());
-  }
-
-  return (
-    <div>
-      <DialogTitle id="alert-dialog-title">Update attendance for this student</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description" className='flex flex-col gap-16'>
-          <div className='flex justify-start gap-16 rounded'>
-            <Avatar
-              alt={appointment.studentInfo.profile.fullName}
-              src={appointment.studentInfo.profile.avatarLink}
-            />
-            <div>
-              <Typography className='font-semibold text-primary-main'>{appointment.studentInfo.profile.fullName}</Typography>
-              <Typography color='text.secondary'>{appointment.studentInfo.email || 'counselor@fpt.edu.vn'}</Typography>
-            </div>
-          </div>
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="female"
-              name="radio-buttons-group"
-              value={attendanceStatus}
-              onChange={handleRadioChange}
-            >
-              <div className='flex justify-between gap-16 '>
-                <FormControlLabel value="ATTEND" control={<Radio color='success' />} label="Attended" className='text-black' />
-                <FormControlLabel value="ABSENT" control={<Radio color='error' />} label="Absent" className='text-black' />
-                <Tooltip title='Clear selection'>
-                  <IconButton onClick={() => setAttendanceStatus('WAITING')}>
-                    <Clear />
-                  </IconButton>
-                </Tooltip>
-              </div>
-            </RadioGroup>
-          </FormControl>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => dispatch(closeDialog())} color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={handleTakeAttendance}
-          color="secondary"
-          variant='contained'
-          disabled={appointment.status === attendanceStatus}
-        >
-          Confirm
-        </Button>
-      </DialogActions>
-    </div>
-  );
-}
 
 const CancelAppointmentDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
   const [cancelAppointment, { isLoading }] = useCancelCounselingAppointmentCounselorMutation();

@@ -96,17 +96,21 @@ const PublicQna = () => {
           </div>
 
           <div className='space-y-16 mt-16'>
-            {!publicQnas?.length ? (
-              <Typography variant='h5' color='textSecondary' className='px-8'>
-                No Q&As found.
-              </Typography>
-            ) : (
-              publicQnas.map((publicQna) => {
-                return (
-                  <PublicQnaItem key={publicQna.id} publicQna={publicQna} />
+            {
+              isLoading
+                ? <ContentLoading className='h-md' />
+                : !publicQnas?.length ? (
+                  <Typography variant='h5' color='textSecondary' className='px-8'>
+                    No Q&As found.
+                  </Typography>
+                ) : (
+                  publicQnas.map((publicQna) => {
+                    return (
+                      <PublicQnaItem key={publicQna.id} publicQna={publicQna} />
+                    )
+                  })
                 )
-              })
-            )}
+            }
             <Pagination
               page={page}
               count={publicQnasData?.content.totalPages}

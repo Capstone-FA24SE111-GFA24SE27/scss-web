@@ -1,7 +1,8 @@
-import { ExpandableText, NavLinkAdapter, UserLabel, RenderHTML, openDialog, ExpandableContent } from '@/shared/components';
+import { ExpandableText, NavLinkAdapter, UserLabel, RenderHTML, openDialog, ExpandableContent, ItemMenu } from '@/shared/components';
 import React, { SyntheticEvent } from 'react';
 import { motion } from 'framer-motion';
 import {
+	Chat,
 	ChatBubbleOutline,
 	CheckCircleOutlineOutlined,
 	Close,
@@ -13,6 +14,7 @@ import {
 	RateReview,
 	ThumbUp,
 	ThumbUpOutlined,
+	Visibility,
 } from '@mui/icons-material';
 import {
 	Accordion,
@@ -51,12 +53,7 @@ export const StyledAccordionSummary = styled(AccordionSummary)({
 });
 
 type Props = {
-	expanded?: number | boolean;
-	toggleAccordion?: (
-		panel: number
-	) => (_: SyntheticEvent, _expanded: boolean) => void;
 	qna: Question;
-	openAnswers?: boolean;
 };
 const item = {
 	hidden: { opacity: 0, y: 20 },
@@ -64,7 +61,7 @@ const item = {
 };
 
 const QnaItem = (props: Props) => {
-	const { expanded, toggleAccordion, qna, openAnswers } = props;
+	const { qna } = props;
 
 	const { data, isLoading } = useGetMessagesQuery(qna.id, { skip: !qna || qna.closed || !qna.chatSession || qna.status !== 'VERIFIED' });
 	const chatSession = data?.content;
@@ -87,24 +84,22 @@ const QnaItem = (props: Props) => {
 		}
 	};
 
-	const handleCloseQuestion = async () => {
-		useConfirmDialog(
-			{
-				title: 'Are you sure you want to close the question?',
-				confirmButtonFunction: async () => {
-					const result = await closeQuestion(qna.id)
-					console.log('close qna', result)
-					// if(result?.data?.status === 200) {
-					useAlertDialog({
-						title: result.data.message,
-						dispatch
-					})
-					// }
-				},
-				dispatch
-			}
-		)
-	}
+	// const handleCloseQuestion = async () => {
+	// 	useConfirmDialog(
+	// 		{
+	// 			title: 'Are you sure you want to close the question?',
+	// 			confirmButtonFunction: async () => {
+	// 				const result = await closeQuestion(qna.id)
+	// 				console.log('close qna', result)
+	// 				useAlertDialog({
+	// 					title: result.data.message,
+	// 					dispatch
+	// 				})
+	// 			},
+	// 			dispatch
+	// 		}
+	// 	)
+	// }
 
 	const handleAcceptAnswer = async () => {
 		useConfirmDialog(
@@ -183,9 +178,38 @@ const QnaItem = (props: Props) => {
 						className='p-16 space-y-16'
 					>
 						<div className='flex flex-col gap-8 w-full'>
-							<Typography className='w-full pr-8 font-semibold text-lg line-clamp-2'>
-								{qna.title}
-							</Typography>
+							<div className='flex justify-between'>
+								<Typography className='w-full pr-8 font-semibold text-lg line-clamp-2'>
+									{qna.title}
+								</Typography>
+								<ItemMenu
+									className='size-24 mr-8'
+									menuItems={[
+										{
+											label: 'View details',
+											onClick: () => {
+												// if (openDetail) {
+												// 	dispatch(openDialog({
+												// 		children: <AppointmentDetail id={appointment.id.toString()} />
+												// 	}))
+												// 	return;
+												// }
+												navigate(`qna-detail/${qna.id}`)
+												// handleCloseDialog()
+											},
+											icon: <Visibility fontSize='small' />
+										},
+										{
+											label: 'View chat',
+											onClick: () => {
+												navigate(`conversations/${qna.id}`)
+											},
+											icon: <Chat fontSize='small' />,
+											disabled: !qna.chatSession
+										},
+									]}
+								/>
+							</div>
 							<Typography color='textSecondary' className=''>Created at {dayjs(qna.createdDate).format('YYYY-MM-DD HH:mm:ss')}</Typography>
 							<div className='flex gap-8'>
 								{qna.answer ? (
