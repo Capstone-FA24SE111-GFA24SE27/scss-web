@@ -112,10 +112,6 @@ function Student() {
               label="Learning Process"
             />
             <Tab
-              className="text-lg font-semibold min-h-40 min-w-64 px-16"
-              label="Counseling"
-            />
-            <Tab
               className="px-16 text-lg font-semibold min-h-40 min-w-64"
               label="Appointments"
             />
@@ -137,17 +133,14 @@ function Student() {
       content={
         <div className='w-full'>
           <div className="w-full p-16 h-fit" >
-            <Paper className='p-16 h-fit shadow'>
-              <div className="w-full pr-8">
-                {tabValue === 0 && <GeneralInformation />}
-                {tabValue === 1 && <LearningProcess />}
-                {tabValue === 2 && <CounselingProfile />}
-                {tabValue === 3 && <AppointmentsTable />}
-                {tabValue === 4 && <RequestsTable />}
-                {/* {tabValue === 5 && <ScheduleTab />} */}
-                {tabValue === 5 && <QnaTab />}
-              </div>
-            </Paper>
+            <div className="w-full pr-8">
+              {tabValue === 0 && <GeneralInformation />}
+              {tabValue === 1 && <LearningProcess />}
+              {tabValue === 2 && <AppointmentsTable />}
+              {tabValue === 3 && <RequestsTable />}
+              {/* {tabValue === 5 && <ScheduleTab />} */}
+              {tabValue === 4 && <QnaTab />}
+            </div>
           </div >
         </div>
       }

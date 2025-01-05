@@ -214,7 +214,7 @@ const QnaList = () => {
 						) : (
 							qnaList.map((qna) => {
 								return (
-									<QnaItem key={qna.id} qna={qna} expanded={expanded} openAnswers={openAnswers} toggleAccordion={toggleAccordion} />
+									<QnaItem key={qna.id} qna={qna}/>
 								)
 							})
 						)}

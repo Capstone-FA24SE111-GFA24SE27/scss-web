@@ -275,7 +275,7 @@ function QnaForm() {
 						to="../my-qna"
 						startIcon={<ArrowBack />}
 					>
-						Back to My Q&A
+						Back
 					</Button>
 				</div>
 				<div className='flex justify-between'>
@@ -289,7 +289,7 @@ function QnaForm() {
 					<Typography className='text-lg font-semibold'>
 						Open Q&A:
 					</Typography>
-					<Chip label={`${countOpenData?.content || `?`}/3`} />
+					<Chip label={`${countOpenData?.content === undefined ? `-`: countOpenData?.content}/3`} />
 					{/* <Typography className='text-lg'>{countOpenData?.content}/3</Typography> */}
 				</div>
 				<div className="mt-16">

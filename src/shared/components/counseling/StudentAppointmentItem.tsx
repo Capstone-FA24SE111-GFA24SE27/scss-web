@@ -138,7 +138,7 @@ const StudentAppointmentItem = (props: AppointmentItemProps) => {
       </div>
       {appointment.appointmentFeedback ?
         <div className='w-full px-16 pb-16'>
-          <Divider className='border' />
+          <Divider/>
           <div className='flex items-start gap-16 mt-8'>
             <Typography color='textSecondary' className='pt-2 w-60'>Feedback:</Typography>
             <div className='flex-1'>

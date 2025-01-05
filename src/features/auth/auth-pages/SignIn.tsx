@@ -37,14 +37,10 @@ function SignInPage() {
 		<div className="flex min-w-0 flex-1 flex-col items-center sm:flex-row sm:justify-center md:items-start md:justify-start">
 			<Paper className="h-full w-full px-16 py-8 ltr:border-r-1 rtl:border-l-1 sm:h-auto sm:w-auto sm:rounded-2xl sm:p-48 sm:shadow md:flex md:h-full md:w-1/2 md:items-center md:justify-end md:rounded-none md:p-64 md:shadow-none">
 				<CardContent className="mx-auto w-full max-w-320 sm:mx-0 sm:w-320">
-					<img
-						className="w-[10rem]"
-						src="assets/images/logo/FPT-education.jpeg"
-						alt="logo"
-					/>
-					<Typography className="mt-32 text-4xl font-extrabold leading-tight tracking-tight">
-						Sign in
-					</Typography>
+					<div className='flex flex-1 gap-16 items-center'>
+						<img alt='logo' src='/assets/icons/scss-icon.png' className='object-cover size-52' />
+						<Typography className='text-5xl font-serif text-secondary-main font-bold tracking-wide'>SCSS</Typography>
+					</div>
 
 					<div className="w-full">
 						<div className="mt-32 flex flex-col items-center gap-8">

@@ -114,6 +114,7 @@ const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
           <PeriodFilter
             onPeriodChange={handlePeriodChange}
             period={selectedPeriod}
+            shouldShowMonthOnly
           />
         </div>
         <Box className='flex justify-between w-full gap-16'>
@@ -183,6 +184,7 @@ const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
           <PeriodFilter
             onPeriodChange={handlePeriodChange}
             period={selectedPeriod}
+            shouldShowMonthOnly
           />
         </div>
         <Box className='flex justify-between w-full gap-16'>
@@ -253,6 +255,7 @@ const OverViewTab = ({ counselorId }: { counselorId?: string }) => {
           <PeriodFilter
             onPeriodChange={handlePeriodChange}
             period={selectedPeriod}
+            shouldShowMonthOnly
           />
         </div>
         <Box className='flex justify-between w-full gap-16'>
