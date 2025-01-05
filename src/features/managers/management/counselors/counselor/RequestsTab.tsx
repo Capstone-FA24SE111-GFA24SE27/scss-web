@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 import { meetingTypeColor, statusColor } from '@/shared/constants';
 import { AppointmentDetail } from '@/shared/pages';
 import { useAppDispatch } from '@shared/store';
+import AppointmentRequestDetail from '@/shared/pages/appointment/AppointmentRequestDetail';
 function RequestsTable() {
 
   const { id } = useParams()
@@ -123,7 +124,7 @@ function RequestsTable() {
               key={0}
               onClick={() => {
                 dispatch(openDialog({
-                  children: <AppointmentDetail id={row.original.id.toString()} />
+                  children: <AppointmentRequestDetail appointment={row.original} />
                 }))
                 closeMenu();
                 table.resetRowSelection();

@@ -1,7 +1,7 @@
 import { useGetSemestersQuery } from '@/shared/services';
 import {  Checklist, Description, EventNote, Grade } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionDetails, AccordionSummary, Box, DialogActions, DialogContent, DialogTitle, Tab, Tabs } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, DialogActions, DialogContent, DialogTitle, Paper, Tab, Tabs } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -134,7 +134,7 @@ function LearningProcess({ id, actionButton }: LearningProcessProps) {
   }
 
   return (
-    <section className='flex flex-col pl-16'>
+    <Paper className='flex flex-col p-16 shadow'>
 
       <div className="flex flex-col space-y-16">
         <div>
@@ -287,7 +287,7 @@ function LearningProcess({ id, actionButton }: LearningProcessProps) {
           </Box>
         </div>
       </div>
-    </section>
+    </Paper>
   );
 }
 

@@ -50,7 +50,7 @@ function NavbarContent(props: NavbarContentProps) {
 					{/* <img alt='logo' src='/assets/images/logo/FPT-education.jpeg' /> */}
 					<div className='flex flex-1 gap-16 items-center'>
 						<img alt='logo' src='/assets/icons/scss-icon.png' className='object-cover size-52' />
-						<Typography className='text-5xl font-serif text-secondary-main font-bold'>SCSS</Typography>
+						<Typography className='text-5xl font-serif text-secondary-main font-bold tracking-wide'>SCSS</Typography>
 					</div>
 					{/* <Typography className='text-xs truncate font-bold'>Student Counseling & Support System</Typography> */}
 				</Box>

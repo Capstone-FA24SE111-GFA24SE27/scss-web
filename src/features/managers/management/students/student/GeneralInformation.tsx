@@ -2,7 +2,7 @@ import { useGetSemestersQuery } from '@/shared/services';
 import { calculateGPA } from '@/shared/utils';
 import { Add, CakeOutlined, Checklist, Description, EmailOutlined, EventNote, Grade, LocalPhoneOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionDetails, AccordionSummary, Box, DialogActions, DialogContent, DialogTitle, Tab, Tabs } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, DialogActions, DialogContent, DialogTitle, Paper, Tab, Tabs } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -82,7 +82,7 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
   }
 
   return (
-    <section className='flex flex-col pl-16'>
+    <Paper className='flex flex-col p-16 shadow'>
       <div className="flex flex-col space-y-16">
         <div>
           <Typography className='font-semibold'>
@@ -152,11 +152,89 @@ function GeneralInformation({ id, actionButton }: GeneralInformationProps) {
             </div>
           </Box>
         </div>
+        <div>
+          <Typography className='font-semibold'>
+            Counseling information
+          </Typography>
+          <div className='flex flex-col gap-8 mt-8'>
+            <div>
+              {/* Psychological and Health Status */}
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+                  <Typography>Psychological and Health Status</Typography>
+                  <Divider />
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography><strong>Introduction:</strong> {student?.counselingProfile?.introduction || `N/A`}</Typography>
+                  <Typography><strong>Current Health Status:</strong> {student?.counselingProfile?.currentHealthStatus || `N/A`}</Typography>
+                  <Typography><strong>Psychological Status:</strong> {student?.counselingProfile?.psychologicalStatus || `N/A`}</Typography>
+                  <Typography><strong>Stress Factors:</strong> {student?.counselingProfile?.stressFactors || `N/A`}</Typography>
+                </AccordionDetails>
+              </Accordion>
 
+              {/* Academic Information */}
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+                  <Typography>Academic Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography><strong>Academic Difficulties:</strong> {student?.counselingProfile?.academicDifficulties || `N/A`}</Typography>
+                  <Typography><strong>Study Plan:</strong> {student?.counselingProfile?.studyPlan || `N/A`}</Typography>
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Career Information */}
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+                  <Typography>Career Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography><strong>Career Goals:</strong> {student?.counselingProfile?.careerGoals || `N/A`}</Typography>
+                  <Typography><strong>Part-Time Experience:</strong> {student?.counselingProfile?.partTimeExperience || `N/A`}</Typography>
+                  <Typography><strong>Internship Program:</strong> {student?.counselingProfile?.internshipProgram || `N/A`}</Typography>
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Activities and Lifestyle */}
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+                  <Typography>Activities and Lifestyle</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography><strong>Extracurricular Activities:</strong> {student?.counselingProfile?.extracurricularActivities || `N/A`}</Typography>
+                  <Typography><strong>Personal Interests:</strong> {student?.counselingProfile?.personalInterests || `N/A`}</Typography>
+                  <Typography><strong>Social Relationships:</strong> {student?.counselingProfile?.socialRelationships || `N/A`}</Typography>
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Financial Support */}
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+                  <Typography>Financial Support</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography><strong>Financial Situation:</strong> {student?.counselingProfile?.financialSituation || `N/A`}</Typography>
+                  <Typography><strong>Financial Support:</strong> {student?.counselingProfile?.financialSupport || `N/A`}</Typography>
+                </AccordionDetails>
+              </Accordion>
+
+              {/* Counseling Requests */}
+              <Accordion className="-ml-8 p-0 shadow-0" defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+                  <Typography>Counseling Requests</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography><strong>Desired Counseling Fields:</strong> {student?.counselingProfile?.desiredCounselingFields || `N/A`}</Typography>
+                </AccordionDetails>
+              </Accordion>
+            </div>
+          </div>
+
+        </div>
       </div>
 
 
-    </section>
+    </Paper>
   );
 }
 

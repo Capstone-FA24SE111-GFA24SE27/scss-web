@@ -4,10 +4,12 @@ import React, { useState } from 'react'
 type PeriodFilterProps = {
   period: string,
   onPeriodChange: (event: SelectChangeEvent) => void;
+  shouldShowMonthOnly?: boolean;
 }
 const PeriodFilter = ({
   period,
-  onPeriodChange
+  onPeriodChange,
+  shouldShowMonthOnly
 }: PeriodFilterProps) => {
   return (
     <Select
@@ -17,8 +19,8 @@ const PeriodFilter = ({
       value={period}
     >
       <MenuItem value="month">This month</MenuItem>
-      <MenuItem value="week">Last 7 days</MenuItem>
-      <MenuItem value="day">Today</MenuItem>
+      {!shouldShowMonthOnly && <MenuItem value="week">Last 7 days</MenuItem>}
+      {!shouldShowMonthOnly && <MenuItem value="day">Today</MenuItem>}
     </Select>
   )
 }

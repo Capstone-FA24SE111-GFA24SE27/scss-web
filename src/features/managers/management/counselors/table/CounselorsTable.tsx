@@ -47,7 +47,6 @@ function CounselorsTable({ type }: { type: CounselingType }) {
     ratingTo,
     gender
   })
-  console.log(data)
 
   const columns = useMemo<MRT_ColumnDef<ManagementCounselor>[]>(() => [
     {

@@ -15,6 +15,7 @@ import { meetingTypeColor, statusColor } from '@/shared/constants';
 import { useGetStudentAppointmentRequestsManagementQuery } from '../students-api';
 import { AppointmentDetail } from '@/shared/pages';
 import { useAppDispatch } from '@shared/store';
+import AppointmentRequestDetail from '@/shared/pages/appointment/AppointmentRequestDetail';
 function RequestsTab() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -116,7 +117,7 @@ function RequestsTab() {
               key={0}
               onClick={() => {
                 dispatch(openDialog({
-                  children: <AppointmentDetail id={row.original.id.toString()} />
+                  children: <AppointmentRequestDetail appointment={row.original} />
                 }))
                 closeMenu();
                 table.resetRowSelection();
