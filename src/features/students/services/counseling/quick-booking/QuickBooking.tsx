@@ -385,6 +385,7 @@ function QuickBooking() {
 
   const { data: countOpenAppointment } = useCountOpenAppointmentsQuery(account.profile.id)
   const { data: countOpenRequest } = useCountOpenRequestsQuery(account.profile.id)
+  const reachingPendingAppointmentsLimit = (countOpenAppointment?.content || 0) >= 3 || ((countOpenRequest?.content || 0) >= 3)
 
   useEffect(() => {
     if (randomMatchedCounselor) {
@@ -1122,7 +1123,7 @@ function QuickBooking() {
                     variant='contained'
                     color='secondary'
                     size='large'
-                    disabled={!isValid || isBookingCounselor || !formData.reason || !formData.date || !formData.slotCode || formData.isOnline === undefined}
+                    disabled={!isValid || isBookingCounselor || !formData.reason || !formData.date || !formData.slotCode || formData.isOnline === undefined || reachingPendingAppointmentsLimit}
                     onClick={handleSubmit(onSubmitBooking)}>
                     Confirm booking
                   </Button>

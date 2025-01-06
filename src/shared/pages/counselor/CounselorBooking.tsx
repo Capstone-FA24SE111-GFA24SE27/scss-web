@@ -84,6 +84,8 @@ function CounselorBooking() {
   const { data: countOpenAppointment } = useCountOpenAppointmentsQuery(account.profile.id)
   const { data: countOpenRequest } = useCountOpenRequestsQuery(account.profile.id)
 
+  const reachingPendingAppointmentsLimit = (countOpenAppointment?.content || 0) >= 3 || ((countOpenRequest?.content || 0) >= 3)
+
   const onSubmit = () => {
     useConfirmDialog({
       dispatch,
@@ -368,26 +370,17 @@ function CounselorBooking() {
               )}
             />
           </div>
-          <div className='flex gap-32'>
-            <div className='flex gap-8 items-center'>
-              <Typography className='text-lg font-semibold'>
-                Pending  Requests:
-              </Typography>
-              <Chip label={`${countOpenRequest?.content === undefined ? `-` : countOpenRequest?.content}/3`} />
-            </div>
-            <div className='flex gap-8 items-center'>
-              <Typography className='text-lg font-semibold'>
-                Waiting Appointments:
-              </Typography>
-              <Chip label={`${countOpenAppointment?.content === undefined ? `-` : countOpenAppointment?.content}/3`} />
-            </div>
+          <div className='flex px-32 mt-24'>
+            {reachingPendingAppointmentsLimit && <Typography color='error' className='font-semibold'>
+              You have reached the limit of pending appointments, please wait for others to be resolved.
+            </Typography>}
           </div>
           <div className='flex justify-center px-32 mt-24'>
             <Button
               variant='contained'
               color='secondary'
               className='w-full'
-              disabled={isLoading || isBookingCounselor}
+              disabled={isLoading || isBookingCounselor || reachingPendingAppointmentsLimit}
               // disabled={ !isValid || isLoading || isBookingCounselor}
               onClick={handleSubmit(onSubmit)}>
               Confirm booking
