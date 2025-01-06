@@ -36,7 +36,7 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
   const CheckAttendanceDialog = ({ appointment, handleCloseDialog = () => { } }: AppointmentPropsItem) => {
     const dispatch = useAppDispatch();
     const [attendanceStatus, setAttendanceStatus] = useState<AppointmentAttendanceStatus>((appointment.status as AppointmentAttendanceStatus) || 'WAITING');
-    const [takeAttendance, {isLoading}] = useTakeAppointmentAttendanceMutation();
+    const [takeAttendance, { isLoading }] = useTakeAppointmentAttendanceMutation();
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setAttendanceStatus((event.target as HTMLInputElement).value as AppointmentAttendanceStatus);
@@ -290,29 +290,28 @@ const CounselorAppointmentItem = (props: AppointmentPropsItem) => {
 
           <div className='pl-4 mt-8'>
             {
-              // ['ATTEND', 'ABSENT'].includes(appointment.status) && (
-
-              // )
-              <div className='flex gap-4'>
-                <div className='flex items-center'>
-                  <Typography className={'w-[9rem]'} color='textSecondary'>Attendance:</Typography>
-                  <Typography className='pl-4 font-semibold' color={statusColor[appointment.status]}>
-                    {appointment.status}
-                  </Typography>
+              ['ATTEND', 'ABSENT', 'WAITING'].includes(appointment.status) && (
+                <div className='flex gap-4'>
+                  <div className='flex items-center'>
+                    <Typography className={'w-[9rem]'} color='textSecondary'>Attendance:</Typography>
+                    <Typography className='pl-4 font-semibold' color={statusColor[appointment.status]}>
+                      {appointment.status}
+                    </Typography>
+                  </div>
+                  <Tooltip title={'Update attendance'}>
+                    <IconButton
+                      color='secondary'
+                      onClick={() => dispatch(
+                        openDialog({
+                          children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
+                        })
+                      )}
+                    >
+                      <EditNote fontSize='medium' />
+                    </IconButton>
+                  </Tooltip>
                 </div>
-                <Tooltip title={'Update attendance'}>
-                  <IconButton
-                    color='secondary'
-                    onClick={() => dispatch(
-                      openDialog({
-                        children: <CheckAttendanceDialog appointment={appointment} handleCloseDialog={handleCloseDialog} />
-                      })
-                    )}
-                  >
-                    <EditNote fontSize='medium' />
-                  </IconButton>
-                </Tooltip>
-              </div>
+              )
             }
             {
               appointment.appointmentFeedback && (
@@ -371,6 +370,11 @@ const CancelAppointmentDialog = ({ appointment, handleCloseDialog = () => { } }:
       .then(() => {
         dispatch(closeDialog())
         handleCloseDialog()
+        useAlertDialog({
+          dispatch,
+          title: 'Appointment cancelled',
+        })
+
       })
 
   }

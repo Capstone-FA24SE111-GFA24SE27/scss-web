@@ -15,7 +15,7 @@ import { useEffect, useState, MouseEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { useBookCounselorMutation, useGetCounselorDailySlotsQuery, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCounselorReasonMeaningMutation, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
+import { useBookCounselorMutation, useCountOpenAppointmentsQuery, useCountOpenRequestsQuery, useGetCounselorDailySlotsQuery, useGetCounselorSlotsQuery, useGetCounselorSpecializationsQuery, useGetRandomMatchedCounselorReasonMeaningMutation, useGetRandomMatchedCousenlorAcademicMutation, useGetRandomMatchedCousenlorMutation, useGetRandomMatchedCousenlorNonAcademicMutation } from '../counseling-api';
 import { counselingTypeDescription, firstDayOfMonth, lastDayOfMonth } from '@/shared/constants';
 import { useGetCounselorExpertisesQuery, useGetDepartmentsQuery, useGetMajorsByDepartmentQuery, useGetSpecializationsByMajorQuery } from '@/shared/services';
 import { useConfirmDialog } from '@/shared/hooks';
@@ -383,7 +383,9 @@ function QuickBooking() {
       skip: !counselorId,
     });
 
-  console.log(counserDailySlotsData)
+  const { data: countOpenAppointment } = useCountOpenAppointmentsQuery(account.profile.id)
+  const { data: countOpenRequest } = useCountOpenRequestsQuery(account.profile.id)
+  const reachingPendingAppointmentsLimit = (countOpenAppointment?.content || 0) >= 3 || ((countOpenRequest?.content || 0) >= 3)
 
   useEffect(() => {
     if (randomMatchedCounselor) {
@@ -1121,7 +1123,7 @@ function QuickBooking() {
                     variant='contained'
                     color='secondary'
                     size='large'
-                    disabled={!isValid || isBookingCounselor || !formData.reason || !formData.date || !formData.slotCode || formData.isOnline === undefined}
+                    disabled={!isValid || isBookingCounselor || !formData.reason || !formData.date || !formData.slotCode || formData.isOnline === undefined || reachingPendingAppointmentsLimit}
                     onClick={handleSubmit(onSubmitBooking)}>
                     Confirm booking
                   </Button>

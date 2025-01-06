@@ -173,6 +173,20 @@ export const counselingApi = api
           url: `/api/counselors/random/match/reason/meaning/${studentId}?reason=${reason}`,
         }),
       }),
+      countOpenRequests: build.query<ApiResponse<number>, number>({
+        query: (studentId) => ({
+          url: `/api/booking-counseling/request/count-open/${studentId}`,
+          method: 'GET',
+        }),
+        providesTags: ['appointments']
+      }),
+      countOpenAppointments: build.query<ApiResponse<number>, number>({
+        query: (studentId) => ({
+          url: `/api/booking-counseling/appointment/count-open/${studentId}`,
+          method: 'GET',
+        }),
+        providesTags: ['appointments']
+      }),
     })
   })
 
@@ -190,7 +204,9 @@ export const {
   useGetRandomMatchedCousenlorAcademicMutation,
   useGetRandomMatchedCousenlorNonAcademicMutation,
   useGetRandomMatchedCounselorReasonMeaningMutation,
-  useGetRandomMatchedCousenlorMutation
+  useGetRandomMatchedCousenlorMutation,
+  useCountOpenRequestsQuery,
+  useCountOpenAppointmentsQuery,
 } = counselingApi
 
 

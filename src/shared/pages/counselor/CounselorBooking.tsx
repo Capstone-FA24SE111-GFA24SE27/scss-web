@@ -14,8 +14,8 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { AppointmentRequest, useBookCounselorMutation, useGetCounselorDailySlotsQuery, useGetCounselorQuery } from '@features/students/services/counseling/counseling-api';
-import { getApiErrorMessage, useAppDispatch } from '@shared/store';
+import { AppointmentRequest, useBookCounselorMutation, useCountOpenAppointmentsQuery, useCountOpenRequestsQuery, useGetCounselorDailySlotsQuery, useGetCounselorQuery } from '@features/students/services/counseling/counseling-api';
+import { getApiErrorMessage, selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
 
@@ -80,8 +80,11 @@ function CounselorBooking() {
 
   const navigate = useNavigate()
 
+  const account = useAppSelector(selectAccount)
+  const { data: countOpenAppointment } = useCountOpenAppointmentsQuery(account.profile.id)
+  const { data: countOpenRequest } = useCountOpenRequestsQuery(account.profile.id)
 
-
+  const reachingPendingAppointmentsLimit = (countOpenAppointment?.content || 0) >= 3 || ((countOpenRequest?.content || 0) >= 3)
 
   const onSubmit = () => {
     useConfirmDialog({
@@ -239,7 +242,7 @@ function CounselorBooking() {
                   className="mb-12 mr-12"
                   size="medium"
                 /> */}
-                
+
             </div>
           </div>
 
@@ -367,13 +370,17 @@ function CounselorBooking() {
               )}
             />
           </div>
-
+          <div className='flex px-32 mt-24'>
+            {reachingPendingAppointmentsLimit && <Typography color='error' className='font-semibold'>
+              You have reached the limit of pending appointments, please wait for others to be resolved.
+            </Typography>}
+          </div>
           <div className='flex justify-center px-32 mt-24'>
             <Button
               variant='contained'
               color='secondary'
               className='w-full'
-              disabled={isLoading || isBookingCounselor}
+              disabled={isLoading || isBookingCounselor || reachingPendingAppointmentsLimit}
               // disabled={ !isValid || isLoading || isBookingCounselor}
               onClick={handleSubmit(onSubmit)}>
               Confirm booking

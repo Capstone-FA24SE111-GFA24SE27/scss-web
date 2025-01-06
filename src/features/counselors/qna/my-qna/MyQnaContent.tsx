@@ -94,8 +94,18 @@ const MyQnaContent = () => {
 	const qnaList = qnaData?.content?.data || [];
 
 
-	const pendingQuestions = qnaList.filter(item => !item.answer)
-	const completedQuestion = qnaList.filter(item => item.answer)
+	let pendingQuestions = []
+	let completedQuestion = []
+	// const pendingQuestions = qnaList.filter(item => !item.answer)
+	// const completedQuestion = qnaList.filter(item => item.answer)
+
+	qnaList.forEach(item => {
+		if(item => item.answer) {
+			completedQuestion.push(item)
+		} else {
+			pendingQuestions.push(item)
+		}
+	})
 
 	const [refreshQna] = useRefreshQnaCounselorMutation();
 

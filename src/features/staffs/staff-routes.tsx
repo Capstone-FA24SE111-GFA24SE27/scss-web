@@ -4,7 +4,6 @@ import { specialRoutes } from '@shared/configs';
 import { staffDemandRoutes } from './demands';
 import { staffStudentRoutes } from './students';
 import { profileRoutes, settingsRoutes } from '@/shared/pages';
-import { qnaStaffRoutes } from './qna';
 import { homeRoutes } from './home';
 
 const StaffLayout = lazy(() => import('./staff-layout'));

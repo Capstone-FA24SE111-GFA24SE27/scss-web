@@ -31,7 +31,7 @@ const QnaFlagForm = (props: Props) => {
 	const { id } = props;
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const [flagQuestion] = usePostFlagQuestionStatusMutation();
+	const [flagQuestion, {isLoading}] = usePostFlagQuestionStatusMutation();
 
 	const {
 		handleSubmit,
@@ -60,7 +60,7 @@ const QnaFlagForm = (props: Props) => {
 	};
 
 	return (
-		<div className='min-w-320'>
+		<div className='min-sm'>
 			<DialogTitle id='alert-dialog-title'>Reason for flag?</DialogTitle>
 			<DialogContent>
 
@@ -96,7 +96,7 @@ const QnaFlagForm = (props: Props) => {
 							color='secondary'
 							variant='contained'
 							type='submit'
-							disabled={watch('reason').length <= 0}
+							disabled={watch('reason').length <= 0 || isLoading}
 						>
 							Submit
 						</Button>

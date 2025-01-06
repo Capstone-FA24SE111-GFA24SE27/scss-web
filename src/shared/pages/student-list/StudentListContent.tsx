@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider';
 import { AppLoading, ContentLoading, ListSkeleton, Pagination } from '@shared/components';
 import { useAppSelector } from '@shared/store';
 import StudentListItem from './StudentListItem';
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import {
 	useGetStudentsFilterQuery,
 } from './student-list-api';
@@ -66,6 +66,30 @@ function StudentListContent() {
 		toForAttendancePercentage,
 		minSubjectForAttendance
 	});
+
+	useEffect(() => {
+		setPage(1)
+	}, [
+		searchTerm,
+		isUsingPrompt,
+		promptForBehavior,
+		semesterIdForBehavior,
+		departmentId,
+		majorId,
+		specializationId,
+		minGPA,
+		maxGPA,
+		semesterIdForGPA,
+		tab,
+		behaviorList,
+		typeOfAttendanceFilter,
+		semesterIdForAttendance,
+		fromForAttendanceCount,
+		toForAttendanceCount,
+		fromForAttendancePercentage,
+		toForAttendancePercentage,
+		minSubjectForAttendance
+	]);
 
 	const students = data?.data;
 	return (
