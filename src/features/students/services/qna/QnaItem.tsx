@@ -319,7 +319,7 @@ const QnaItem = (props: Props) => {
 													<Typography
 														className='text-text-secondary'
 													>
-														Flagged reason:
+														{qna.status === `REJECTED` ? `Reject` : `Flag`} reason:
 													</Typography>
 													<Typography
 														className='font-semibold'

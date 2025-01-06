@@ -54,30 +54,7 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
     dispatch(setSearchTerm(searchTerm));
   };
 
-  const handleSearchMinGPA = (searchTerm: string) => {
-    const minGPA = Number(searchTerm);
-    console.log(minGPA)
-
-    if (minGPA > 0 && minGPA <= 10) {
-      const maxGPA = Number(filter.maxGPA);
-
-      if (minGPA <= maxGPA || isNaN(maxGPA)) {
-        dispatch(setMinGPA(minGPA));
-      }
-    }
-  };
-
-  const handleSearchMaxGPA = (searchTerm: string) => {
-    const maxGPA = Number(searchTerm);
-
-    if (maxGPA > 0 && maxGPA <= 10) {
-      const minGPA = Number(filter.minGPA);
-
-      if (maxGPA >= minGPA || isNaN(minGPA)) {
-        dispatch(setMaxGPA(maxGPA));
-      }
-    }
-  };
+  
 
   const handleSelectSemester = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setSemesterIdForGPA(Number(event.target.value)));
@@ -104,7 +81,6 @@ const CounselorListSidebarContent = ({ shouldShowToggleButton = true }: { should
   };
 
   const handleMinSubjectForAttendanceChange = (value: string) => {
-    console.log(`🌹`, value, Number(value))
     if (Number(value) < 0 || Number(value) > 30) {
       return
     }

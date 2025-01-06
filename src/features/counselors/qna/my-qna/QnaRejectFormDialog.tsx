@@ -31,7 +31,7 @@ const QnaRejectForm = (props: Props) => {
 	const { id } = props;
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const [reviewQuestion] = usePostReviewQuestionStatusMutation();
+	const [reviewQuestion, {isLoading}] = usePostReviewQuestionStatusMutation();
 
 
 
@@ -48,6 +48,11 @@ const QnaRejectForm = (props: Props) => {
 	});
 
 	const handleSubmitForm = (data: FormValues) => {
+		console.log({
+			id: id,
+			status: 'REJECTED',
+			reviewReason: data.reason,
+		})
 		reviewQuestion({
 			id: id,
 			status: 'REJECTED',
@@ -64,7 +69,7 @@ const QnaRejectForm = (props: Props) => {
 	}
 
 	return (
-		<div className='min-w-320'>
+		<div className='w-sm'>
 			<DialogTitle id='alert-dialog-title'>Reason for rejecting question?</DialogTitle>
 			<DialogContent>
 
@@ -100,7 +105,7 @@ const QnaRejectForm = (props: Props) => {
 							color='secondary'
 							variant='contained'
 							type='submit'
-							disabled={watch('reason').length <= 0}
+							disabled={watch('reason').length <= 0 || isLoading}
 						>
 							Submit
 						</Button>

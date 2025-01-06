@@ -88,3 +88,8 @@ export const validateMeetingUrl = (url: string): string | boolean => {
   // Return error message if the URL does not match any pattern
   return '';
 };
+
+export const validateUrl = (url: string) => {
+  const regex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+  return regex.test(url);
+};

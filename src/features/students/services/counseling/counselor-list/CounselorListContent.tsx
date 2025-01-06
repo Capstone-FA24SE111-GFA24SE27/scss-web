@@ -77,7 +77,7 @@ function CounselorListContent() {
 	};
 
 	return (
-		<div className='overflow-hidden flex-1'>
+		<div className='overflow-hidden flex-1  my-8'>
 			<div className='flex-1 overflow-auto'>
 				<motion.div
 					initial={{ y: 20, opacity: 0 }}

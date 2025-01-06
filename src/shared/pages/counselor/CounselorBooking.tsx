@@ -14,8 +14,8 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import { AppointmentRequest, useBookCounselorMutation, useGetCounselorDailySlotsQuery, useGetCounselorQuery } from '@features/students/services/counseling/counseling-api';
-import { getApiErrorMessage, useAppDispatch } from '@shared/store';
+import { AppointmentRequest, useBookCounselorMutation, useCountOpenAppointmentsQuery, useCountOpenRequestsQuery, useGetCounselorDailySlotsQuery, useGetCounselorQuery } from '@features/students/services/counseling/counseling-api';
+import { getApiErrorMessage, selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog } from '@/shared/hooks';
 import { useConfirmDialog } from '@/shared/hooks';
 
@@ -80,8 +80,9 @@ function CounselorBooking() {
 
   const navigate = useNavigate()
 
-
-
+  const account = useAppSelector(selectAccount)
+  const { data: countOpenAppointment } = useCountOpenAppointmentsQuery(account.profile.id)
+  const { data: countOpenRequest } = useCountOpenRequestsQuery(account.profile.id)
 
   const onSubmit = () => {
     useConfirmDialog({
@@ -239,7 +240,7 @@ function CounselorBooking() {
                   className="mb-12 mr-12"
                   size="medium"
                 /> */}
-                
+
             </div>
           </div>
 
@@ -367,7 +368,20 @@ function CounselorBooking() {
               )}
             />
           </div>
-
+          <div className='flex gap-32'>
+            <div className='flex gap-8 items-center'>
+              <Typography className='text-lg font-semibold'>
+                Pending  Requests:
+              </Typography>
+              <Chip label={`${countOpenRequest?.content === undefined ? `-` : countOpenRequest?.content}/3`} />
+            </div>
+            <div className='flex gap-8 items-center'>
+              <Typography className='text-lg font-semibold'>
+                Waiting Appointments:
+              </Typography>
+              <Chip label={`${countOpenAppointment?.content === undefined ? `-` : countOpenAppointment?.content}/3`} />
+            </div>
+          </div>
           <div className='flex justify-center px-32 mt-24'>
             <Button
               variant='contained'

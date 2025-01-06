@@ -23,7 +23,9 @@ const Pagination = ({ count = 0, page = 1, handleChange, className = ``, pageSiz
             count={count}
             shape="rounded"
             color='secondary'
-            onChange={handleChange} />
+            onChange={handleChange}
+            page={page}
+          />
           : null
       }
     </div>
