@@ -122,7 +122,7 @@ function QuestionCardCategoryTable() {
 						Update
 					</MenuItem>,
 					<MenuItem
-						key={0}
+						key={1}
 						onClick={() => {
 							removeProducts([row.original.id]);
 							closeMenu();

@@ -93,8 +93,8 @@ const AcademicDataLayout = (props: Props) => {
 				<div className='flex flex-col gap-16 p-32'>
 					<div className='flex items-center justify-between '>
 						<Heading
-							title='Problem Tags Management'
-							description='Manage problem tags'
+							title='Academic Information'
+							description='View Academic Information'
 						/>
 					</div>
 					<div className='flex justify-between '>
