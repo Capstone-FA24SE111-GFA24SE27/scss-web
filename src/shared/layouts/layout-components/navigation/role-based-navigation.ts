@@ -449,7 +449,7 @@ const adminNavigation: NavigationOptions = {
 				},
 				{
 					icon: Assignment,
-					name: 'Frequently Asked Question ',
+					name: 'Frequently Asked Questions ',
 					route: 'faq',
 				},
 			],
@@ -461,7 +461,7 @@ const adminNavigation: NavigationOptions = {
 			items: [
 				{
 					icon: LocalOffer,
-					name: 'Problem Tag',
+					name: 'Problem Tags',
 					route: 'tags',
 				},
 				{

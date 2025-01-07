@@ -74,7 +74,7 @@ const steps = [
 	{
 		id: 'Step 4',
 		name: 'Relevant Skills',
-		fields: ['otherSkills', 'workHistory', 'achievements'],
+		fields: ['specializedSkills','otherSkills', 'workHistory', 'achievements'],
 	},
 	{
 		id: 'Step 5',
@@ -969,7 +969,8 @@ const CreateNonAcademicCounselorForm = () => {
 						variant='outlined'
 						color='secondary'
 						className='w-96'
-					>
+						type='button'
+						>
 						Back
 					</Button>
 					<div className='flex gap-8'>
@@ -978,7 +979,8 @@ const CreateNonAcademicCounselorForm = () => {
 								className='max-w-128'
 								variant='contained'
 								color='secondary'
-								type='submit'
+								onClick={handleSubmit(onSubmit)}
+
 								disabled={isSubmitting}
 							>
 								{isSubmitting ? (

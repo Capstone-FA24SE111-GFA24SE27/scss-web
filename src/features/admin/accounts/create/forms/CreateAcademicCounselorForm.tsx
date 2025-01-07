@@ -78,7 +78,12 @@ const steps = [
 	{
 		id: 'Step 4',
 		name: 'Relevant Skills',
-		fields: ['otherSkills', 'workHistory', 'achievements'],
+		fields: [
+			'specializedSkills',
+			'otherSkills',
+			'workHistory',
+			'achievements',
+		],
 	},
 	{
 		id: 'Step 5',
@@ -1113,6 +1118,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						variant='outlined'
 						color='secondary'
 						className='w-96'
+						type='button'
 					>
 						Back
 					</Button>
@@ -1122,7 +1128,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 								className='max-w-128'
 								variant='contained'
 								color='secondary'
-								type='submit'
+								onClick={handleSubmit(onSubmit)}
 								disabled={isSubmitting}
 							>
 								{isSubmitting ? (

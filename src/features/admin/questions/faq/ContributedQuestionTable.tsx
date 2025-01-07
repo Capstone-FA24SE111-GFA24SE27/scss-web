@@ -60,10 +60,9 @@ function ContributedQuestionTable() {
 		size: pagination.pageSize,
 		query: search,
 		status: status,
-		categoryId: category?.id,
+		categoryId: category,
 	});
 
-	console.log(data);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 

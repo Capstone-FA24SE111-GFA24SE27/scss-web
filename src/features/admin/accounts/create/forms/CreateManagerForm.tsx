@@ -460,7 +460,8 @@ const CreateManagerForm = () => {
 						variant='outlined'
 						color='secondary'
 						className='w-96'
-					>
+						type='button'
+						>
 						Back
 					</Button>
 					<div className='flex gap-8'>
@@ -469,7 +470,8 @@ const CreateManagerForm = () => {
 								className='max-w-128'
 								variant='contained'
 								color='secondary'
-								type='submit'
+								onClick={handleSubmit(onSubmit)}
+
 								disabled={isSubmitting}
 							>
 								{isSubmitting ? (
