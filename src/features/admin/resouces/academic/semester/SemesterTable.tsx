@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { CheckCircle, Delete, RemoveCircle } from '@mui/icons-material';
 import { ProblemTag, TimeSlot } from '@/shared/types/admin';
-import { useAppDispatch } from '@shared/store';
+import { useAppDispatch, useAppSelector } from '@shared/store';
 import { useAlertDialog, useConfirmDialog } from '@/shared/hooks';
 import { ContributedQuestionCategory, Department } from '@/shared/types';
 import {
@@ -17,18 +17,26 @@ import {
 	useGetSemesterAdminQuery,
 } from '../academic-data-admin-api';
 import { Semester } from '@/shared/services';
+import { selectSemesterSearchAdmin } from '../../admin-resource-slice';
 function SemestersTable() {
 	//   const [pagination, setPagination] = useState({
 	//     pageIndex: 0,
 	//     pageSize: 10,
 	//   });
 	//   console.log(pagination)
-
+	const keyword = useAppSelector(selectSemesterSearchAdmin);
 	const { data, isLoading } = useGetSemesterAdminQuery();
 	const dispatch = useAppDispatch();
+	const [tableData, setTableData] = useState([]);
 
-
-	
+	useEffect(() => {
+		if (data) {
+			const filtered = data.filter((item) =>
+				item.name.toLowerCase().includes(keyword.toLowerCase())
+			);
+			setTableData(filtered);
+		}
+	}, [data, keyword]);
 
 	const columns = useMemo<MRT_ColumnDef<Semester>[]>(
 		() => [
@@ -48,10 +56,10 @@ function SemestersTable() {
 	return (
 		<Paper className='flex flex-col flex-auto w-full h-full overflow-hidden shadow rounded-b-0'>
 			<DataTable
-				data={data ? data : []}
+				data={tableData}
 				columns={columns}
 				enablePagination={true}
-				rowCount={data?.length || 0}
+				rowCount={tableData.length || 0}
 				enableRowActions={false}
 				// renderRowActionMenuItems={({ closeMenu, row, table }) => [
 				// 	<MenuItem

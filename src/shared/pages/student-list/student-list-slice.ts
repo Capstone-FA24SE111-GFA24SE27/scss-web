@@ -52,8 +52,8 @@ const initialState: StudentListState = {
   semesterIdForAttendance: undefined, 
   fromForAttendanceCount: undefined, 
   toForAttendanceCount: undefined, 
-  fromForAttendancePercentage: undefined, 
-  toForAttendancePercentage: undefined, 
+  fromForAttendancePercentage: 0, 
+  toForAttendancePercentage: 100, 
   minSubjectForAttendance: undefined, 
 };
 
@@ -91,13 +91,13 @@ export const studentListSlice = createSlice({
     setCurrentTerm: (state, action: PayloadAction<number>) => {
       state.currentTerm = action.payload;
     },
-    setSemesterIdForGPA: (state, action: PayloadAction<number>) => {
+    setSemesterIdForGPA: (state, action: PayloadAction<number | undefined>) => {
       state.semesterIdForGPA = action.payload;
     },
-    setMinGPA: (state, action: PayloadAction<number>) => {
+    setMinGPA: (state, action: PayloadAction<number | undefined>) => {
       state.minGPA = action.payload;
     },
-    setMaxGPA: (state, action: PayloadAction<number>) => {
+    setMaxGPA: (state, action: PayloadAction<number | undefined>) => {
       state.maxGPA = action.payload;
     },
     setIsUsingPrompt: (state, action: PayloadAction<boolean>) => {

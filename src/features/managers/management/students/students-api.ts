@@ -58,12 +58,12 @@ export const studentsMangementApi = api
         }),
         invalidatesTags: ['students']
       }),
-      getCounselingSlots: build.query<GetCounselingSlotsResponse, void>({
-        query: () => ({
-          url: `/api/manage/students/counselling-slots`,
-        }),
-        providesTags: ['counselingSlots']
-      }),
+      // getCounselingSlots: build.query<GetCounselingSlotsResponse, void>({
+      //   query: () => ({
+      //     url: `/api/manage/students/counselling-slots`,
+      //   }),
+      //   providesTags: ['counselingSlots']
+      // }),
       updateStudentCounselingSlots: build.mutation<void, UpdateStudentCounselingSlotArg>({
         query: ({ studentId, slotId, dayOfWeek }) => ({
           url: `/api/manage/students/${studentId}/assign-slot?slotId=${slotId}&dayOfWeek=${dayOfWeek}`,
@@ -164,7 +164,7 @@ export const {
   useGetStudentsManagementQuery,
   useGetStudentManagementQuery,
   useUpdateStudentStatusMutation,
-  useGetCounselingSlotsQuery,
+  // useGetCounselingSlotsQuery,
   useUpdateStudentCounselingSlotsMutation,
   useDeleteStudentCounselingSlotsMutation,
   useUpdateStudentAvailableDateRangeMutation,

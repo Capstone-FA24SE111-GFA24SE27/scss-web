@@ -38,8 +38,6 @@ const CounselorQuestionsOverview = ({ counselorId }: { counselorId?: string }) =
   const groupedByWeek = groupQuestionsByWeek(questions);
   const groupedByDay = groupQuestionsByDay(questions);
 
-  console.log(`😢`, groupedByMonth)
-
   let displayGroup = {};
   switch (selectedPeriod) {
     case "month":
@@ -75,7 +73,7 @@ const CounselorQuestionsOverview = ({ counselorId }: { counselorId?: string }) =
   return (
     <Paper className="p-16 space-y-8 shadow">
       <div className="flex justify-between gap-16">
-        <Typography className="font-semibold text-2xl">Q&As Workload</Typography>
+        <Typography className="text-2xl font-semibold">Q&As Workload</Typography>
         {/* <PeriodFilter
           onPeriodChange={handlePeriodChange}
           period={selectedPeriod}
