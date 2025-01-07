@@ -158,11 +158,11 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 				<div className='p-16 space-y-16'>
 					<div className='flex flex-col gap-8'>
 						<div className='flex justify-between'>
-							<Typography className='w-full pr-8 font-semibold text-lg'>
+							<Typography className='w-full pr-8 text-lg font-semibold'>
 								{qna.title}
 							</Typography>
 							<ItemMenu
-								className='size-24 mr-8'
+								className='mr-8 size-24'
 								menuItems={[
 									{
 										label: 'View details',
@@ -189,7 +189,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 								]}
 							/>
 						</div>
-						<div className='flex gap-8 items-center'>
+						<div className='flex items-center gap-8'>
 							<UserLabel
 								profile={qna?.student?.profile}
 								label='Questioned by'
@@ -268,7 +268,7 @@ const MyQnaItem = ({ qna }: { qna: Question }) => {
 										<ExpandableContent collapsedHeight={100}>
 											{RenderHTML(qna.answer)}
 										</ExpandableContent>
-										{!qna.closed && (
+										{!qna.closed && !qna.accepted && (
 											<Button
 												color='secondary'
 												startIcon={<EditNote fontSize='large' />}
