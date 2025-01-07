@@ -285,7 +285,7 @@ function QnaForm() {
 
 				</div>
 				<Typography color='textSecondary'>Your questions will be reviwed and forwarded to our counselors.</Typography>
-				<div className='flex mt-8 gap-8 items-center'>
+				<div className='flex items-center gap-8 mt-8'>
 					<Typography className='text-lg font-semibold'>
 						Open Q&A:
 					</Typography>
@@ -311,7 +311,7 @@ function QnaForm() {
 									<TextField
 										{...field}
 										className="mt-32"
-										label="Title"
+										label="Question"
 										placeholder="Title"
 										id="Title"
 										error={!!errors.title}
@@ -488,7 +488,7 @@ function QnaForm() {
 							}
 						</div>
 
-						<div className="flex items-center justify-end mt-32 pt-24 gap-8">
+						<div className="flex items-center justify-end gap-8 pt-24 mt-32">
 							<Button onClick={() => navigate(-1)} color="primary" type='button'>
 								Cancel
 							</Button>

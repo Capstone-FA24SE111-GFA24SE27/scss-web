@@ -271,7 +271,7 @@ function CounselorQnaForm() {
                   <TextField
                     className="mt-32"
                     {...field}
-                    label="Title"
+                    label="Question"
                     placeholder="Title"
                     id="title"
                     error={!!errors.title}
@@ -302,7 +302,7 @@ function CounselorQnaForm() {
 
             </div>
 
-            <div className="flex items-center justify-end mt-32 pt-24 gap-16">
+            <div className="flex items-center justify-end gap-16 pt-24 mt-32">
               <Button onClick={() => navigate('.')} color="primary">
                 Cancel
               </Button>
