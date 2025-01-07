@@ -50,9 +50,14 @@ import ImageInput from '@/shared/components/image/ImageInput';
 const steps = [
 	{
 		id: 'Step 1',
+		name: 'Login Information',
+		fields: ['email', 'password'],
+	},
+	{
+		id: 'Step 2',
 		name: 'Account Information',
 		fields: [
-			'avatarLink',
+			'avartarLink',
 			'fullName',
 			'email',
 			'gender',
@@ -62,20 +67,24 @@ const steps = [
 		],
 	},
 	{
-		id: 'Step 2',
-		name: 'Expertise Information',
-		fields: ['expertiseId'],
+		id: 'Step 3',
+		name: 'Department Information',
+		fields: ['departmentId', 'majorId', 'specializationId'],
 	},
 	{
-		id: 'Step 3',
+		id: 'Step 4',
 		name: 'Relevant Skills',
-		fields: [
-			'otherSkills',
-			'workHistory',
-			'achievements',
-			'qualifications',
-			'certifications',
-		],
+		fields: ['otherSkills', 'workHistory', 'achievements'],
+	},
+	{
+		id: 'Step 5',
+		name: 'Qualifications',
+		fields: ['qualifications'],
+	},
+	{
+		id: 'Step 6',
+		name: 'Certifications',
+		fields: ['certifications'],
 	},
 ];
 
@@ -371,15 +380,28 @@ const CreateNonAcademicCounselorForm = () => {
 						}
 					}
 				})
-				.catch((err) => console.log('error submiting form', err))
+				.catch((err) => {
+					console.log('error submiting form', err);
+					useAlertDialog({
+						dispatch,
+						title: 'An error occur while creating account. Please check your information and submit again.',
+						color: 'error',
+					});
+				})
 				.finally();
 			setErrorMsg('');
 		} catch (err) {
 			console.error('Image upload failed:', err);
 			setErrorMsg('Error while uploading images');
+			useAlertDialog({
+				dispatch,
+				title: 'An error occur while uploading image. Please choose another image or submit the form again.',
+				color: 'error',
+			});
 			setIsSubmitting(false);
 		}
 
+		setActiveStep(0);
 		setIsSubmitting(false);
 	};
 
@@ -400,473 +422,559 @@ const CreateNonAcademicCounselorForm = () => {
 	}, [dispatch, getValues]);
 
 	return (
-			<form
-				className='w-full h-full'
-				onSubmit={handleSubmit(onSubmit)}
-				// onKeyDown={(e) => {
-				// 	if (e.key === 'Enter') {
-				// 		e.preventDefault();
-				// 		handleSubmit(onSubmit)();
-				// 	}
-				// }}
-			>
-				<div className='flex flex-col flex-1 w-full gap-32 p-32 mt-16'>
-					<Stepper
-						activeStep={activeStep}
-						alternativeLabel
-						className='flex mb-16'
-					>
-						{steps.map((item, index) => (
-							<Step key={item.id} completed={index < activeStep}>
-								<StepLabel>{item.name}</StepLabel>
-							</Step>
-						))}
-					</Stepper>
-					<div
-						className={clsx(
-							activeStep !== 0
-								? 'hidden'
-								: 'flex flex-wrap flex-1 w-full h-full gap-16'
-						)}
-					>
-						<div className='flex flex-col flex-1 gap-16 '>
-							<Typography className='text-lg font-semibold leading-tight'>
-								Enter basic account info:
-							</Typography>
-							<div className='flex-1 '>
-								<Controller
-									control={control}
-									name='fullName'
-									render={({ field }) => (
-										<TextField
-											{...field}
-											label='Full name'
-											fullWidth
-											variant='outlined'
-											error={!!errors.fullName}
-											helperText={
-												errors.fullName?.message
-											}
-										/>
-									)}
-								/>
-							</div>
-							<div className='flex-1 '>
-								<Controller
-									control={control}
-									name='phoneNumber'
-									render={({ field }) => (
-										<TextField
-											{...field}
-											label='Phone number'
-											type='tel'
-											fullWidth
-											variant='outlined'
-											error={!!errors.phoneNumber}
-											helperText={
-												errors.phoneNumber?.message
-											}
-										/>
-									)}
-								/>
-							</div>
-
-							<div className='flex-1 '>
-								<Controller
-									control={control}
-									name='dateOfBirth'
-									render={({ field }) => (
-										<DatePicker
-											className='w-full'
-											label='Date of birth'
-											value={
-												field.value
-													? dayjs(field.value)
-													: null
-											}
-											minDate={dayjs('1900-01-01')}
-											disableFuture
-											format='YYYY-MM-DD'
-											slotProps={{
-												textField: {
-													helperText:
-														errors.dateOfBirth
-															?.message,
-												},
-											}}
-											views={['year', 'month', 'day']}
-											onChange={(date) => {
-												field.onChange(
-													dayjs(date).format(
-														'YYYY-MM-DD'
-													)
-												);
-											}}
-										/>
-									)}
-								/>
-							</div>
-
-							<div className=''>
-								<Controller
-									control={control}
-									name='gender'
-									render={({ field }) => (
-										<TextField
-											{...field}
-											select
-											label='Gender'
-											variant='outlined'
-											disabled={!formData.gender}
-											fullWidth
-											error={!!errors.gender}
-											helperText={errors.gender?.message}
-										>
-											<MenuItem
-												key={'Male'}
-												value={'MALE'}
-											>
-												{'Male'}
-											</MenuItem>
-
-											<MenuItem
-												key={'Female'}
-												value={'FEMALE'}
-											>
-												{'Female'}
-											</MenuItem>
-										</TextField>
-									)}
-								/>
-							</div>
-
-							<div className='flex-1 '>
-								<Controller
-									control={control}
-									name='email'
-									render={({ field }) => (
-										<TextField
-											{...field}
-											label='Email'
-											fullWidth
-											variant='outlined'
-											error={!!errors.email}
-											helperText={errors.email?.message}
-										/>
-									)}
-								/>
-							</div>
-							<div className='flex-1 '>
-								<Controller
-									control={control}
-									name='password'
-									render={({ field }) => (
-										<TextField
-											{...field}
-											type={
-												showPassword
-													? 'text'
-													: 'password'
-											}
-											className='relative'
-											label='Password'
-											fullWidth
-											variant='outlined'
-											slotProps={{
-												input: {
-													endAdornment: (
-														<IconButton
-															onClick={
-																toggleShowPassword
-															}
-														>
-															{showPassword ? (
-																<VisibilityOff />
-															) : (
-																<Visibility />
-															)}
-														</IconButton>
-													),
-												},
-											}}
-											error={!!errors.password}
-											helperText={
-												errors.password?.message
-											}
-										/>
-									)}
-								/>
-							</div>
-
-							<div className='flex items-start flex-1 gap-8 '>
-								<Typography>Avatar: </Typography>
-								<Controller
-									control={control}
-									name='avatarLink'
-									render={({ field }) => (
-										<div className='flex-1 aspect-square max-w-256'>
-											<ImageInput
-												error={!!errors.avatarLink}
-												onFileChange={(file: File) =>
-													field.onChange(file)
-												}
-												file={field.value}
-											/>
-										</div>
-									)}
-								/>
-								{errors.avatarLink && (
-									<Typography
-										color='error'
-										className='text-sm'
-									>
-										{errors.avatarLink.message}
-									</Typography>
+		<form
+			className='w-full h-full'
+			onSubmit={handleSubmit(onSubmit)}
+			// onKeyDown={(e) => {
+			// 	if (e.key === 'Enter') {
+			// 		e.preventDefault();
+			// 		handleSubmit(onSubmit)();
+			// 	}
+			// }}
+		>
+			<div className='flex flex-col flex-1 w-full gap-32 p-32 mt-16'>
+				<Stepper
+					activeStep={activeStep}
+					alternativeLabel
+					className='flex mb-16'
+				>
+					{steps.map((item, index) => (
+						<Step key={item.id} completed={index < activeStep}>
+							<StepLabel>{item.name}</StepLabel>
+						</Step>
+					))}
+				</Stepper>
+				{errorMsg && errorMsg.trim() !== '' && (
+					<Typography color='error' className='font-semibold'>
+						{errorMsg}
+					</Typography>
+				)}
+				<div
+					className={clsx(
+						activeStep !== 0
+							? 'hidden'
+							: 'flex flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
+					<div className='flex flex-col flex-1 gap-16 '>
+						<Typography className='text-lg font-semibold leading-tight'>
+							Enter login information:
+						</Typography>
+						<div className='flex-1 '>
+							<Controller
+								control={control}
+								name='email'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Email'
+										fullWidth
+										variant='outlined'
+										error={!!errors.email}
+										helperText={errors.email?.message}
+									/>
 								)}
-							</div>
+							/>
+						</div>
+						<div className='flex-1 '>
+							<Controller
+								control={control}
+								name='password'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										type={
+											showPassword ? 'text' : 'password'
+										}
+										className='relative'
+										label='Password'
+										fullWidth
+										variant='outlined'
+										slotProps={{
+											input: {
+												endAdornment: (
+													<IconButton
+														onClick={
+															toggleShowPassword
+														}
+													>
+														{showPassword ? (
+															<VisibilityOff />
+														) : (
+															<Visibility />
+														)}
+													</IconButton>
+												),
+											},
+										}}
+										error={!!errors.password}
+										helperText={errors.password?.message}
+									/>
+								)}
+							/>
 						</div>
 					</div>
-
-					<div
-						className={clsx(
-							activeStep !== 1
-								? 'hidden'
-								: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 '
-						)}
-					>
+				</div>
+				<div
+					className={clsx(
+						activeStep !== 1
+							? 'hidden'
+							: 'flex flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
+					<div className='flex flex-col flex-1 gap-16 '>
 						<Typography className='text-lg font-semibold leading-tight'>
-							Select counselor's info:
+							Enter basic account information:
+						</Typography>
+						<div className='flex-1 '>
+							<Controller
+								control={control}
+								name='fullName'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Full name'
+										fullWidth
+										variant='outlined'
+										error={!!errors.fullName}
+										helperText={errors.fullName?.message}
+									/>
+								)}
+							/>
+						</div>
+						<div className='flex-1 '>
+							<Controller
+								control={control}
+								name='phoneNumber'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Phone number'
+										type='tel'
+										fullWidth
+										variant='outlined'
+										error={!!errors.phoneNumber}
+										helperText={errors.phoneNumber?.message}
+									/>
+								)}
+							/>
+						</div>
+
+						<div className='flex-1 '>
+							<Controller
+								control={control}
+								name='dateOfBirth'
+								render={({ field }) => (
+									<DatePicker
+										className='w-full'
+										label='Date of birth'
+										value={
+											field.value
+												? dayjs(field.value)
+												: null
+										}
+										minDate={dayjs('1900-01-01')}
+										disableFuture
+										format='YYYY-MM-DD'
+										slotProps={{
+											textField: {
+												helperText:
+													errors.dateOfBirth?.message,
+											},
+										}}
+										views={['year', 'month', 'day']}
+										onChange={(date) => {
+											field.onChange(
+												dayjs(date).format('YYYY-MM-DD')
+											);
+										}}
+									/>
+								)}
+							/>
+						</div>
+
+						<div className=''>
+							<Controller
+								control={control}
+								name='gender'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										select
+										label='Gender'
+										variant='outlined'
+										disabled={!formData.gender}
+										fullWidth
+										error={!!errors.gender}
+										helperText={errors.gender?.message}
+									>
+										<MenuItem key={'Male'} value={'MALE'}>
+											{'Male'}
+										</MenuItem>
+
+										<MenuItem
+											key={'Female'}
+											value={'FEMALE'}
+										>
+											{'Female'}
+										</MenuItem>
+									</TextField>
+								)}
+							/>
+						</div>
+					</div>
+					<div className='flex items-start flex-1 gap-8 '>
+						<Typography className='font-semibold'>
+							Upload account's avatar:{' '}
 						</Typography>
 						<Controller
 							control={control}
-							name='expertiseId'
+							name='avatarLink'
+							render={({ field }) => (
+								<div className='flex-1 aspect-square max-w-256'>
+									<ImageInput
+										error={!!errors.avatarLink}
+										onFileChange={(file: File) =>
+											field.onChange(file)
+										}
+										file={field.value}
+									/>
+								</div>
+							)}
+						/>
+						{errors.avatarLink && (
+							<Typography color='error' className='text-sm'>
+								{errors.avatarLink.message}
+							</Typography>
+						)}
+					</div>
+				</div>
+
+				<div
+					className={clsx(
+						activeStep !== 2
+							? 'hidden'
+							: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 '
+					)}
+				>
+					<Typography className='text-lg font-semibold leading-tight'>
+						Select counselor's info:
+					</Typography>
+					<Controller
+						control={control}
+						name='expertiseId'
+						render={({ field }) => (
+							<TextField
+								value={field.value ? field.value : ''}
+								select
+								type='number'
+								label='Expertise'
+								onChange={handleExpertiseChange}
+								variant='outlined'
+								disabled={isExpertiseLoading}
+								fullWidth
+								error={!!errors.expertiseId}
+								helperText={errors.expertiseId?.message}
+							>
+								{isExpertiseLoading ? (
+									<MenuItem disabled>
+										<CircularProgress size={24} />
+									</MenuItem>
+								) : (
+									expertises?.map((expertise) => (
+										<MenuItem
+											key={expertise.id}
+											value={expertise.id}
+										>
+											{expertise.name}
+										</MenuItem>
+									))
+								)}
+								{field.value && (
+									<ClearMenuItem
+										key='clear-department'
+										value={0}
+									>
+										Clear
+									</ClearMenuItem>
+								)}
+							</TextField>
+						)}
+					/>
+				</div>
+
+				<div
+					className={clsx(
+						activeStep !== 3
+							? 'hidden'
+							: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
+					<Typography className='text-lg font-semibold leading-tight'>
+						Enter counselor's additional informations:
+					</Typography>
+					<div className='flex-1 '>
+						<Controller
+							control={control}
+							name='specializedSkills'
 							render={({ field }) => (
 								<TextField
-									value={field.value ? field.value : ''}
-									select
-									type='number'
-									label='Expertise'
-									onChange={handleExpertiseChange}
-									variant='outlined'
-									disabled={isExpertiseLoading}
+									{...field}
+									label='Specialized Skills'
 									fullWidth
-									error={!!errors.expertiseId}
-									helperText={errors.expertiseId?.message}
-								>
-									{isExpertiseLoading ? (
-										<MenuItem disabled>
-											<CircularProgress size={24} />
-										</MenuItem>
-									) : (
-										expertises?.map((expertise) => (
-											<MenuItem
-												key={expertise.id}
-												value={expertise.id}
-											>
-												{expertise.name}
-											</MenuItem>
-										))
-									)}
-									{field.value && (
-										<ClearMenuItem
-											key='clear-department'
-											value={0}
-										>
-											Clear
-										</ClearMenuItem>
-									)}
-								</TextField>
+									multiline
+									variant='outlined'
+									error={!!errors.specializedSkills}
+									helperText={
+										errors.specializedSkills?.message
+									}
+								/>
+							)}
+						/>
+					</div>
+					<div className='flex-1 '>
+						<Controller
+							control={control}
+							name='otherSkills'
+							render={({ field }) => (
+								<TextField
+									{...field}
+									label='Other Skills'
+									multiline
+									fullWidth
+									variant='outlined'
+									error={!!errors.otherSkills}
+									helperText={errors.otherSkills?.message}
+								/>
 							)}
 						/>
 					</div>
 
-					<div
-						className={clsx(
-							activeStep !== 2
-								? 'hidden'
-								: 'flex flex-col flex-1 w-full h-full gap-16'
-						)}
-					>
-						<Typography className='text-lg font-semibold leading-tight'>
-							Enter counselor's additional informations:
-						</Typography>
-						<div className='flex-1 '>
-							<Controller
-								control={control}
-								name='specializedSkills'
-								render={({ field }) => (
-									<TextField
-										{...field}
-										label='Specialized Skills'
-										multiline
-										fullWidth
-										variant='outlined'
-										error={!!errors.specializedSkills}
-										helperText={
-											errors.specializedSkills?.message
-										}
-									/>
-								)}
-							/>
-						</div>
-
-						<div className='flex-1 '>
-							<Controller
-								control={control}
-								name='otherSkills'
-								render={({ field }) => (
-									<TextField
-										{...field}
-										label='Other Skills'
-										multiline
-										fullWidth
-										variant='outlined'
-										error={!!errors.otherSkills}
-										helperText={errors.otherSkills?.message}
-									/>
-								)}
-							/>
-						</div>
-
-						<div className='flex-1 '>
-							<Controller
-								control={control}
-								name='achievements'
-								render={({ field }) => (
-									<TextField
-										{...field}
-										label='Achievements'
-										multiline
-										fullWidth
-										variant='outlined'
-										error={!!errors.achievements}
-										helperText={
-											errors.achievements?.message
-										}
-									/>
-								)}
-							/>
-						</div>
-
-						<div className='flex-1 '>
-							<Controller
-								control={control}
-								name='workHistory'
-								render={({ field }) => (
-									<TextField
-										{...field}
-										label='Work History'
-										multiline
-										fullWidth
-										variant='outlined'
-										error={!!errors.workHistory}
-										helperText={errors.workHistory?.message}
-									/>
-								)}
-							/>
-						</div>
-
-						<div className='flex flex-col flex-1 gap-16 '>
-							<div className='flex flex-wrap items-center gap-8'>
-								<Typography className='font-semibold'>
-									Certifications:{' '}
-								</Typography>
-								{certificationFields.map(
-									(certification, index) => (
-										<div className='flex flex-wrap items-center space-y-8'>
-											<Chip
-												variant='filled'
-												label={certification.name}
-												key={certification.id}
-												onClick={() =>
-													handleUpdateCertification(
-														certification,
-														index
-													)
-												}
-												onDelete={() => {
-													removeCertificationField(
-														index
-													);
-												}}
-												className='gap-8 mx-8 font-semibold w-fit'
-											/>
-										</div>
-									)
-								)}
-							</div>
-
-							<Button
-								variant='outlined'
-								color='primary'
-								onClick={handleOpenCertificationAppendDialog}
-							>
-								<Add />
-								Add Certification
-							</Button>
-						</div>
-
-						<div className='flex flex-col flex-1 gap-16 '>
-							<div className='flex flex-wrap items-center space-y-8'>
-								<Typography className='font-semibold'>
-									Qualifications:{' '}
-								</Typography>
-
-								{qualificationsFields.map(
-									(qualification, index) => (
-										<div className='flex items-center'>
-											<Chip
-												variant='filled'
-												label={qualification.degree}
-												key={qualification.id}
-												onClick={() =>
-													handleUpdateQualification(
-														qualification,
-														index
-													)
-												}
-												onDelete={() => {
-													removeQualificationField(
-														index
-													);
-												}}
-												className='gap-8 mx-8 font-semibold w-fit'
-											/>
-										</div>
-									)
-								)}
-							</div>
-
-							<Button
-								variant='outlined'
-								color='primary'
-								onClick={handleOpenQualificationAppendDialog}
-							>
-								<Add />
-								Add Qualification
-							</Button>
-						</div>
+					<div className='flex-1 '>
+						<Controller
+							control={control}
+							name='achievements'
+							render={({ field }) => (
+								<TextField
+									{...field}
+									label='Achievements'
+									multiline
+									fullWidth
+									variant='outlined'
+									error={!!errors.achievements}
+									helperText={errors.achievements?.message}
+								/>
+							)}
+						/>
 					</div>
 
-					{errorMsg && errorMsg.trim() !== '' && (
-						<Typography color='error' className='font-semibold'>
-							{errorMsg}
-						</Typography>
-					)}
+					<div className='flex-1 '>
+						<Controller
+							control={control}
+							name='workHistory'
+							render={({ field }) => (
+								<TextField
+									{...field}
+									label='Work History'
+									multiline
+									fullWidth
+									variant='outlined'
+									error={!!errors.workHistory}
+									helperText={errors.workHistory?.message}
+								/>
+							)}
+						/>
+					</div>
+				</div>
 
-					<Box display='flex' justifyContent='space-between'>
-						<Button
-							disabled={activeStep === 0}
-							onClick={handleBack}
-							variant='outlined'
-							color='secondary'
-							className='w-96'
+				{errorMsg && errorMsg.trim() !== '' && (
+					<Typography color='error' className='font-semibold'>
+						{errorMsg}
+					</Typography>
+				)}
+
+				<div
+					className={clsx(
+						activeStep !== 4
+							? 'hidden'
+							: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
+					<div className='flex flex-col flex-1 gap-16 '>
+						<Box className='flex flex-col gap-8'>
+							<Typography className='font-semibold'>
+								Qualifications:{' '}
+							</Typography>
+							<div
+								className='flex items-center gap-16 p-8 transition-colors rounded shadow hover:cursor-pointer bg-background/50 hover:bg-background'
+								onClick={handleOpenQualificationAppendDialog}
+							>
+								<div className='flex items-center justify-center border rounded cursor-pointer size-72 hover:opacity-90 text-grey-600'>
+									<Add />
+								</div>
+								<Typography className='font-semibold text-text-secondary'>
+									Add Qualification
+								</Typography>
+							</div>
+							{qualificationsFields.map(
+								(qualification, index) => (
+									<div
+										key={qualification.id}
+										className='flex items-start gap-16 p-8 transition-colors rounded shadow hover:cursor-pointer hover:bg-background'
+										onClick={() => {
+											handleUpdateQualification(
+												qualification,
+												index
+											);
+										}}
+									>
+										<img
+											onClick={(e) => {
+												e.stopPropagation();
+												dispatch(
+													openDialog({
+														children: (
+															<img
+																className='min-h-sm min-w-sm'
+																src={
+																	qualification.imageUrl instanceof
+																	File
+																		? URL.createObjectURL(
+																				qualification.imageUrl
+																		  )
+																		: ''
+																}
+																alt={
+																	qualification.institution
+																}
+															/>
+														),
+													})
+												);
+											}}
+											src={
+												qualification.imageUrl instanceof
+												File
+													? URL.createObjectURL(
+															qualification.imageUrl
+													  )
+													: ''
+											}
+											alt={qualification.institution}
+											className='object-cover border rounded cursor-pointer size-72 hover:opacity-90'
+										/>
+										<div className='flex-1'>
+											<p className='text-lg font-semibold'>
+												{qualification.institution}
+											</p>
+											<p className=''>
+												{qualification.degree} •{' '}
+												{qualification.fieldOfStudy}
+											</p>
+											<p className='text-text-secondary'>
+												Graduated:{' '}
+												{qualification.yearOfGraduation}
+											</p>
+										</div>
+									</div>
+								)
+							)}
+						</Box>
+					</div>
+				</div>
+				<div
+					className={clsx(
+						activeStep !== 5
+							? 'hidden'
+							: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
+					<div className='flex flex-col gap-16'>
+						<Typography className='font-semibold'>
+							Certifications:{' '}
+						</Typography>
+						<div
+							className='flex items-center gap-16 p-8 transition-colors rounded shadow hover:cursor-pointer bg-background/50 hover:bg-background'
+							onClick={handleOpenCertificationAppendDialog}
 						>
-							Back
-						</Button>
-						<div className='flex gap-8'>
-							{activeStep === steps.length - 1 ? (
-								<Button
+							<div className='flex items-center justify-center border rounded cursor-pointer size-72 hover:opacity-90 text-grey-600'>
+								<Add />
+							</div>
+							<Typography className='font-semibold text-text-secondary'>
+								Add Certification
+							</Typography>
+						</div>
+						{certificationFields.map((certification, index) => (
+							<div
+								key={certification.id}
+								className='flex items-start gap-16 p-8 rounded shadow'
+								onClick={() => {
+									handleUpdateCertification(
+										certification,
+										index
+									);
+								}}
+							>
+								<img
+									src={
+										certification.imageUrl instanceof File
+											? URL.createObjectURL(
+													certification.imageUrl
+											  )
+											: ''
+									}
+									alt={certification.organization}
+									onClick={(e) => {
+										e.stopPropagation();
+										dispatch(
+											openDialog({
+												children: (
+													<img
+														className='min-h-sm min-w-sm'
+														src={
+															certification.imageUrl instanceof
+															File
+																? URL.createObjectURL(
+																		certification.imageUrl
+																  )
+																: ''
+														}
+														alt={
+															certification.organization
+														}
+													/>
+												),
+											})
+										);
+									}}
+									className='object-cover border rounded cursor-pointer size-72 hover:opacity-90'
+								/>
+								<div className='flex-1'>
+									<p className='text-lg font-semibold'>
+										{certification.name}
+									</p>
+									<p className=''>
+										{certification.organization}
+									</p>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+
+				<Box display='flex' justifyContent='space-between'>
+					<Button
+						disabled={activeStep === 0}
+						onClick={handleBack}
+						variant='outlined'
+						color='secondary'
+						className='w-96'
+					>
+						Back
+					</Button>
+					<div className='flex gap-8'>
+						{activeStep === steps.length - 1 ? (
+							<Button
 								className='max-w-128'
 								variant='contained'
 								color='secondary'
@@ -879,21 +987,21 @@ const CreateNonAcademicCounselorForm = () => {
 									'Confirm'
 								)}
 							</Button>
-							) : (
-								<Button
-									onClick={handleNext}
-									variant='contained'
-									color='secondary'
-									className='w-96'
-									type='button'
-								>
-									Next
-								</Button>
-							)}
-						</div>
-					</Box>
-				</div>
-			</form>
+						) : (
+							<Button
+								onClick={handleNext}
+								variant='contained'
+								color='secondary'
+								className='w-96'
+								type='button'
+							>
+								Next
+							</Button>
+						)}
+					</div>
+				</Box>
+			</div>
+		</form>
 	);
 };
 

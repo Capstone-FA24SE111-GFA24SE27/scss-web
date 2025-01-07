@@ -54,6 +54,11 @@ type Props = {};
 const steps = [
 	{
 		id: 'Step 1',
+		name: 'Login Information',
+		fields: ['email', 'password'],
+	},
+	{
+		id: 'Step 2',
 		name: 'Account Information',
 		fields: [
 			'avartarLink',
@@ -66,20 +71,24 @@ const steps = [
 		],
 	},
 	{
-		id: 'Step 2',
+		id: 'Step 3',
 		name: 'Department Information',
 		fields: ['departmentId', 'majorId', 'specializationId'],
 	},
 	{
-		id: 'Step 3',
+		id: 'Step 4',
 		name: 'Relevant Skills',
-		fields: [
-			'otherSkills',
-			'workHistory',
-			'achievements',
-			'qualifications',
-			'certifications',
-		],
+		fields: ['otherSkills', 'workHistory', 'achievements'],
+	},
+	{
+		id: 'Step 5',
+		name: 'Qualifications',
+		fields: ['qualifications'],
+	},
+	{
+		id: 'Step 6',
+		name: 'Certifications',
+		fields: ['certifications'],
 	},
 ];
 
@@ -423,24 +432,27 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						}
 					}
 				})
-				.catch((err) => console.log('error submiting form', err))
+				.catch((err) => {
+					console.log('error submiting form', err);
+					useAlertDialog({
+						dispatch,
+						title: 'An error occur while creating account. Please check your information and submit again.',
+						color: 'error',
+					});
+				})
 				.finally();
 			setErrorMsg('');
 		} catch (err) {
 			console.error('Image upload failed:', err);
 			setErrorMsg('Error while uploading images');
+			useAlertDialog({
+				dispatch,
+				title: 'An error occur while uploading image. Please choose another image or submit the form again.',
+				color: 'error',
+			});
 			setIsSubmitting(false);
 		}
-
-		console.log('formdata', {
-			...formData,
-			avatarLink: avatarUrl,
-			certifications: certificationsList,
-			qualifications: qualificationsList,
-		});
-
-		console.log('formdata', isValid);
-
+		setActiveStep(0);
 		setIsSubmitting(false);
 	};
 
@@ -479,6 +491,11 @@ const CreateAcademicCounselorForm = (props: Props) => {
 						</Step>
 					))}
 				</Stepper>
+				{errorMsg && errorMsg.trim() !== '' && (
+					<Typography color='error' className='font-semibold'>
+						{errorMsg}
+					</Typography>
+				)}
 				<div
 					className={clsx(
 						activeStep !== 0
@@ -488,7 +505,73 @@ const CreateAcademicCounselorForm = (props: Props) => {
 				>
 					<div className='flex flex-col flex-1 gap-16 '>
 						<Typography className='text-lg font-semibold leading-tight'>
-							Enter basic account info:
+							Enter login information:
+						</Typography>
+						<div className='flex-1 '>
+							<Controller
+								control={control}
+								name='email'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										label='Email'
+										fullWidth
+										variant='outlined'
+										error={!!errors.email}
+										helperText={errors.email?.message}
+									/>
+								)}
+							/>
+						</div>
+						<div className='flex-1 '>
+							<Controller
+								control={control}
+								name='password'
+								render={({ field }) => (
+									<TextField
+										{...field}
+										type={
+											showPassword ? 'text' : 'password'
+										}
+										className='relative'
+										label='Password'
+										fullWidth
+										variant='outlined'
+										slotProps={{
+											input: {
+												endAdornment: (
+													<IconButton
+														onClick={
+															toggleShowPassword
+														}
+													>
+														{showPassword ? (
+															<VisibilityOff />
+														) : (
+															<Visibility />
+														)}
+													</IconButton>
+												),
+											},
+										}}
+										error={!!errors.password}
+										helperText={errors.password?.message}
+									/>
+								)}
+							/>
+						</div>
+					</div>
+				</div>
+				<div
+					className={clsx(
+						activeStep !== 1
+							? 'hidden'
+							: 'flex flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
+					<div className='flex flex-col flex-1 gap-16 '>
+						<Typography className='text-lg font-semibold leading-tight'>
+							Enter basic account information:
 						</Typography>
 						<div className='flex-1 '>
 							<Controller
@@ -586,96 +669,43 @@ const CreateAcademicCounselorForm = (props: Props) => {
 								)}
 							/>
 						</div>
-
-						<div className='flex-1 '>
-							<Controller
-								control={control}
-								name='email'
-								render={({ field }) => (
-									<TextField
-										{...field}
-										label='Email'
-										fullWidth
-										variant='outlined'
-										error={!!errors.email}
-										helperText={errors.email?.message}
-									/>
-								)}
-							/>
-						</div>
-						<div className='flex-1 '>
-							<Controller
-								control={control}
-								name='password'
-								render={({ field }) => (
-									<TextField
-										{...field}
-										type={
-											showPassword ? 'text' : 'password'
+					</div>
+					<div className='flex items-start flex-1 gap-8 '>
+						<Typography className='font-semibold'>
+							Upload account's avatar:{' '}
+						</Typography>
+						<Controller
+							control={control}
+							name='avatarLink'
+							render={({ field }) => (
+								<div className='flex-1 aspect-square max-w-256'>
+									<ImageInput
+										error={!!errors.avatarLink}
+										onFileChange={(file: File) =>
+											field.onChange(file)
 										}
-										className='relative'
-										label='Password'
-										fullWidth
-										variant='outlined'
-										slotProps={{
-											input: {
-												endAdornment: (
-													<IconButton
-														onClick={
-															toggleShowPassword
-														}
-													>
-														{showPassword ? (
-															<VisibilityOff />
-														) : (
-															<Visibility />
-														)}
-													</IconButton>
-												),
-											},
-										}}
-										error={!!errors.password}
-										helperText={errors.password?.message}
+										file={field.value}
 									/>
-								)}
-							/>
-						</div>
-
-						<div className='flex items-start flex-1 gap-8 '>
-							<Typography>Avatar: </Typography>
-							<Controller
-								control={control}
-								name='avatarLink'
-								render={({ field }) => (
-									<div className='flex-1 aspect-square max-w-256'>
-										<ImageInput
-											error={!!errors.avatarLink}
-											onFileChange={(file: File) =>
-												field.onChange(file)
-											}
-											file={field.value}
-										/>
-									</div>
-								)}
-							/>
-							{errors.avatarLink && (
-								<Typography color='error' className='text-sm'>
-									{errors.avatarLink.message}
-								</Typography>
+								</div>
 							)}
-						</div>
+						/>
+						{errors.avatarLink && (
+							<Typography color='error' className='text-sm'>
+								{errors.avatarLink.message}
+							</Typography>
+						)}
 					</div>
 				</div>
 
 				<div
 					className={clsx(
-						activeStep !== 1
+						activeStep !== 2
 							? 'hidden'
 							: 'flex flex-wrap flex-col flex-1 w-full h-full gap-16 '
 					)}
 				>
 					<Typography className='text-lg font-semibold leading-tight'>
-						Select counselor's info:
+						Select counselor's department information:
 					</Typography>
 					<div className=''>
 						<Controller
@@ -825,7 +855,7 @@ const CreateAcademicCounselorForm = (props: Props) => {
 
 				<div
 					className={clsx(
-						activeStep !== 2
+						activeStep !== 3
 							? 'hidden'
 							: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
 					)}
@@ -905,92 +935,176 @@ const CreateAcademicCounselorForm = (props: Props) => {
 							)}
 						/>
 					</div>
+				</div>
 
+				<div
+					className={clsx(
+						activeStep !== 4
+							? 'hidden'
+							: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
 					<div className='flex flex-col flex-1 gap-16 '>
-						<div className='flex items-center gap-8'>
-							<Typography className='font-semibold'>
-								Certifications:{' '}
-							</Typography>
-							{certificationFields.map((certification, index) => (
-								<div
-									key={certification.id}
-									className='flex flex-wrap items-center space-y-8'
-								>
-									<Chip
-										variant='filled'
-										label={certification.name}
-										onClick={() =>
-											handleUpdateCertification(
-												certification,
-												index
-											)
-										}
-										onDelete={() => {
-											removeCertificationField(index);
-										}}
-										className='gap-8 mx-8 font-semibold w-fit'
-									/>
-								</div>
-							))}
-						</div>
-
-						<Button
-							variant='outlined'
-							color='primary'
-							onClick={handleOpenCertificationAppendDialog}
-						>
-							<Add />
-							Add Certification
-						</Button>
-					</div>
-
-					<div className='flex flex-col flex-1 gap-16 '>
-						<div className='flex items-center space-y-8'>
+						<Box className='flex flex-col gap-8'>
 							<Typography className='font-semibold'>
 								Qualifications:{' '}
 							</Typography>
-
+							<div
+								className='flex items-center gap-16 p-8 transition-colors rounded shadow hover:cursor-pointer bg-background/50 hover:bg-background'
+								onClick={handleOpenQualificationAppendDialog}
+							>
+								<div className='flex items-center justify-center border rounded cursor-pointer size-72 hover:opacity-90 text-grey-600'>
+									<Add />
+								</div>
+								<Typography className='font-semibold text-text-secondary'>
+									Add Qualification
+								</Typography>
+							</div>
 							{qualificationsFields.map(
 								(qualification, index) => (
 									<div
 										key={qualification.id}
-										className='flex items-center'
+										className='flex items-start gap-16 p-8 transition-colors rounded shadow hover:cursor-pointer hover:bg-background'
+										onClick={() => {
+											handleUpdateQualification(
+												qualification,
+												index
+											);
+										}}
 									>
-										<Chip
-											variant='filled'
-											label={qualification.degree}
-											onClick={() =>
-												handleUpdateQualification(
-													qualification,
-													index
-												)
-											}
-											onDelete={() => {
-												removeQualificationField(index);
+										<img
+											onClick={(e) => {
+												e.stopPropagation();
+												dispatch(
+													openDialog({
+														children: (
+															<img
+																className='min-h-sm min-w-sm'
+																src={
+																	qualification.imageUrl instanceof
+																	File
+																		? URL.createObjectURL(
+																				qualification.imageUrl
+																		  )
+																		: ''
+																}
+																alt={
+																	qualification.institution
+																}
+															/>
+														),
+													})
+												);
 											}}
-											className='gap-8 mx-8 font-semibold w-fit'
+											src={
+												qualification.imageUrl instanceof
+												File
+													? URL.createObjectURL(
+															qualification.imageUrl
+													  )
+													: ''
+											}
+											alt={qualification.institution}
+											className='object-cover border rounded cursor-pointer size-72 hover:opacity-90'
 										/>
+										<div className='flex-1'>
+											<p className='text-lg font-semibold'>
+												{qualification.institution}
+											</p>
+											<p className=''>
+												{qualification.degree} •{' '}
+												{qualification.fieldOfStudy}
+											</p>
+											<p className='text-text-secondary'>
+												Graduated:{' '}
+												{qualification.yearOfGraduation}
+											</p>
+										</div>
 									</div>
 								)
 							)}
-						</div>
-
-						<Button
-							variant='outlined'
-							color='primary'
-							onClick={handleOpenQualificationAppendDialog}
-						>
-							<Add />
-							Add Qualification
-						</Button>
+						</Box>
 					</div>
 				</div>
-
-				{errorMsg && errorMsg.trim() !== '' && (
-					<Typography color='error' className='font-semibold'>
-						{errorMsg}
-					</Typography>
-				)}
+				<div
+					className={clsx(
+						activeStep !== 5
+							? 'hidden'
+							: 'flex flex-col flex-wrap flex-1 w-full h-full gap-16'
+					)}
+				>
+					<div className='flex flex-col gap-16'>
+						<Typography className='font-semibold'>
+							Certifications:{' '}
+						</Typography>
+						<div
+							className='flex items-center gap-16 p-8 transition-colors rounded shadow hover:cursor-pointer bg-background/50 hover:bg-background'
+							onClick={handleOpenCertificationAppendDialog}
+						>
+							<div className='flex items-center justify-center border rounded cursor-pointer size-72 hover:opacity-90 text-grey-600'>
+								<Add />
+							</div>
+							<Typography className='font-semibold text-text-secondary'>
+								Add Certification
+							</Typography>
+						</div>
+						{certificationFields.map((certification, index) => (
+							<div
+								key={certification.id}
+								className='flex items-start gap-16 p-8 rounded shadow'
+								onClick={() => {
+									handleUpdateCertification(
+										certification,
+										index
+									);
+								}}
+							>
+								<img
+									src={
+										certification.imageUrl instanceof File
+											? URL.createObjectURL(
+													certification.imageUrl
+											  )
+											: ''
+									}
+									alt={certification.organization}
+									onClick={(e) => {
+										e.stopPropagation();
+										dispatch(
+											openDialog({
+												children: (
+													<img
+														className='min-h-sm min-w-sm'
+														src={
+															certification.imageUrl instanceof
+															File
+																? URL.createObjectURL(
+																		certification.imageUrl
+																  )
+																: ''
+														}
+														alt={
+															certification.organization
+														}
+													/>
+												),
+											})
+										);
+									}}
+									className='object-cover border rounded cursor-pointer size-72 hover:opacity-90'
+								/>
+								<div className='flex-1'>
+									<p className='text-lg font-semibold'>
+										{certification.name}
+									</p>
+									<p className=''>
+										{certification.organization}
+									</p>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
 
 				<Box display='flex' justifyContent='space-between'>
 					<Button
