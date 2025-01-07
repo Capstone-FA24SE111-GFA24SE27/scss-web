@@ -105,8 +105,7 @@ function StudentDemandsAppointmentCreate() {
         .then(() => {
           useAlertDialog({
             dispatch,
-            title: 'Create appointment successfully',
-            confirmFunction: () => navigate(-1)
+            title: 'Create appointment successfully'
           })
           navigate('../')
         })
@@ -205,7 +204,7 @@ function StudentDemandsAppointmentCreate() {
   return (
     <>
       {isBookingCounselor && <BackdropLoading />}
-      <div className="relative flex flex-col flex-auto items-center w-md p-24 sm:p-48">
+      <div className="relative flex flex-col items-center flex-auto p-24 w-md sm:p-48">
         <div className="w-full max-w-3xl">
           {/* <Breadcrumbs
             parents={[
@@ -216,7 +215,7 @@ function StudentDemandsAppointmentCreate() {
             ]}
             currentPage={"Booking"}
           /> */}
-          <div className="flex flex-auto items-end gap-32">
+          <div className="flex items-end flex-auto gap-32">
             <Avatar
               sx={{
                 borderWidth: 4,
@@ -225,7 +224,7 @@ function StudentDemandsAppointmentCreate() {
                 backgroundColor: 'background.default',
                 color: 'text.secondary'
               }}
-              className="size-96 text-64 font-bold"
+              className="font-bold size-96 text-64"
               src={student.profile.avatarLink}
               alt={student.profile.fullName}
             >
@@ -246,7 +245,7 @@ function StudentDemandsAppointmentCreate() {
           <Divider className="mt-16 mb-24" />
 
           <div>
-            <Typography className='font-semibold text-primary px-24 text-lg'>Counseling Date</Typography>
+            <Typography className='px-24 text-lg font-semibold text-primary'>Counseling Date</Typography>
 
             <DateCalendar
               views={['day']}
@@ -266,7 +265,7 @@ function StudentDemandsAppointmentCreate() {
           <Divider className="mb-24" />
 
           <div className='px-32'>
-            <Typography className='font-semibold text-primary text-lg'>Available slots</Typography>
+            <Typography className='text-lg font-semibold text-primary'>Available slots</Typography>
             <Typography className='text-primary' >{dayjs(formData.date).format('dddd, MMMM DD, YYYY')}</Typography>
             <div className='flex flex-wrap gap-16 mt-16'>
               {
@@ -298,7 +297,7 @@ function StudentDemandsAppointmentCreate() {
           <Divider className="mt-16 mb-24" />
 
           <div className='px-32'>
-            <Typography className='font-semibold text-primary text-lg'>Meeting Type</Typography>
+            <Typography className='text-lg font-semibold text-primary'>Meeting Type</Typography>
 
             <Controller
               name="isOnline"
@@ -364,7 +363,7 @@ function StudentDemandsAppointmentCreate() {
                             multiline
                             rows={4}
                             defaultValue=""
-                            className='mt-16 w-full'
+                            className='w-full mt-16'
                         /> */}
             <Controller
               control={control}
@@ -387,7 +386,7 @@ function StudentDemandsAppointmentCreate() {
             />
           </div>
 
-          <div className='flex justify-center mt-24 px-32'>
+          <div className='flex justify-center px-32 mt-24'>
             <Button
               variant='contained'
               color='secondary'
