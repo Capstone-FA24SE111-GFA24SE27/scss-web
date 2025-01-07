@@ -77,10 +77,7 @@ function CategoryTable() {
 				item.name.toLowerCase().includes(keyword.toLowerCase())
 			);
 			setTableData(
-				filtered.slice(
-					pagination.pageIndex * pagination.pageSize,
-					(pagination.pageIndex + 1) * pagination.pageSize
-				)
+				filtered
 			);
 		}
 	}, [data, keyword]);
@@ -95,9 +92,10 @@ function CategoryTable() {
 				data={tableData}
 				rowCount={tableData.length}
 				columns={columns}
-				manualPagination
-				onPaginationChange={setPagination}
-				state={{ pagination }}
+				enablePagination
+				// manualPagination
+				// onPaginationChange={setPagination}
+				// state={{ pagination }}
 				renderRowActionMenuItems={({ closeMenu, row, table }) => [
 					<MenuItem
 						key={0}
