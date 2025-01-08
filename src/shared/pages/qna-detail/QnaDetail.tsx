@@ -11,8 +11,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
 	useGetCounselorQnaDetailQuery,
 	useGetStudentQnaDetailQuery,
-	usePostFlagQuestionStatusMutation,
-	usePostReviewQuestionStatusMutation,
 } from './qna-detail-api';
 import {
 	Avatar,
@@ -23,17 +21,8 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import {
-	CheckCircle,
-	ChevronRight,
-	Error,
-	Flag,
-	RemoveCircle,
-} from '@mui/icons-material';
+
 import { selectAccount, useAppDispatch, useAppSelector } from '@shared/store';
-import { useConfirmDialog } from '@/shared/hooks';
-import { useAlertDialog } from '@/shared/hooks';
-import QnaFlagForm from './QnaFlagFormDialog';
 import { statusColor } from '@/shared/constants';
 import { Question } from '@/shared/types';
 import dayjs from 'dayjs';
