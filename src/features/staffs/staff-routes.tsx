@@ -4,7 +4,6 @@ import { specialRoutes } from '@shared/configs';
 import { staffDemandRoutes } from './demands';
 import { staffStudentRoutes } from './students';
 import { profileRoutes, settingsRoutes } from '@/shared/pages';
-import { homeRoutes } from './home';
 
 const StaffLayout = lazy(() => import('./staff-layout'));
 
@@ -17,14 +16,11 @@ export const supportStaffRoutes: RouteObject[] = [
 				path: '',
 				element: <Navigate to={`students/list`} />
 			},
-			// ...homeRoutes,
 			...specialRoutes,
 			...staffDemandRoutes,
 			...staffStudentRoutes,
 			...profileRoutes,
 			...settingsRoutes,
-			// ...qnaStaffRoutes
-			// ...recommendedStudentsRoutes
 		],
 	},
 ];
