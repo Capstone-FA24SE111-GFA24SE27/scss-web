@@ -105,6 +105,7 @@ export const contributedQuestionsApi = api
           categoryId,
           sortBy = 'createdDate',
           sortDirection = 'DESC',
+          isSuggestion,
           page = 1,
           size = 10
         }) => ({
@@ -117,6 +118,7 @@ export const contributedQuestionsApi = api
             categoryId,
             sortBy,
             sortDirection,
+            isSuggestion,
             page,
             size
           },
@@ -173,4 +175,5 @@ export type SearchContributedQuestionCardsApiArg = {
   sortDirection?: string;
   page?: number;
   size?: number;
+  isSuggestion?: boolean;
 };

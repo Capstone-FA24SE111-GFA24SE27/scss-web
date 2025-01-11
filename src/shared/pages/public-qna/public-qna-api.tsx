@@ -17,6 +17,7 @@ export const publicQnaApi = api
           type,
           sortBy = 'createdDate',
           sortDirection = 'DESC',
+          isSuggestion = undefined,
           page = 1,
           size = 10
         }) => ({
@@ -27,6 +28,7 @@ export const publicQnaApi = api
             type,
             sortBy,
             sortDirection,
+            isSuggestion,
             page,
             size,
           },
@@ -71,4 +73,5 @@ export type GetAllPublicQuestionCardsArgs = {
   sortDirection?: 'ASC' | 'DESC';
   page?: number;
   size?: number;
+  isSuggestion?: boolean;
 } 

@@ -75,7 +75,7 @@ const StudentListHeader = ({ isShowingTab = false }) => {
 	const handleSelectSemester = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-			dispatch(setSemesterIdForBehavior(Number(event.target.value)) || undefined);
+		dispatch(setSemesterIdForBehavior(Number(event.target.value) || undefined));
 	};
 
 	const handleSwitchChange = (checked: boolean) => {

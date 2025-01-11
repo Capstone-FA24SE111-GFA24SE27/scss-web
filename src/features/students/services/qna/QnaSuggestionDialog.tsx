@@ -41,10 +41,12 @@ const QnaSuggestionDialog = ({ data, question }: { data?: QnaFormValues, questio
 
   const { data: publicQnasData, isLoading: isLoadingPublicQna } = useGetAllPublicQuestionCardsQuery({
     keyword: data?.title,
+    isSuggestion: true,
   });
 
   const { data: contributedQuestionsData, isLoading: isLoadingFaq } = useSearchContributedQuestionCardsQuery({
     query: data?.title,
+    isSuggestion: true,
   });
 
   const publicQnas = publicQnasData?.content?.data || [];

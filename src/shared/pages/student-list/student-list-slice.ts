@@ -103,7 +103,7 @@ export const studentListSlice = createSlice({
     setIsUsingPrompt: (state, action: PayloadAction<boolean>) => {
       state.isUsingPrompt = action.payload;
     },
-    setSemesterIdForBehavior: (state, action: PayloadAction<number>) => {
+    setSemesterIdForBehavior: (state, action: PayloadAction<number | undefined>) => {
       state.semesterIdForBehavior = action.payload;
     },
     setPromptForBehavior: (state, action: PayloadAction<string>) => {

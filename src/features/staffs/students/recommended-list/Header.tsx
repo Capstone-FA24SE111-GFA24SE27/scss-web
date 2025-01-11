@@ -58,7 +58,7 @@ const Header = () => {
 	return (
 		<div className='flex items-center flex-1'>
 			<div className='flex flex-col w-full gap-16 pt-16 pb-8'>
-				<div className='flex gap-32'>
+				<div className='flex'>
 					<SearchField
 						onSearch={handleSearch}
 						label='Name'
@@ -66,7 +66,7 @@ const Header = () => {
 						size='medium'
 					/>
 
-					<div className='pl-16'>
+					<div className=''>
 						{!filter.open && (
 							<StaffStudentListFilterButton
 								onClick={() => dispatch(filterToggle())}

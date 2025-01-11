@@ -9,7 +9,7 @@ import { SignInForm } from '../auth-components';
 import { CalendarMonth, SentimentSatisfied, Summarize, SupportAgent } from '@mui/icons-material';
 import { useLoginWithGoogleMutation } from '../auth-api';
 import { googleAuth } from '@/shared/services';
-import { getApiErrorMessage, setAccessToken, setAccount, useAppDispatch } from '@shared/store';
+import { getApiErrorMessage, setAccessToken, setAccount, setRefreshToken, useAppDispatch } from '@shared/store';
 
 function SignInPage() {
 
@@ -23,9 +23,10 @@ function SignInPage() {
 			loginWithGoogle(accessToken)
 				.unwrap()
 				.then(response => {
-					const { account, accessToken } = response.content
-					dispatch(setAccount(account))
-					dispatch(setAccessToken(accessToken))
+					const { account, accessToken, refreshToken } = response.content
+					dispatch(setAccount(account));
+					dispatch(setRefreshToken(refreshToken));
+					dispatch(setAccessToken(accessToken));
 				})
 		} catch (error) {
 			console.error("Login failed:", error);

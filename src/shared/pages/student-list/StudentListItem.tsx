@@ -67,29 +67,21 @@ function StudentListItem(props: StudentListItemPropsType) {
 			<Box className='flex flex-col gap-4'>
 				<Typography
 					variant='subtitle2'
-					className={`font-semibold mt-8 ${
-						isHighlighted
-							? 'text-text-primary'
-							: 'text-text-disabled'
-					}`}
+					className={`font-semibold mt-8 ${isHighlighted
+						? 'text-text-primary'
+						: 'text-text-disabled'
+						}`}
 				>
 					{category}
 				</Typography>
 				<div className='flex flex-wrap'>
 					{tags.map((tag) => (
-						<Tooltip
-							key={tag.problemTagName}
-							title={tag.source || 'Unknown source'}
-							arrow
-							placement='top-start'
-						>
-							<Chip
-								label={`${tag.problemTagName} x ${tag.number}`}
-								size='small'
-								className='m-2'
-								color={tag.contained ? 'success' : undefined}
-							/>
-						</Tooltip>
+						<Chip
+							label={`${tag.problemTagName} x ${tag.number}`}
+							size='small'
+							className='m-2'
+							color={tag.contained ? 'success' : undefined}
+						/>
 					))}
 				</div>
 			</Box>
@@ -154,8 +146,8 @@ function StudentListItem(props: StudentListItemPropsType) {
 										color: 'black',
 										border: '1px solid #ccc',
 										maxWidth: '100rem',
-                    maxHeight: '35vh',
-                    overflow: 'auto'
+										maxHeight: '35vh',
+										overflow: 'auto'
 									},
 								},
 								modifiers: [
@@ -171,23 +163,16 @@ function StudentListItem(props: StudentListItemPropsType) {
 							<div className='flex flex-wrap'>
 								{/* Display displayedTags first */}
 								{displayedTags.map((tag) => (
-									<Tooltip
-										key={tag.problemTagName}
-										title={tag.source || 'Unknown source'}
-										arrow
-										placement='top-start'
-									>
-										<Chip
-											label={`${tag.problemTagName} x ${tag.number}`}
-											size='small'
-											className='m-2'
-											color={
-												tag.contained
-													? 'success'
-													: undefined
-											}
-										/>
-									</Tooltip>
+									<Chip
+										label={`${tag.problemTagName} x ${tag.number}`}
+										size='small'
+										className='m-2'
+										color={
+											tag.contained
+												? 'success'
+												: undefined
+										}
+									/>
 								))}
 								{/* Show "+x" for the rest of the tags in the group */}
 								{hiddenTags.length > 0 && (
