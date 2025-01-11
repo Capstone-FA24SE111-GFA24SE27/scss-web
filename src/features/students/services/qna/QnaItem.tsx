@@ -78,7 +78,7 @@ const QnaItem = (props: Props) => {
 
 	const handleSelectChat = (qna: Question) => {
 		if (qna.chatSession) {
-			navigate(`conversations/${qna.id}`);
+			navigate(`/services/qna/conversations/${qna.id}`);
 		} else {
 			handleCreateChat(qna);
 		}
@@ -129,7 +129,7 @@ const QnaItem = (props: Props) => {
 				cancelButtonTitle: 'Ok',
 				confirmButtonTitle: 'Go to chat',
 				confirmButtonFunction: () =>
-					navigate(`conversations/${qna.id}`),
+					navigate(`/services/qna/conversations/${qna.id}`),
 				dispatch: dispatch,
 			});
 		}

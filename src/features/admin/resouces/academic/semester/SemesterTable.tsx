@@ -29,10 +29,11 @@ function SemestersTable() {
 	const dispatch = useAppDispatch();
 	const [tableData, setTableData] = useState([]);
 
+	console.log(data)
 	useEffect(() => {
-		if (data) {
+		if (data && data.length > 0 ) {
 			const filtered = data.filter((item) =>
-				item.name.toLowerCase().includes(keyword.toLowerCase())
+				item?.name?.toLowerCase().includes(keyword?.toLowerCase() || ``)
 			);
 			setTableData(filtered);
 		}

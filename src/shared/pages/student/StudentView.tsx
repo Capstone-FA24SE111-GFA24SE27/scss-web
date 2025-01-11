@@ -215,7 +215,7 @@ function StudentView({ id, actionButton }: StudentViewProps) {
             />
             <Tab
               className="text-lg font-semibold min-h-40"
-              label="Learning process"
+              label="Learning Process"
             />
           </Tabs>
 
