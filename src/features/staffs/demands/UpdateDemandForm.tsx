@@ -118,7 +118,7 @@ const UpdateDemandForm = () => {
 
 	const { isValid, isDirty, errors } = formState;
 
-	const [updateDemand] = usePutUpdateDemandByDemandIdForStaffMutation();
+	const [updateDemand, {isLoading}] = usePutUpdateDemandByDemandIdForStaffMutation();
 
 	const onSubmit = () => {
 		if (initialData && initialData.demand) {
@@ -538,7 +538,8 @@ const UpdateDemandForm = () => {
 											!formData.counselorId ||
 											!formData.contactNote ||
 											!formData.issueDescription ||
-											!formData.causeDescription
+											!formData.causeDescription ||
+											isLoading
 										}
 										onClick={handleSubmit(onSubmit)}
 									>

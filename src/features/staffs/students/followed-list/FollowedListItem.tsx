@@ -162,7 +162,6 @@ const FollowedListItem = (props: Props) => {
 							phoneNumber={item.student.profile.phoneNumber}
 							email={item.student.email}
 						/>
-						<ChevronRight />
 					</ListItemButton>
 				</Tooltip>
 

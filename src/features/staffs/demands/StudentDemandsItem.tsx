@@ -141,7 +141,6 @@ function StudentDemandsItem({ demand }: StudentDemandsItemPropsType) {
 								phoneNumber={demand.student.profile.phoneNumber}
 								email={demand.student.email}
 							/>
-							<ChevronRight />
 						</ListItemButton>
 					</Tooltip>
 

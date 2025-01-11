@@ -107,7 +107,7 @@ const CreateDemandForm = () => {
 	const { data: studentData, isLoading: isLoadingStudentData } =
 		useGetStudentDetailQuery(studentId, { skip: !studentId });
 
-	const [createDemand] = usePostCreateDemandByStudentIdForStaffMutation();
+	const [createDemand, {isLoading: isLoadingCreateDemand}] = usePostCreateDemandByStudentIdForStaffMutation();
 
 	const {
 		data: quickMatchData,
@@ -541,7 +541,8 @@ const CreateDemandForm = () => {
 											!formData.counselorId ||
 											!formData.contactNote ||
 											!formData.issueDescription ||
-											!formData.causeDescription
+											!formData.causeDescription ||
+											isLoadingCreateDemand
 										}
 										onClick={handleSubmit(onSubmit)}
 									>

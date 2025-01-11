@@ -43,7 +43,7 @@ const StaffFollowedStudentsList = (props: Props) => {
 	}
 
   return (
-    <div className='flex flex-col flex-1 gap-16 p-16 container mx-auto'>
+    <div className='flex flex-col flex-1 gap-16 p-32 container mx-auto'>
 			<Box>
 				<motion.div
 					initial={{ y: 20, opacity: 0 }}

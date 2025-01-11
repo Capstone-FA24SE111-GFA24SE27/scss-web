@@ -26,8 +26,8 @@ const DemandDetail = ({ id }: { id?: string }) => {
   const demand = demandData
   const dispatch = useAppDispatch()
   if (isLoading) {
-    // return <ContentLoading className='min-w-md' />
-    return <BackdropLoading />
+    return <ContentLoading className='min-w-md' />
+    // return <BackdropLoading />
   }
 
   if (!demand) {
