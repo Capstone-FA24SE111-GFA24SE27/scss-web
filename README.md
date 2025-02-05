@@ -10,9 +10,9 @@ The Student Counseling and Support System (SCSS) enables students to schedule ap
 ## Features
 
 * **Counseling Services**: Providing a real-time scheduling system that allows students to book counseling sessions with a counselors.
-* **Question & Answer**: Students can post questions to be answered by counselors and initiate a chat for interative responses.
+* **Question & Answer**: Students can post questions to be answered by counselors and initiate a chat for interactive responses.
 * **Active Outreach**: Enabling staff to identify and connect to students who may need counseling but are either unaware of or hesitant to use the system.
-* **Progess tracking**: Counselors and support staffs can also track student synchronized FPTU academic infomation, learning process, appointment records and preferences. 
+* **Progess tracking**: Counselors and support staffs can also track student synchronized FPTU academic information, learning process, appointment records and preferences. 
 * **Analytics and management**: Offering dashboards for overview of user activities, evaluating counseling effectiveness and managing resources.
 
 ## Installation
